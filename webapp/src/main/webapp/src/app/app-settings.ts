@@ -42,6 +42,18 @@ export interface TargetReportSettings {
   readonly minimumStudentCount: number;
 }
 
+export function toReportLanguages(values: string[]): string[] {
+  return values.reduce(
+    (languageCodes, languageCode) => {
+      if (!languageCodes.includes(languageCode)) {
+        languageCodes.push(languageCode);
+      }
+      return languageCodes;
+    },
+    ['en']
+  );
+}
+
 export function toApplicationSettings(
   serverSettings: any
 ): ApplicationSettings {
@@ -52,7 +64,7 @@ export function toApplicationSettings(
     irisVendorId: serverSettings.irisVendorId,
     minItemDataYear: serverSettings.minItemDataYear,
     percentileDisplayEnabled: serverSettings.percentileDisplayEnabled,
-    reportLanguages: serverSettings.effectiveReportLanguages,
+    reportLanguages: toReportLanguages(serverSettings.reportLanguages),
     schoolYear: serverSettings.schoolYear,
     state: {
       code: serverSettings.state.code,
