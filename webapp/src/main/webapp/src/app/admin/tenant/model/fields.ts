@@ -40,6 +40,10 @@ export function fieldValidators(key: string): ValidatorFn[] {
   ];
 }
 
+export function fieldRequired(key: string): boolean {
+  return (fieldConfigurationsByKey[key] || {}).required;
+}
+
 export function field(key: string, translateService: TranslateService): Field {
   const configuration = fieldConfigurationsByKey[key] || {};
   const inputType =

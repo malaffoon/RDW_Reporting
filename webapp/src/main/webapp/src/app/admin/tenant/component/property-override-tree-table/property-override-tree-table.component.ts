@@ -13,6 +13,7 @@ import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import { fieldValidators } from '../../model/fields';
 import { Option } from '../../model/field';
+import { isEqual } from 'lodash';
 
 export function configurationsFormGroup(
   defaults: any,
@@ -93,8 +94,8 @@ function rowTrackBy(index: number, { node }: any): string {
   return node.key;
 }
 
-function valuesOf(options: Option[]): any {
-  return options.map(({ value }) => value);
+function selectCompareWith(a: any, b: any): boolean {
+  return isEqual(a, b);
 }
 
 @Component({
@@ -115,10 +116,7 @@ export class PropertyOverrideTreeTableComponent
   implements ControlValueAccessor {
   readonly showErrors = showErrors;
   readonly rowTrackBy = rowTrackBy;
-  readonly valuesOf = valuesOf;
-  onMultiSelectChange(event: any): void {
-    console.log({ event });
-  }
+  readonly selectCompareWith = selectCompareWith;
 
   @ViewChild('table')
   table: TreeTable;

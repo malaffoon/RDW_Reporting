@@ -42,8 +42,8 @@ import {
   tenantKey
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
-import { Option } from '../../model/field';
 import { states } from '../../model/data/state';
+import { fieldRequired } from '../../model/fields';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -138,32 +138,34 @@ function toPropertiesProvider<T = any>(
       : of(false),
     submitted$
   ).pipe(
-    map(([search, modified, required, submitted]) => ({
-      hasSearch: !isBlank(search) || modified || required,
-      invalid:
-        submitted &&
-        formGroup.invalid &&
-        showErrorsRecursive(formGroup, submitted),
-      results: entries.filter(([controlKey, defaultValue]) => {
-        const caseInsensitiveSearch = search.toLowerCase();
-        const key = keyTransform(controlKey);
-        const value = formGroup.controls[controlKey].value;
-        return (
-          (isBlank(search) ||
-            (key.toLowerCase().includes(caseInsensitiveSearch) ||
-              (typeof value === 'string' &&
-                value.toLowerCase().includes(caseInsensitiveSearch)) ||
-              (Object(value) !== value &&
-                String(value)
-                  .toLowerCase()
-                  .includes(caseInsensitiveSearch)))) &&
-          (!modified || value !== defaultValue) &&
-          (!required || /username|password/g.test(key)) // TODO this should really come from metadata
-        );
-      })
-      // TODO sort?
-      // .sort(ordering(byString).on(([key]) => key).compare)
-    }))
+    map(([search, modified, required, submitted]) => {
+      return {
+        hasSearch: !isBlank(search) || modified || required,
+        invalid:
+          submitted &&
+          formGroup.invalid &&
+          showErrorsRecursive(formGroup, submitted),
+        results: entries.filter(([controlKey, defaultValue]) => {
+          const caseInsensitiveSearch = search.toLowerCase();
+          const key = keyTransform(controlKey);
+          const value = formGroup.controls[controlKey].value;
+          return (
+            (isBlank(search) ||
+              (key.toLowerCase().includes(caseInsensitiveSearch) ||
+                (typeof value === 'string' &&
+                  value.toLowerCase().includes(caseInsensitiveSearch)) ||
+                (Object(value) !== value &&
+                  String(value)
+                    .toLowerCase()
+                    .includes(caseInsensitiveSearch)))) &&
+            (!modified || value !== defaultValue) &&
+            (!required || fieldRequired(controlKey))
+          );
+        })
+        // TODO sort?
+        // .sort(ordering(byString).on(([key]) => key).compare)
+      };
+    })
   );
 }
 
@@ -259,7 +261,10 @@ function setDefaultState(control: AbstractControl, value: string): void {
     ({ abbreviation }) => abbreviation.toLowerCase() === value.toLowerCase()
   );
   if (state != null && control.pristine) {
-    control.patchValue(state.abbreviation);
+    control.patchValue({
+      code: state.abbreviation,
+      name: state.name
+    });
   }
 }
 
@@ -383,7 +388,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
       // set the defaults on the formGroup
       this.configurationControlsFormGroup.patchValue({
-        search: 'state'
+        // search: 'state'
         // required: this.requiredConfiguration
       });
 

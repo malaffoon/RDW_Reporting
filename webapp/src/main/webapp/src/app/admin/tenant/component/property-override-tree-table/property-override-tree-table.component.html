@@ -134,6 +134,7 @@
                             name="{{ data.key }}"
                             formControlName="{{ data.key }}"
                             class="form-control"
+                            [compareWith]="selectCompareWith"
                           >
                             <option
                               *ngFor="let option of data.values"

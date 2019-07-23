@@ -1,5 +1,6 @@
 import { languageCodes } from './data/languages';
 import { states } from './data/state';
+import { studentFields } from './data/student-fields';
 
 const assessmentTypes = translateService =>
   ['sum', 'ica', 'iab'].map(value => ({
@@ -11,7 +12,10 @@ const assessmentTypes = translateService =>
 
 const stateOptions = translateService =>
   states.map(({ name: label, abbreviation: value }) => ({
-    value,
+    value: {
+      code: value,
+      name: label
+    },
     label
   }));
 
@@ -21,10 +25,10 @@ const languageOptions = translateService =>
     label: translateService.instant(`common.language.${value}`)
   }));
 
-const studentFields = translateService =>
-  Object.entries(translateService.instant('common.student-field')).map(
-    ([value, label]) => ({ value, label })
-  );
+const studentFieldOptions = ['Enabled', 'Admin', 'Disabled'].map(value => ({
+  value,
+  label: value
+}));
 
 const studentFieldValues = () =>
   ['Enabled', 'Admin', 'Disabled'].map(value => ({ value }));
@@ -148,9 +152,11 @@ export const fieldConfigurationsByKey = {
   'reporting.targetReport.minNumberOfStudents': {
     dataType: 'integer'
   },
-  'reporting.studentFields': {
-    dataType: 'map',
-    keys: studentFields,
-    values: studentFieldValues
-  }
+  ...studentFields.reduce((configurations, studentField) => {
+    configurations[`reporting.studentField.${studentField}`] = {
+      dataType: 'enumeration',
+      values: studentFieldOptions
+    };
+    return configurations;
+  }, {})
 };

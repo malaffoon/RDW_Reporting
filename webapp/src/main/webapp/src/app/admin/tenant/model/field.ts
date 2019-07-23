@@ -11,7 +11,6 @@ export type PropertyDataType =
   | 'float'
   | 'enumeration'
   | 'enumeration-list'
-  | 'enumeration-map'
   | 'uri'
   | 'url'
   | 'url-fragment'
@@ -19,12 +18,7 @@ export type PropertyDataType =
   | 'username'
   | 'database';
 
-export type InputType =
-  | 'input'
-  | 'checkbox'
-  | 'select'
-  | 'multi-select'
-  | 'multi-select-modal';
+export type InputType = 'input' | 'checkbox' | 'select' | 'multi-select';
 
 export interface Option<T = any> {
   /**
