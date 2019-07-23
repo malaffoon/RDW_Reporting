@@ -144,4 +144,15 @@ reporting:
   state:
     code: CA
     name: California
+  student-fields:
+    EconomicDisadvantage: Enabled
+    EnglishLanguageAcquisitionStatus: Disabled
+    Ethnicity: Enabled
+    Gender: Enabled
+    IndividualEducationPlan: Enabled
+    LimitedEnglishProficiency: Enabled
+    MigrantStatus: Enabled
+    MilitaryStudentIdentifier: Enabled
+    PrimaryLanguage: Enabled
+    Section504: Enabled
 
