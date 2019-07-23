@@ -12,7 +12,12 @@ import {
 } from 'ngx-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
-import { MenuModule, TreeTableModule } from 'primeng/primeng';
+import {
+  AutoCompleteModule,
+  MenuModule,
+  MultiSelectModule,
+  TreeTableModule
+} from 'primeng/primeng';
 import { TableModule } from 'primeng/table';
 import { PropertyOverrideTableComponent } from './component/property-override-table/property-override-table.component';
 import { PropertyOverrideTreeTableComponent } from './component/property-override-tree-table/property-override-tree-table.component';
@@ -36,6 +41,8 @@ import { ToggleLabelComponent } from './component/toggle-label/toggle-label.comp
     PopoverModule,
     TableModule,
     TreeTableModule,
+    MultiSelectModule,
+    AutoCompleteModule,
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(tenantRoutes)
   ],

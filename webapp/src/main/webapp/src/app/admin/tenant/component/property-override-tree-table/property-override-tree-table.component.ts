@@ -10,8 +10,9 @@ import {
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
-import { propertyValidators } from '../../model/properties';
 import { ConfigurationProperty } from '../../model/property';
+import { fieldValidators } from '../../model/fields';
+import { Option } from '../../model/field';
 
 export function configurationsFormGroup(
   defaults: any,
@@ -22,7 +23,7 @@ export function configurationsFormGroup(
     Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
-      controlsByName[key] = new FormControl(value, propertyValidators(key));
+      controlsByName[key] = new FormControl(value, fieldValidators(key));
       return controlsByName;
     }, {}),
     validators
@@ -92,6 +93,10 @@ function rowTrackBy(index: number, { node }: any): string {
   return node.key;
 }
 
+function valuesOf(options: Option[]): any {
+  return options.map(({ value }) => value);
+}
+
 @Component({
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
@@ -110,6 +115,10 @@ export class PropertyOverrideTreeTableComponent
   implements ControlValueAccessor {
   readonly showErrors = showErrors;
   readonly rowTrackBy = rowTrackBy;
+  readonly valuesOf = valuesOf;
+  onMultiSelectChange(event: any): void {
+    console.log({ event });
+  }
 
   @ViewChild('table')
   table: TreeTable;

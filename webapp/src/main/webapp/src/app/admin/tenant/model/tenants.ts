@@ -1,14 +1,61 @@
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import {
+  composeFlattenCustomizers,
+  composeUnflattenCustomizers,
   flatten,
   FlattenCustomizer,
   unflatten,
   UnflattenCustomizer,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject } from 'lodash';
+import { isEmpty, isObject, omit } from 'lodash';
 
+function mapToString(value: any): string {
+  return Object.entries(value)
+    .map(entries => entries.join(':'))
+    .join(',');
+}
+
+function stringToMap(value: string): any {
+  value.split(',').reduce((map, entry) => {
+    const [key, value] = entry.split(':');
+    map[key] = value;
+    return map;
+  }, {});
+}
+
+export function mapToStringCustomizer(
+  ...properties: string[]
+): FlattenCustomizer {
+  return function(result, object, property) {
+    if (properties.includes(property)) {
+      result[property] = mapToString(object);
+      return true;
+    }
+    return false;
+  };
+}
+
+export function stringToMapCustomizer(
+  ...properties: string[]
+): UnflattenCustomizer {
+  return function(value, property) {
+    if (properties.includes(property)) {
+      return stringToMap(value);
+    }
+    return value;
+  };
+}
+
+/**
+ * If it finds a value that is an array of primitives it joins it.
+ * If it finds an empty array it returns an empty string
+ *
+ * @param result
+ * @param object
+ * @param property
+ */
 export const joinIfArrayOfPrimitives: FlattenCustomizer = (
   result,
   object,
@@ -23,6 +70,22 @@ export const joinIfArrayOfPrimitives: FlattenCustomizer = (
   }
   return false;
 };
+
+export function ignoreLeafArraysAndProperties(
+  ...properties: string[]
+): FlattenCustomizer {
+  return function(result: any, object: any, property: string): boolean {
+    if (
+      (Array.isArray(object) &&
+        (object.length === 0 || object.every(value => !isObject(value)))) ||
+      properties.includes(property)
+    ) {
+      result[property] = object;
+      return true;
+    }
+    return false;
+  };
+}
 
 export const splitIfNonPasswordCommaJoinedString: UnflattenCustomizer = (
   value,
@@ -111,19 +174,35 @@ export function toConfigurations(
   { archive, aggregate, datasources, reporting }: any,
   type
 ): any {
-  return flatten(
-    type === 'SANDBOX'
-      ? {
-          aggregate,
-          reporting
-        }
-      : {
-          archive,
-          datasources,
-          aggregate,
-          reporting
-        },
-    joinIfArrayOfPrimitives
+  // TODO later we should have some matadata interpretation of this structure possibly
+  return omit(
+    flatten(
+      type === 'SANDBOX'
+        ? {
+            aggregate,
+            reporting
+          }
+        : {
+            archive,
+            datasources,
+            aggregate,
+            reporting: {
+              ...reporting,
+              studentFields: {
+                Gender: 'enabled',
+                EconomicDisadvantage: 'admin'
+              }
+            }
+          },
+      composeFlattenCustomizers(
+        // joinIfArrayOfPrimitives,
+        ignoreLeafArraysAndProperties('studentFields'),
+        mapToStringCustomizer('reporting.studentFields')
+      )
+    ),
+    // remove tenant specific aggregate settings
+    'aggregate.tenants',
+    'reporting.effectiveReportLanguages'
   );
 }
 
@@ -151,7 +230,13 @@ export function toServerTenant(tenant: TenantConfiguration): any {
     },
     parentTenantKey,
     // this should be mapped back at form submit time
-    ...unflatten(configurations, splitIfNonPasswordCommaJoinedString),
+    ...unflatten(
+      configurations,
+      composeUnflattenCustomizers(
+        // splitIfNonPasswordCommaJoinedString,
+        stringToMapCustomizer('reporting.studentFields')
+      )
+    ),
     localization: isEmpty(localization) ? null : unflatten(localization)
   };
 }

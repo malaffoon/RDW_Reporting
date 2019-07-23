@@ -36,6 +36,7 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
+import { TranslateService } from '@ngx-translate/core';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -313,6 +314,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   submitted$: Subject<boolean> = new BehaviorSubject(false);
   destroyed$: Subject<void> = new Subject();
 
+  constructor(private translateService: TranslateService) {}
+
   onSubmit(): void {
     this.submitted$.next(true);
     if (this.formGroup.valid) {
@@ -364,6 +367,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
       // set the defaults on the formGroup
       this.configurationControlsFormGroup.patchValue({
+        search: 'language',
         required: this.requiredConfiguration
       });
 
@@ -372,12 +376,12 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.formGroup.controls.configurations as FormGroup,
         configurationDefaults,
         this.submitted$,
-        key => /^.*\.(\w+)$/.exec(key)[1] // only match last segment of key
+        key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
           const properties = results.map(([key, defaultValue]) =>
-            toConfigurationProperty(key, defaultValue)
+            toConfigurationProperty(key, defaultValue, this.translateService)
           );
           const flattened = keyBy(properties, ({ key }) => key);
           const unflattened = unflatten(flattened);
@@ -388,7 +392,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.localizations$ = toPropertiesProvider(
         this.localizationControlsFormGroup as FormGroup,
         this.formGroup.controls.localizations as FormGroup,
-        localizationDefaults
+        localizationDefaults,
+        of(false),
+        key => key.replace(/\./g, '')
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results }) =>

@@ -29,10 +29,20 @@
     tr.leaf > td {
       // TODO would like this
       pointer-events: none;
-      a,
-      input,
-      button {
+      > * {
         pointer-events: all;
+      }
+      label {
+        margin: 0;
+        width: 100%;
+        line-height: 19px;
+      }
+      &:first-child {
+        border-right: none;
+      }
+      &:last-child {
+        padding: 0 !important;
+        vertical-align: middle;
       }
     }
   }

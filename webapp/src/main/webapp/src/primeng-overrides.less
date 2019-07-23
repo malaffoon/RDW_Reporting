@@ -251,3 +251,23 @@ p-treeTable {
     }
   }
 }
+
+.ui-multiselect-panel .ui-multiselect-items-wrapper {
+  padding: 0;
+}
+// specific to prime-ng ui components
+.ui-multiselect-panel {
+  padding: 0;
+  .ui-multiselect-item {
+    position: relative;
+    margin: 0;
+    padding: 10px 20px;
+    border-radius: 0;
+    .ui-chkbox {
+      display: none;
+    }
+    &.ui-state-highlight {
+      //background-color: @blue;
+    }
+  }
+}
