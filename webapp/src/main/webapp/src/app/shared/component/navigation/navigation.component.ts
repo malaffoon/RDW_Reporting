@@ -22,6 +22,9 @@ export class NavigationComponent {
   @Input()
   interpretiveGuideUrl: string;
 
+  @Input()
+  optionsHidden: boolean;
+
   navigationMenuOpen: boolean;
 
   onNavigationMenuIconClick(): void {

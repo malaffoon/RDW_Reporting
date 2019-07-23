@@ -48,11 +48,12 @@
           </span>
         </div>
         <div
+          *ngIf="!user.anonymous && !optionsHidden"
           class="collapse navbar-collapse"
           id="navigation-bar-collapse"
           [ngClass]="{ show: navigationMenuOpen }"
         >
-          <ul *ngIf="!user.anonymous" class="nav navbar-nav navbar-right">
+          <ul class="nav navbar-nav navbar-right">
             <li class="navbar-link nav-item">
               <a [href]="userGuideUrl" target="_blank">
                 {{ 'common.navigation.user-guide' | translate }}
