@@ -13,10 +13,6 @@ reporting:
   state:
     code: CA
     name: California
-  student-fields:
-    economicDisadvantage: disabled
-    ethnicity: admin
-    gender: enabled
   transfer-access-enabled: false
 
 app:
