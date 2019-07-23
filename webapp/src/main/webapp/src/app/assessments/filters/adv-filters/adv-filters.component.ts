@@ -70,7 +70,7 @@ export class AdvFiltersComponent {
   }
 
   onLanguageCodesChange(values: { value: string }[]): void {
-    this.filterBy.languages = values.map(({ value }) => value);
+    this.filterBy.languageCodes = values.map(({ value }) => value);
   }
 
   public getLanguagesMap(): any[] {
