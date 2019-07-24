@@ -157,7 +157,10 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     configurations[`reporting.studentFields.${studentField}`] = {
       dataType: 'enumeration',
       options: studentFieldOptions,
-      equals: (a, b) => a.toLowerCase() === b.toLowerCase()
+      equals: (a, b) => {
+        console.log('eq?', a.toLowerCase() === b.toLowerCase(), { a, b });
+        return a.toLowerCase() === b.toLowerCase();
+      }
     };
     return configurations;
   }, {})

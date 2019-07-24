@@ -12,44 +12,7 @@ import {
 import { isEmpty, isObject, omit } from 'lodash';
 import { normalizeFieldValue } from './fields';
 
-// function mapToString(value: any): string {
-//   return Object.entries(value)
-//     .map(entries => entries.join(':'))
-//     .join(',');
-// }
-//
-// function stringToMap(value: string): any {
-//   value.split(',').reduce((map, entry) => {
-//     const [key, value] = entry.split(':');
-//     map[key] = value;
-//     return map;
-//   }, {});
-// }
-
-// export function mapToStringCustomizer(
-//   ...properties: string[]
-// ): FlattenCustomizer {
-//   return function(result, object, property) {
-//     if (properties.includes(property)) {
-//       result[property] = mapToString(object);
-//       return true;
-//     }
-//     return false;
-//   };
-// }
-
-// export function stringToMapCustomizer(
-//   ...properties: string[]
-// ): UnflattenCustomizer {
-//   return function(value, property) {
-//     if (properties.includes(property)) {
-//       return stringToMap(value);
-//     }
-//     return value;
-//   };
-// }
-
-export function trimStrings(value: any, property: string): any {
+export function trimStrings(value: any): any {
   if (typeof value === 'string') {
     return value.trim();
   }
@@ -107,26 +70,6 @@ export function normalizePrimitives(result, object, property): any {
   }
   return false;
 }
-
-// export const splitIfNonPasswordCommaJoinedString: UnflattenCustomizer = (
-//   value,
-//   key
-// ) => {
-//   if (
-//     // could this be placed somewhere better? so it can be controlled by metadata
-//     !key.endsWith('password') &&
-//     typeof value === 'string' &&
-//     value.includes(',')
-//   ) {
-//     const array = value.split(',');
-//     if (array.every(element => !isObject(element))) {
-//       return array.map(element =>
-//         typeof element === 'string' ? element.trim() : element
-//       );
-//     }
-//   }
-//   return value;
-// };
 
 export function defaultTenant(
   type: TenantType,
@@ -210,7 +153,8 @@ export function toConfigurations(
             ...reporting,
             studentFields: {
               Gender: 'enabled',
-              EconomicDisadvantage: 'admin'
+              EconomicDisadvantage: 'Admin',
+              PrimaryLanguage: 'admin'
             }
           }
         },
