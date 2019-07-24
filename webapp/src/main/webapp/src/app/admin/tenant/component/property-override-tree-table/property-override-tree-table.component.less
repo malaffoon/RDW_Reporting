@@ -68,4 +68,28 @@ label {
 
 .form-group {
   margin-bottom: 0;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  > * {
+    grid-column: 1/1;
+    grid-row: 1/1;
+  }
+  > .input-controls {
+    justify-self: right;
+    align-self: center;
+    margin-right: 10px;
+
+    display: flex;
+
+    > a {
+      font-size: 16px;
+      &:hover {
+      }
+    }
+    > a + a {
+      margin-left: 5px;
+    }
+  }
 }

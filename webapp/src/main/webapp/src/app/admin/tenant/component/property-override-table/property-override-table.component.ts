@@ -96,7 +96,7 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
 
   onResetButtonClick(property: Property): void {
     this.formGroup.patchValue({
-      [property.key]: property.defaultValue
+      [property.key]: property.originalValue
     });
   }
 }

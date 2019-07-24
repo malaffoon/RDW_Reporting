@@ -23,17 +23,14 @@ import {
 } from '../property-override-tree-table/property-override-tree-table.component';
 import { localizationsFormGroup } from '../property-override-table/property-override-table.component';
 import {
+  emptyToNull,
   isBlank,
   rightDifference,
   unflatten,
   valued
 } from '../../../../shared/support/support';
 import { Property } from '../../model/property';
-import {
-  lowercase,
-  toConfigurationProperty,
-  toProperty
-} from '../../model/properties';
+import { toConfigurationProperty, toProperty } from '../../model/properties';
 import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
 import {
@@ -47,6 +44,7 @@ import { fieldRequired } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
+import { configurationFormFields } from '../../model/fields';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -171,7 +169,7 @@ function toPropertiesProvider<T = any>(
                     String(value)
                       .toLowerCase()
                       .includes(caseInsensitiveSearch)))) &&
-              (!modified || value !== defaultValue) &&
+              (!modified || emptyToNull(value) !== defaultValue) &&
               (!required || fieldRequired(controlKey))
             );
           })
@@ -209,8 +207,8 @@ function stateToTenant(
     description,
     parentTenantCode: (tenant || <any>{}).code,
     dataSet,
-    configurations: lowercase(
-      valued(rightDifference(configurationDefaults, configurations))
+    configurations: valued(
+      rightDifference(configurationDefaults, configurations)
     ),
     localizations: valued(rightDifference(localizationDefaults, localizations))
   };
@@ -409,7 +407,10 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
-        configurationDefaults,
+        {
+          ...configurationFormFields,
+          ...configurationDefaults
+        },
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
       ).pipe(
