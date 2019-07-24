@@ -2,16 +2,13 @@ import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import {
   composeFlattenCustomizers,
-  composeUnflattenCustomizers,
   flatten,
   FlattenCustomizer,
   unflatten,
-  UnflattenCustomizer,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject, omit } from 'lodash';
-import { normalizeFieldValue } from './fields';
-import { configurationFormFields } from './field-configurations';
+import { isEmpty, isObject } from 'lodash';
+import { fieldConfiguration } from './fields';
 
 export function trimStrings(value: any): any {
   if (typeof value === 'string') {
@@ -62,14 +59,6 @@ export function omitKeys(...keys: string[]): FlattenCustomizer {
     }
     return false;
   };
-}
-
-export function normalizePrimitives(result, object, property): any {
-  if (object == null || !isObject(object)) {
-    result[property] = normalizeFieldValue(property, object);
-    return true;
-  }
-  return false;
 }
 
 export function defaultTenant(
@@ -139,35 +128,28 @@ export function toConfigurations(
   { aggregate, archive, datasources, reporting }: any,
   type
 ): any {
-  // adds in all the missing fields from the sparse set provided by the backend
-  // these will later be used to fill in the configurations form
-  // the reason this is done here for now is to have the change propagate
-  // ideally this would only be a concern of the form
-  const backfilledConfigurations = {
-    ...configurationFormFields,
-    aggregate,
-    archive,
-    datasources,
-    reporting
-  };
+  const relevantConfigurations =
+    type === 'SANDBOX'
+      ? {
+          aggregate,
+          reporting
+        }
+      : {
+          aggregate,
+          archive,
+          datasources,
+          reporting
+        };
 
-  const flattenedConfigurations = flatten(
-    backfilledConfigurations,
+  return flatten(
+    relevantConfigurations,
     composeFlattenCustomizers(
       omitKeys('aggregate.tenants'),
       ignoreArraysOfPrimitives,
       // collapse this field into one
-      ignoreKeys(key => key.startsWith('reporting.state')),
-      normalizePrimitives
+      ignoreKeys(key => key.startsWith('reporting.state'))
     )
   );
-
-  if (type === 'SANDBOX') {
-    delete flattenedConfigurations.archive;
-    delete flattenedConfigurations.datasources;
-  }
-
-  return flattenedConfigurations;
 }
 
 export function toServerTenant(tenant: TenantConfiguration): any {
@@ -193,7 +175,24 @@ export function toServerTenant(tenant: TenantConfiguration): any {
       sandboxDataset
     },
     parentTenantKey,
-    ...unflatten(configurations, trimStrings),
+    ...toServerConfigurations(configurations),
     localization: isEmpty(localization) ? null : unflatten(localization)
   });
+}
+
+export function toServerConfigurations(configurations: any): any {
+  return unflatten(lowercase(configurations), trimStrings);
+}
+
+/**
+ * Utility to force some form fields into their required lower case form
+ */
+function lowercase(values: { [key: string]: any }): { [key: string]: any } {
+  return Object.entries(values).reduce((lowercased, [key, value]) => {
+    lowercased[key] =
+      fieldConfiguration(key) && value != null && typeof value === 'string'
+        ? value.toLowerCase()
+        : value;
+    return lowercased;
+  }, {});
 }

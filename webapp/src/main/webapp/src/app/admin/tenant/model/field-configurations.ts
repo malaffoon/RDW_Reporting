@@ -162,11 +162,3 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     return configurations;
   }, {})
 };
-
-// used to ensure we display the full set of fields in the form
-export const configurationFormFields = Object.entries(
-  fieldConfigurationsByKey
-).reduce((keys, [key]) => {
-  keys[key] = null;
-  return keys;
-}, {});

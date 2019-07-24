@@ -2,7 +2,7 @@ import { Field } from './field';
 
 export interface Property {
   key: string;
-  defaultValue: any;
+  originalValue: any;
 }
 
 export interface ConfigurationProperty extends Property, Field {

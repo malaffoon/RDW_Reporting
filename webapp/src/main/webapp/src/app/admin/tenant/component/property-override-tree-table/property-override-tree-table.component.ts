@@ -18,6 +18,8 @@ import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import { fieldValidators } from '../../model/fields';
+import { configurationFormFields } from '../../model/fields';
+import { emptyToNull } from '../../../../shared/support/support';
 
 export function configurationsFormGroup(
   defaults: any,
@@ -25,7 +27,10 @@ export function configurationsFormGroup(
   validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
   return new FormGroup(
-    Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
+    Object.entries({
+      ...configurationFormFields,
+      ...defaults
+    }).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
       controlsByName[key] = new FormControl(value, fieldValidators(key));
@@ -135,6 +140,12 @@ export class PropertyOverrideTreeTableComponent
 
   get formGroup(): FormGroup {
     return this.controlContainer.control as FormGroup;
+  }
+
+  modified(property: ConfigurationProperty): boolean {
+    return (
+      property.originalValue !== emptyToNull(this.formGroup.value[property.key])
+    );
   }
 
   // control value accessor implementation:

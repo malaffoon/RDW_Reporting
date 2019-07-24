@@ -56,7 +56,7 @@
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
-                    modified: data.defaultValue !== formGroup.value[data.key]
+                    modified: modified(data)
                   }"
                 >
                   <td [title]="data.key">
@@ -73,7 +73,7 @@
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
-                    modified: data.defaultValue !== formGroup.value[data.key],
+                    modified: modified(data),
                     required: showErrors(
                       formGroup.controls[data.key],
                       form.submitted
@@ -100,7 +100,8 @@
                         <ng-container *ngSwitchCase="'input'">
                           <input
                             [type]="
-                              data.password && !data.showSecure
+                              data.configuration.dataType === 'password' &&
+                              !data.showSecure
                                 ? 'password'
                                 : 'text'
                             "
@@ -162,11 +163,9 @@
                         </ng-container>
                       </ng-container>
 
-                      <div class="icon-container">
+                      <div class="input-controls">
                         <a
-                          *ngIf="
-                            data.defaultValue !== formGroup.value[data.key]
-                          "
+                          *ngIf="modified(data)"
                           href="javascript:void(0)"
                           (click)="onResetButtonClick(data)"
                           popover="{{
@@ -180,7 +179,7 @@
                           <i class="fa fa-undo fa-md"></i>
                         </a>
                         <a
-                          *ngIf="data.password"
+                          *ngIf="data.configuration.dataType === 'password'"
                           href="javascript:void(0)"
                           (click)="data.showSecure = !data.showSecure"
                         >
@@ -196,7 +195,7 @@
                           *ngIf="data.configuration.required"
                           href="javascript:void(0)"
                           popover="{{
-                            data.password
+                            data.configuration.dataType === 'password'
                               ? ('tenant-configuration-form.popover.password'
                                 | translate)
                               : null
