@@ -421,9 +421,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
           );
           const flattened = keyBy(properties, ({ key }) => key);
           const unflattened = unflatten(flattened);
-          // was based on having a search and if the form was submitted with errors but i think it is easiest if it
-          // is just always open when the config section is expanded.
-          return toTreeNodes(unflattened, true /*hasSearch || invalid*/);
+          return toTreeNodes(unflattened, hasSearch || invalid);
         })
       );
 

@@ -26,18 +26,21 @@
       cursor: pointer;
     }
 
-    tr.leaf > td {
-      // TODO would like this
-      pointer-events: none;
-      > * {
-        pointer-events: all;
-      }
-      &:first-child {
-        border-right: none;
-      }
-      &:last-child {
-        padding: 0 !important;
-        vertical-align: middle;
+    tr {
+      cursor: pointer;
+      &.leaf > td {
+        // TODO would like this
+        pointer-events: none;
+        > * {
+          pointer-events: all;
+        }
+        &:first-child {
+          border-right: none;
+        }
+        &:last-child {
+          padding: 0 !important;
+          vertical-align: middle;
+        }
       }
     }
   }
