@@ -183,7 +183,7 @@ export class PropertyOverrideTreeTableComponent
 
   onResetButtonClick(property: ConfigurationProperty): void {
     this.formGroup.patchValue({
-      [property.key]: property.defaultValue
+      [property.key]: property.originalValue
     });
   }
 }

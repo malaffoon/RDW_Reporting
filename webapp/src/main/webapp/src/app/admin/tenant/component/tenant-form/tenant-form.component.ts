@@ -30,11 +30,7 @@ import {
   valued
 } from '../../../../shared/support/support';
 import { Property } from '../../model/property';
-import {
-  lowercase,
-  toConfigurationProperty,
-  toProperty
-} from '../../model/properties';
+import { toConfigurationProperty, toProperty } from '../../model/properties';
 import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
 import {
