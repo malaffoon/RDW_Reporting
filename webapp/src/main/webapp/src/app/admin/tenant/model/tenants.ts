@@ -11,6 +11,7 @@ import {
 } from '../../../shared/support/support';
 import { isEmpty, isObject, omit } from 'lodash';
 import { normalizeFieldValue } from './fields';
+import { configurationFormFields } from './field-configurations';
 
 export function trimStrings(value: any): any {
   if (typeof value === 'string') {
@@ -135,22 +136,23 @@ export function toTenant(
  * @param type
  */
 export function toConfigurations(
-  { archive, aggregate, datasources, reporting }: any,
+  { aggregate, archive, datasources, reporting }: any,
   type
 ): any {
-  // TODO later we should have some matadata interpretation of this structure possibly
-  return flatten(
-    type === 'SANDBOX'
-      ? {
-          aggregate,
-          reporting
-        }
-      : {
-          archive,
-          datasources,
-          aggregate,
-          reporting
-        },
+  // adds in all the missing fields from the sparse set provided by the backend
+  // these will later be used to fill in the configurations form
+  // the reason this is done here for now is to have the change propagate
+  // ideally this would only be a concern of the form
+  const backfilledConfigurations = {
+    ...configurationFormFields,
+    aggregate,
+    archive,
+    datasources,
+    reporting
+  };
+
+  const flattenedConfigurations = flatten(
+    backfilledConfigurations,
     composeFlattenCustomizers(
       omitKeys('aggregate.tenants'),
       ignoreArraysOfPrimitives,
@@ -159,6 +161,13 @@ export function toConfigurations(
       normalizePrimitives
     )
   );
+
+  if (type === 'SANDBOX') {
+    delete flattenedConfigurations.archive;
+    delete flattenedConfigurations.datasources;
+  }
+
+  return flattenedConfigurations;
 }
 
 export function toServerTenant(tenant: TenantConfiguration): any {
