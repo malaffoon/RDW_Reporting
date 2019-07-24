@@ -149,14 +149,7 @@ export function toConfigurations(
           archive,
           datasources,
           aggregate,
-          reporting: {
-            ...reporting,
-            studentFields: {
-              Gender: 'enabled',
-              EconomicDisadvantage: 'Admin',
-              PrimaryLanguage: 'admin'
-            }
-          }
+          reporting
         },
     composeFlattenCustomizers(
       omitKeys('aggregate.tenants'),
