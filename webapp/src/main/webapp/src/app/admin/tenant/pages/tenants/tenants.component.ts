@@ -13,12 +13,15 @@ import { filter, flatMap, map, takeUntil } from 'rxjs/operators';
 import { TenantType } from '../../model/tenant-type';
 import { tap } from 'rxjs/internal/operators/tap';
 import { ordering } from '@kourge/ordering';
-import { byString } from '@kourge/ordering/comparator';
+import { byString, join } from '@kourge/ordering/comparator';
 import { completedTenantStatuses } from '../../model/tenant-statuses';
 
 const pollingInterval = 1000;
 
-const comparator = ordering(byString).on(({ label }) => label).compare;
+const byLabelThenKey = join(
+  ordering(byString).on(({ label }) => label).compare,
+  ordering(byString).on(({ key }) => key).compare
+);
 
 @Component({
   selector: 'tenants',
@@ -52,7 +55,7 @@ export class TenantsComponent implements OnDestroy {
       }),
       flatMap(([type]) =>
         this.service.getAll(type).pipe(
-          map(tenants => tenants.slice().sort(comparator)),
+          map(tenants => tenants.slice().sort(byLabelThenKey)),
           // would like a less side-effecty way to do this but it works at least
           tap(tenants => {
             if (
