@@ -19,7 +19,8 @@ import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import { fieldValidators } from '../../model/fields';
 import { configurationFormFields } from '../../model/fields';
-import { emptyToNull } from '../../../../shared/support/support';
+import { emptyToNull, isNullOrEmpty } from '../../../../shared/support/support';
+import { isEqual } from 'lodash';
 
 export function configurationsFormGroup(
   defaults: any,
@@ -143,8 +144,18 @@ export class PropertyOverrideTreeTableComponent
   }
 
   modified(property: ConfigurationProperty): boolean {
+    return !isEqual(
+      property.originalValue,
+      emptyToNull(this.formGroup.value[property.key])
+    );
+  }
+
+  showPasswordToggle(property: ConfigurationProperty): boolean {
+    const value = this.formGroup.value[property.key];
     return (
-      property.originalValue !== emptyToNull(this.formGroup.value[property.key])
+      property.configuration.dataType === 'password' &&
+      value != null &&
+      value !== ''
     );
   }
 

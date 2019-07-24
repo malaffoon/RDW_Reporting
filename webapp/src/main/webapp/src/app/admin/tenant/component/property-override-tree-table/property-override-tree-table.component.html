@@ -165,21 +165,7 @@
 
                       <div class="input-controls">
                         <a
-                          *ngIf="modified(data)"
-                          href="javascript:void(0)"
-                          (click)="onResetButtonClick(data)"
-                          popover="{{
-                            'tenant-configuration-form.popover.reset'
-                              | translate
-                          }}"
-                          placement="left"
-                          container="body"
-                          triggers="mouseenter:mouseleave"
-                        >
-                          <i class="fa fa-undo fa-md"></i>
-                        </a>
-                        <a
-                          *ngIf="data.configuration.dataType === 'password'"
+                          *ngIf="showPasswordToggle(data)"
                           href="javascript:void(0)"
                           (click)="data.showSecure = !data.showSecure"
                         >
@@ -192,15 +178,27 @@
                           ></i>
                         </a>
                         <a
+                          *ngIf="modified(data)"
+                          href="javascript:void(0)"
+                          (click)="onResetButtonClick(data)"
+                          popover="{{
+                            'tenant-configuration-form.popover.reset'
+                              | translate
+                          }}"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-undo fa-md"></i>
+                        </a>
+                        <a
                           *ngIf="data.configuration.required"
                           href="javascript:void(0)"
                           popover="{{
-                            data.configuration.dataType === 'password'
-                              ? ('tenant-configuration-form.popover.password'
-                                | translate)
-                              : null
+                            (data.configuration.dataType === 'password'
+                              ? 'tenant-configuration-form.popover.password'
+                              : 'tenant-configuration-form.popover.required')
+                              | translate
                           }}"
-                          placement="left"
                           container="body"
                           triggers="mouseenter:mouseleave"
                         >
