@@ -274,13 +274,13 @@
 
     <div class="toggles">
       <app-toggle-label
-        [open]="configurationOpen"
-        (openChange)="configurationOpen = $event"
+        [open]="configurationsOpen$ | async"
+        (openChange)="configurationsOpen$.next($event)"
         openLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
         closedLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
       ></app-toggle-label>
 
-      <div class="form-group" [hidden]="!configurationOpen">
+      <div class="form-group" [hidden]="!(configurationsOpen$ | async)">
         <!-- TODO extract -->
         <div class="configuration-controls">
           <ng-container [formGroup]="configurationControlsFormGroup">
