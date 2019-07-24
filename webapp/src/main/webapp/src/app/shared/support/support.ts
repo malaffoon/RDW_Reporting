@@ -448,6 +448,25 @@ export function unflatten(
   return result[''];
 }
 
+export function composeFlattenCustomizers(
+  ...customizers: FlattenCustomizer[]
+): FlattenCustomizer {
+  return function(result, object, property) {
+    return customizers.some(customizer => customizer(result, object, property));
+  };
+}
+
+export function composeUnflattenCustomizers(
+  ...customizers: UnflattenCustomizer[]
+): UnflattenCustomizer {
+  return function(value, property) {
+    for (let i = 0; i < customizers.length; i++) {
+      value = customizers[i](value, property);
+    }
+    return value;
+  };
+}
+
 export interface ValueDifference {
   left: any;
   right: any;

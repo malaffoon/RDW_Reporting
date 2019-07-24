@@ -28,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { translateModuleConfiguration } from './shared/translate-module-configuration';
 import { routes } from './app.routes';
 import { CommonModule } from '@angular/common';
+import { AutoCompleteModule, MultiSelectModule } from 'primeng/primeng';
 
 @NgModule({
   declarations: [AppComponent],

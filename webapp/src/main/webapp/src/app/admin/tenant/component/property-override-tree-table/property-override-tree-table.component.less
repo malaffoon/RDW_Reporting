@@ -29,10 +29,15 @@
     tr.leaf > td {
       // TODO would like this
       pointer-events: none;
-      a,
-      input,
-      button {
+      > * {
         pointer-events: all;
+      }
+      &:first-child {
+        border-right: none;
+      }
+      &:last-child {
+        padding: 0 !important;
+        vertical-align: middle;
       }
     }
   }
@@ -41,10 +46,6 @@
 .group-node {
   line-height: 30px;
   font-size: 16px;
-  //font-weight: bold;
-  //color: #02799e;
-  //background-color: #e8f3f7;
-  //border-bottom: 2px solid #5eb1ca;
 }
 
 .controls {
@@ -53,4 +54,14 @@
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;
+}
+
+label {
+  margin: 0;
+  padding: 6px 0;
+  width: 100%;
+  font-weight: normal;
+  > span {
+    margin-left: 5px;
+  }
 }

@@ -1,16 +1,22 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, Subject, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  Subject,
+  timer
+} from 'rxjs';
 import { TenantService } from '../../service/tenant.service';
 import { TenantConfiguration } from '../../model/tenant-configuration';
-import { flatMap, map, takeUntil } from 'rxjs/operators';
+import { filter, flatMap, map, takeUntil } from 'rxjs/operators';
 import { TenantType } from '../../model/tenant-type';
 import { tap } from 'rxjs/internal/operators/tap';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 import { completedTenantStatuses } from '../../model/tenant-statuses';
 
-const pollingInterval = 5000;
+const pollingInterval = 1000;
 
 const comparator = ordering(byString).on(({ label }) => label).compare;
 
@@ -22,6 +28,7 @@ export class TenantsComponent implements OnDestroy {
   tenantType$: Observable<TenantType>;
   tenants$: Observable<TenantConfiguration[]>;
   destroyed$: Subject<void> = new Subject<void>();
+  polling$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   pollingCompleted$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -38,6 +45,11 @@ export class TenantsComponent implements OnDestroy {
     ).pipe(
       takeUntil(this.destroyed$),
       takeUntil(this.pollingCompleted$),
+      // don't query the server unless the previous request is complete
+      filter(() => !this.polling$.value),
+      tap(() => {
+        this.polling$.next(true);
+      }),
       flatMap(([type]) =>
         this.service.getAll(type).pipe(
           map(tenants => tenants.slice().sort(comparator)),
@@ -51,6 +63,7 @@ export class TenantsComponent implements OnDestroy {
               this.pollingCompleted$.next();
               this.pollingCompleted$.complete();
             }
+            this.polling$.next(false);
           })
         )
       )

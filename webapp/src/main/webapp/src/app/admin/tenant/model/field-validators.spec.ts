@@ -1,9 +1,7 @@
-import { passwordValidators } from './properties';
-import { AbstractControl, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { password } from './field-validators';
 
 describe('passwordValidators', () => {
-  const validator = Validators.compose(passwordValidators());
-
   [
     {
       name: 'should accept cipher despite missing other criteria',
@@ -53,7 +51,7 @@ describe('passwordValidators', () => {
     }
   ].forEach(({ name, value, expectation }) => {
     it(name, () => {
-      expectation(expect(validator(<AbstractControl>{ value })));
+      expectation(expect(password(<AbstractControl>{ value })));
     });
   });
 });

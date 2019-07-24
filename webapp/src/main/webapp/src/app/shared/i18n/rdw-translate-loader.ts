@@ -112,7 +112,10 @@ export class RdwTranslateLoader implements TranslateLoader {
       map(([clientTranslations, serverTranslations, subjects]) =>
         merge(
           clientTranslations,
-          this.createSubjectTranslations(subjects, serverTranslations),
+          // the side effects of this method are overwriting defaults in the clients en.json...
+          subjects.length > 0
+            ? this.createSubjectTranslations(subjects, serverTranslations)
+            : {},
           serverTranslations
         )
       )

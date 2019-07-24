@@ -7,7 +7,12 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -36,6 +41,10 @@ import {
   onePasswordPerUser,
   tenantKey
 } from './tenant-form.validators';
+import { TranslateService } from '@ngx-translate/core';
+import { states } from '../../model/data/state';
+import { fieldRequired } from '../../model/fields';
+import { notBlank } from '../../../../shared/validator/custom-validators';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -48,7 +57,10 @@ export function tenantFormGroup(
   tenants: TenantConfiguration[] = [],
   dataSets: DataSet[] = []
 ): FormGroup {
-  const label = new FormControl(value.label || '', [Validators.required]);
+  const label = new FormControl(value.label || '', [
+    Validators.required,
+    notBlank
+  ]);
 
   const description = new FormControl(value.description || '');
 
@@ -83,10 +95,15 @@ export function tenantFormGroup(
       : {
           key: new FormControl(
             value.code || '',
-            [Validators.required, Validators.maxLength(20), tenantKey],
+            [
+              Validators.required,
+              Validators.maxLength(20),
+              tenantKey,
+              notBlank
+            ],
             [available(tenantKeyAvailable)]
           ),
-          id: new FormControl(value.id || '', [Validators.required]),
+          id: new FormControl(value.id || '', [Validators.required, notBlank]),
           label,
           description,
           configurations,
@@ -130,32 +147,34 @@ function toPropertiesProvider<T = any>(
       : of(false),
     submitted$
   ).pipe(
-    map(([search, modified, required, submitted]) => ({
-      hasSearch: !isBlank(search) || modified || required,
-      invalid:
-        submitted &&
-        formGroup.invalid &&
-        showErrorsRecursive(formGroup, submitted),
-      results: entries.filter(([controlKey, defaultValue]) => {
-        const caseInsensitiveSearch = search.toLowerCase();
-        const key = keyTransform(controlKey);
-        const value = formGroup.controls[controlKey].value;
-        return (
-          (isBlank(search) ||
-            (key.toLowerCase().includes(caseInsensitiveSearch) ||
-              (typeof value === 'string' &&
-                value.toLowerCase().includes(caseInsensitiveSearch)) ||
-              (Object(value) !== value &&
-                String(value)
-                  .toLowerCase()
-                  .includes(caseInsensitiveSearch)))) &&
-          (!modified || value !== defaultValue) &&
-          (!required || /username|password/g.test(key)) // TODO this should really come from metadata
-        );
-      })
-      // TODO sort?
-      // .sort(ordering(byString).on(([key]) => key).compare)
-    }))
+    map(([search, modified, required, submitted]) => {
+      return {
+        hasSearch: !isBlank(search) || modified || required,
+        invalid:
+          submitted &&
+          formGroup.invalid &&
+          showErrorsRecursive(formGroup, submitted),
+        results: entries.filter(([controlKey, defaultValue]) => {
+          const caseInsensitiveSearch = search.toLowerCase();
+          const key = keyTransform(controlKey);
+          const value = formGroup.controls[controlKey].value;
+          return (
+            (isBlank(search) ||
+              (key.toLowerCase().includes(caseInsensitiveSearch) ||
+                (typeof value === 'string' &&
+                  value.toLowerCase().includes(caseInsensitiveSearch)) ||
+                (Object(value) !== value &&
+                  String(value)
+                    .toLowerCase()
+                    .includes(caseInsensitiveSearch)))) &&
+            (!modified || value !== defaultValue) &&
+            (!required || fieldRequired(controlKey))
+          );
+        })
+        // TODO sort?
+        // .sort(ordering(byString).on(([key]) => key).compare)
+      };
+    })
   );
 }
 
@@ -197,7 +216,7 @@ function stateToTenant(
 // lookup values
 const datasourcePattern = /^datasources\.(\w+)\..+$/;
 const defaultDatabaseNameProviderByDatasource = {
-  migrate_olap: key => `migrate_olap_${key}`,
+  migrate: key => `migrate_olap_${key}`,
   olap: key => `reporting_${key}`, // the special case
   reporting: key => `reporting_${key}`,
   warehouse: key => `warehouse_${key}`
@@ -237,13 +256,25 @@ function setDefaultDatabaseNameAndUsername(
       const databaseNameControl =
         formGroup.controls[`datasources.${source}.urlParts.database`];
       if (databaseNameControl.pristine) {
-        const sourceName = source.replace(/_r[o|w]$/, '');
+        const sourceName = source.replace(/_r(o|w)$/, '');
         const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
           sourceName
         ](key);
         databaseNameControl.patchValue(defaultDatabaseName);
       }
     });
+}
+
+function setDefaultState(control: AbstractControl, value: string): void {
+  const state = states.find(
+    ({ abbreviation }) => abbreviation.toLowerCase() === value.toLowerCase()
+  );
+  if (state != null && control.pristine) {
+    control.patchValue({
+      code: state.abbreviation,
+      name: state.name
+    });
+  }
 }
 
 @Component({
@@ -313,6 +344,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   submitted$: Subject<boolean> = new BehaviorSubject(false);
   destroyed$: Subject<void> = new Subject();
 
+  constructor(private translateService: TranslateService) {}
+
   onSubmit(): void {
     this.submitted$.next(true);
     if (this.formGroup.valid) {
@@ -372,12 +405,12 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.formGroup.controls.configurations as FormGroup,
         configurationDefaults,
         this.submitted$,
-        key => /^.*\.(\w+)$/.exec(key)[1] // only match last segment of key
+        key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
           const properties = results.map(([key, defaultValue]) =>
-            toConfigurationProperty(key, defaultValue)
+            toConfigurationProperty(key, defaultValue, this.translateService)
           );
           const flattened = keyBy(properties, ({ key }) => key);
           const unflattened = unflatten(flattened);
@@ -388,7 +421,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.localizations$ = toPropertiesProvider(
         this.localizationControlsFormGroup as FormGroup,
         this.formGroup.controls.localizations as FormGroup,
-        localizationDefaults
+        localizationDefaults,
+        of(false),
+        key => key.replace(/\./g, '')
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results }) =>
@@ -419,10 +454,19 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   // TODO debounce this?
-  onKeyInput(key: string): void {
+  onKeyInput(value: string): void {
     setDefaultDatabaseNameAndUsername(
       this.formGroup.controls.configurations as FormGroup,
-      key
+      value
+    );
+  }
+
+  onIdInput(value: string): void {
+    setDefaultState(
+      (this.formGroup.controls.configurations as FormGroup).controls[
+        'reporting.state'
+      ],
+      value
     );
   }
 }

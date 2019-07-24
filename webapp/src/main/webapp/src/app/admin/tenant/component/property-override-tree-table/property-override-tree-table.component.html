@@ -96,17 +96,72 @@
                         )
                       }"
                     >
-                      <input
-                        [type]="
-                          data.password && !data.showSecure
-                            ? 'password'
-                            : 'text'
-                        "
-                        [formControlName]="data.key"
-                        data-lpignore="true"
-                        class="form-control"
-                        [ngClass]="{ 'text-lowercase': data.lowercase }"
-                      />
+                      <ng-container [ngSwitch]="data.inputType">
+                        <ng-container *ngSwitchCase="'input'">
+                          <input
+                            [type]="
+                              data.password && !data.showSecure
+                                ? 'password'
+                                : 'text'
+                            "
+                            id="{{ data.key }}"
+                            name="{{ data.key }}"
+                            formControlName="{{ data.key }}"
+                            data-lpignore="true"
+                            class="form-control"
+                            [ngClass]="{
+                              'text-lowercase': data.configuration.lowercase
+                            }"
+                          />
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'checkbox'">
+                          <label for="{{ data.key }}">
+                            <input
+                              type="checkbox"
+                              id="{{ data.key }}"
+                              name="{{ data.key }}"
+                              formControlName="{{ data.key }}"
+                            />
+                            <span>
+                              {{
+                                'common.boolean.' + formGroup.value[data.key]
+                                  | translate
+                              }}
+                            </span>
+                          </label>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'select'">
+                          <select
+                            id="{{ data.key }}"
+                            name="{{ data.key }}"
+                            formControlName="{{ data.key }}"
+                            class="form-control"
+                            [compareWith]="data.configuration.equals"
+                          >
+                            <option
+                              *ngFor="let option of data.options"
+                              [ngValue]="option.value"
+                            >
+                              {{ option.label }}
+                            </option>
+                          </select>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'multi-select'">
+                          <!-- todo switch to typeahead based on amount of options -->
+                          <p-multiSelect
+                            tabindex="0"
+                            inputId="{{ data.key }}"
+                            name="{{ data.key }}"
+                            formControlName="{{ data.key }}"
+                            [options]="data.options"
+                            appendTo="body"
+                            defaultLabel="None"
+                            [showHeader]="false"
+                            [maxSelectedLabels]="5"
+                          ></p-multiSelect>
+                        </ng-container>
+                      </ng-container>
+
                       <div class="icon-container">
                         <a
                           *ngIf="
@@ -138,7 +193,7 @@
                           ></i>
                         </a>
                         <a
-                          *ngIf="data.required"
+                          *ngIf="data.configuration.required"
                           href="javascript:void(0)"
                           popover="{{
                             data.password
