@@ -174,17 +174,17 @@ export function toServerTenant(tenant: TenantConfiguration): any {
     localizations: localization
   } = tenant;
 
-  return {
+  return valued({
     tenant: {
-      key: (key != null ? key.toUpperCase() : key).trim(),
-      id: id.trim(),
+      key: key != null ? key.toUpperCase().trim() : null,
+      id: id != null ? id.trim() : null,
       description: description != null ? description.trim() : null,
-      name: name.trim(),
+      name: name != null ? name.trim() : null,
       sandbox: type === 'SANDBOX',
       sandboxDataset
     },
     parentTenantKey,
     ...unflatten(configurations, trimStrings),
     localization: isEmpty(localization) ? null : unflatten(localization)
-  };
+  });
 }
