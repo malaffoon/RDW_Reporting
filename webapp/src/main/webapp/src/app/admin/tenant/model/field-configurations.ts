@@ -157,11 +157,16 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     configurations[`reporting.studentFields.${studentField}`] = {
       dataType: 'enumeration',
       options: studentFieldOptions,
-      equals: (a, b) => {
-        console.log('eq?', a.toLowerCase() === b.toLowerCase(), { a, b });
-        return a.toLowerCase() === b.toLowerCase();
-      }
+      equals: (a, b) => a.toLowerCase() === b.toLowerCase()
     };
     return configurations;
   }, {})
 };
+
+// used to ensure we display the full set of fields in the form
+export const configurationFormFields = Object.entries(
+  fieldConfigurationsByKey
+).reduce((keys, [key]) => {
+  keys[key] = null;
+  return keys;
+}, {});

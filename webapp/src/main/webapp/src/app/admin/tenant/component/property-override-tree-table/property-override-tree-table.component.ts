@@ -1,4 +1,10 @@
-import { Component, forwardRef, Input, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  forwardRef,
+  Input,
+  ViewChild
+} from '@angular/core';
 import {
   ControlContainer,
   ControlValueAccessor,
@@ -96,8 +102,7 @@ function rowTrackBy(index: number, { node }: any): string {
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
   styleUrls: ['./property-override-tree-table.component.less'],
-  // taking this off so markAsDirty() works
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

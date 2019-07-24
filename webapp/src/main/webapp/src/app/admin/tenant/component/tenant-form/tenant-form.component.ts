@@ -45,9 +45,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
 import { fieldRequired } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
+import { ordering } from '@kourge/ordering';
+import { byString } from '@kourge/ordering/comparator';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
+const byKey = ordering(byString).on(([key]) => key).compare;
 
 export function tenantFormGroup(
   value: TenantConfiguration,
@@ -154,25 +157,25 @@ function toPropertiesProvider<T = any>(
           submitted &&
           formGroup.invalid &&
           showErrorsRecursive(formGroup, submitted),
-        results: entries.filter(([controlKey, defaultValue]) => {
-          const caseInsensitiveSearch = search.toLowerCase();
-          const key = keyTransform(controlKey);
-          const value = formGroup.controls[controlKey].value;
-          return (
-            (isBlank(search) ||
-              (key.toLowerCase().includes(caseInsensitiveSearch) ||
-                (typeof value === 'string' &&
-                  value.toLowerCase().includes(caseInsensitiveSearch)) ||
-                (Object(value) !== value &&
-                  String(value)
-                    .toLowerCase()
-                    .includes(caseInsensitiveSearch)))) &&
-            (!modified || value !== defaultValue) &&
-            (!required || fieldRequired(controlKey))
-          );
-        })
-        // TODO sort?
-        // .sort(ordering(byString).on(([key]) => key).compare)
+        results: entries
+          .filter(([controlKey, defaultValue]) => {
+            const caseInsensitiveSearch = search.toLowerCase();
+            const key = keyTransform(controlKey);
+            const value = formGroup.controls[controlKey].value;
+            return (
+              (isBlank(search) ||
+                (key.toLowerCase().includes(caseInsensitiveSearch) ||
+                  (typeof value === 'string' &&
+                    value.toLowerCase().includes(caseInsensitiveSearch)) ||
+                  (Object(value) !== value &&
+                    String(value)
+                      .toLowerCase()
+                      .includes(caseInsensitiveSearch)))) &&
+              (!modified || value !== defaultValue) &&
+              (!required || fieldRequired(controlKey))
+            );
+          })
+          .sort(byKey)
       };
     })
   );
@@ -319,7 +322,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   delete: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   @Input()
-  configurationOpen: boolean = false;
+  set configurationOpen(value: boolean) {
+    this.configurationsOpen$.next(value);
+  }
 
   @Input()
   localizationOpen: boolean = false;
@@ -341,6 +346,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   localizations$: Observable<Property[]>;
   readonlyGroups: string[] = [];
   formGroup: FormGroup;
+  configurationsOpen$: Subject<boolean> = new BehaviorSubject(false);
   submitted$: Subject<boolean> = new BehaviorSubject(false);
   destroyed$: Subject<void> = new Subject();
 
@@ -414,7 +420,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
           );
           const flattened = keyBy(properties, ({ key }) => key);
           const unflattened = unflatten(flattened);
-          return toTreeNodes(unflattened, hasSearch || invalid);
+          // was based on having a search and if the form was submitted with errors but i think it is easiest if it
+          // is just always open when the config section is expanded.
+          return toTreeNodes(unflattened, true /*hasSearch || invalid*/);
         })
       );
 
@@ -430,6 +438,13 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
           results.map(([key, defaultValue]) => toProperty(key, defaultValue))
         )
       );
+
+      // open invalid sections up
+      this.submitted$.pipe(takeUntil(this.destroyed$)).subscribe(submitted => {
+        if (submitted && this.formGroup.controls.configurations.invalid) {
+          this.configurationsOpen$.next(true);
+        }
+      });
     }
   }
 
