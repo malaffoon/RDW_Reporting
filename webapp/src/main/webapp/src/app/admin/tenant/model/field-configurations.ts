@@ -1,8 +1,10 @@
 import { languageCodes } from './data/languages';
 import { states } from './data/state';
 import { studentFields } from './data/student-fields';
+import { FieldConfiguration } from './field';
+import { isEqual } from 'lodash';
 
-const assessmentTypes = translateService =>
+const assessmentTypeOptions = translateService =>
   ['sum', 'ica', 'iab'].map(value => ({
     value,
     label: translateService.instant(
@@ -10,7 +12,7 @@ const assessmentTypes = translateService =>
     )
   }));
 
-const stateOptions = translateService =>
+const stateOptions = () =>
   states.map(({ name: label, abbreviation: value }) => ({
     value: {
       code: value,
@@ -25,26 +27,24 @@ const languageOptions = translateService =>
     label: translateService.instant(`common.language.${value}`)
   }));
 
-const studentFieldOptions = ['Enabled', 'Admin', 'Disabled'].map(value => ({
-  value,
-  label: value
-}));
+const studentFieldOptions = () =>
+  ['Enabled', 'Admin', 'Disabled'].map(value => ({
+    value,
+    label: value
+  }));
 
-const studentFieldValues = () =>
-  ['Enabled', 'Admin', 'Disabled'].map(value => ({ value }));
-
-export const fieldConfigurationsByKey = {
+export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
-    values: assessmentTypes
+    options: assessmentTypeOptions
   },
   'aggregate.statewideUserAssessmentTypes': {
     dataType: 'enumeration-list',
-    values: assessmentTypes
+    options: assessmentTypeOptions
   },
   'aggregate.stateAggregateAssessmentTypes': {
     dataType: 'enumeration-list',
-    values: assessmentTypes
+    options: assessmentTypeOptions
   },
   'archive.uriRoot': {
     dataType: 'uri'
@@ -122,7 +122,7 @@ export const fieldConfigurationsByKey = {
   },
   'reporting.reportLanguages': {
     dataType: 'enumeration-list',
-    values: languageOptions
+    options: languageOptions
   },
   'reporting.schoolYear': {
     dataType: 'integer'
@@ -131,7 +131,8 @@ export const fieldConfigurationsByKey = {
   'reporting.state': {
     dataType: 'enumeration',
     required: true,
-    values: stateOptions
+    options: stateOptions,
+    equals: isEqual
   },
   'reporting.transferAccessEnabled': {
     dataType: 'boolean'
@@ -141,7 +142,7 @@ export const fieldConfigurationsByKey = {
   },
   'reporting.uiLanguages': {
     dataType: 'enumeration-list',
-    values: languageOptions
+    options: languageOptions
   },
   'reporting.userGuideUrl': {
     dataType: 'url-fragment'
@@ -153,9 +154,10 @@ export const fieldConfigurationsByKey = {
     dataType: 'integer'
   },
   ...studentFields.reduce((configurations, studentField) => {
-    configurations[`reporting.studentField.${studentField}`] = {
+    configurations[`reporting.studentFields.${studentField}`] = {
       dataType: 'enumeration',
-      values: studentFieldOptions
+      options: studentFieldOptions,
+      equals: (a, b) => a.toLowerCase() === b.toLowerCase()
     };
     return configurations;
   }, {})

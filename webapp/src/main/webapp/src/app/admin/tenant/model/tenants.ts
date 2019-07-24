@@ -10,6 +10,7 @@ import {
   valued
 } from '../../../shared/support/support';
 import { isEmpty, isObject, omit } from 'lodash';
+import { normalizeFieldValue } from './fields';
 
 // function mapToString(value: any): string {
 //   return Object.entries(value)
@@ -48,6 +49,13 @@ import { isEmpty, isObject, omit } from 'lodash';
 //   };
 // }
 
+export function trimStrings(value: any, property: string): any {
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+  return value;
+}
+
 /**
  * If it finds a value that is an array of primitives it joins it.
  * If it finds an empty array it returns an empty string
@@ -81,6 +89,23 @@ export function ignoreKeys(
     }
     return false;
   };
+}
+
+export function omitKeys(...keys: string[]): FlattenCustomizer {
+  return function(result, object, property) {
+    if (keys.includes(property)) {
+      return true;
+    }
+    return false;
+  };
+}
+
+export function normalizePrimitives(result, object, property): any {
+  if (object == null || !isObject(object)) {
+    result[property] = normalizeFieldValue(property, object);
+    return true;
+  }
+  return false;
 }
 
 // export const splitIfNonPasswordCommaJoinedString: UnflattenCustomizer = (
@@ -171,33 +196,31 @@ export function toConfigurations(
   type
 ): any {
   // TODO later we should have some matadata interpretation of this structure possibly
-  return omit(
-    flatten(
-      type === 'SANDBOX'
-        ? {
-            aggregate,
-            reporting
-          }
-        : {
-            archive,
-            datasources,
-            aggregate,
-            reporting: {
-              ...reporting,
-              studentFields: {
-                Gender: 'enabled',
-                EconomicDisadvantage: 'admin'
-              }
+  return flatten(
+    type === 'SANDBOX'
+      ? {
+          aggregate,
+          reporting
+        }
+      : {
+          archive,
+          datasources,
+          aggregate,
+          reporting: {
+            ...reporting,
+            studentFields: {
+              Gender: 'enabled',
+              EconomicDisadvantage: 'admin'
             }
-          },
-      composeFlattenCustomizers(
-        ignoreArraysOfPrimitives,
-        // we are going to collapse this..
-        ignoreKeys(key => key.startsWith('reporting.state'))
-      )
-    ),
-    // remove tenant specific aggregate settings
-    'aggregate.tenants'
+          }
+        },
+    composeFlattenCustomizers(
+      omitKeys('aggregate.tenants'),
+      ignoreArraysOfPrimitives,
+      // collapse this field into one
+      ignoreKeys(key => key.startsWith('reporting.state')),
+      normalizePrimitives
+    )
   );
 }
 
@@ -216,18 +239,15 @@ export function toServerTenant(tenant: TenantConfiguration): any {
 
   return {
     tenant: {
-      key: key != null ? key.toUpperCase() : key,
-      id,
-      description,
-      name,
+      key: (key != null ? key.toUpperCase() : key).trim(),
+      id: id.trim(),
+      description: description != null ? description.trim() : null,
+      name: name.trim(),
       sandbox: type === 'SANDBOX',
       sandboxDataset
     },
     parentTenantKey,
-    ...unflatten(
-      configurations
-      // splitIfNonPasswordCommaJoinedString,
-    ),
+    ...unflatten(configurations, trimStrings),
     localization: isEmpty(localization) ? null : unflatten(localization)
   };
 }

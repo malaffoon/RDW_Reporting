@@ -1,7 +1,7 @@
 import { Validators } from '@angular/forms';
 
 // requires a scheme
-export const uri = Validators.pattern(/^\w+:\/\/.+$/);
+export const uri = Validators.pattern(/^.+:\/\/.+$/);
 
 // can be a fragment
 export const url = Validators.pattern(/^[\/|\w+:\/\/].+$/);

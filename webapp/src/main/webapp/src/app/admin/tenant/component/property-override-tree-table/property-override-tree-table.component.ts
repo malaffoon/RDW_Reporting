@@ -12,8 +12,6 @@ import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import { fieldValidators } from '../../model/fields';
-import { Option } from '../../model/field';
-import { isEqual } from 'lodash';
 
 export function configurationsFormGroup(
   defaults: any,
@@ -94,10 +92,6 @@ function rowTrackBy(index: number, { node }: any): string {
   return node.key;
 }
 
-function selectCompareWith(a: any, b: any): boolean {
-  return isEqual(a, b);
-}
-
 @Component({
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
@@ -116,7 +110,6 @@ export class PropertyOverrideTreeTableComponent
   implements ControlValueAccessor {
   readonly showErrors = showErrors;
   readonly rowTrackBy = rowTrackBy;
-  readonly selectCompareWith = selectCompareWith;
 
   @ViewChild('table')
   table: TreeTable;

@@ -32,11 +32,6 @@
       > * {
         pointer-events: all;
       }
-      label {
-        margin: 0;
-        width: 100%;
-        line-height: 19px;
-      }
       &:first-child {
         border-right: none;
       }
@@ -63,4 +58,14 @@
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;
+}
+
+label {
+  margin: 0;
+  padding: 6px 0;
+  width: 100%;
+  font-weight: normal;
+  > span {
+    margin-left: 5px;
+  }
 }

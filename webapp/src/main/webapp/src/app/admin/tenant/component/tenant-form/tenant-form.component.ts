@@ -44,6 +44,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
 import { fieldRequired } from '../../model/fields';
+import { notBlank } from '../../../../shared/validator/custom-validators';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -56,7 +57,10 @@ export function tenantFormGroup(
   tenants: TenantConfiguration[] = [],
   dataSets: DataSet[] = []
 ): FormGroup {
-  const label = new FormControl(value.label || '', [Validators.required]);
+  const label = new FormControl(value.label || '', [
+    Validators.required,
+    notBlank
+  ]);
 
   const description = new FormControl(value.description || '');
 
@@ -91,10 +95,15 @@ export function tenantFormGroup(
       : {
           key: new FormControl(
             value.code || '',
-            [Validators.required, Validators.maxLength(20), tenantKey],
+            [
+              Validators.required,
+              Validators.maxLength(20),
+              tenantKey,
+              notBlank
+            ],
             [available(tenantKeyAvailable)]
           ),
-          id: new FormControl(value.id || '', [Validators.required]),
+          id: new FormControl(value.id || '', [Validators.required, notBlank]),
           label,
           description,
           configurations,

@@ -39,6 +39,10 @@ export interface OptionsProvider<T = any> {
   (translateService: TranslateService): Option<T>[];
 }
 
+export interface Equals<T = any> {
+  (a: T, b: T): boolean;
+}
+
 /**
  * The configuration for a form field
  */
@@ -53,14 +57,7 @@ export interface FieldConfiguration<DataTypes = any, T = any> {
    *
    * @param translateService The service used to translate the value into a display label
    */
-  values?: OptionsProvider<T>;
-
-  /**
-   * This method should provide the possible keys for map data types
-   *
-   * @param translateService The service used to translate the value into a display label
-   */
-  keys?: OptionsProvider<string>;
+  options?: OptionsProvider<T>;
 
   /**
    * Set this if the field is required
@@ -70,7 +67,12 @@ export interface FieldConfiguration<DataTypes = any, T = any> {
   /**
    * lowercase constraint
    */
-  lowercase: boolean;
+  lowercase?: boolean;
+
+  /**
+   * Used to provide leniency when comparing values for enumerations
+   */
+  equals?: Equals<T>;
 }
 
 /**
@@ -90,12 +92,7 @@ export interface Field<DataTypes = any, T = any> {
   validators: ValidatorFn[];
 
   /**
-   * The keys of the field if it has enumerated values
-   */
-  keys?: Option<string>[];
-
-  /**
    * The possible values of the field if it is a list or map
    */
-  values?: Option<T>[];
+  options?: Option<T>[];
 }

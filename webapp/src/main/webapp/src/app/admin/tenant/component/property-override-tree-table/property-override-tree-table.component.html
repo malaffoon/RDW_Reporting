@@ -122,10 +122,12 @@
                               name="{{ data.key }}"
                               formControlName="{{ data.key }}"
                             />
-                            {{
-                              'common.boolean.' + formGroup.value[data.key]
-                                | translate
-                            }}
+                            <span>
+                              {{
+                                'common.boolean.' + formGroup.value[data.key]
+                                  | translate
+                              }}
+                            </span>
                           </label>
                         </ng-container>
                         <ng-container *ngSwitchCase="'select'">
@@ -134,10 +136,10 @@
                             name="{{ data.key }}"
                             formControlName="{{ data.key }}"
                             class="form-control"
-                            [compareWith]="selectCompareWith"
+                            [compareWith]="data.configuration.equals"
                           >
                             <option
-                              *ngFor="let option of data.values"
+                              *ngFor="let option of data.options"
                               [ngValue]="option.value"
                             >
                               {{ option.label }}
@@ -151,7 +153,7 @@
                             inputId="{{ data.key }}"
                             name="{{ data.key }}"
                             formControlName="{{ data.key }}"
-                            [options]="data.values"
+                            [options]="data.options"
                             appendTo="body"
                             defaultLabel="None"
                             [showHeader]="false"
