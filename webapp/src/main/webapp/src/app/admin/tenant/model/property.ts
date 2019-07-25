@@ -3,6 +3,7 @@ import { Field } from './field';
 export interface Property {
   key: string;
   originalValue: any;
+  writable?: boolean;
 }
 
 export interface ConfigurationProperty extends Property, Field {

@@ -343,7 +343,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     modified: new FormControl(false)
   });
   localizations$: Observable<Property[]>;
-  readonlyGroups: string[] = [];
   formGroup: FormGroup;
   configurationsOpen$: Subject<boolean> = new BehaviorSubject(false);
   submitted$: Subject<boolean> = new BehaviorSubject(false);
@@ -388,9 +387,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       requiredConfiguration != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
-      this.readonlyGroups =
-        this.mode === 'create' ? [] : ['datasources', 'archive'];
-
       this.formGroup = tenantFormGroup(
         value,
         configurationDefaults,
@@ -417,9 +413,20 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
-          const properties = results.map(([key, defaultValue]) =>
-            toConfigurationProperty(key, defaultValue, this.translateService)
-          );
+          const properties = results.map(([key, defaultValue]) => {
+            // in create mode all props can be set
+            // in update mode only aggregate and reporting props can be set
+            const writable =
+              this.writable &&
+              (this.mode === 'create' ||
+                /^(aggregate|reporting)\..+$/.test(key));
+            return toConfigurationProperty(
+              key,
+              defaultValue,
+              writable,
+              this.translateService
+            );
+          });
           const flattened = keyBy(properties, ({ key }) => key);
           const unflattened = unflatten(flattened);
           return toTreeNodes(unflattened, hasSearch || invalid);
