@@ -20,6 +20,7 @@
           <app-tenant-link
             [tenant]="tenant"
             (tenantClick)="onTenantClick($event)"
+            (tenantDelete)="onTenantDeleteButtonClick($event)"
           ></app-tenant-link>
         </ng-template>
       </app-well-group-list>
