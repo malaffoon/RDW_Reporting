@@ -140,7 +140,7 @@ export function toTenant(
     description,
     type,
     status,
-    configurations: valued(toConfigurations(serverTenant, type)),
+    configurations: toConfigurations(serverTenant, type),
     localizations: valued(flatten(localizations || {})),
     parentTenantCode,
     dataSet: (dataSets || []).find(dataSet => dataSetId === dataSet.id)
@@ -170,14 +170,17 @@ export function toConfigurations(
           reporting
         };
 
-  return flatten(
-    relevantConfigurations,
-    composeFlattenCustomizers(
-      // TODO normalize values here?
-      omitKeys('aggregate.tenants'),
-      ignoreArraysOfPrimitives,
-      // collapse this field into one
-      ignoreKeys(key => key.startsWith('reporting.state'))
+  // TODO this valued filter wont be needed after the api update
+  return valued(
+    flatten(
+      relevantConfigurations,
+      composeFlattenCustomizers(
+        // TODO normalize values here?
+        omitKeys('aggregate.tenants'),
+        ignoreArraysOfPrimitives,
+        // collapse this field into one
+        ignoreKeys(key => key.startsWith('reporting.state'))
+      )
     )
   );
 }
