@@ -28,6 +28,13 @@ h2 {
   grid-template-columns: 1fr auto;
   gap: 15px;
   align-items: center;
+
+  .menu {
+    display: flex;
+    > * + * {
+      margin-left: 15px;
+    }
+  }
 }
 
 .body {
@@ -36,4 +43,8 @@ h2 {
 
 :host {
   display: block;
+}
+
+.label {
+  font-size: 14px;
 }

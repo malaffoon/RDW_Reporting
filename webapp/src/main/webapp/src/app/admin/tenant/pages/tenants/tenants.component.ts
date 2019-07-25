@@ -15,6 +15,7 @@ import { tap } from 'rxjs/internal/operators/tap';
 import { ordering } from '@kourge/ordering';
 import { byString, join } from '@kourge/ordering/comparator';
 import { completedTenantStatuses } from '../../model/tenant-statuses';
+import { TenantModalService } from '../../service/tenant-modal.service';
 
 const pollingInterval = 1000;
 
@@ -37,7 +38,8 @@ export class TenantsComponent implements OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: TenantService
+    private service: TenantService,
+    private modalService: TenantModalService
   ) {
     this.tenantType$ = this.route.data.pipe(map(({ type }) => type));
 
@@ -77,6 +79,10 @@ export class TenantsComponent implements OnDestroy {
     this.router.navigate(['.', tenant.code], {
       relativeTo: this.route
     });
+  }
+
+  onTenantDeleteButtonClick(tenant: TenantConfiguration): void {
+    this.modalService.openDeleteConfirmationModal(tenant);
   }
 
   ngOnDestroy(): void {
