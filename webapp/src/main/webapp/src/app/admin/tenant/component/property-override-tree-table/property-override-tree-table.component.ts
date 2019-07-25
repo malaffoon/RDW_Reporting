@@ -21,15 +21,17 @@ import { fieldValidators } from '../../model/fields';
 import { configurationFormFields } from '../../model/fields';
 import { emptyToNull, isNullOrEmpty } from '../../../../shared/support/support';
 import { isEqual } from 'lodash';
+import { TenantType } from '../../model/tenant-type';
 
 export function configurationsFormGroup(
+  type: TenantType,
   defaults: any,
   overrides: any = {},
   validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
   return new FormGroup(
     Object.entries({
-      ...configurationFormFields,
+      ...configurationFormFields(type),
       ...defaults
     }).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];

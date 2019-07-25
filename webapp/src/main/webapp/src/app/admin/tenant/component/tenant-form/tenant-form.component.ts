@@ -66,6 +66,7 @@ export function tenantFormGroup(
   const description = new FormControl(value.description || '');
 
   const configurations = configurationsFormGroup(
+    value.type,
     configurationDefaults,
     value.configurations,
     [onePasswordPerUser]
@@ -408,7 +409,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
         {
-          ...configurationFormFields,
+          ...configurationFormFields(this.value.type),
           ...configurationDefaults
         },
         this.submitted$,

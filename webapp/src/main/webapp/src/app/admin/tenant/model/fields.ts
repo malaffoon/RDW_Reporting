@@ -3,6 +3,7 @@ import { fieldConfigurationsByKey } from './field-configurations';
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { password, uri, url } from './field-validators';
+import { TenantType } from './tenant-type';
 
 const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   { [key: string]: InputType }
@@ -74,9 +75,13 @@ export function normalizeFieldValue(key: string, value: any): any {
 }
 
 // used to ensure we display the full set of fields in the form
-export const configurationFormFields = Object.entries(
-  fieldConfigurationsByKey
-).reduce((keys, [key]) => {
-  keys[key] = normalizeFieldValue(key, null);
-  return keys;
-}, {});
+export function configurationFormFields(
+  type: TenantType
+): { [key: string]: any } {
+  return Object.entries(fieldConfigurationsByKey).reduce((keys, [key]) => {
+    if (type !== 'SANDBOX' || !/^(archive|datasources)\..+$/.test(key)) {
+      keys[key] = normalizeFieldValue(key, null);
+    }
+    return keys;
+  }, {});
+}
