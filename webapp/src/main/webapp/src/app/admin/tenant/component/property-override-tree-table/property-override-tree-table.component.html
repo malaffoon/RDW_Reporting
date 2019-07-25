@@ -7,7 +7,6 @@
       #table
       [value]="tree"
       dataKey="key"
-      [globalFilterFields]="['key', 'value']"
       styleClass="table table-striped table-hover"
       [rowTrackBy]="rowTrackBy"
     >
@@ -51,24 +50,7 @@
               </tr>
             </ng-container>
             <ng-template #leafNode>
-              <ng-container *ngIf="data.readonly; else writableNode">
-                <tr
-                  [ttRow]="rowNode"
-                  [ngClass]="{
-                    leaf: node.leaf,
-                    modified: modified(data)
-                  }"
-                >
-                  <td [title]="data.key">
-                    <p-treeTableToggler
-                      [rowNode]="rowNode"
-                    ></p-treeTableToggler>
-                    {{ data.segment }}
-                  </td>
-                  <td>{{ data.value }}</td>
-                </tr>
-              </ng-container>
-              <ng-template #writableNode>
+              <ng-container *ngIf="data.writable; else readonlyNode">
                 <tr
                   [ttRow]="rowNode"
                   [ngClass]="{
@@ -206,6 +188,25 @@
                         </a>
                       </div>
                     </div>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-template #readonlyNode>
+                <tr
+                  [ttRow]="rowNode"
+                  [ngClass]="{
+                    leaf: node.leaf,
+                    modified: modified(data)
+                  }"
+                >
+                  <td [title]="data.key">
+                    <p-treeTableToggler
+                      [rowNode]="rowNode"
+                    ></p-treeTableToggler>
+                    {{ data.segment }}
+                  </td>
+                  <td>
+                    <span>{{ formGroup.value[data.key] }}</span>
                   </td>
                 </tr>
               </ng-template>

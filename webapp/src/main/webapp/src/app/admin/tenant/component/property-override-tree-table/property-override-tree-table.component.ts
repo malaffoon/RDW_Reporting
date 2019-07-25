@@ -19,7 +19,7 @@ import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import { fieldValidators } from '../../model/fields';
 import { configurationFormFields } from '../../model/fields';
-import { emptyToNull, isNullOrEmpty } from '../../../../shared/support/support';
+import { emptyToNull } from '../../../../shared/support/support';
 import { isEqual } from 'lodash';
 import { TenantType } from '../../model/tenant-type';
 
@@ -129,12 +129,6 @@ export class PropertyOverrideTreeTableComponent
 
   @Input()
   defaults: any;
-
-  @Input()
-  readonlyGroups: string[] = [];
-
-  @Input()
-  readonly = true;
 
   @Input()
   tree: TreeNode[] = [];
