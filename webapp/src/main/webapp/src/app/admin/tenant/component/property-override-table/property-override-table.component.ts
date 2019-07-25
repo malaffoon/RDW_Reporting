@@ -12,8 +12,7 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { ConfigurationProperty, Property } from '../../model/property';
-import { emptyToNull } from '../../../../shared/support/support';
-import { isEqual } from 'lodash';
+import { fieldsEqual } from '../../model/fields';
 
 export function localizationsFormGroup(
   defaults: any,
@@ -69,9 +68,10 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
   }
 
   modified(property: ConfigurationProperty): boolean {
-    return !isEqual(
+    return !fieldsEqual(
+      property.key,
       property.originalValue,
-      emptyToNull(this.formGroup.value[property.key])
+      this.formGroup.value[property.key]
     );
   }
 

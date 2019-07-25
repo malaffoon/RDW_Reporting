@@ -17,10 +17,11 @@ import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
-import { fieldValidators, normalizeFieldValue } from '../../model/fields';
-import { configurationFormFields } from '../../model/fields';
-import { emptyToNull } from '../../../../shared/support/support';
-import { isEqual } from 'lodash';
+import {
+  configurationFormFields,
+  fieldsEqual,
+  fieldValidators
+} from '../../model/fields';
 import { TenantType } from '../../model/tenant-type';
 
 export function configurationsFormGroup(
@@ -36,11 +37,7 @@ export function configurationsFormGroup(
     }).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
-      const normalizedValue = normalizeFieldValue(key, value);
-      controlsByName[key] = new FormControl(
-        normalizedValue,
-        fieldValidators(key)
-      );
+      controlsByName[key] = new FormControl(value, fieldValidators(key));
       return controlsByName;
     }, {}),
     validators
@@ -114,7 +111,8 @@ function rowTrackBy(index: number, { node }: any): string {
   selector: 'property-override-tree-table',
   templateUrl: './property-override-tree-table.component.html',
   styleUrls: ['./property-override-tree-table.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // disabling this as external changes can now trigger changes within this form
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -144,9 +142,10 @@ export class PropertyOverrideTreeTableComponent
   }
 
   modified(property: ConfigurationProperty): boolean {
-    return !isEqual(
+    return !fieldsEqual(
+      property.key,
       property.originalValue,
-      emptyToNull(this.formGroup.value[property.key])
+      this.formGroup.value[property.key]
     );
   }
 
