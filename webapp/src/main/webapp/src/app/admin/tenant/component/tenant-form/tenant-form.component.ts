@@ -402,7 +402,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
       // set the defaults on the formGroup
       this.configurationControlsFormGroup.patchValue({
-        required: this.requiredConfiguration
+        search: 'percent'
+        // required: this.requiredConfiguration
       });
 
       this.configurations$ = toPropertiesProvider(

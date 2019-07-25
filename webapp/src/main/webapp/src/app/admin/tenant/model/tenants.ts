@@ -7,14 +7,43 @@ import {
   unflatten,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject, mapValues } from 'lodash';
+import { isEmpty, isObject, transform } from 'lodash';
 import { fieldConfiguration, normalizeFieldValue } from './fields';
 
-export function trimStrings(value: any): any {
-  if (typeof value === 'string') {
-    return value.trim();
-  }
-  return value;
+/**
+ * Utility to force some form fields into their required lower case form
+ */
+function lowercase(object: { [key: string]: any }): { [key: string]: any } {
+  return transform(
+    object,
+    (result: any, value: any, key: string) => {
+      result[key] =
+        fieldConfiguration(key) && value != null && typeof value === 'string'
+          ? value.toLowerCase()
+          : value;
+    },
+    {}
+  );
+}
+
+function normalize(configurations: any): any {
+  return transform(
+    configurations,
+    (result: any, value: any, key: string) => {
+      result[key] = normalizeFieldValue(key, value);
+    },
+    {}
+  );
+}
+
+function trimStrings(object: any): any {
+  return transform(
+    object,
+    (result: any, value: any, key: string) => {
+      result[key] = typeof value === 'string' ? value.trim() : value;
+    },
+    {}
+  );
 }
 
 /**
@@ -184,25 +213,5 @@ export function toServerTenant(tenant: TenantConfiguration): any {
 }
 
 export function toServerConfigurations(configurations: any): any {
-  return unflatten(lowercase(configurations), trimStrings);
-}
-
-/**
- * Utility to force some form fields into their required lower case form
- */
-function lowercase(values: { [key: string]: any }): { [key: string]: any } {
-  return Object.entries(values).reduce((lowercased, [key, value]) => {
-    lowercased[key] =
-      fieldConfiguration(key) && value != null && typeof value === 'string'
-        ? value.toLowerCase()
-        : value;
-    return lowercased;
-  }, {});
-}
-
-function normalize(configurations: any): any {
-  return Object.entries(configurations).reduce((normalized, [key, value]) => {
-    normalized[key] = normalizeFieldValue(key, value);
-    return normalized;
-  }, {});
+  return unflatten(lowercase(trimStrings(configurations)));
 }
