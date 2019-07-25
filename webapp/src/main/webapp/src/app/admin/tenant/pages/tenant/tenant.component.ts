@@ -20,7 +20,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { FormMode } from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
-import { defaultTenant } from '../../model/tenants';
+import { defaultTenant, toServerTenant } from '../../model/tenants';
 import { flatten } from '../../../../shared/support/support';
 import { TenantModalService } from '../../service/tenant-modal.service';
 
@@ -158,7 +158,7 @@ export class TenantComponent implements OnDestroy {
     this.modalService.openDeleteConfirmationModal(tenant);
   }
 
-  private onSave(mode: 'create' | 'update', value: TenantConfiguration): void {
+  private onSave(mode: FormMode, value: TenantConfiguration): void {
     const observable =
       mode === 'create'
         ? this.service.create(value)

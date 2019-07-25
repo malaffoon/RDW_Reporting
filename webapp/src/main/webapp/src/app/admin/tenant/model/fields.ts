@@ -4,6 +4,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { password, uri, url } from './field-validators';
 import { TenantType } from './tenant-type';
+import { emptyToNull } from '../../../shared/support/support';
+import { isEqual } from 'lodash';
 
 const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   { [key: string]: InputType }
@@ -23,8 +25,9 @@ const inputTypeByPropertyDataType: { [key: string]: InputType } = <
 };
 
 const identity = value => value;
-const normalizerByDataType: { [key: string]: (value: any) => any } = {
-  boolean: value => Boolean(value)
+const normalizeByInputType: { [key: string]: (value: any) => any } = {
+  input: value => emptyToNull(value),
+  checkbox: value => Boolean(value)
 };
 
 const validatorsByPropertyDataType: { [key: string]: ValidatorFn[] } = <
@@ -68,12 +71,6 @@ export function field(key: string, translateService: TranslateService): Field {
   return field;
 }
 
-export function normalizeFieldValue(key: string, value: any): any {
-  const configuration: FieldConfiguration = fieldConfiguration(key);
-  const normalize = normalizerByDataType[configuration.dataType] || identity;
-  return normalize(value);
-}
-
 // used to ensure we display the full set of fields in the form
 export function configurationFormFields(
   type: TenantType
@@ -85,4 +82,13 @@ export function configurationFormFields(
     }
     return keys;
   }, {});
+}
+
+export function fieldsEqual(key: string, a: any, b: any): boolean {
+  const configuration: FieldConfiguration = fieldConfiguration(key);
+  const normalize =
+    normalizeByInputType[
+      inputTypeByPropertyDataType[configuration.dataType] || 'input'
+    ] || identity;
+  return isEqual(normalize(a), normalize(b));
 }

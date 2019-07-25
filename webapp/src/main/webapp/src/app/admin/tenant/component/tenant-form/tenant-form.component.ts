@@ -23,7 +23,6 @@ import {
 } from '../property-override-tree-table/property-override-tree-table.component';
 import { localizationsFormGroup } from '../property-override-table/property-override-table.component';
 import {
-  emptyToNull,
   isBlank,
   rightDifference,
   unflatten,
@@ -40,11 +39,14 @@ import {
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
-import { fieldRequired, normalizeFieldValue } from '../../model/fields';
+import {
+  configurationFormFields,
+  fieldRequired,
+  fieldsEqual
+} from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
-import { configurationFormFields } from '../../model/fields';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -170,7 +172,7 @@ function toPropertiesProvider<T = any>(
                     String(value)
                       .toLowerCase()
                       .includes(caseInsensitiveSearch)))) &&
-              (!modified || emptyToNull(value) !== defaultValue) &&
+              (!modified || !fieldsEqual(controlKey, value, defaultValue)) &&
               (!required || fieldRequired(controlKey))
             );
           })
@@ -421,15 +423,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
               (this.mode === 'create' ||
                 /^(aggregate|reporting)\..+$/.test(key));
 
-            // correct boolean comparisons
-            const normalizedOriginalValue = normalizeFieldValue(
-              key,
-              originalValue
-            );
-
             return toConfigurationProperty(
               key,
-              normalizedOriginalValue,
+              originalValue,
               writable,
               this.translateService
             );

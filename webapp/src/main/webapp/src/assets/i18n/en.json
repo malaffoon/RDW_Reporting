@@ -1470,7 +1470,7 @@
       "configurations": {
         "label": "Configurations",
         "error": {
-          "onePasswordPerUser": "Multiple passwords were provided for the following user names: {{usernames}}. Please provide the same password wherever the username is the same."
+          "onePasswordPerUser": "Please provide only one password for a each unique data source username provided below."
         },
         "control": {
           "search": {
@@ -1518,7 +1518,12 @@
       "reset": "Click this button to reset the value back to its original default value",
       "password": "The password must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number."
     },
-    "no-results": "There are no configuration properties matching your search"
+    "no-results": "There are no configuration properties matching your search",
+    "boolean": {
+      "null": "False",
+      "false": "False",
+      "true": "True"
+    }
   },
   "tenant-localization-form": {
     "column": {

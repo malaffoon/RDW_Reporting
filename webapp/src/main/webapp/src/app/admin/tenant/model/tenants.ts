@@ -8,7 +8,7 @@ import {
   valued
 } from '../../../shared/support/support';
 import { isEmpty, isObject, transform } from 'lodash';
-import { fieldConfiguration, normalizeFieldValue } from './fields';
+import { fieldConfiguration } from './fields';
 
 /**
  * Utility to force some form fields into their required lower case form
@@ -21,16 +21,6 @@ function lowercase(object: { [key: string]: any }): { [key: string]: any } {
         fieldConfiguration(key) && value != null && typeof value === 'string'
           ? value.toLowerCase()
           : value;
-    },
-    {}
-  );
-}
-
-function normalize(configurations: any): any {
-  return transform(
-    configurations,
-    (result: any, value: any, key: string) => {
-      result[key] = normalizeFieldValue(key, value);
     },
     {}
   );

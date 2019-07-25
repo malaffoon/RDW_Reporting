@@ -40,8 +40,8 @@ export function onePasswordPerUser(
       passwordKeyExpression.exec(passwordKey)[1]
     }.username`;
     // this is being run on every form control addition so we need to defensively set this
-    const username = (formGroup.controls[usernameKey] || <any>{}).value;
-    const password = (formGroup.controls[passwordKey] || <any>{}).value;
+    const username = (formGroup.controls[usernameKey] || <any>{}).value || '';
+    const password = (formGroup.controls[passwordKey] || <any>{}).value || '';
     const passwords = byUsername[username];
     if (passwords != null) {
       if (!passwords.includes(password)) {
