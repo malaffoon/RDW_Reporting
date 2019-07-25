@@ -19,7 +19,7 @@ import { TenantModalService } from '../../service/tenant-modal.service';
 
 const pollingInterval = 1000;
 
-const byKey = ordering(byString).on(({ key }) => key).compare;
+const byKey = ordering(byString).on(({ code: key }) => key).compare;
 
 @Component({
   selector: 'tenants',
