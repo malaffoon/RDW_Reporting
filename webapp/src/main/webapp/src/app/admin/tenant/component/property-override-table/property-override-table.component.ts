@@ -11,7 +11,9 @@ import {
   FormGroup,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import { Property } from '../../model/property';
+import { ConfigurationProperty, Property } from '../../model/property';
+import { emptyToNull } from '../../../../shared/support/support';
+import { isEqual } from 'lodash';
 
 export function localizationsFormGroup(
   defaults: any,
@@ -64,6 +66,13 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
     this._rows = values;
     // reset the page back to the first page when the search changes
     this._first = 0;
+  }
+
+  modified(property: ConfigurationProperty): boolean {
+    return !isEqual(
+      property.originalValue,
+      emptyToNull(this.formGroup.value[property.key])
+    );
   }
 
   get formGroup(): FormGroup {
