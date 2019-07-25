@@ -8,6 +8,10 @@ a {
   color: inherit;
   &:not(.status-active) {
     pointer-events: none;
+    a,
+    button {
+      pointer-events: all;
+    }
   }
   &.status-active {
     &:hover {
