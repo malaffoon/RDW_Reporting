@@ -58,53 +58,50 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'archive.configuredS3': {
     dataType: 'boolean'
   },
-  ...['reporting', 'warehouse', 'olap', 'migrate_olap'].reduce(
-    (sources, source) => {
-      [`datasources.${source}_ro`, `datasources.${source}_rw`].forEach(
-        basePath => {
-          sources[`${basePath}.url`] = {
-            dataType: 'uri'
-          };
-          sources[`${basePath}.urlParts.database`] = {
-            dataType: 'database',
-            lowercase: true
-          };
-          sources[`${basePath}.username`] = {
-            dataType: 'username',
-            required: true,
-            lowercase: true
-          };
-          sources[`${basePath}.password`] = {
-            dataType: 'password',
-            required: true
-          };
-          sources[`${basePath}.testWhileIdle`] = {
-            dataType: 'boolean'
-          };
-          sources[`${basePath}.initialSize`] = {
-            dataType: 'integer'
-          };
-          sources[`${basePath}.maxActive`] = {
-            dataType: 'integer'
-          };
-          sources[`${basePath}.minIdle`] = {
-            dataType: 'integer'
-          };
-          sources[`${basePath}.removeAbandoned`] = {
-            dataType: 'boolean'
-          };
-          sources[`${basePath}.removeAbandonedTimeout`] = {
-            dataType: 'integer'
-          };
-          sources[`${basePath}.logAbandoned`] = {
-            dataType: 'boolean'
-          };
-        }
-      );
-      return sources;
-    },
-    {}
-  ),
+  ...['reporting', 'warehouse', 'olap', 'migrate'].reduce((sources, source) => {
+    [`datasources.${source}_ro`, `datasources.${source}_rw`].forEach(
+      basePath => {
+        sources[`${basePath}.url`] = {
+          dataType: 'uri'
+        };
+        sources[`${basePath}.urlParts.database`] = {
+          dataType: 'database',
+          lowercase: true
+        };
+        sources[`${basePath}.username`] = {
+          dataType: 'username',
+          required: true,
+          lowercase: true
+        };
+        sources[`${basePath}.password`] = {
+          dataType: 'password',
+          required: true
+        };
+        sources[`${basePath}.testWhileIdle`] = {
+          dataType: 'boolean'
+        };
+        sources[`${basePath}.initialSize`] = {
+          dataType: 'integer'
+        };
+        sources[`${basePath}.maxActive`] = {
+          dataType: 'integer'
+        };
+        sources[`${basePath}.minIdle`] = {
+          dataType: 'integer'
+        };
+        sources[`${basePath}.removeAbandoned`] = {
+          dataType: 'boolean'
+        };
+        sources[`${basePath}.removeAbandonedTimeout`] = {
+          dataType: 'integer'
+        };
+        sources[`${basePath}.logAbandoned`] = {
+          dataType: 'boolean'
+        };
+      }
+    );
+    return sources;
+  }, {}),
   'reporting.interpretiveGuideUrl': {
     dataType: 'url-fragment'
   },
@@ -162,11 +159,3 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     return configurations;
   }, {})
 };
-
-// used to ensure we display the full set of fields in the form
-export const configurationFormFields = Object.entries(
-  fieldConfigurationsByKey
-).reduce((keys, [key]) => {
-  keys[key] = null;
-  return keys;
-}, {});

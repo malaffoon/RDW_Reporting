@@ -18,14 +18,22 @@ import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import { fieldValidators } from '../../model/fields';
+import { configurationFormFields } from '../../model/fields';
+import { emptyToNull, isNullOrEmpty } from '../../../../shared/support/support';
+import { isEqual } from 'lodash';
+import { TenantType } from '../../model/tenant-type';
 
 export function configurationsFormGroup(
+  type: TenantType,
   defaults: any,
   overrides: any = {},
   validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
   return new FormGroup(
-    Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
+    Object.entries({
+      ...configurationFormFields(type),
+      ...defaults
+    }).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
       controlsByName[key] = new FormControl(value, fieldValidators(key));
@@ -137,6 +145,22 @@ export class PropertyOverrideTreeTableComponent
     return this.controlContainer.control as FormGroup;
   }
 
+  modified(property: ConfigurationProperty): boolean {
+    return !isEqual(
+      property.originalValue,
+      emptyToNull(this.formGroup.value[property.key])
+    );
+  }
+
+  showPasswordToggle(property: ConfigurationProperty): boolean {
+    const value = this.formGroup.value[property.key];
+    return (
+      property.configuration.dataType === 'password' &&
+      value != null &&
+      value !== ''
+    );
+  }
+
   // control value accessor implementation:
 
   public onTouched: () => void = () => {};
@@ -172,7 +196,7 @@ export class PropertyOverrideTreeTableComponent
 
   onResetButtonClick(property: ConfigurationProperty): void {
     this.formGroup.patchValue({
-      [property.key]: property.defaultValue
+      [property.key]: property.originalValue
     });
   }
 }

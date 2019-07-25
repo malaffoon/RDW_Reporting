@@ -28,7 +28,7 @@
       <ng-template pTemplate="body" let-property>
         <tr
           [ngClass]="{
-            modified: property.defaultValue !== formGroup.value[property.key]
+            modified: modified(property)
           }"
         >
           <td [title]="property.key">
@@ -41,26 +41,26 @@
               </span>
             </ng-container>
             <ng-template #writableValue>
-              <input
-                type="text"
-                class="form-control"
-                [formControlName]="property.key"
-              />
-              <div class="icon-container">
-                <i
-                  class="fa fa-undo fa-md"
-                  *ngIf="
-                    property.defaultValue !== formGroup.value[property.key] &&
-                    !readonly
-                  "
-                  (click)="onResetButtonClick(property)"
-                  popover="{{
-                    'tenant-configuration-form.popover.reset' | translate
-                  }}"
-                  placement="left"
-                  container="body"
-                  triggers="mouseenter:mouseleave"
-                ></i>
+              <div class="form-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  [formControlName]="property.key"
+                />
+                <div class="input-controls">
+                  <a
+                    *ngIf="modified(property) && !readonly"
+                    href="javascript:void(0)"
+                    (click)="onResetButtonClick(property)"
+                    popover="{{
+                      'tenant-configuration-form.popover.reset' | translate
+                    }}"
+                    container="body"
+                    triggers="mouseenter:mouseleave"
+                  >
+                    <i class="fa fa-undo fa-md"></i>
+                  </a>
+                </div>
               </div>
             </ng-template>
           </td>

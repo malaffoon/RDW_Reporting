@@ -2,22 +2,48 @@ import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import {
   composeFlattenCustomizers,
-  composeUnflattenCustomizers,
   flatten,
   FlattenCustomizer,
   unflatten,
-  UnflattenCustomizer,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject, omit } from 'lodash';
-import { normalizeFieldValue } from './fields';
-import { configurationFormFields } from './field-configurations';
+import { isEmpty, isObject, transform } from 'lodash';
+import { fieldConfiguration, normalizeFieldValue } from './fields';
 
-export function trimStrings(value: any): any {
-  if (typeof value === 'string') {
-    return value.trim();
-  }
-  return value;
+/**
+ * Utility to force some form fields into their required lower case form
+ */
+function lowercase(object: { [key: string]: any }): { [key: string]: any } {
+  return transform(
+    object,
+    (result: any, value: any, key: string) => {
+      result[key] =
+        fieldConfiguration(key) && value != null && typeof value === 'string'
+          ? value.toLowerCase()
+          : value;
+    },
+    {}
+  );
+}
+
+function normalize(configurations: any): any {
+  return transform(
+    configurations,
+    (result: any, value: any, key: string) => {
+      result[key] = normalizeFieldValue(key, value);
+    },
+    {}
+  );
+}
+
+function trimStrings(object: any): any {
+  return transform(
+    object,
+    (result: any, value: any, key: string) => {
+      result[key] = typeof value === 'string' ? value.trim() : value;
+    },
+    {}
+  );
 }
 
 /**
@@ -62,14 +88,6 @@ export function omitKeys(...keys: string[]): FlattenCustomizer {
     }
     return false;
   };
-}
-
-export function normalizePrimitives(result, object, property): any {
-  if (object == null || !isObject(object)) {
-    result[property] = normalizeFieldValue(property, object);
-    return true;
-  }
-  return false;
 }
 
 export function defaultTenant(
@@ -139,35 +157,31 @@ export function toConfigurations(
   { aggregate, archive, datasources, reporting }: any,
   type
 ): any {
-  // adds in all the missing fields from the sparse set provided by the backend
-  // these will later be used to fill in the configurations form
-  // the reason this is done here for now is to have the change propagate
-  // ideally this would only be a concern of the form
-  const backfilledConfigurations = {
-    ...configurationFormFields,
-    aggregate,
-    archive,
-    datasources,
-    reporting
-  };
+  const relevantConfigurations =
+    type === 'SANDBOX'
+      ? {
+          aggregate,
+          reporting
+        }
+      : {
+          aggregate,
+          archive,
+          datasources,
+          reporting
+        };
 
-  const flattenedConfigurations = flatten(
-    backfilledConfigurations,
-    composeFlattenCustomizers(
-      omitKeys('aggregate.tenants'),
-      ignoreArraysOfPrimitives,
-      // collapse this field into one
-      ignoreKeys(key => key.startsWith('reporting.state')),
-      normalizePrimitives
+  return normalize(
+    flatten(
+      relevantConfigurations,
+      composeFlattenCustomizers(
+        // TODO normalize values here?
+        omitKeys('aggregate.tenants'),
+        ignoreArraysOfPrimitives,
+        // collapse this field into one
+        ignoreKeys(key => key.startsWith('reporting.state'))
+      )
     )
   );
-
-  if (type === 'SANDBOX') {
-    delete flattenedConfigurations.archive;
-    delete flattenedConfigurations.datasources;
-  }
-
-  return flattenedConfigurations;
 }
 
 export function toServerTenant(tenant: TenantConfiguration): any {
@@ -193,7 +207,11 @@ export function toServerTenant(tenant: TenantConfiguration): any {
       sandboxDataset
     },
     parentTenantKey,
-    ...unflatten(configurations, trimStrings),
+    ...toServerConfigurations(configurations),
     localization: isEmpty(localization) ? null : unflatten(localization)
   });
+}
+
+export function toServerConfigurations(configurations: any): any {
+  return unflatten(lowercase(trimStrings(configurations)));
 }

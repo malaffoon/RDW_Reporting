@@ -26,18 +26,21 @@
       cursor: pointer;
     }
 
-    tr.leaf > td {
-      // TODO would like this
-      pointer-events: none;
-      > * {
-        pointer-events: all;
-      }
-      &:first-child {
-        border-right: none;
-      }
-      &:last-child {
-        padding: 0 !important;
-        vertical-align: middle;
+    tr {
+      cursor: pointer;
+      &.leaf > td {
+        // TODO would like this
+        pointer-events: none;
+        > * {
+          pointer-events: all;
+        }
+        &:first-child {
+          border-right: none;
+        }
+        &:last-child {
+          padding: 0 !important;
+          vertical-align: middle;
+        }
       }
     }
   }
@@ -68,4 +71,29 @@ label {
 
 .form-group {
   margin-bottom: 0;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  > * {
+    grid-column: 1/1;
+    grid-row: 1/1;
+  }
+  > .input-controls {
+    // hack to get it above the prime ng controls
+    z-index: 1;
+
+    justify-self: right;
+    align-self: center;
+    margin-right: 10px;
+
+    display: flex;
+
+    > a {
+      font-size: 16px;
+    }
+    > a + a {
+      margin-left: 5px;
+    }
+  }
 }

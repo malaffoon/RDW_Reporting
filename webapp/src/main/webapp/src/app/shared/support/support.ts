@@ -17,6 +17,13 @@ export function isNullOrEmpty(value: any): boolean {
   return value == null || isEmpty(value);
 }
 
+export function emptyToNull(value: any): any {
+  if (value === '') {
+    return null;
+  }
+  return value;
+}
+
 /**
  * Removes all fields with null values from the containing object.
  * Example {a: undefined, b: null, c: false, d: 0, e: ''} -> {d: 0, e: ''}

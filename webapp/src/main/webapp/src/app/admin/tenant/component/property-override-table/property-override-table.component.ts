@@ -11,7 +11,9 @@ import {
   FormGroup,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import { Property } from '../../model/property';
+import { ConfigurationProperty, Property } from '../../model/property';
+import { emptyToNull } from '../../../../shared/support/support';
+import { isEqual } from 'lodash';
 
 export function localizationsFormGroup(
   defaults: any,
@@ -66,6 +68,13 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
     this._first = 0;
   }
 
+  modified(property: ConfigurationProperty): boolean {
+    return !isEqual(
+      property.originalValue,
+      emptyToNull(this.formGroup.value[property.key])
+    );
+  }
+
   get formGroup(): FormGroup {
     return this.controlContainer.control as FormGroup;
   }
@@ -96,7 +105,7 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
 
   onResetButtonClick(property: Property): void {
     this.formGroup.patchValue({
-      [property.key]: property.defaultValue
+      [property.key]: property.originalValue
     });
   }
 }
