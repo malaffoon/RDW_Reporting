@@ -19,10 +19,7 @@ import { TenantModalService } from '../../service/tenant-modal.service';
 
 const pollingInterval = 1000;
 
-const byLabelThenKey = join(
-  ordering(byString).on(({ label }) => label).compare,
-  ordering(byString).on(({ key }) => key).compare
-);
+const byKey = ordering(byString).on(({ key }) => key).compare;
 
 @Component({
   selector: 'tenants',
@@ -57,7 +54,7 @@ export class TenantsComponent implements OnDestroy {
       }),
       flatMap(([type]) =>
         this.service.getAll(type).pipe(
-          map(tenants => tenants.slice().sort(byLabelThenKey)),
+          map(tenants => tenants.slice().sort(byKey)),
           // would like a less side-effecty way to do this but it works at least
           tap(tenants => {
             if (

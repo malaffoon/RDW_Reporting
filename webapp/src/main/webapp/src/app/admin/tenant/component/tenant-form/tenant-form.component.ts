@@ -40,7 +40,7 @@ import {
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
-import { fieldRequired } from '../../model/fields';
+import { fieldRequired, normalizeFieldValue } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
@@ -406,23 +406,30 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.formGroup.controls.configurations as FormGroup,
         {
           ...configurationFormFields(this.value.type),
-          ...configurationDefaults
+          ...configurationDefaults // should normalize these? but these are now sparse no?
         },
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
-          const properties = results.map(([key, defaultValue]) => {
+          const properties = results.map(([key, originalValue]) => {
             // in create mode all props can be set
             // in update mode only aggregate and reporting props can be set
             const writable =
               this.writable &&
               (this.mode === 'create' ||
                 /^(aggregate|reporting)\..+$/.test(key));
+
+            // correct boolean comparisons
+            const normalizedOriginalValue = normalizeFieldValue(
+              key,
+              originalValue
+            );
+
             return toConfigurationProperty(
               key,
-              defaultValue,
+              normalizedOriginalValue,
               writable,
               this.translateService
             );

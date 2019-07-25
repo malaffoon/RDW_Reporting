@@ -18,17 +18,13 @@
 }
 
 .configuration-controls {
-  display: grid;
-  grid-template-columns: 1fr max-content max-content;
+  display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-}
-
-.localization-controls {
-  display: grid;
-  grid-template-columns: 1fr max-content;
-  align-items: center;
-  gap: 15px;
+  > :first-child {
+    flex: 1;
+  }
+  > * + * {
+    margin-left: 15px;
+  }
   margin-bottom: 15px;
 }
