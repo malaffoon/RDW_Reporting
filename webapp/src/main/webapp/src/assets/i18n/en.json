@@ -1405,8 +1405,8 @@
       "error": "An unknown error occurred when attempting to delete the sandbox",
       "success": "Sandbox was successfully deleted",
       "modal": {
-        "head": "Delete <strong>{{label}}</strong>?",
-        "body": "Are you sure you wish to delete the sandbox <strong>{{label}}</strong>?"
+        "head": "Delete <strong>{{label}} ({{code}})</strong>?",
+        "body": "Are you sure you wish to delete the sandbox <strong>{{label}} ({{code}})</strong>?"
       }
     }
   },
