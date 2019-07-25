@@ -7,8 +7,8 @@ import {
   unflatten,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject } from 'lodash';
-import { fieldConfiguration } from './fields';
+import { isEmpty, isObject, mapValues } from 'lodash';
+import { fieldConfiguration, normalizeFieldValue } from './fields';
 
 export function trimStrings(value: any): any {
   if (typeof value === 'string') {
@@ -141,13 +141,16 @@ export function toConfigurations(
           reporting
         };
 
-  return flatten(
-    relevantConfigurations,
-    composeFlattenCustomizers(
-      omitKeys('aggregate.tenants'),
-      ignoreArraysOfPrimitives,
-      // collapse this field into one
-      ignoreKeys(key => key.startsWith('reporting.state'))
+  return normalize(
+    flatten(
+      relevantConfigurations,
+      composeFlattenCustomizers(
+        // TODO normalize values here?
+        omitKeys('aggregate.tenants'),
+        ignoreArraysOfPrimitives,
+        // collapse this field into one
+        ignoreKeys(key => key.startsWith('reporting.state'))
+      )
     )
   );
 }
@@ -194,5 +197,12 @@ function lowercase(values: { [key: string]: any }): { [key: string]: any } {
         ? value.toLowerCase()
         : value;
     return lowercased;
+  }, {});
+}
+
+function normalize(configurations: any): any {
+  return Object.entries(configurations).reduce((normalized, [key, value]) => {
+    normalized[key] = normalizeFieldValue(key, value);
+    return normalized;
   }, {});
 }

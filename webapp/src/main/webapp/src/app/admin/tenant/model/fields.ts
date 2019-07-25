@@ -79,6 +79,7 @@ export function configurationFormFields(
   type: TenantType
 ): { [key: string]: any } {
   return Object.entries(fieldConfigurationsByKey).reduce((keys, [key]) => {
+    // correctly construct form fields based on tenant type
     if (type !== 'SANDBOX' || !/^(archive|datasources)\..+$/.test(key)) {
       keys[key] = normalizeFieldValue(key, null);
     }
