@@ -331,9 +331,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   @Input()
   requiredConfiguration: boolean;
 
-  @Input()
-  showRequiredFilter: boolean; // only show on create mode and only if there
-
   configurationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     required: new FormControl(false),
