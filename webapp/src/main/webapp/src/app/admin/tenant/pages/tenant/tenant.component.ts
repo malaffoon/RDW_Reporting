@@ -147,8 +147,7 @@ export class TenantComponent implements OnDestroy {
   }
 
   onCreate(value: TenantConfiguration): void {
-    console.log(toServerTenant(value));
-    // this.onSave('create', value);
+    this.onSave('create', value);
   }
 
   onUpdate(value: TenantConfiguration): void {
