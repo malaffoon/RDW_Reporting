@@ -170,16 +170,14 @@ export function toConfigurations(
           reporting
         };
 
-  return normalize(
-    flatten(
-      relevantConfigurations,
-      composeFlattenCustomizers(
-        // TODO normalize values here?
-        omitKeys('aggregate.tenants'),
-        ignoreArraysOfPrimitives,
-        // collapse this field into one
-        ignoreKeys(key => key.startsWith('reporting.state'))
-      )
+  return flatten(
+    relevantConfigurations,
+    composeFlattenCustomizers(
+      // TODO normalize values here?
+      omitKeys('aggregate.tenants'),
+      ignoreArraysOfPrimitives,
+      // collapse this field into one
+      ignoreKeys(key => key.startsWith('reporting.state'))
     )
   );
 }

@@ -298,19 +298,6 @@
 
             <label>
               <input
-                id="configurationRequired"
-                name="configurationRequired"
-                formControlName="required"
-                type="checkbox"
-              />
-              {{
-                'tenant-form.field.configurations.control.required.label'
-                  | translate
-              }}
-            </label>
-
-            <label>
-              <input
                 id="configurationModified"
                 name="configurationModified"
                 formControlName="modified"
@@ -318,6 +305,19 @@
               />
               {{
                 'tenant-form.field.configurations.control.modified.label'
+                  | translate
+              }}
+            </label>
+
+            <label>
+              <input
+                id="configurationRequired"
+                name="configurationRequired"
+                formControlName="required"
+                type="checkbox"
+              />
+              {{
+                'tenant-form.field.configurations.control.required.label'
                   | translate
               }}
             </label>
@@ -350,7 +350,7 @@
       ></app-toggle-label>
 
       <div class="form-group" [hidden]="!localizationOpen">
-        <div class="localization-controls">
+        <div class="configuration-controls">
           <ng-container [formGroup]="localizationControlsFormGroup">
             <input
               formnovalidate

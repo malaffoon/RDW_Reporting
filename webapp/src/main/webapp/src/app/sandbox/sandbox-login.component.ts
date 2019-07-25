@@ -6,14 +6,11 @@ import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { Utils, uuid } from '../shared/support/support';
-import { byString, join } from '@kourge/ordering/comparator';
+import { uuid } from '../shared/support/support';
+import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 
-const byLabelThenKey = join(
-  ordering(byString).on(({ label }) => label).compare,
-  ordering(byString).on(({ key }) => key).compare
-);
+const byKey = ordering(byString).on(({ key }) => key).compare;
 
 @Component({
   selector: 'sandbox-login',
@@ -40,7 +37,7 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     combineLatest(this.route.queryParams, this.service.getAll())
       .pipe(takeUntil(this._destroyed))
       .subscribe(([params, sandboxes]) => {
-        this.sandboxes = sandboxes.slice().sort(byLabelThenKey);
+        this.sandboxes = sandboxes.slice().sort(byKey);
 
         const sandbox = sandboxes.find(({ key }) => key === params.sandbox);
         const role =

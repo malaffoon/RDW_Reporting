@@ -80,8 +80,8 @@ export function configurationFormFields(
 ): { [key: string]: any } {
   return Object.entries(fieldConfigurationsByKey).reduce((keys, [key]) => {
     // correctly construct form fields based on tenant type
-    if (type !== 'SANDBOX' || !/^(archive|datasources)\..+$/.test(key)) {
-      keys[key] = normalizeFieldValue(key, null);
+    if (type !== 'SANDBOX' || /^(aggregate|reporting)\..+$/.test(key)) {
+      keys[key] = null;
     }
     return keys;
   }, {});
