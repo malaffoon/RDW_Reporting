@@ -17,7 +17,7 @@ import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
-import { fieldValidators } from '../../model/fields';
+import { fieldValidators, normalizeFieldValue } from '../../model/fields';
 import { configurationFormFields } from '../../model/fields';
 import { emptyToNull } from '../../../../shared/support/support';
 import { isEqual } from 'lodash';
@@ -36,7 +36,11 @@ export function configurationsFormGroup(
     }).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
-      controlsByName[key] = new FormControl(value, fieldValidators(key));
+      const normalizedValue = normalizeFieldValue(key, value);
+      controlsByName[key] = new FormControl(
+        normalizedValue,
+        fieldValidators(key)
+      );
       return controlsByName;
     }, {}),
     validators
