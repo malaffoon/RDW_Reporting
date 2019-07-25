@@ -23,14 +23,17 @@
           <div class="btn-group">
             <div class="btn-group">
               <button type="submit" class="btn btn-primary">
-                <ng-container
-                  *ngIf="mode === 'create'; else updateSubmitButton"
-                >
-                  {{ 'common.action.create' | translate }}
-                </ng-container>
-                <ng-template #updateSubmitButton>
-                  {{ 'common.action.save' | translate }}
-                </ng-template>
+                <i *ngIf="submitting" class="fa fa-spinner fa-pulse"></i>
+                {{
+                  'common.action.' +
+                    (mode === 'create'
+                      ? submitting
+                        ? 'creating'
+                        : 'create'
+                      : submitting
+                      ? 'saving'
+                      : 'save') | translate
+                }}
               </button>
             </div>
             <ng-container *ngIf="value.type === 'SANDBOX' && mode === 'update'">

@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  finalize,
   map,
   mapTo,
   mergeMap,
@@ -11,7 +12,7 @@ import {
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
@@ -40,6 +41,7 @@ export class TenantComponent implements OnDestroy {
   writable$: Observable<boolean>;
   tenantKeyAvailable: (value: string) => Observable<boolean>;
   initialized$: Observable<boolean>;
+  submitting$: Subject<boolean> = new BehaviorSubject(false);
   destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -147,42 +149,50 @@ export class TenantComponent implements OnDestroy {
   }
 
   onCreate(value: TenantConfiguration): void {
-    this.onSave('create', value);
+    this.submit('create', value);
   }
 
   onUpdate(value: TenantConfiguration): void {
-    this.onSave('update', value);
+    this.submit('update', value);
   }
 
   onDelete(tenant: TenantConfiguration): void {
     this.modalService.openDeleteConfirmationModal(tenant);
   }
 
-  private onSave(mode: FormMode, value: TenantConfiguration): void {
+  private submit(mode: FormMode, value: TenantConfiguration): void {
+    this.submitting$.next(true);
+
     const observable =
       mode === 'create'
         ? this.service.create(value)
         : this.service.update(value);
 
-    observable.subscribe(
-      () => {
-        this.router.navigate(['..'], {
-          relativeTo: this.route
-        });
-        this.notificationService.info({
-          id: `tenant.${mode}.success.${value.type}`,
-          args: value
-        });
-      },
-      error => {
-        try {
-          this.notificationService.error({ id: error.json().message });
-        } catch (exception) {
-          this.notificationService.error({
-            id: `tenant.${mode}.error.${value.type}`
+    observable
+      .pipe(
+        finalize(() => {
+          this.submitting$.next(false);
+        })
+      )
+      .subscribe(
+        () => {
+          this.router.navigate(['..'], {
+            relativeTo: this.route
           });
+          this.notificationService.info({
+            id: `tenant.${mode}.success.${value.type}`,
+            args: value
+          });
+        },
+        error => {
+          try {
+            this.notificationService.error({ id: error.json().message });
+          } catch (exception) {
+            this.notificationService.error({
+              id: `tenant.${mode}.error.${value.type}`
+            });
+          }
         }
-      }
-    );
+      );
   }
 }

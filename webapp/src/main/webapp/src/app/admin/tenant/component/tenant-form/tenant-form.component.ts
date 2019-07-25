@@ -333,6 +333,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   @Input()
   requiredConfiguration: boolean;
 
+  @Input()
+  submitting: boolean;
+
   configurationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     required: new FormControl(false),
