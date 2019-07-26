@@ -71,6 +71,10 @@ export const protectedRoutes: Route[] = [
       ...studentRoutes,
       ...userGroupRoutes
     ]
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 
