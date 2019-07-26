@@ -52,12 +52,8 @@ export const publicRoutes: Route[] = [
  */
 export const protectedRoutes: Route[] = [
   {
-    path: 'home',
-    pathMatch: 'full',
-    redirectTo: ''
-  },
-  {
     path: '',
+    pathMatch: 'full',
     resolve: {
       translateComplete: TranslateResolve
     },
@@ -71,6 +67,15 @@ export const protectedRoutes: Route[] = [
       ...studentRoutes,
       ...userGroupRoutes
     ]
+  },
+  {
+    path: 'home',
+    pathMatch: 'full',
+    redirectTo: ''
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
 
