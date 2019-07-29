@@ -4,6 +4,26 @@ import { studentFields } from './data/student-fields';
 import { FieldConfiguration } from './field';
 import { isEqual } from 'lodash';
 
+const sandboxHidden = type => type === 'SANDBOX';
+
+function dataSources(
+  sources: string[],
+  mapper: (source: string) => { [key: string]: FieldConfiguration }
+): { [key: string]: FieldConfiguration } {
+  return sources.reduce((configurations, source) => {
+    return {
+      ...configurations,
+      ...[`datasources.${source}_ro`, `datasources.${source}_rw`].reduce(
+        (subConfigurations, path) => ({
+          ...subConfigurations,
+          ...mapper(path)
+        }),
+        {}
+      )
+    };
+  }, {});
+}
+
 const assessmentTypeOptions = translateService =>
   ['sum', 'ica', 'iab'].map(value => ({
     value,
@@ -46,70 +66,66 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
   },
+  'archive.pathPrefix': {
+    dataType: 'string',
+    required: true
+  },
   'archive.uriRoot': {
-    dataType: 'uri'
+    dataType: 's3uri'
+  },
+  'archive.s3AccessKey': {
+    dataType: 'string'
+  },
+  'archive.s3RegionStatic': {
+    dataType: 'string'
   },
   'archive.s3SecretKey': {
     dataType: 'password'
   },
-  'archive.configuredFile': {
-    dataType: 'boolean'
+  'archive.s3sse': {
+    dataType: 'string'
   },
-  'archive.configuredS3': {
-    dataType: 'boolean'
+  ...dataSources(['reporting', 'warehouse', 'migrate'], dataSource => ({
+    [`${dataSource}.urlParts.database`]: {
+      dataType: 'string',
+      required: true,
+      lowercase: true
+    },
+    [`${dataSource}.username`]: {
+      dataType: 'username',
+      required: true,
+      lowercase: true
+    },
+    [`${dataSource}.password`]: {
+      dataType: 'password',
+      required: true
+    }
+  })),
+  ...dataSources(['olap'], dataSource => ({
+    [`${dataSource}.schemaSearchPath`]: {
+      dataType: 'string',
+      required: true,
+      lowercase: true
+    },
+    [`${dataSource}.username`]: {
+      dataType: 'username',
+      required: true,
+      lowercase: true
+    },
+    [`${dataSource}.password`]: {
+      dataType: 'password',
+      required: true
+    }
+  })),
+  'reporting.accessDeniedUrl': {
+    dataType: 'string', // not url-fragment b/c of spring forward: prefix
+    hidden: sandboxHidden
   },
-  ...['reporting', 'warehouse', 'olap', 'migrate'].reduce((sources, source) => {
-    [`datasources.${source}_ro`, `datasources.${source}_rw`].forEach(
-      basePath => {
-        sources[`${basePath}.url`] = {
-          dataType: 'uri'
-        };
-        sources[`${basePath}.urlParts.database`] = {
-          dataType: 'database',
-          lowercase: true
-        };
-        sources[`${basePath}.username`] = {
-          dataType: 'username',
-          required: true,
-          lowercase: true
-        };
-        sources[`${basePath}.password`] = {
-          dataType: 'password',
-          required: true
-        };
-        sources[`${basePath}.testWhileIdle`] = {
-          dataType: 'boolean'
-        };
-        sources[`${basePath}.initialSize`] = {
-          dataType: 'integer'
-        };
-        sources[`${basePath}.maxActive`] = {
-          dataType: 'integer'
-        };
-        sources[`${basePath}.minIdle`] = {
-          dataType: 'integer'
-        };
-        sources[`${basePath}.removeAbandoned`] = {
-          dataType: 'boolean'
-        };
-        sources[`${basePath}.removeAbandonedTimeout`] = {
-          dataType: 'integer'
-        };
-        sources[`${basePath}.logAbandoned`] = {
-          dataType: 'boolean'
-        };
-      }
-    );
-    return sources;
-  }, {}),
   'reporting.interpretiveGuideUrl': {
     dataType: 'url-fragment'
   },
-  'reporting.accessDeniedUrl': {
-    dataType: 'url-fragment'
-  },
   'reporting.landingPageUrl': {
-    dataType: 'url-fragment'
+    dataType: 'string' // not url-fragment b/c of spring forward: prefix
   },
   'reporting.minItemDataYear': {
     dataType: 'integer'
@@ -129,13 +145,11 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'enumeration',
     required: true,
     options: stateOptions,
-    equals: isEqual
+    equals: isEqual,
+    hidden: sandboxHidden
   },
   'reporting.transferAccessEnabled': {
     dataType: 'boolean'
-  },
-  'reporting.translationLocation': {
-    dataType: 'uri'
   },
   'reporting.uiLanguages': {
     dataType: 'enumeration-list',

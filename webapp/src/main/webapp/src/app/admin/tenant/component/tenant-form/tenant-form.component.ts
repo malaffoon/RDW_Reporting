@@ -237,6 +237,11 @@ function setDefaultDatabaseNameAndUsername(
   const key = (inputKey || '').toLowerCase();
   const defaultUsername = key;
 
+  const archivePathPrefixControl = formGroup.controls[`archive.pathPrefix`];
+  if (archivePathPrefixControl.pristine) {
+    archivePathPrefixControl.patchValue(defaultUsername);
+  }
+
   Object.entries(formGroup.controls)
     // find datasource controls
     .filter(([key]) => datasourcePattern.test(key))
@@ -257,15 +262,19 @@ function setDefaultDatabaseNameAndUsername(
         usernameControl.patchValue(defaultUsername);
       }
 
-      const databaseNameControl =
-        formGroup.controls[`datasources.${source}.urlParts.database`];
-      if (databaseNameControl.pristine) {
-        const sourceName = source.replace(/_r(o|w)$/, '');
-        const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
-          sourceName
-        ](key);
-        databaseNameControl.patchValue(defaultDatabaseName);
-      }
+      const sourceName = source.replace(/_r(o|w)$/, '');
+      const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
+        sourceName
+      ](key);
+
+      [
+        formGroup.controls[`datasources.${source}.urlParts.database`],
+        formGroup.controls[`datasources.${source}.schemaSearchPath`]
+      ]
+        .filter(control => control != null && control.pristine)
+        .forEach(control => {
+          control.patchValue(defaultDatabaseName);
+        });
     });
 }
 

@@ -9,10 +9,31 @@ import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
 import { of } from 'rxjs/internal/observable/of';
+import { transform } from 'lodash';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
 const DataSetsRoute = `${AdminServiceRoute}/sandboxDataSets`;
+
+function omitByKey(object: any, matcher: (key: string) => boolean): any {
+  return transform(
+    object,
+    (result: any, value: any, key: string) => {
+      if (!matcher(key)) {
+        result[key] = value;
+      }
+    },
+    {}
+  );
+}
+
+function omitUnwantedDefaults(object: any): any {
+  return omitByKey(object, key =>
+    /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath))$/.test(
+      key
+    )
+  );
+}
 
 /**
  * Service responsible for sandboxes
@@ -105,7 +126,7 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.cachingDataService.get(DefaultsRoute).pipe(
-      map(defaults => toConfigurations(defaults, type)),
+      map(defaults => omitUnwantedDefaults(toConfigurations(defaults, type))),
       catchError(ResponseUtils.throwError)
     );
   }

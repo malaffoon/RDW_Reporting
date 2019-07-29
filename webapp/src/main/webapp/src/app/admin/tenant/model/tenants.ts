@@ -7,7 +7,7 @@ import {
   unflatten,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject, transform } from 'lodash';
+import { isEmpty, isObject, transform, omit } from 'lodash';
 import { fieldConfiguration } from './fields';
 
 /**
@@ -65,15 +65,6 @@ export function ignoreKeys(
   return function(result, object, property) {
     if (keyMatcher(property)) {
       result[property] = object;
-      return true;
-    }
-    return false;
-  };
-}
-
-export function omitKeys(...keys: string[]): FlattenCustomizer {
-  return function(result, object, property) {
-    if (keys.includes(property)) {
       return true;
     }
     return false;
@@ -166,12 +157,12 @@ export function toConfigurations(
       relevantConfigurations,
       composeFlattenCustomizers(
         // TODO normalize values here?
-        omitKeys('aggregate.tenants'),
         ignoreArraysOfPrimitives,
         // collapse this field into one
         ignoreKeys(key => key.startsWith('reporting.state'))
       )
     )
+    // blank out any defaults for these values
   );
 }
 
