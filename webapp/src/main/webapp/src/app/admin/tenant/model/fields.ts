@@ -2,7 +2,7 @@ import { Field, FieldConfiguration, InputType } from './field';
 import { fieldConfigurationsByKey } from './field-configurations';
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
-import { password, uri, url } from './field-validators';
+import { password, s3uri, uri, url } from './field-validators';
 import { TenantType } from './tenant-type';
 import { emptyToNull } from '../../../shared/support/support';
 import { isEqual } from 'lodash';
@@ -19,9 +19,9 @@ const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   uri: 'input',
   url: 'input',
   'url-fragment': 'input',
+  s3uri: 'input',
   password: 'input',
-  username: 'input',
-  databaseName: 'input'
+  username: 'input'
 };
 
 const identity = value => value;
@@ -36,7 +36,8 @@ const validatorsByPropertyDataType: { [key: string]: ValidatorFn[] } = <
   password: [password],
   uri: [uri],
   url: [url],
-  'url-fragment': [url]
+  'url-fragment': [url],
+  s3uri: [s3uri]
 };
 
 export function fieldConfiguration(key: string): FieldConfiguration {

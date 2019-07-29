@@ -6,6 +6,8 @@ export const uri = Validators.pattern(/^.+:\/\/.+$/);
 // can be a fragment
 export const url = Validators.pattern(/^[\/|\w+:\/\/].+$/);
 
+export const s3uri = Validators.pattern(/^s3:\/\/.+$/);
+
 export const password = Validators.compose([
   Validators.minLength(8),
   Validators.maxLength(64),
