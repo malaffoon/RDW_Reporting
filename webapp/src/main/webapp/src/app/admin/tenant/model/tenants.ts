@@ -175,7 +175,11 @@ export function toConfigurations(
           ignoreKeys(key => key.startsWith('reporting.state'))
         )
       ),
-      key => /^(aggregate\.tenant|datasources\.\w+\.password)$/.test(key)
+      // blank out any defaults for these values
+      key =>
+        /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath))$/.test(
+          key
+        )
     )
   );
 }

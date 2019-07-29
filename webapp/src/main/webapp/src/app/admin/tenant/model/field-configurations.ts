@@ -122,8 +122,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     hidden: sandboxHidden
   },
   'reporting.interpretiveGuideUrl': {
-    dataType: 'url-fragment',
-    required: true
+    dataType: 'url-fragment'
   },
   'reporting.landingPageUrl': {
     dataType: 'url-fragment'
@@ -156,8 +155,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     options: languageOptions
   },
   'reporting.userGuideUrl': {
-    dataType: 'url-fragment',
-    required: true
+    dataType: 'url-fragment'
   },
   'reporting.targetReport.insufficientDataCutoff': {
     dataType: 'float'
