@@ -118,14 +118,14 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     }
   })),
   'reporting.accessDeniedUrl': {
-    dataType: 'url-fragment',
+    dataType: 'string', // not url-fragment b/c of spring forward: prefix
     hidden: sandboxHidden
   },
   'reporting.interpretiveGuideUrl': {
     dataType: 'url-fragment'
   },
   'reporting.landingPageUrl': {
-    dataType: 'url-fragment'
+    dataType: 'string' // not url-fragment b/c of spring forward: prefix
   },
   'reporting.minItemDataYear': {
     dataType: 'integer'
