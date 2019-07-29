@@ -36,18 +36,6 @@ function trimStrings(object: any): any {
   );
 }
 
-function omitByKey(object: any, matcher: (key: string) => boolean): any {
-  return transform(
-    object,
-    (result: any, value: any, key: string) => {
-      if (!matcher(key)) {
-        result[key] = value;
-      }
-    },
-    {}
-  );
-}
-
 /**
  * If it finds a value that is an array of primitives it joins it.
  * If it finds an empty array it returns an empty string
@@ -165,22 +153,16 @@ export function toConfigurations(
 
   // TODO this valued filter wont be needed after the api update
   return valued(
-    omitByKey(
-      flatten(
-        relevantConfigurations,
-        composeFlattenCustomizers(
-          // TODO normalize values here?
-          ignoreArraysOfPrimitives,
-          // collapse this field into one
-          ignoreKeys(key => key.startsWith('reporting.state'))
-        )
-      ),
-      // blank out any defaults for these values
-      key =>
-        /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath))$/.test(
-          key
-        )
+    flatten(
+      relevantConfigurations,
+      composeFlattenCustomizers(
+        // TODO normalize values here?
+        ignoreArraysOfPrimitives,
+        // collapse this field into one
+        ignoreKeys(key => key.startsWith('reporting.state'))
+      )
     )
+    // blank out any defaults for these values
   );
 }
 

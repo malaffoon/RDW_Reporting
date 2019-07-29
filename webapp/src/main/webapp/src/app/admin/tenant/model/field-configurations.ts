@@ -145,7 +145,8 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'enumeration',
     required: true,
     options: stateOptions,
-    equals: isEqual
+    equals: isEqual,
+    hidden: sandboxHidden
   },
   'reporting.transferAccessEnabled': {
     dataType: 'boolean'
