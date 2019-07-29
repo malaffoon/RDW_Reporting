@@ -26,15 +26,13 @@ import { TenantType } from '../../model/tenant-type';
 
 export function configurationsFormGroup(
   type: TenantType,
-  defaults: any,
+  defaults: any, // these will be placeholders
   overrides: any = {},
   validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
   return new FormGroup(
-    Object.entries({
-      ...configurationFormFields(type),
-      ...defaults
-    }).reduce((controlsByName, [key, defaultValue]) => {
+    Object.keys(configurationFormFields(type)).reduce((controlsByName, key) => {
+      const defaultValue = defaults[key];
       const overrideValue = overrides[key];
       const value = overrideValue != null ? overrideValue : defaultValue;
       controlsByName[key] = new FormControl(value, fieldValidators(key));

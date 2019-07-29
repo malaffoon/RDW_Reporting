@@ -2,7 +2,7 @@ import { Field, FieldConfiguration, InputType } from './field';
 import { fieldConfigurationsByKey } from './field-configurations';
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
-import { password, s3uri, uri, url } from './field-validators';
+import { archiveUri, password, uri, url } from './field-validators';
 import { TenantType } from './tenant-type';
 import { emptyToNull } from '../../../shared/support/support';
 import { isEqual } from 'lodash';
@@ -12,22 +12,25 @@ const inputTypeByPropertyDataType: { [key: string]: InputType } = <
 >{
   string: 'input',
   boolean: 'checkbox',
-  integer: 'input', // TODO support input constraints like number etc.
-  float: 'input', // TODO support input constraints
+  'positive-integer': 'input',
+  'positive-decimal': 'input',
   enumeration: 'select',
-  'enumeration-list': 'multi-select',
+  'enumeration-list': 'multiselect',
   uri: 'input',
   url: 'input',
   'url-fragment': 'input',
-  s3uri: 'input',
+  'archive-uri': 'input',
   password: 'input',
   username: 'input'
 };
 
 const identity = value => value;
+// TODO this should really be based on key as sometimes arrays are sets and sometimes lists
 const normalizeByInputType: { [key: string]: (value: any) => any } = {
   input: value => emptyToNull(value),
-  checkbox: value => Boolean(value)
+  checkbox: value => Boolean(value),
+  // because in practice we are always comparing sets of primitives
+  multiselect: value => (value != null ? value.slice().sort() : [])
 };
 
 const validatorsByPropertyDataType: { [key: string]: ValidatorFn[] } = <
@@ -37,7 +40,7 @@ const validatorsByPropertyDataType: { [key: string]: ValidatorFn[] } = <
   uri: [uri],
   url: [url],
   'url-fragment': [url],
-  s3uri: [s3uri]
+  'archive-uri': [archiveUri]
 };
 
 export function fieldConfiguration(key: string): FieldConfiguration {
@@ -76,9 +79,10 @@ export function field(key: string, translateService: TranslateService): Field {
 export function configurationFormFields(
   type: TenantType
 ): { [key: string]: any } {
-  return Object.entries(fieldConfigurationsByKey).reduce((keys, [key]) => {
+  return Object.keys(fieldConfigurationsByKey).reduce((keys, key) => {
     // correctly construct form fields based on tenant type
-    if (type !== 'SANDBOX' || /^(aggregate|reporting)\..+$/.test(key)) {
+    const { hidden } = fieldConfiguration(key);
+    if (hidden == null || !hidden(type)) {
       keys[key] = null;
     }
     return keys;
