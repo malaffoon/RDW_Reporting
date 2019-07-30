@@ -7,7 +7,7 @@ import {
   unflatten,
   valued
 } from '../../../shared/support/support';
-import { isEmpty, isObject, transform, omit } from 'lodash';
+import { isEmpty, isObject, transform } from 'lodash';
 import { fieldConfiguration } from './fields';
 
 /**
@@ -18,7 +18,9 @@ function lowercase(object: { [key: string]: any }): { [key: string]: any } {
     object,
     (result: any, value: any, key: string) => {
       result[key] =
-        fieldConfiguration(key) && value != null && typeof value === 'string'
+        fieldConfiguration(key).lowercase &&
+        value != null &&
+        typeof value === 'string'
           ? value.toLowerCase()
           : value;
     },
