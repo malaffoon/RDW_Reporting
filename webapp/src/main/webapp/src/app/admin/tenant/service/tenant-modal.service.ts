@@ -30,7 +30,7 @@ export class TenantModalService {
       tenant
     );
     modal.body = this.translateService.instant(
-      'tenant.delete.modal.body',
+      `tenant.delete.modal.body.${tenant.type}`,
       tenant
     );
     modal.acceptButton = this.translateService.instant('common.action.delete');
