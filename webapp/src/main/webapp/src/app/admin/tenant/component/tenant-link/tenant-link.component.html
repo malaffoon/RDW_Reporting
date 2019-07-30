@@ -4,8 +4,8 @@
   (click)="$event.stopPropagation(); tenantClick.emit(tenant)"
   *ngIf="{
     active: tenant.status === 'ACTIVE',
-    failed: tenant.status === 'FAILED',
-    processing: tenant.status !== 'ACTIVE' && tenant.status !== 'FAILED'
+    failed: tenant.status.endsWith('FAILED'),
+    processing: tenant.status !== 'ACTIVE' && !tenant.status.endsWith('FAILED')
   } as status"
 >
   <div class="head">
