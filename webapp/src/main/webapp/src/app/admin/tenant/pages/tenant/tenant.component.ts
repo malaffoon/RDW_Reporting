@@ -95,29 +95,10 @@ export class TenantComponent implements OnDestroy {
       mergeMap(({ id }) =>
         id != null
           ? this.service.get(id)
-          : combineLatest(
-              this.type$,
-              this.tenants$,
-              this.dataSets$,
-              this.configurationDefaults$,
-              this.localizationDefaults$
-            ).pipe(
+          : combineLatest(this.type$, this.tenants$, this.dataSets$).pipe(
               takeUntil(this.destroyed$),
-              map(
-                ([
-                  type,
-                  [firstTenant],
-                  [firstDataSet],
-                  configurations,
-                  localizations
-                ]) =>
-                  defaultTenant(
-                    type,
-                    configurations,
-                    localizations,
-                    firstTenant,
-                    firstDataSet
-                  )
+              map(([type, [firstTenant], [firstDataSet]]) =>
+                defaultTenant(type, firstTenant, firstDataSet)
               )
             )
       ),

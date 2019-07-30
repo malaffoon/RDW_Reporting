@@ -39,13 +39,8 @@ import {
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
-import {
-  configurationFormFields,
-  fieldRequired,
-  fieldsEqual
-} from '../../model/fields';
+import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
-import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 
 export type FormMode = 'create' | 'update';
@@ -173,7 +168,7 @@ function toPropertiesProvider(
                     String(value)
                       .toLowerCase()
                       .includes(caseInsensitiveSearch)))) &&
-              (!modified || !fieldsEqual(controlKey, value, defaultValue)) &&
+              (!modified || isModified(controlKey, value, defaultValue)) &&
               (!required || fieldRequired(controlKey))
             );
           })
@@ -418,10 +413,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
-        {
-          ...configurationFormFields(this.value.type),
-          ...configurationDefaults // should normalize these? but these are now sparse no?
-        },
+        configurationDefaults,
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
       ).pipe(
@@ -481,14 +473,11 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     // TODO should this not override non-pristine values?
     // set form values to tenant values
     this.formGroup.patchValue({
-      configurations: configurationsFormGroup(
-        this.configurationDefaults,
-        tenant.configurations
-      ),
+      // don't override config props
       localizations: localizationsFormGroup(
         this.localizationDefaults,
         tenant.localizations
-      )
+      ).value
     });
   }
 

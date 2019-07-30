@@ -4,8 +4,12 @@ import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
 import { archiveUri, password, uri, url } from './field-validators';
 import { TenantType } from './tenant-type';
-import { emptyToNull } from '../../../shared/support/support';
-import { isEqual } from 'lodash';
+import {
+  emptyToNull,
+  isBlank,
+  isNullOrBlank
+} from '../../../shared/support/support';
+import { isEqual, isArray } from 'lodash';
 
 const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   { [key: string]: InputType }
@@ -59,6 +63,12 @@ export function fieldRequired(key: string): boolean {
   return fieldConfiguration(key).required;
 }
 
+export function fieldInputType(key: string): InputType {
+  return (
+    inputTypeByPropertyDataType[fieldConfiguration(key).dataType] || 'input'
+  );
+}
+
 export function field(key: string, translateService: TranslateService): Field {
   const configuration: FieldConfiguration = fieldConfiguration(key);
   const inputType =
@@ -78,12 +88,12 @@ export function field(key: string, translateService: TranslateService): Field {
 // used to ensure we display the full set of fields in the form
 export function configurationFormFields(
   type: TenantType
-): { [key: string]: any } {
+): { [key: string]: FieldConfiguration } {
   return Object.keys(fieldConfigurationsByKey).reduce((keys, key) => {
     // correctly construct form fields based on tenant type
-    const { hidden } = fieldConfiguration(key);
-    if (hidden == null || !hidden(type)) {
-      keys[key] = null;
+    const configuration = fieldConfiguration(key);
+    if (configuration.hidden == null || !configuration.hidden(type)) {
+      keys[key] = configuration;
     }
     return keys;
   }, {});
@@ -96,4 +106,21 @@ export function fieldsEqual(key: string, a: any, b: any): boolean {
       inputTypeByPropertyDataType[configuration.dataType] || 'input'
     ] || identity;
   return isEqual(normalize(a), normalize(b));
+}
+
+export function isModified(
+  key: string,
+  value: any,
+  originalValue: any
+): boolean {
+  if (value == null) {
+    return false;
+  }
+  if (typeof value === 'string' && isBlank(value)) {
+    return false;
+  }
+  if (isArray(value) && value.length === 0) {
+    return false;
+  }
+  return !fieldsEqual(key, value, originalValue);
 }
