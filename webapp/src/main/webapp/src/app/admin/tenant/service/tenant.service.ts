@@ -4,7 +4,11 @@ import { catchError, map, mapTo } from 'rxjs/operators';
 import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
-import { toConfigurations, toTenant, toServerTenant } from '../model/tenants';
+import {
+  toDefaultConfigurations,
+  toServerTenant,
+  toTenant
+} from '../model/tenants';
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
@@ -105,7 +109,7 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.cachingDataService.get(DefaultsRoute).pipe(
-      map(defaults => toConfigurations(defaults, type)),
+      map(defaults => toDefaultConfigurations(defaults, type)),
       catchError(ResponseUtils.throwError)
     );
   }

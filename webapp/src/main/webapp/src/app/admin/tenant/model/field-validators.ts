@@ -4,7 +4,9 @@ import { Validators } from '@angular/forms';
 export const uri = Validators.pattern(/^.+:\/\/.+$/);
 
 // can be a fragment
-export const url = Validators.pattern(/^[\/|\w+:\/\/].+$/);
+export const url = Validators.pattern(/^(\/|\w+:\/\/).+$/);
+
+export const archiveUri = Validators.pattern(/^(file|s3):\/\/.+$/);
 
 export const password = Validators.compose([
   Validators.minLength(8),

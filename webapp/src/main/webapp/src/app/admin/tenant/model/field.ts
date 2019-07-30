@@ -1,5 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn } from '@angular/forms';
+import { TenantType } from './tenant-type';
 
 /**
  * The different field data types
@@ -7,18 +8,19 @@ import { ValidatorFn } from '@angular/forms';
 export type PropertyDataType =
   | 'string'
   | 'boolean'
-  | 'integer'
-  | 'float'
+  | 'positive-integer'
+  | 'positive-decimal'
   | 'enumeration'
   | 'enumeration-list'
   | 'uri'
   | 'url'
   | 'url-fragment'
+  | 'archive-uri'
   | 'password'
   | 'username'
   | 'database';
 
-export type InputType = 'input' | 'checkbox' | 'select' | 'multi-select';
+export type InputType = 'input' | 'checkbox' | 'select' | 'multiselect';
 
 export interface Option<T = any> {
   /**
@@ -73,6 +75,11 @@ export interface FieldConfiguration<DataTypes = any, T = any> {
    * Used to provide leniency when comparing values for enumerations
    */
   equals?: Equals<T>;
+
+  /**
+   * If true the field will be omitted from the form
+   */
+  hidden?: (type: TenantType) => boolean;
 }
 
 /**
