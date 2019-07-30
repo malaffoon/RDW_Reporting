@@ -1,4 +1,4 @@
-import { isEmpty, isEqual, omitBy, isObject } from 'lodash';
+import { isEmpty, isEqual, isArray, omitBy, isObject } from 'lodash';
 
 export function isBlank(value: string): boolean {
   return value.trim().length === 0;
@@ -553,7 +553,18 @@ export function rightDifference(a: any, b: any): any {
  */
 export function valued(value: any): any {
   return Object.entries(value).reduce((valued, [key, value]) => {
-    if (value != null && !(typeof value === 'string' && value.length === 0)) {
+    if (
+      // null or undefined
+      value != null &&
+      // empty strings
+      !(typeof value === 'string' && value.length === 0) &&
+      // empty maps/objects
+      !(
+        typeof value === 'object' &&
+        !isArray(value) &&
+        Object.keys(value).length === 0
+      )
+    ) {
       valued[key] = value;
     }
     return valued;
