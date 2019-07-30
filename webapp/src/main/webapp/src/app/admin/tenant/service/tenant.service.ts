@@ -4,36 +4,19 @@ import { catchError, map, mapTo } from 'rxjs/operators';
 import { DataService } from '../../../shared/data/data.service';
 import { ResponseUtils } from '../../../shared/response-utils';
 import { AdminServiceRoute } from '../../../shared/service-route';
-import { toConfigurations, toTenant, toServerTenant } from '../model/tenants';
+import {
+  toDefaultConfigurations,
+  toServerTenant,
+  toTenant
+} from '../model/tenants';
 import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
 import { of } from 'rxjs/internal/observable/of';
-import { transform } from 'lodash';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
 const DataSetsRoute = `${AdminServiceRoute}/sandboxDataSets`;
-
-function omitByKey(object: any, matcher: (key: string) => boolean): any {
-  return transform(
-    object,
-    (result: any, value: any, key: string) => {
-      if (!matcher(key)) {
-        result[key] = value;
-      }
-    },
-    {}
-  );
-}
-
-function omitUnwantedDefaults(object: any): any {
-  return omitByKey(object, key =>
-    /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath))$/.test(
-      key
-    )
-  );
-}
 
 /**
  * Service responsible for sandboxes
@@ -126,7 +109,7 @@ export class TenantService {
    */
   getDefaultConfigurationProperties(type: TenantType): Observable<any> {
     return this.cachingDataService.get(DefaultsRoute).pipe(
-      map(defaults => omitUnwantedDefaults(toConfigurations(defaults, type))),
+      map(defaults => toDefaultConfigurations(defaults, type)),
       catchError(ResponseUtils.throwError)
     );
   }

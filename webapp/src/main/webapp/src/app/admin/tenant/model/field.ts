@@ -8,18 +8,19 @@ import { TenantType } from './tenant-type';
 export type PropertyDataType =
   | 'string'
   | 'boolean'
-  | 'integer'
-  | 'float'
+  | 'positive-integer'
+  | 'positive-decimal'
   | 'enumeration'
   | 'enumeration-list'
   | 'uri'
   | 'url'
   | 'url-fragment'
+  | 'archive-uri'
   | 'password'
   | 'username'
   | 'database';
 
-export type InputType = 'input' | 'checkbox' | 'select' | 'multi-select';
+export type InputType = 'input' | 'checkbox' | 'select' | 'multiselect';
 
 export interface Option<T = any> {
   /**

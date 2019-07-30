@@ -39,18 +39,12 @@ import {
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
-import {
-  configurationFormFields,
-  fieldRequired,
-  fieldsEqual
-} from '../../model/fields';
+import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
-import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
-const byKey = ordering(byString).on(([key]) => key).compare;
 
 export function tenantFormGroup(
   value: TenantConfiguration,
@@ -116,8 +110,8 @@ export function tenantFormGroup(
   );
 }
 
-interface PropertySearch<T> {
-  results: [string, T][];
+interface PropertySearch {
+  results: string[];
   hasSearch: boolean;
   invalid: boolean;
 }
@@ -131,15 +125,15 @@ interface PropertySearch<T> {
  * @param submitted$ Observable that produces a signal when the form is submitted (used for configurations)
  * @param keyTransform Transform placed on keys before matching them with the search word (used for configurations)
  */
-function toPropertiesProvider<T = any>(
+function toPropertiesProvider(
   searchFormGroup: FormGroup,
   formGroup: FormGroup,
-  defaults: { [key: string]: T },
+  defaults: { [key: string]: any },
   submitted$: Observable<boolean> = of(false),
   keyTransform: (key: string) => string = value => value
-): Observable<PropertySearch<T>> {
+): Observable<PropertySearch> {
   const { controls, value } = searchFormGroup;
-  const entries = Object.entries(defaults);
+  //const entries = Object.entries(defaults);
   return combineLatest(
     controls.search.valueChanges.pipe(
       startWith(value.search),
@@ -158,8 +152,10 @@ function toPropertiesProvider<T = any>(
           submitted &&
           formGroup.invalid &&
           showErrorsRecursive(formGroup, submitted),
-        results: entries
-          .filter(([controlKey, defaultValue]) => {
+        results: Object.keys(formGroup.controls)
+          .sort(byString)
+          .filter(controlKey => {
+            const defaultValue = defaults[controlKey];
             const caseInsensitiveSearch = search.toLowerCase();
             const key = keyTransform(controlKey);
             const value = formGroup.controls[controlKey].value;
@@ -172,11 +168,10 @@ function toPropertiesProvider<T = any>(
                     String(value)
                       .toLowerCase()
                       .includes(caseInsensitiveSearch)))) &&
-              (!modified || !fieldsEqual(controlKey, value, defaultValue)) &&
+              (!modified || isModified(controlKey, value, defaultValue)) &&
               (!required || fieldRequired(controlKey))
             );
           })
-          .sort(byKey)
       };
     })
   );
@@ -418,16 +413,15 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
-        {
-          ...configurationFormFields(this.value.type),
-          ...configurationDefaults // should normalize these? but these are now sparse no?
-        },
+        configurationDefaults,
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
-          const properties = results.map(([key, originalValue]) => {
+          const properties = results.map(key => {
+            const originalValue = configurationDefaults[key];
+
             // in create mode all props can be set
             // in update mode only aggregate and reporting props can be set
             const writable =
@@ -457,7 +451,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results }) =>
-          results.map(([key, defaultValue]) => toProperty(key, defaultValue))
+          results.map(key => toProperty(key, localizationDefaults[key]))
         )
       );
 
@@ -479,14 +473,11 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     // TODO should this not override non-pristine values?
     // set form values to tenant values
     this.formGroup.patchValue({
-      configurations: configurationsFormGroup(
-        this.configurationDefaults,
-        tenant.configurations
-      ),
+      // don't override config props
       localizations: localizationsFormGroup(
         this.localizationDefaults,
         tenant.localizations
-      )
+      ).value
     });
   }
 

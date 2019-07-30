@@ -12,12 +12,13 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { ConfigurationProperty, Property } from '../../model/property';
-import { fieldsEqual } from '../../model/fields';
+import { isModified } from '../../model/fields';
 
 export function localizationsFormGroup(
   defaults: any,
-  overrides: any
+  overrides: any = {}
 ): FormGroup {
+  overrides = overrides || {};
   return new FormGroup(
     Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
       const overrideValue = overrides[key];
@@ -68,10 +69,10 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
   }
 
   modified(property: ConfigurationProperty): boolean {
-    return !fieldsEqual(
+    return isModified(
       property.key,
-      property.originalValue,
-      this.formGroup.value[property.key]
+      this.formGroup.value[property.key],
+      property.originalValue
     );
   }
 

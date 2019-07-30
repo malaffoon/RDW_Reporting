@@ -36,6 +36,18 @@ function trimStrings(object: any): any {
   );
 }
 
+function omitByKey(object: any, matcher: (key: string) => boolean): any {
+  return transform(
+    object,
+    (result: any, value: any, key: string) => {
+      if (!matcher(key)) {
+        result[key] = value;
+      }
+    },
+    {}
+  );
+}
+
 /**
  * If it finds a value that is an array of primitives it joins it.
  * If it finds an empty array it returns an empty string
@@ -73,19 +85,19 @@ export function ignoreKeys(
 
 export function defaultTenant(
   type: TenantType,
-  configurations: any,
-  localizations: any,
   tenant?: TenantConfiguration,
   dataSet?: DataSet
-) {
+): TenantConfiguration {
+  const configurations = {};
+  const localizations = {};
   return type === 'SANDBOX'
     ? {
         type,
-        configurations,
-        localizations,
         label: tenant.label + ' Sandbox',
         parentTenantCode: tenant.code,
-        dataSet
+        dataSet,
+        configurations,
+        localizations
       }
     : {
         type,
@@ -136,7 +148,7 @@ export function toTenant(
  */
 export function toConfigurations(
   { aggregate, archive, datasources, reporting }: any,
-  type
+  type: TenantType
 ): any {
   const relevantConfigurations =
     type === 'SANDBOX'
@@ -162,7 +174,15 @@ export function toConfigurations(
         ignoreKeys(key => key.startsWith('reporting.state'))
       )
     )
-    // blank out any defaults for these values
+  );
+}
+
+export function toDefaultConfigurations(defaults: any, type: TenantType): any {
+  return omitByKey(toConfigurations(defaults, type), key =>
+    // blank out any defaults for these fields
+    /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath))$/.test(
+      key
+    )
   );
 }
 

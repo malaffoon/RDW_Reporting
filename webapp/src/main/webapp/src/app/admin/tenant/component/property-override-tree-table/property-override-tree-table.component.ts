@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  forwardRef,
-  Input,
-  ViewChild
-} from '@angular/core';
+import { Component, forwardRef, Input, ViewChild } from '@angular/core';
 import {
   ControlContainer,
   ControlValueAccessor,
@@ -19,8 +13,9 @@ import { showErrors } from '../../../../shared/form/forms';
 import { ConfigurationProperty } from '../../model/property';
 import {
   configurationFormFields,
-  fieldsEqual,
-  fieldValidators
+  fieldInputType,
+  fieldValidators,
+  isModified
 } from '../../model/fields';
 import { TenantType } from '../../model/tenant-type';
 
@@ -30,13 +25,17 @@ export function configurationsFormGroup(
   overrides: any = {},
   validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
+  overrides = overrides || {};
   return new FormGroup(
-    Object.entries({
-      ...configurationFormFields(type),
-      ...defaults
-    }).reduce((controlsByName, [key, defaultValue]) => {
-      const overrideValue = overrides[key];
-      const value = overrideValue != null ? overrideValue : defaultValue;
+    Object.keys(configurationFormFields(type)).reduce((controlsByName, key) => {
+      // don't populate form control values for inputs
+      // show a placeholder instead to indicate that entering nothing will
+      // result in that default value
+      const value =
+        fieldInputType(key) !== 'input'
+          ? overrides[key] || defaults[key]
+          : overrides[key];
+
       controlsByName[key] = new FormControl(value, fieldValidators(key));
       return controlsByName;
     }, {}),
@@ -142,10 +141,10 @@ export class PropertyOverrideTreeTableComponent
   }
 
   modified(property: ConfigurationProperty): boolean {
-    return !fieldsEqual(
+    return isModified(
       property.key,
-      property.originalValue,
-      this.formGroup.value[property.key]
+      this.formGroup.value[property.key],
+      property.originalValue
     );
   }
 

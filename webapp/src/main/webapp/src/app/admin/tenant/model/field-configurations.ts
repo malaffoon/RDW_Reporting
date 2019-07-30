@@ -47,6 +47,9 @@ const languageOptions = translateService =>
     label: translateService.instant(`common.language.${value}`)
   }));
 
+const primitiveSetEquals = (a, b) =>
+  isEqual(a != null ? a.slice().sort() : [], b != null ? b.slice().sort() : []);
+
 const studentFieldOptions = () =>
   ['Enabled', 'Admin', 'Disabled'].map(value => ({
     value,
@@ -57,6 +60,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
+    // TODO add not blank requirement
   },
   'aggregate.statewideUserAssessmentTypes': {
     dataType: 'enumeration-list',
@@ -68,53 +72,65 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   },
   'archive.pathPrefix': {
     dataType: 'string',
-    required: true
+    required: true,
+    hidden: sandboxHidden
   },
   'archive.uriRoot': {
-    dataType: 's3uri'
+    dataType: 's3uri',
+    hidden: sandboxHidden
   },
   'archive.s3AccessKey': {
-    dataType: 'string'
+    dataType: 'string',
+    hidden: sandboxHidden
   },
   'archive.s3RegionStatic': {
-    dataType: 'string'
+    dataType: 'string',
+    hidden: sandboxHidden
   },
   'archive.s3SecretKey': {
-    dataType: 'password'
+    dataType: 'password',
+    hidden: sandboxHidden
   },
   'archive.s3sse': {
-    dataType: 'string'
+    dataType: 'string',
+    hidden: sandboxHidden
   },
   ...dataSources(['reporting', 'warehouse', 'migrate'], dataSource => ({
     [`${dataSource}.urlParts.database`]: {
       dataType: 'string',
       required: true,
-      lowercase: true
+      lowercase: true,
+      hidden: sandboxHidden
     },
     [`${dataSource}.username`]: {
       dataType: 'username',
       required: true,
-      lowercase: true
+      lowercase: true,
+      hidden: sandboxHidden
     },
     [`${dataSource}.password`]: {
       dataType: 'password',
-      required: true
+      required: true,
+      hidden: sandboxHidden
     }
   })),
   ...dataSources(['olap'], dataSource => ({
     [`${dataSource}.schemaSearchPath`]: {
       dataType: 'string',
       required: true,
-      lowercase: true
+      lowercase: true,
+      hidden: sandboxHidden
     },
     [`${dataSource}.username`]: {
       dataType: 'username',
       required: true,
-      lowercase: true
+      lowercase: true,
+      hidden: sandboxHidden
     },
     [`${dataSource}.password`]: {
       dataType: 'password',
-      required: true
+      required: true,
+      hidden: sandboxHidden
     }
   })),
   'reporting.accessDeniedUrl': {
@@ -128,17 +144,13 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'string' // not url-fragment b/c of spring forward: prefix
   },
   'reporting.minItemDataYear': {
-    dataType: 'integer'
+    dataType: 'positive-integer'
   },
   'reporting.percentileDisplayEnabled': {
     dataType: 'boolean'
   },
-  'reporting.reportLanguages': {
-    dataType: 'enumeration-list',
-    options: languageOptions
-  },
   'reporting.schoolYear': {
-    dataType: 'integer'
+    dataType: 'positive-integer'
   },
   // flatten state
   'reporting.state': {
@@ -151,6 +163,10 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'reporting.transferAccessEnabled': {
     dataType: 'boolean'
   },
+  'reporting.reportLanguages': {
+    dataType: 'enumeration-list',
+    options: languageOptions
+  },
   'reporting.uiLanguages': {
     dataType: 'enumeration-list',
     options: languageOptions
@@ -159,16 +175,17 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'url-fragment'
   },
   'reporting.targetReport.insufficientDataCutoff': {
-    dataType: 'float'
+    dataType: 'positive-decimal'
   },
   'reporting.targetReport.minNumberOfStudents': {
-    dataType: 'integer'
+    dataType: 'positive-integer'
   },
   ...studentFields.reduce((configurations, studentField) => {
     configurations[`reporting.studentFields.${studentField}`] = {
       dataType: 'enumeration',
       options: studentFieldOptions,
-      equals: (a, b) => a.toLowerCase() === b.toLowerCase()
+      equals: (a, b) =>
+        (a || 'Enabled').toLowerCase() === (b || 'Enabled').toLowerCase()
     };
     return configurations;
   }, {})
