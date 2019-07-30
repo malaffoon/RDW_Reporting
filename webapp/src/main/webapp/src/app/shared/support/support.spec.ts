@@ -5,7 +5,8 @@ import {
   flatten,
   rightDifference,
   unflatten,
-  Utils
+  Utils,
+  valued
 } from './support';
 import { isObject } from 'lodash';
 
@@ -236,6 +237,26 @@ describe('rightDifference', () => {
     expect(rightDifference(left, right)).toEqual({
       c: 4,
       d: 5
+    });
+  });
+});
+
+describe('valued', () => {
+  it('should remove non-valued entries', () => {
+    expect(
+      valued({
+        a: 0,
+        b: null,
+        c: undefined,
+        d: '',
+        e: {},
+        f: { a: 0 },
+        g: []
+      })
+    ).toEqual({
+      a: 0,
+      f: { a: 0 },
+      g: []
     });
   });
 });

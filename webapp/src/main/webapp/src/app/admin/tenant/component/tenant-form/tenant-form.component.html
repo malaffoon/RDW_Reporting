@@ -154,6 +154,77 @@
       </div>
     </ng-container>
 
+    <ng-container *ngIf="value.type === 'SANDBOX'">
+      <div
+        *ngIf="formGroup.get('tenant') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="tenant">
+          {{ 'tenant-form.field.tenant.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.tenant.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container
+          *ngIf="writable && mode === 'create'; else readonlyTenant"
+        >
+          <select
+            id="tenant"
+            class="form-control"
+            formControlName="tenant"
+            (ngModelChange)="onTenantChange($event)"
+          >
+            <option *ngFor="let tenant of tenants" [ngValue]="tenant">
+              {{ tenant.label }}
+            </option>
+          </select>
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.tenant.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyTenant>
+          <div>{{ control.value.label }}</div>
+        </ng-template>
+      </div>
+
+      <div
+        *ngIf="formGroup.get('dataSet') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="dataSet">
+          {{ 'tenant-form.field.dataSet.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.dataSet.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container
+          *ngIf="writable && mode === 'create'; else readonlyDataSet"
+        >
+          <select id="dataSet" class="form-control" formControlName="dataSet">
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
+              {{ dataSet.label }}
+            </option>
+          </select>
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.dataSet.error.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyDataSet>
+          <div>{{ value.dataSet?.label }}</div>
+        </ng-template>
+      </div>
+    </ng-container>
+
     <div
       *ngIf="formGroup.get('label') as control"
       class="form-group"
@@ -203,77 +274,6 @@
         <p>{{ value.description }}</p>
       </ng-template>
     </div>
-
-    <ng-container *ngIf="value.type === 'SANDBOX'">
-      <div
-        *ngIf="formGroup.get('tenant') as control"
-        class="form-group"
-        [ngClass]="{
-          'has-error': showErrors(control, form.submitted)
-        }"
-      >
-        <label for="tenant">
-          {{ 'tenant-form.field.tenant.label' | translate }}
-          <app-info
-            popoverContent="{{ 'tenant-form.field.tenant.info' | translate }}"
-          ></app-info>
-        </label>
-        <ng-container
-          *ngIf="writable && mode === 'create'; else readonlyTenant"
-        >
-          <select
-            id="tenant"
-            class="form-control"
-            formControlName="tenant"
-            (change)="onTenantChange($event.target.value)"
-          >
-            <option *ngFor="let tenant of tenants" [ngValue]="tenant">
-              {{ tenant.label }}
-            </option>
-          </select>
-          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
-            <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-form.field.tenant.required' | translate }}
-            </ng-container>
-          </span>
-        </ng-container>
-        <ng-template #readonlyTenant>
-          <div>{{ control.value.label }}</div>
-        </ng-template>
-      </div>
-
-      <div
-        *ngIf="formGroup.get('dataSet') as control"
-        class="form-group"
-        [ngClass]="{
-          'has-error': showErrors(control, form.submitted)
-        }"
-      >
-        <label for="dataSet">
-          {{ 'tenant-form.field.dataSet.label' | translate }}
-          <app-info
-            popoverContent="{{ 'tenant-form.field.dataSet.info' | translate }}"
-          ></app-info>
-        </label>
-        <ng-container
-          *ngIf="writable && mode === 'create'; else readonlyDataSet"
-        >
-          <select id="dataSet" class="form-control" formControlName="dataSet">
-            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
-              {{ dataSet.label }}
-            </option>
-          </select>
-          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
-            <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-form.field.dataSet.error.required' | translate }}
-            </ng-container>
-          </span>
-        </ng-container>
-        <ng-template #readonlyDataSet>
-          <div>{{ value.dataSet?.label }}</div>
-        </ng-template>
-      </div>
-    </ng-container>
 
     <div class="toggles">
       <app-toggle-label
