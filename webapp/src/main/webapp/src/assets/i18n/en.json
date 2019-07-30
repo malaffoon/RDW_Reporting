@@ -1535,6 +1535,7 @@
     },
     "no-results": "There are no configuration properties matching your search",
     "boolean": {
+      "undefined": "False",
       "null": "False",
       "false": "False",
       "true": "True"

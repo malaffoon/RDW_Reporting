@@ -157,6 +157,18 @@ export class PropertyOverrideTreeTableComponent
     );
   }
 
+  readonlyValue(property: ConfigurationProperty): any {
+    const value = this.formGroup.value[property.key];
+    if (value != null) {
+      return value;
+    }
+    const defaultValue = this.defaults[property.key];
+    if (defaultValue != null) {
+      return defaultValue;
+    }
+    return '';
+  }
+
   // control value accessor implementation:
 
   public onTouched: () => void = () => {};

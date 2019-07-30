@@ -24,6 +24,12 @@ import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant, toServerTenant } from '../../model/tenants';
 import { flatten } from '../../../../shared/support/support';
 import { TenantModalService } from '../../service/tenant-modal.service';
+import { ordering } from '@kourge/ordering';
+import { byString } from '@kourge/ordering/comparator';
+
+const byLabel = ordering(byString).on<TenantConfiguration | DataSet>(
+  ({ label }) => label
+).compare;
 
 @Component({
   selector: 'app-tenant',
@@ -54,8 +60,14 @@ export class TenantComponent implements OnDestroy {
     private notificationService: NotificationService,
     private translationLoader: RdwTranslateLoader
   ) {
-    const sandboxDataSets$ = this.service.getSandboxDataSets().pipe(share());
-    const tenants$ = this.service.getAll('TENANT').pipe(share());
+    const sandboxDataSets$ = this.service.getSandboxDataSets().pipe(
+      map(values => values.slice().sort(byLabel)),
+      share()
+    );
+    const tenants$ = this.service.getAll('TENANT').pipe(
+      map(values => values.slice().sort(byLabel)),
+      share()
+    );
 
     this.tenantKeyAvailable = (value: string) =>
       this.service

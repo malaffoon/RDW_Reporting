@@ -39,7 +39,11 @@ import {
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
-import { fieldRequired, isModified } from '../../model/fields';
+import {
+  configurationFormFields,
+  fieldRequired,
+  isModified
+} from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { byString } from '@kourge/ordering/comparator';
 
@@ -232,10 +236,7 @@ function setDefaultDatabaseNameAndUsername(
   const key = (inputKey || '').toLowerCase();
   const defaultUsername = key;
 
-  const archivePathPrefixControl = formGroup.controls[`archive.pathPrefix`];
-  if (archivePathPrefixControl.pristine) {
-    archivePathPrefixControl.patchValue(defaultUsername);
-  }
+  patch(formGroup.controls[`archive.pathPrefix`], defaultUsername);
 
   Object.entries(formGroup.controls)
     // find datasource controls
@@ -251,11 +252,10 @@ function setDefaultDatabaseNameAndUsername(
     }, [])
     // for every datasource name apply defaults
     .forEach(source => {
-      const usernameControl =
-        formGroup.controls[`datasources.${source}.username`];
-      if (usernameControl.pristine) {
-        usernameControl.patchValue(defaultUsername);
-      }
+      patch(
+        formGroup.controls[`datasources.${source}.username`],
+        defaultUsername
+      );
 
       const sourceName = source.replace(/_r(o|w)$/, '');
       const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
@@ -265,11 +265,9 @@ function setDefaultDatabaseNameAndUsername(
       [
         formGroup.controls[`datasources.${source}.urlParts.database`],
         formGroup.controls[`datasources.${source}.schemaSearchPath`]
-      ]
-        .filter(control => control != null && control.pristine)
-        .forEach(control => {
-          control.patchValue(defaultDatabaseName);
-        });
+      ].forEach(control => {
+        patch(control, defaultDatabaseName);
+      });
     });
 }
 
@@ -277,11 +275,29 @@ function setDefaultState(control: AbstractControl, value: string): void {
   const state = states.find(
     ({ abbreviation }) => abbreviation.toLowerCase() === value.toLowerCase()
   );
-  if (state != null && control.pristine) {
-    control.patchValue({
-      code: state.abbreviation,
-      name: state.name
-    });
+  patch(control, {
+    code: state.abbreviation,
+    name: state.name
+  });
+}
+
+function createBulkPatch(
+  formGroup: FormGroup,
+  keys: string[],
+  overrides: any
+): { [key: string]: any } {
+  return keys.reduce((patch, key) => {
+    const control = formGroup.controls[key];
+    if (control != null) {
+      patch[key] = control.pristine ? overrides[key] : control.value;
+    }
+    return patch;
+  }, {});
+}
+
+function patch(control: AbstractControl, value: any): void {
+  if (control != null && control.pristine) {
+    control.patchValue(value);
   }
 }
 
@@ -469,11 +485,15 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     this.destroyed$.complete();
   }
 
-  onTenantChange(tenant: TenantConfiguration): void {
-    // TODO should this not override non-pristine values?
-    // set form values to tenant values
+  onTenantChange(tenant: any): void {
+    patch(this.formGroup.controls.label, tenant.label);
+    // TODO improve by only writing over pristine form fields
     this.formGroup.patchValue({
-      // don't override config props
+      configurations: configurationsFormGroup(
+        tenant.type,
+        this.configurationDefaults,
+        tenant.configurations
+      ).value,
       localizations: localizationsFormGroup(
         this.localizationDefaults,
         tenant.localizations
