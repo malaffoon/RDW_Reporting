@@ -39,11 +39,7 @@ import {
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
-import {
-  configurationFormFields,
-  fieldRequired,
-  isModified
-} from '../../model/fields';
+import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { byString } from '@kourge/ordering/comparator';
 
@@ -68,8 +64,7 @@ export function tenantFormGroup(
   const configurations = configurationsFormGroup(
     value.type,
     configurationDefaults,
-    value.configurations,
-    [onePasswordPerUser]
+    value.configurations
   );
 
   const localizations = localizationsFormGroup(

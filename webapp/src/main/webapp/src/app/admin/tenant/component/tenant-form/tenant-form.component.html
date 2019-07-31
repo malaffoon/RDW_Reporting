@@ -328,14 +328,26 @@
         </div>
 
         <ng-container *ngIf="formGroup.controls.configurations as control">
-          <p class="text-danger" *ngIf="showErrors(control, form.submitted)">
-            <ng-container *ngIf="control.errors.onePasswordPerUser">
+          <div class="text-danger" *ngIf="showErrors(control, form.submitted)">
+            <p *ngIf="control.errors.onePasswordPerUser">
               {{
                 'tenant-form.field.configurations.error.onePasswordPerUser'
                   | translate: control.errors.onePasswordPerUser
               }}
-            </ng-container>
-          </p>
+            </p>
+            <p *ngIf="control.errors.oneDatabasePerDataSource">
+              {{
+                'tenant-form.field.configurations.error.oneDatabasePerDataSource'
+                  | translate: control.errors.oneDatabasePerDataSource
+              }}
+            </p>
+            <p *ngIf="control.errors.uniqueDatabasePerInstance">
+              {{
+                'tenant-form.field.configurations.error.uniqueDatabasePerInstance'
+                  | translate: control.errors.uniqueDatabasePerInstance
+              }}
+            </p>
+          </div>
         </ng-container>
 
         <property-override-tree-table

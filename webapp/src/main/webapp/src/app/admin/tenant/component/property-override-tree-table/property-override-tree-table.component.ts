@@ -18,12 +18,16 @@ import {
   isModified
 } from '../../model/fields';
 import { TenantType } from '../../model/tenant-type';
+import {
+  oneDatabasePerDataSource,
+  onePasswordPerUser,
+  uniqueDatabasePerInstance
+} from '../tenant-form/tenant-form.validators';
 
 export function configurationsFormGroup(
   type: TenantType,
   defaults: any,
-  overrides: any = {},
-  validators: ValidatorFn | ValidatorFn[] = []
+  overrides: any = {}
 ): FormGroup {
   overrides = overrides || {};
   return new FormGroup(
@@ -39,7 +43,7 @@ export function configurationsFormGroup(
       controlsByName[key] = new FormControl(value, fieldValidators(key));
       return controlsByName;
     }, {}),
-    validators
+    [onePasswordPerUser, oneDatabasePerDataSource, uniqueDatabasePerInstance]
   );
 }
 
