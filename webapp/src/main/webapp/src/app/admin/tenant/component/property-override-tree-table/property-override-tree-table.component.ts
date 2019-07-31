@@ -27,9 +27,12 @@ import {
 export function configurationsFormGroup(
   type: TenantType,
   defaults: any,
-  overrides: any = {}
+  overrides: any = {},
+  validators: ValidatorFn | ValidatorFn[] = []
 ): FormGroup {
   overrides = overrides || {};
+
+  // TODO consider reworking - this uses so much of the field metadata that it probably should be a product of the fields
   return new FormGroup(
     Object.keys(configurationFormFields(type)).reduce((controlsByName, key) => {
       // don't populate form control values for inputs
@@ -43,7 +46,7 @@ export function configurationsFormGroup(
       controlsByName[key] = new FormControl(value, fieldValidators(key));
       return controlsByName;
     }, {}),
-    [onePasswordPerUser, oneDatabasePerDataSource, uniqueDatabasePerInstance]
+    validators
   );
 }
 
