@@ -249,9 +249,10 @@ function setDefaultDatabaseNameAndUsername(
   inputKey: string
 ): void {
   const key = (inputKey || '').toLowerCase();
-  const defaultUsername = key;
 
-  patch(formGroup.controls[`archive.pathPrefix`], defaultUsername);
+  const defaultUsername = `rdw_${key}`;
+
+  patch(formGroup.controls[`archive.pathPrefix`], key);
 
   Object.entries(formGroup.controls)
     // find datasource controls

@@ -2,7 +2,13 @@ import { Field, FieldConfiguration, InputType } from './field';
 import { fieldConfigurationsByKey } from './field-configurations';
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
-import { archiveUri, password, uri, url } from './field-validators';
+import {
+  archiveUri,
+  notPostgresReservedWord,
+  password,
+  uri,
+  url
+} from './field-validators';
 import { TenantType } from './tenant-type';
 import {
   emptyToNull,
@@ -44,7 +50,9 @@ const validatorsByPropertyDataType: { [key: string]: ValidatorFn[] } = <
   uri: [uri],
   url: [url],
   'url-fragment': [url],
-  'archive-uri': [archiveUri]
+  'archive-uri': [archiveUri],
+  username: [notPostgresReservedWord],
+  database: [notPostgresReservedWord]
 };
 
 export function fieldConfiguration(key: string): FieldConfiguration {
