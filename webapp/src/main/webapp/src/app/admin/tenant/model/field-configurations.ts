@@ -76,7 +76,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     hidden: sandboxHidden
   },
   'archive.uriRoot': {
-    dataType: 's3uri',
+    dataType: 'archive-uri',
     hidden: sandboxHidden
   },
   'archive.s3AccessKey': {

@@ -34,8 +34,10 @@ import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
 import {
   available,
+  oneDatabasePerDataSource,
   onePasswordPerUser,
-  tenantKey
+  tenantKey,
+  uniqueDatabasePerInstance
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
 import { states } from '../../model/data/state';
@@ -45,8 +47,10 @@ import { byString } from '@kourge/ordering/comparator';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
+const updateModeWritableConfigurationsPattern = /^(aggregate|reporting)\..+$/;
 
 export function tenantFormGroup(
+  mode: FormMode,
   value: TenantConfiguration,
   configurationDefaults: any,
   localizationDefaults: any,
@@ -64,9 +68,25 @@ export function tenantFormGroup(
   const configurations = configurationsFormGroup(
     value.type,
     configurationDefaults,
-    value.configurations
+    value.configurations,
+    mode === 'create'
+      ? [
+          onePasswordPerUser,
+          oneDatabasePerDataSource,
+          uniqueDatabasePerInstance
+        ]
+      : [] // validators not needed because these are readonly fields in update mode
   );
 
+  // disable validation of readonly fields
+  // TODO this should be done in the configurationsFormGroup() method
+  if (mode === 'update') {
+    Object.entries(configurations.controls)
+      .filter(([key]) => !updateModeWritableConfigurationsPattern.test(key))
+      .forEach(([, control]) => {
+        control.disable();
+      });
+  }
   const localizations = localizationsFormGroup(
     localizationDefaults,
     value.localizations
@@ -98,7 +118,7 @@ export function tenantFormGroup(
               tenantKey,
               notBlank
             ],
-            [available(tenantKeyAvailable)]
+            mode === 'create' ? [available(tenantKeyAvailable)] : []
           ),
           id: new FormControl(value.id || '', [Validators.required, notBlank]),
           label,
@@ -371,6 +391,12 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   constructor(private translateService: TranslateService) {}
 
   onSubmit(): void {
+    console.log(
+      Object.entries(
+        (<FormGroup>this.formGroup.controls.configurations).controls
+      ).filter(([key, value]) => value.invalid)
+    );
+
     this.submitted$.next(true);
     if (this.formGroup.valid) {
       const emitter = this.mode === 'create' ? this.create : this.update;
@@ -408,6 +434,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
       this.formGroup = tenantFormGroup(
+        mode,
         value,
         configurationDefaults,
         localizationDefaults,
@@ -438,7 +465,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
             const writable =
               this.writable &&
               (this.mode === 'create' ||
-                /^(aggregate|reporting)\..+$/.test(key));
+                updateModeWritableConfigurationsPattern.test(key));
 
             return toConfigurationProperty(
               key,
