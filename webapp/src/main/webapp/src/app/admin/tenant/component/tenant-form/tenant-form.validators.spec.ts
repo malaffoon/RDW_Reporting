@@ -122,4 +122,21 @@ describe('uniqueDatabasePerInstance', () => {
       }
     });
   });
+
+  it('should allow redshift and aurora database names to collide because they are separate database instances', () => {
+    expect(
+      uniqueDatabasePerInstance(
+        new FormGroup({
+          'datasources.reporting_ro.urlParts.database': new FormControl('a'),
+          'datasources.reporting_rw.urlParts.database': new FormControl('a'),
+          'datasources.warehouse_ro.urlParts.database': new FormControl('b'),
+          'datasources.warehouse_rw.urlParts.database': new FormControl('b'),
+          'datasources.olap_ro.schemaSearchPath': new FormControl('a'),
+          'datasources.olap_rw.schemaSearchPath': new FormControl('a'),
+          'datasources.olap2_ro.schemaSearchPath': new FormControl('b'),
+          'datasources.olap2_rw.schemaSearchPath': new FormControl('b')
+        })
+      )
+    ).toBeNull();
+  });
 });
