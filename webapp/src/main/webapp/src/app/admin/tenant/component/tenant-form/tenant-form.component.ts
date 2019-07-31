@@ -391,12 +391,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   constructor(private translateService: TranslateService) {}
 
   onSubmit(): void {
-    console.log(
-      Object.entries(
-        (<FormGroup>this.formGroup.controls.configurations).controls
-      ).filter(([key, value]) => value.invalid)
-    );
-
     this.submitted$.next(true);
     if (this.formGroup.valid) {
       const emitter = this.mode === 'create' ? this.create : this.update;
