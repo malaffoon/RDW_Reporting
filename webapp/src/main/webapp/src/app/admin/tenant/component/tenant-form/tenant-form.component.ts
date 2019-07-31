@@ -290,10 +290,12 @@ function setDefaultState(control: AbstractControl, value: string): void {
   const state = states.find(
     ({ abbreviation }) => abbreviation.toLowerCase() === value.toLowerCase()
   );
-  patch(control, {
-    code: state.abbreviation,
-    name: state.name
-  });
+  if (state != null) {
+    patch(control, {
+      code: state.abbreviation,
+      name: state.name
+    });
+  }
 }
 
 function createBulkPatch(

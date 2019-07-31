@@ -39,16 +39,13 @@ export class TenantModalService {
     modal.accept.subscribe(() => {
       this.service.delete(tenant.code).subscribe(
         () => {
-          this.notificationService.success({
-            id: 'tenant.delete.success'
-          });
           this.router.navigateByUrl(
             tenant.type === 'TENANT' ? '/tenants' : '/sandboxes'
           );
         },
         error => {
           this.notificationService.error({
-            id: 'tenant.delete.error'
+            id: `tenant.delete.error.${tenant.type}`
           });
         }
       );

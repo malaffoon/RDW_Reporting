@@ -1396,28 +1396,22 @@
   },
   "tenant": {
     "create": {
-      "success": {
-        "SANDBOX": "Created sandbox \"{{label}}\"",
-        "TENANT": "Created tenant \"{{label}}\""
-      },
       "error": {
-        "SANDBOX": "An unknown error occurred when attempting to create the sandbox",
-        "TENANT": "An unknown error occurred when attempting to create the tenant"
+        "SANDBOX": "An error occurred when creating the sandbox",
+        "TENANT": "An error occurred when creating the tenant"
       }
     },
     "update": {
-      "success": {
-        "SANDBOX": "Sandbox saved",
-        "TENANT": "Tenant saved"
-      },
       "error": {
-        "SANDBOX": "An unknown error occurred when attempting to update the sandbox",
-        "TENANT": "An unknown error occurred when attempting to update the tenant"
+        "SANDBOX": "An error occurred when updating the sandbox",
+        "TENANT": "An error occurred when updating the tenant"
       }
     },
     "delete": {
-      "error": "An unknown error occurred when attempting to delete the sandbox",
-      "success": "Sandbox was successfully deleted",
+      "error": {
+        "SANDBOX": "An error occurred when deleting the sandbox",
+        "TENANT": "An error occurred when deleting the tenant"
+      },
       "modal": {
         "head": "Delete <strong>{{label}} ({{code}})</strong>?",
         "body": {

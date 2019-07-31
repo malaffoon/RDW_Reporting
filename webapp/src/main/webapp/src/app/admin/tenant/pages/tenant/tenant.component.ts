@@ -172,10 +172,6 @@ export class TenantComponent implements OnDestroy {
           this.router.navigate(['..'], {
             relativeTo: this.route
           });
-          this.notificationService.info({
-            id: `tenant.${mode}.success.${value.type}`,
-            args: value
-          });
         },
         error => {
           try {
