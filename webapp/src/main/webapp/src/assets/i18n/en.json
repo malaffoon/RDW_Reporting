@@ -1488,7 +1488,7 @@
       "configurations": {
         "label": "Configurations",
         "error": {
-          "onePasswordPerUser": "Please provide only one password for a each unique data source username provided below.",
+          "onePasswordPerUser": "Please provide only one password for each unique data source username provided below.",
           "uniqueDatabasePerInstance": "Please provide unique database and schemaSearchPath for each unique datasource.",
           "oneDatabasePerDataSource": "Please provide only one database or schemaSearchPath for each unique datasource."
         },
