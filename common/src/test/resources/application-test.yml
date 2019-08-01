@@ -2,6 +2,7 @@ reporting:
   state:
     code: CA
   transfer-access-enabled: false
+  school-year: 2000
 
 datasources:
   reporting_ro:
