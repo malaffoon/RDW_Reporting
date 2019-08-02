@@ -416,6 +416,14 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    const { submitting } = changes;
+
+    // do not re-initialize when submitting state changes
+    // this also shows that the form controls should lie outside of this form
+    if (submitting != null && Object.keys(changes).length === 1) {
+      return;
+    }
+
     const {
       mode,
       value,
