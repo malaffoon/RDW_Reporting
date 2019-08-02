@@ -73,11 +73,16 @@
             </ng-container>
           </div>
         </li>
+        <li>
+          <a class="btn btn-default" [routerLink]="['..']">
+            {{ 'common.action.cancel' | translate }}
+          </a>
+        </li>
       </ul>
     </div>
   </page-heading>
 
-  <div class="well">
+  <div class="well form-controls">
     <ng-container *ngIf="value.type === 'TENANT'">
       <div
         *ngIf="formGroup.get('key') as control"
@@ -410,12 +415,16 @@
         </div>
       </div>
 
-      <div
-        class="loading-mask"
-        [hidden]="submitting || !(loadingTenant$ | async)"
-      >
+      <div class="mask" [hidden]="!(loadingTenant$ | async)">
         <spinner></spinner>
       </div>
+    </div>
+
+    <div class="mask" [hidden]="!submitting">
+      <spinner>{{
+        'common.action.' + (mode === 'create' ? 'creating' : 'saving')
+          | translate
+      }}</spinner>
     </div>
   </div>
 </form>
