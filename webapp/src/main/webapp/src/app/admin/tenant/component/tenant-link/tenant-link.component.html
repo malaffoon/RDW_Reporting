@@ -5,6 +5,8 @@
   *ngIf="{
     active: tenant.status === 'ACTIVE',
     failed: tenant.status.endsWith('FAILED'),
+    deletable:
+      tenant.status === 'CREATE_FAILED' || tenant.status === 'DELETE_FAILED',
     processing: tenant.status !== 'ACTIVE' && !tenant.status.endsWith('FAILED')
   } as status"
 >
@@ -26,7 +28,7 @@
         {{ 'common.tenant-status.' + tenant.status | translate }}
       </div>
       <button
-        *ngIf="status.failed"
+        *ngIf="status.deletable"
         type="button"
         class="btn btn-danger btn-xs"
         (click)="$event.stopPropagation(); tenantDelete.emit(tenant)"

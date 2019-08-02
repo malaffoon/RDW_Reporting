@@ -22,7 +22,11 @@
         <li>
           <div class="btn-group">
             <div class="btn-group">
-              <button type="submit" class="btn btn-primary">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="submitting || (loadingTenant$ | async)"
+              >
                 <i *ngIf="submitting" class="fa fa-spinner fa-pulse"></i>
                 {{
                   'common.action.' +
@@ -171,12 +175,7 @@
         <ng-container
           *ngIf="writable && mode === 'create'; else readonlyTenant"
         >
-          <select
-            id="tenant"
-            class="form-control"
-            formControlName="tenant"
-            (ngModelChange)="onTenantChange($event)"
-          >
+          <select id="tenant" class="form-control" formControlName="tenant">
             <option *ngFor="let tenant of tenants" [ngValue]="tenant">
               {{ tenant.label }}
             </option>
@@ -225,180 +224,197 @@
       </div>
     </ng-container>
 
-    <div
-      *ngIf="formGroup.get('label') as control"
-      class="form-group"
-      [ngClass]="{
-        'has-error': showErrors(control, form.submitted)
-      }"
-    >
-      <label for="label">
-        {{ 'tenant-form.field.name.label' | translate }}
-        <app-info
-          popoverContent="{{ 'tenant-form.field.name.info' | translate }}"
-        ></app-info>
-      </label>
-      <ng-container *ngIf="writable; else readonlyName">
-        <input
-          *ngIf="writable"
-          type="text"
-          class="form-control"
-          id="label"
-          name="label"
-          formControlName="label"
-        />
-        <span class="help-block" *ngIf="showErrors(control, form.submitted)">
-          <ng-container *ngIf="control.errors.required">
-            {{ 'tenant-form.field.name.error.required' | translate }}
-          </ng-container>
-        </span>
-      </ng-container>
-      <ng-template #readonlyName>
-        <div>{{ value.label }}</div>
-      </ng-template>
-    </div>
-
-    <div class="form-group">
-      <label for="description">{{
-        'tenant-form.field.description.label' | translate
-      }}</label>
-      <ng-container *ngIf="writable; else readonlyDescription">
-        <textarea
-          class="form-control"
-          id="description"
-          name="description"
-          formControlName="description"
-        ></textarea>
-      </ng-container>
-      <ng-template #readonlyDescription>
-        <p>{{ value.description }}</p>
-      </ng-template>
-    </div>
-
-    <div class="toggles">
-      <app-toggle-label
-        [open]="configurationsOpen$ | async"
-        (openChange)="configurationsOpen$.next($event)"
-        openLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
-        closedLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
-      ></app-toggle-label>
-
-      <div class="form-group" [hidden]="!(configurationsOpen$ | async)">
-        <!-- TODO extract -->
-        <div class="configuration-controls">
-          <ng-container [formGroup]="configurationControlsFormGroup">
-            <input
-              id="configurationSearch"
-              name="configurationSearch"
-              formControlName="search"
-              type="text"
-              class="form-control"
-              placeholder="{{
-                'tenant-form.field.configurations.control.search.placeholder'
-                  | translate
-              }}"
-            />
-
-            <label>
-              <input
-                id="configurationModified"
-                name="configurationModified"
-                formControlName="modified"
-                type="checkbox"
-              />
-              {{
-                'tenant-form.field.configurations.control.modified.label'
-                  | translate
-              }}
-            </label>
-
-            <label>
-              <input
-                id="configurationRequired"
-                name="configurationRequired"
-                formControlName="required"
-                type="checkbox"
-              />
-              {{
-                'tenant-form.field.configurations.control.required.label'
-                  | translate
-              }}
-            </label>
-          </ng-container>
-        </div>
-
-        <ng-container *ngIf="formGroup.controls.configurations as control">
-          <div class="text-danger" *ngIf="showErrors(control, form.submitted)">
-            <p *ngIf="control.errors.onePasswordPerUser">
-              {{
-                'tenant-form.field.configurations.error.onePasswordPerUser'
-                  | translate: control.errors.onePasswordPerUser
-              }}
-            </p>
-            <p *ngIf="control.errors.oneDatabasePerDataSource">
-              {{
-                'tenant-form.field.configurations.error.oneDatabasePerDataSource'
-                  | translate: control.errors.oneDatabasePerDataSource
-              }}
-            </p>
-            <p *ngIf="control.errors.uniqueDatabasePerInstance">
-              {{
-                'tenant-form.field.configurations.error.uniqueDatabasePerInstance'
-                  | translate: control.errors.uniqueDatabasePerInstance
-              }}
-            </p>
-          </div>
+    <!-- need to show spinner when loading -->
+    <div class="tenant-dependent-controls">
+      <div
+        *ngIf="formGroup.get('label') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="label">
+          {{ 'tenant-form.field.name.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.name.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container *ngIf="writable; else readonlyName">
+          <input
+            *ngIf="writable"
+            type="text"
+            class="form-control"
+            id="label"
+            name="label"
+            formControlName="label"
+          />
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.name.error.required' | translate }}
+            </ng-container>
+          </span>
         </ng-container>
-
-        <property-override-tree-table
-          formGroupName="configurations"
-          [tree]="configurations$ | async"
-          [defaults]="configurationDefaults"
-        ></property-override-tree-table>
+        <ng-template #readonlyName>
+          <div>{{ value.label }}</div>
+        </ng-template>
       </div>
 
-      <app-toggle-label
-        [open]="localizationOpen"
-        (openChange)="localizationOpen = $event"
-        openLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
-        closedLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
-      ></app-toggle-label>
+      <div class="form-group">
+        <label for="description">{{
+          'tenant-form.field.description.label' | translate
+        }}</label>
+        <ng-container *ngIf="writable; else readonlyDescription">
+          <textarea
+            class="form-control"
+            id="description"
+            name="description"
+            formControlName="description"
+          ></textarea>
+        </ng-container>
+        <ng-template #readonlyDescription>
+          <p>{{ value.description }}</p>
+        </ng-template>
+      </div>
 
-      <div class="form-group" [hidden]="!localizationOpen">
-        <div class="configuration-controls">
-          <ng-container [formGroup]="localizationControlsFormGroup">
-            <input
-              formnovalidate
-              id="localizationSearch"
-              name="localizationSearch"
-              formControlName="search"
-              type="text"
-              class="form-control"
-              placeholder="{{
-                'tenant-form.field.localizations.control.search.placeholder'
-                  | translate
-              }}"
-            />
-            <label>
+      <div class="toggles">
+        <app-toggle-label
+          [open]="configurationsOpen$ | async"
+          (openChange)="configurationsOpen$.next($event)"
+          openLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
+          closedLabel="{{
+            'tenant-form.field.configurations.label' | translate
+          }}"
+        ></app-toggle-label>
+
+        <div class="form-group" [hidden]="!(configurationsOpen$ | async)">
+          <!-- TODO extract -->
+          <div class="configuration-controls">
+            <ng-container [formGroup]="configurationControlsFormGroup">
               <input
-                id="localizationModified"
-                name="localizationModified"
-                formControlName="modified"
-                type="checkbox"
+                id="configurationSearch"
+                name="configurationSearch"
+                formControlName="search"
+                type="text"
+                class="form-control"
+                placeholder="{{
+                  'tenant-form.field.configurations.control.search.placeholder'
+                    | translate
+                }}"
               />
-              {{
-                'tenant-form.field.localizations.control.modified.label'
-                  | translate
-              }}
-            </label>
+
+              <label>
+                <input
+                  id="configurationModified"
+                  name="configurationModified"
+                  formControlName="modified"
+                  type="checkbox"
+                />
+                {{
+                  'tenant-form.field.configurations.control.modified.label'
+                    | translate
+                }}
+              </label>
+
+              <label>
+                <input
+                  id="configurationRequired"
+                  name="configurationRequired"
+                  formControlName="required"
+                  type="checkbox"
+                />
+                {{
+                  'tenant-form.field.configurations.control.required.label'
+                    | translate
+                }}
+              </label>
+            </ng-container>
+          </div>
+
+          <ng-container *ngIf="formGroup.controls.configurations as control">
+            <div
+              class="text-danger"
+              *ngIf="showErrors(control, form.submitted)"
+            >
+              <p *ngIf="control.errors.onePasswordPerUser">
+                {{
+                  'tenant-form.field.configurations.error.onePasswordPerUser'
+                    | translate: control.errors.onePasswordPerUser
+                }}
+              </p>
+              <p *ngIf="control.errors.oneDatabasePerDataSource">
+                {{
+                  'tenant-form.field.configurations.error.oneDatabasePerDataSource'
+                    | translate: control.errors.oneDatabasePerDataSource
+                }}
+              </p>
+              <p *ngIf="control.errors.uniqueDatabasePerInstance">
+                {{
+                  'tenant-form.field.configurations.error.uniqueDatabasePerInstance'
+                    | translate: control.errors.uniqueDatabasePerInstance
+                }}
+              </p>
+            </div>
           </ng-container>
+
+          <property-override-tree-table
+            formGroupName="configurations"
+            [tree]="configurations$ | async"
+            [defaults]="configurationDefaults"
+          ></property-override-tree-table>
         </div>
-        <property-override-table
-          formGroupName="localizations"
-          [rows]="localizations$ | async"
-          [defaults]="localizationDefaults"
-          [readonly]="!writable"
-        ></property-override-table>
+
+        <app-toggle-label
+          [open]="localizationOpen"
+          (openChange)="localizationOpen = $event"
+          openLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
+          closedLabel="{{
+            'tenant-form.field.localizations.label' | translate
+          }}"
+        ></app-toggle-label>
+
+        <div class="form-group" [hidden]="!localizationOpen">
+          <div class="configuration-controls">
+            <ng-container [formGroup]="localizationControlsFormGroup">
+              <input
+                formnovalidate
+                id="localizationSearch"
+                name="localizationSearch"
+                formControlName="search"
+                type="text"
+                class="form-control"
+                placeholder="{{
+                  'tenant-form.field.localizations.control.search.placeholder'
+                    | translate
+                }}"
+              />
+              <label>
+                <input
+                  id="localizationModified"
+                  name="localizationModified"
+                  formControlName="modified"
+                  type="checkbox"
+                />
+                {{
+                  'tenant-form.field.localizations.control.modified.label'
+                    | translate
+                }}
+              </label>
+            </ng-container>
+          </div>
+          <property-override-table
+            formGroupName="localizations"
+            [rows]="localizations$ | async"
+            [defaults]="localizationDefaults"
+            [readonly]="!writable"
+          ></property-override-table>
+        </div>
+      </div>
+
+      <div
+        class="loading-mask"
+        [hidden]="submitting || !(loadingTenant$ | async)"
+      >
+        <spinner></spinner>
       </div>
     </div>
   </div>
