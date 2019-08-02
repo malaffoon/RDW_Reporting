@@ -335,7 +335,7 @@ sql:
             ${sql.snippet.studentExamPermissionWithoutEmbargo}
             AND
             (
-               e.school_year < ${reporting.school-year}
+               e.school_year < :system_school_year
                OR e.type_id <> 3
                OR s.embargo_enabled = 0
             )

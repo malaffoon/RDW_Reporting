@@ -87,50 +87,50 @@ sql:
       LIMIT 1
 
   examItem:
-      findAllForExam: >-
-        ${sql.reporting.snippet.selectFromExamItem}
-        WHERE e.id = :exam_id
-        AND a.type_id != 3
-        AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+    findAllForExam: >-
+      ${sql.reporting.snippet.selectFromExamItem}
+      WHERE e.id = :exam_id
+      AND a.type_id != 3
+      AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   group:
     assessment:
       findAll: >-
-          SELECT distinct
-            ${sql.reporting.snippet.assessmentColumns}
-          FROM asmt a
-            JOIN exam e ON e.asmt_id = a.id
-            JOIN school s ON e.school_id = s.id
-            JOIN subject su ON a.subject_id = su.id
-            JOIN student st ON e.student_id = st.id
-            JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
-            $[groupJoinPlaceholder]
-          WHERE e.school_year = :school_year
-            AND a.id = e.asmt_id
-            AND $[groupFilterPlaceholder]
-            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+        SELECT distinct
+          ${sql.reporting.snippet.assessmentColumns}
+        FROM asmt a
+          JOIN exam e ON e.asmt_id = a.id
+          JOIN school s ON e.school_id = s.id
+          JOIN subject su ON a.subject_id = su.id
+          JOIN student st ON e.student_id = st.id
+          JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
+          $[groupJoinPlaceholder]
+        WHERE e.school_year = :school_year
+          AND a.id = e.asmt_id
+          AND $[groupFilterPlaceholder]
+          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
       # NOTE that we're grouping by a.id and selecting the max(e.completed_at) timestamp
       # to improve final ordering performance
       findLatestExam: >-
-          SELECT
-            ${sql.reporting.snippet.assessmentColumns},
-            max(e.completed_at) as max_completed
-          FROM exam e
-            JOIN asmt a ON e.asmt_id=a.id
-            JOIN school s ON e.school_id=s.id
-            JOIN subject su ON a.subject_id = su.id
-            JOIN student st ON e.student_id = st.id
-            JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
-            $[groupJoinPlaceholder]
-          WHERE e.school_year = :school_year
-            AND $[groupFilterPlaceholder]
-            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-          GROUP BY a.id
-          ORDER BY max_completed desc
-          LIMIT 1
+        SELECT
+          ${sql.reporting.snippet.assessmentColumns},
+          max(e.completed_at) as max_completed
+        FROM exam e
+          JOIN asmt a ON e.asmt_id=a.id
+          JOIN school s ON e.school_id=s.id
+          JOIN subject su ON a.subject_id = su.id
+          JOIN student st ON e.student_id = st.id
+          JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
+          $[groupJoinPlaceholder]
+        WHERE e.school_year = :school_year
+          AND $[groupFilterPlaceholder]
+          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+        GROUP BY a.id
+        ORDER BY max_completed desc
+        LIMIT 1
 
     exam:
       findAllForAssessment: >-
@@ -225,13 +225,13 @@ sql:
         GROUP BY e.asmt_id;
 
     examItem:
-        findAllExamItemScoresForAssessment:
-          ${sql.reporting.snippet.selectFromExamItem}
-          $[groupJoinPlaceholder]
-          WHERE e.asmt_id = :assessment_id
-            AND e.school_year = :school_year
-            AND $[groupFilterPlaceholder]
-            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+      findAllExamItemScoresForAssessment:
+        ${sql.reporting.snippet.selectFromExamItem}
+        $[groupJoinPlaceholder]
+        WHERE e.asmt_id = :assessment_id
+          AND e.school_year = :school_year
+          AND $[groupFilterPlaceholder]
+          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   schoolgrade:
     assessment:
@@ -356,7 +356,7 @@ sql:
         ${sql.snippet.studentExamPermissionWithoutEmbargo}
         AND
         (
-           e.school_year < ${reporting.school-year}
+           e.school_year < :system_school_year
            OR e.type_id <> 3
            OR s.embargo_enabled = 0
            OR 1 = :state_embargo_admin

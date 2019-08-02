@@ -151,7 +151,7 @@ sqlbuilder:
             districtEmbargo:
               clauses:
                 where: >-
-                    e.school_year < ${reporting.school-year}
+                    e.school_year < :system_school_year
                     OR e.embargo_enabled = 0
                     OR 1 = :state_embargo_admin
                     OR e.district_id IN (:district_embargo_admin_ids)
@@ -159,7 +159,7 @@ sqlbuilder:
             stateEmbargo:
               clauses:
                 where: >-
-                     e.school_year < ${reporting.school-year}
+                     e.school_year < :system_school_year
                      OR EXISTS (SELECT 1 FROM state_embargo WHERE aggregate = 0)
                      OR 1 = :state_embargo_admin
 
