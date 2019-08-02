@@ -168,8 +168,6 @@ export class TenantComponent implements OnDestroy {
         value.configurations['reporting.state'] = state;
       }
 
-      console.log('sending', value);
-
       const observable =
         mode === 'create'
           ? this.service.create(value)
