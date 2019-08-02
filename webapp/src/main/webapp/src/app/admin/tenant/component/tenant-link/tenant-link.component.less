@@ -6,14 +6,15 @@ a {
   padding: 30px 30px 15px 30px;
   text-decoration: none;
   color: inherit;
-  &:not(.status-active) {
+  &:not(.status-active):not(.status-update_failed) {
     pointer-events: none;
     a,
     button {
       pointer-events: all;
     }
   }
-  &.status-active {
+  &.status-active,
+  &.status-update_failed {
     &:hover {
       background-color: @gray-lightest;
     }

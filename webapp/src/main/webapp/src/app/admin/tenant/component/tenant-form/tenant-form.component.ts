@@ -16,7 +16,15 @@ import {
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { debounceTime, map, startWith, takeUntil } from 'rxjs/operators';
+import {
+  debounceTime,
+  finalize,
+  map,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import {
   configurationsFormGroup,
   toTreeNodes
@@ -44,6 +52,7 @@ import { states } from '../../model/data/state';
 import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { byString } from '@kourge/ordering/comparator';
+import { TenantService } from '../../service/tenant.service';
 
 export type FormMode = 'create' | 'update';
 const keyboardDebounceInMilliseconds = 300;
@@ -216,18 +225,24 @@ function stateToTenant(
   } = formValue;
 
   const createMode = mode === 'create';
+  const parentTenantCode = (tenant || <any>{}).code;
+  const computedConfigurations = valued(
+    rightDifference(configurationDefaults, configurations)
+  );
+  const computedLocalizations = valued(
+    rightDifference(localizationDefaults, localizations)
+  );
+
   return {
     type,
     code: createMode ? code : tenantCode,
     id: createMode ? id : tenantId,
     label,
     description,
-    parentTenantCode: (tenant || <any>{}).code,
+    parentTenantCode,
     dataSet,
-    configurations: valued(
-      rightDifference(configurationDefaults, configurations)
-    ),
-    localizations: valued(rightDifference(localizationDefaults, localizations))
+    configurations: computedConfigurations,
+    localizations: computedLocalizations
   };
 }
 
@@ -297,20 +312,6 @@ function setDefaultState(control: AbstractControl, value: string): void {
       name: state.name
     });
   }
-}
-
-function createBulkPatch(
-  formGroup: FormGroup,
-  keys: string[],
-  overrides: any
-): { [key: string]: any } {
-  return keys.reduce((patch, key) => {
-    const control = formGroup.controls[key];
-    if (control != null) {
-      patch[key] = control.pristine ? overrides[key] : control.value;
-    }
-    return patch;
-  }, {});
 }
 
 function patch(control: AbstractControl, value: any): void {
@@ -389,9 +390,14 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   formGroup: FormGroup;
   configurationsOpen$: Subject<boolean> = new BehaviorSubject(false);
   submitted$: Subject<boolean> = new BehaviorSubject(false);
-  destroyed$: Subject<void> = new Subject();
+  private destroyed$: Subject<void> = new Subject();
+  private tenant: TenantConfiguration;
+  private loadingTenant$: Subject<boolean> = new BehaviorSubject(false);
 
-  constructor(private translateService: TranslateService) {}
+  constructor(
+    private translateService: TranslateService,
+    private tenantService: TenantService
+  ) {}
 
   onSubmit(): void {
     this.submitted$.next(true);
@@ -496,6 +502,28 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
           this.configurationsOpen$.next(true);
         }
       });
+
+      // apply selected tenant configurations and localizations to the sandbox form
+      if (value.type === 'SANDBOX' && mode === 'create') {
+        this.formGroup.controls.tenant.valueChanges
+          .pipe(
+            takeUntil(this.destroyed$),
+            startWith(this.formGroup.controls.tenant.value),
+            tap(() => {
+              this.loadingTenant$.next(true);
+            }),
+            switchMap(({ code }) =>
+              this.tenantService.get(code).pipe(
+                finalize(() => {
+                  this.loadingTenant$.next(false);
+                })
+              )
+            )
+          )
+          .subscribe(value => {
+            this.onTenantChange(value);
+          });
+      }
     }
   }
 
@@ -505,7 +533,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   }
 
   onTenantChange(tenant: any): void {
-    patch(this.formGroup.controls.label, tenant.label);
+    patch(this.formGroup.controls.label, `${tenant.label} Sandbox`);
     // TODO improve by only writing over pristine form fields
     this.formGroup.patchValue({
       configurations: configurationsFormGroup(

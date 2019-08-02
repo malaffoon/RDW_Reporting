@@ -21,7 +21,7 @@ import { of } from 'rxjs/internal/observable/of';
 import { FormMode } from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
-import { defaultTenant, toServerTenant } from '../../model/tenants';
+import { defaultTenant } from '../../model/tenants';
 import { flatten } from '../../../../shared/support/support';
 import { TenantModalService } from '../../service/tenant-modal.service';
 import { ordering } from '@kourge/ordering';
@@ -156,32 +156,47 @@ export class TenantComponent implements OnDestroy {
   private submit(mode: FormMode, value: TenantConfiguration): void {
     this.submitting$.next(true);
 
-    const observable =
-      mode === 'create'
-        ? this.service.create(value)
-        : this.service.update(value);
+    const state$ =
+      value.type === 'SANDBOX'
+        ? this.service
+            .get(value.parentTenantCode)
+            .pipe(map(tenant => tenant.configurations['reporting.state']))
+        : of(undefined);
 
-    observable
-      .pipe(
-        finalize(() => {
-          this.submitting$.next(false);
-        })
-      )
-      .subscribe(
-        () => {
-          this.router.navigate(['..'], {
-            relativeTo: this.route
-          });
-        },
-        error => {
-          try {
-            this.notificationService.error({ id: error.json().message });
-          } catch (exception) {
-            this.notificationService.error({
-              id: `tenant.${mode}.error.${value.type}`
+    state$.subscribe(state => {
+      if (state != null) {
+        value.configurations['reporting.state'] = state;
+      }
+
+      console.log('sending', value);
+
+      const observable =
+        mode === 'create'
+          ? this.service.create(value)
+          : this.service.update(value);
+
+      observable
+        .pipe(
+          finalize(() => {
+            this.submitting$.next(false);
+          })
+        )
+        .subscribe(
+          () => {
+            this.router.navigate(['..'], {
+              relativeTo: this.route
             });
+          },
+          error => {
+            try {
+              this.notificationService.error({ id: error.json().message });
+            } catch (exception) {
+              this.notificationService.error({
+                id: `tenant.${mode}.error.${value.type}`
+              });
+            }
           }
-        }
-      );
+        );
+    });
   }
 }
