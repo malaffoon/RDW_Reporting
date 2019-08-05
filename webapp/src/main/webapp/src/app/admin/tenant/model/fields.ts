@@ -10,12 +10,8 @@ import {
   url
 } from './field-validators';
 import { TenantType } from './tenant-type';
-import {
-  emptyToNull,
-  isBlank,
-  isNullOrBlank
-} from '../../../shared/support/support';
-import { isEqual, isArray } from 'lodash';
+import { isBlank } from '../../../shared/support/support';
+import { isEqual } from 'lodash';
 
 const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   { [key: string]: InputType }
@@ -35,9 +31,19 @@ const inputTypeByPropertyDataType: { [key: string]: InputType } = <
 };
 
 const identity = value => value;
+
 // TODO this should really be based on key as sometimes arrays are sets and sometimes lists
 const normalizeByInputType: { [key: string]: (value: any) => any } = {
-  input: value => emptyToNull(value),
+  // null, blank to null, number to string
+  input: value =>
+    value == null
+      ? null
+      : typeof value === 'string'
+      ? value.trim().length === 0
+        ? null
+        : value
+      : String(value),
+  // cast null to false and strings to boolean
   checkbox: value => Boolean(value),
   // because in practice we are always comparing sets of primitives
   multiselect: value => (value != null ? value.slice().sort() : [])
@@ -121,13 +127,9 @@ export function isModified(
   value: any,
   originalValue: any
 ): boolean {
-  if (value == null) {
-    return false;
-  }
-  if (typeof value === 'string' && isBlank(value)) {
-    return false;
-  }
-  if (isArray(value) && value.length === 0) {
+  // For "default required" fields if the override is null then there is no change to the default
+  // For "override required" fields the UI will prevent you from entering null/blank
+  if (value == null || (typeof value === 'string' && isBlank(value))) {
     return false;
   }
   return !fieldsEqual(key, value, originalValue);
