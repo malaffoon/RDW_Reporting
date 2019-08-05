@@ -3,8 +3,12 @@ import { states } from './data/state';
 import { studentFields } from './data/student-fields';
 import { FieldConfiguration } from './field';
 import { isEqual } from 'lodash';
+import { byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 
 const sandboxHidden = type => type === 'SANDBOX';
+
+const byLabel = ordering(byString).on(({ label }) => label).compare;
 
 function dataSources(
   sources: string[],
@@ -42,13 +46,20 @@ const stateOptions = () =>
   }));
 
 const languageOptions = translateService =>
-  languageCodes.map(value => ({
-    value,
-    label: translateService.instant(`common.language.${value}`)
-  }));
+  ['en']
+    .map(value => ({
+      value,
+      label: translateService.instant(`common.language.${value}`)
+    }))
+    .sort(byLabel);
 
-const primitiveSetEquals = (a, b) =>
-  isEqual(a != null ? a.slice().sort() : [], b != null ? b.slice().sort() : []);
+const reportLanguageOptions = translateService =>
+  ['en', 'es']
+    .map(value => ({
+      value,
+      label: translateService.instant(`common.language.${value}`)
+    }))
+    .sort(byLabel);
 
 const studentFieldOptions = () =>
   ['Enabled', 'Admin', 'Disabled'].map(value => ({
@@ -165,7 +176,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   },
   'reporting.reportLanguages': {
     dataType: 'enumeration-list',
-    options: languageOptions
+    options: reportLanguageOptions
   },
   'reporting.uiLanguages': {
     dataType: 'enumeration-list',
