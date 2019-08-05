@@ -153,7 +153,7 @@
                             [compareWith]="data.configuration.equals"
                           >
                             <option
-                              *ngFor="let option of data.options"
+                              *ngFor="let option of (data.options | async)"
                               [ngValue]="option.value"
                             >
                               {{ option.label }}
@@ -167,7 +167,7 @@
                             inputId="{{ data.key }}"
                             name="{{ data.key }}"
                             formControlName="{{ data.key }}"
-                            [options]="data.options"
+                            [options]="data.options | async"
                             appendTo="body"
                             defaultLabel="None"
                             [showHeader]="false"

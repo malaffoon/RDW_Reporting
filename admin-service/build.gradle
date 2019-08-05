@@ -25,6 +25,7 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
     compile 'org.springframework.cloud:spring-cloud-stream'
     compile 'org.springframework:spring-context-support'
+    compile 'org.springframework.security.oauth:spring-security-oauth2'
     compile 'org.xmlunit:xmlunit-core'
     compile 'com.fasterxml.jackson.core:jackson-annotations'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

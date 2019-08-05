@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Injector,
   Input,
   OnChanges,
   OnDestroy,
@@ -53,6 +54,7 @@ import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { byString } from '@kourge/ordering/comparator';
 import { TenantService } from '../../service/tenant.service';
+import { FieldConfigurationContext } from '../../model/field';
 
 export type FormMode = 'create' | 'update';
 export type FormState = 'creating' | 'saving' | 'deleting';
@@ -305,13 +307,10 @@ function setDefaultDatabaseNameAndUsername(
 
 function setDefaultState(control: AbstractControl, value: string): void {
   const state = states.find(
-    ({ abbreviation }) => abbreviation.toLowerCase() === value.toLowerCase()
+    ({ code }) => code.toLowerCase() === code.toLowerCase()
   );
   if (state != null) {
-    patch(control, {
-      code: state.abbreviation,
-      name: state.name
-    });
+    patch(control, state);
   }
 }
 
@@ -392,12 +391,12 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   configurationsOpen$: Subject<boolean> = new BehaviorSubject(false);
   submitted$: Subject<boolean> = new BehaviorSubject(false);
   private destroyed$: Subject<void> = new Subject();
-  private tenant: TenantConfiguration;
   private loadingTenant$: Subject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private translateService: TranslateService,
-    private tenantService: TenantService
+    private tenantService: TenantService,
+    private injector: Injector
   ) {}
 
   onSubmit(): void {
@@ -460,6 +459,11 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         required: this.requiredConfiguration
       });
 
+      const context: FieldConfigurationContext = {
+        translateService: this.translateService,
+        injector: this.injector
+      };
+
       this.configurations$ = toPropertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
@@ -483,7 +487,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
               key,
               originalValue,
               writable,
-              this.translateService
+              context
             );
           });
           const flattened = keyBy(properties, ({ key }) => key);
