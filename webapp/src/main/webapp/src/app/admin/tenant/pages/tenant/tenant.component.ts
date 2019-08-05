@@ -8,7 +8,9 @@ import {
   publishReplay,
   refCount,
   share,
-  takeUntil
+  switchMap,
+  takeUntil,
+  tap
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
@@ -18,7 +20,10 @@ import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
 import { RdwTranslateLoader } from '../../../../shared/i18n/rdw-translate-loader';
 import { of } from 'rxjs/internal/observable/of';
-import { FormMode } from '../../component/tenant-form/tenant-form.component';
+import {
+  FormMode,
+  FormState
+} from '../../component/tenant-form/tenant-form.component';
 import { TenantType } from '../../model/tenant-type';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { defaultTenant } from '../../model/tenants';
@@ -47,7 +52,7 @@ export class TenantComponent implements OnDestroy {
   writable$: Observable<boolean>;
   tenantKeyAvailable: (value: string) => Observable<boolean>;
   initialized$: Observable<boolean>;
-  submitting$: Subject<boolean> = new BehaviorSubject(false);
+  state$: Subject<FormState> = new BehaviorSubject(undefined);
   destroyed$: Subject<void> = new Subject();
 
   constructor(
@@ -150,11 +155,36 @@ export class TenantComponent implements OnDestroy {
   }
 
   onDelete(tenant: TenantConfiguration): void {
-    this.modalService.openDeleteConfirmationModal(tenant);
+    this.modalService
+      .openDeleteConfirmationModal(tenant)
+      .pipe(
+        tap(() => {
+          this.state$.next('deleting');
+        }),
+        switchMap(() =>
+          this.service.delete(tenant.code).pipe(
+            finalize(() => {
+              this.state$.next(undefined);
+            })
+          )
+        )
+      )
+      .subscribe(
+        () => {
+          this.router.navigateByUrl(
+            tenant.type === 'TENANT' ? '/tenants' : '/sandboxes'
+          );
+        },
+        () => {
+          this.notificationService.error({
+            id: `tenant.delete.error.${tenant.type}`
+          });
+        }
+      );
   }
 
   private submit(mode: FormMode, value: TenantConfiguration): void {
-    this.submitting$.next(true);
+    this.state$.next(mode === 'create' ? 'creating' : 'saving');
 
     const state$ =
       value.type === 'SANDBOX'
@@ -176,7 +206,7 @@ export class TenantComponent implements OnDestroy {
       observable
         .pipe(
           finalize(() => {
-            this.submitting$.next(false);
+            this.state$.next(undefined);
           })
         )
         .subscribe(
