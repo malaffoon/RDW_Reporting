@@ -9,6 +9,7 @@
     [localizationDefaults]="localizationDefaults$ | async"
     [tenantKeyAvailable]="tenantKeyAvailable"
     [writable]="writable$ | async"
+    [states]="states$ | async"
     [configurationOpen]="(type$ | async) === 'TENANT'"
     [requiredConfiguration]="
       (type$ | async) === 'TENANT' && (mode$ | async) === 'create'

@@ -1,4 +1,9 @@
-import { Field, FieldConfiguration, InputType } from './field';
+import {
+  Field,
+  FieldConfiguration,
+  FieldConfigurationContext,
+  InputType
+} from './field';
 import { fieldConfigurationsByKey } from './field-configurations';
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn, Validators } from '@angular/forms';
@@ -12,6 +17,7 @@ import {
 import { TenantType } from './tenant-type';
 import { isBlank } from '../../../shared/support/support';
 import { isEqual } from 'lodash';
+import { Injector } from '@angular/core';
 
 const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   { [key: string]: InputType }
@@ -83,7 +89,7 @@ export function fieldInputType(key: string): InputType {
   );
 }
 
-export function field(key: string, translateService: TranslateService): Field {
+export function field(key: string, context: FieldConfigurationContext): Field {
   const configuration: FieldConfiguration = fieldConfiguration(key);
   const inputType =
     inputTypeByPropertyDataType[configuration.dataType] || 'input';
@@ -94,7 +100,7 @@ export function field(key: string, translateService: TranslateService): Field {
     validators
   };
   if (configuration.options != null) {
-    field.options = configuration.options(translateService);
+    field.options = configuration.options(context);
   }
   return field;
 }
