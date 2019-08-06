@@ -49,12 +49,12 @@ import {
   uniqueDatabasePerInstance
 } from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
-import { states } from '../../model/data/state';
 import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
 import { byString } from '@kourge/ordering/comparator';
 import { TenantService } from '../../service/tenant.service';
 import { FieldConfigurationContext } from '../../model/field';
+import { State } from '../../model/state';
 
 export type FormMode = 'create' | 'update';
 export type FormState = 'creating' | 'saving' | 'deleting';
@@ -305,9 +305,13 @@ function setDefaultDatabaseNameAndUsername(
     });
 }
 
-function setDefaultState(control: AbstractControl, value: string): void {
+function setDefaultState(
+  control: AbstractControl,
+  searchCode: string,
+  states: State[]
+): void {
   const state = states.find(
-    ({ code }) => code.toLowerCase() === code.toLowerCase()
+    ({ code }) => code.toLowerCase() === searchCode.toLowerCase()
   );
   if (state != null) {
     patch(control, state);
@@ -351,6 +355,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
   @Input()
   writable: boolean;
+
+  @Input()
+  states: State[];
 
   @Output()
   create: EventEmitter<TenantConfiguration> = new EventEmitter();
@@ -432,7 +439,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       configurationDefaults,
       localizationDefaults,
       tenantKeyAvailable,
-      requiredConfiguration
+      requiredConfiguration,
+      states
     } = this;
 
     if (
@@ -442,6 +450,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       localizationDefaults != null &&
       tenantKeyAvailable != null &&
       requiredConfiguration != null &&
+      states != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
       this.formGroup = tenantFormGroup(
@@ -574,7 +583,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       (this.formGroup.controls.configurations as FormGroup).controls[
         'reporting.state'
       ],
-      value
+      value,
+      this.states
     );
   }
 }
