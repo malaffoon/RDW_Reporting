@@ -13,17 +13,17 @@ export class StateOptionsService {
   constructor(private dataService: CachingDataService) {}
 
   public getStates(): Observable<State[]> {
-    // return dataService.get(ResourceRoute);
+    return this.dataService.get(ResourceRoute);
 
-    return of([
-      {
-        code: 'TS',
-        name: 'Test State'
-      },
-      {
-        code: 'CA',
-        name: 'Cali'
-      }
-    ]);
+    // return of([
+    //   {
+    //     code: 'TS',
+    //     name: 'Test State'
+    //   },
+    //   {
+    //     code: 'CA',
+    //     name: 'Cali'
+    //   }
+    // ]);
   }
 }
