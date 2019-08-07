@@ -40,7 +40,7 @@ const assessmentTypeOptions = ({ translateService }) =>
     }))
   );
 
-const languageOptions = translateService =>
+const languageOptions = ({ translateService }) =>
   of(
     ['en']
       .map(value => ({
@@ -50,7 +50,7 @@ const languageOptions = translateService =>
       .sort(byLabel)
   );
 
-const reportLanguageOptions = translateService =>
+const reportLanguageOptions = ({ translateService }) =>
   of(
     ['en', 'es']
       .map(value => ({
