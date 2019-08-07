@@ -105,7 +105,11 @@ export class AggregateReportTableExportService {
           'aggregate-report-table.columns.avg-scale-score'
         ),
         (item: AggregateReportItem) =>
-          item.studentsTested ? `${item.avgScaleScore} ± ${item.avgStdErr}` : ''
+          item.studentsTested
+            ? item.avgStdErr != null
+              ? `${item.avgScaleScore} ± ${item.avgStdErr}`
+              : item.avgScaleScore
+            : ''
       );
 
       this.addPerformanceLevelColumns(builder, options);

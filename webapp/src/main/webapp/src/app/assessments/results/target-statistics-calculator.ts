@@ -306,10 +306,15 @@ export class TargetStatisticsCalculator {
     delta: number,
     standardError: number
   ): TargetReportingLevel {
-    if (standardError > this._insufficientDataCutoff)
+    if (standardError > this._insufficientDataCutoff) {
       return TargetReportingLevel.InsufficientData;
-    if (delta >= standardError) return TargetReportingLevel.Above;
-    if (delta <= -standardError) return TargetReportingLevel.Below;
+    }
+    if (delta >= standardError) {
+      return TargetReportingLevel.Above;
+    }
+    if (delta <= -standardError) {
+      return TargetReportingLevel.Below;
+    }
     return TargetReportingLevel.Near;
   }
 }

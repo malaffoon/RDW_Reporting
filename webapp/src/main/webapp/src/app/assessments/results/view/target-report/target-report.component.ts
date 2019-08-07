@@ -343,7 +343,10 @@ export class TargetReportComponent implements OnInit, ExportResults {
       group: this.displayedFor,
       schoolYear: this.schoolYear,
       averageScaleScore: Math.round(this.statistics.average),
-      standardError: Math.round(this.statistics.standardError),
+      standardError:
+        this.statistics.standardError != null
+          ? Math.round(this.statistics.standardError)
+          : null,
       subjectDefinition: this.subjectDefinition
     });
   }
