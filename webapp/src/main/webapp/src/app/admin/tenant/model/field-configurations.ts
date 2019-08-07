@@ -1,10 +1,12 @@
-import { languageCodes } from './data/languages';
-import { states } from './data/state';
 import { studentFields } from './data/student-fields';
-import { FieldConfiguration } from './field';
+import { FieldConfiguration, OptionsProvider } from './field';
 import { isEqual } from 'lodash';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
+import { of } from 'rxjs';
+import { StateOptionsService } from '../service/state-options.service';
+import { State } from './state';
+import { map } from 'rxjs/operators';
 
 const sandboxHidden = type => type === 'SANDBOX';
 
@@ -28,58 +30,72 @@ function dataSources(
   }, {});
 }
 
-const assessmentTypeOptions = translateService =>
-  ['sum', 'ica', 'iab'].map(value => ({
-    value,
-    label: translateService.instant(
-      `common.assessment-type.${value}.short-name`
-    )
-  }));
-
-const stateOptions = () =>
-  states.map(({ name: label, abbreviation: value }) => ({
-    value: {
-      code: value,
-      name: label
-    },
-    label
-  }));
+const assessmentTypeOptions = ({ translateService }) =>
+  of(
+    ['sum', 'ica', 'iab'].map(value => ({
+      value,
+      label: translateService.instant(
+        `common.assessment-type.${value}.short-name`
+      )
+    }))
+  );
 
 const languageOptions = translateService =>
-  ['en']
-    .map(value => ({
-      value,
-      label: translateService.instant(`common.language.${value}`)
-    }))
-    .sort(byLabel);
+  of(
+    ['en']
+      .map(value => ({
+        value,
+        label: translateService.instant(`common.language.${value}`)
+      }))
+      .sort(byLabel)
+  );
 
 const reportLanguageOptions = translateService =>
-  ['en', 'es']
-    .map(value => ({
-      value,
-      label: translateService.instant(`common.language.${value}`)
-    }))
-    .sort(byLabel);
+  of(
+    ['en', 'es']
+      .map(value => ({
+        value,
+        label: translateService.instant(`common.language.${value}`)
+      }))
+      .sort(byLabel)
+  );
+
+const stateOptions: OptionsProvider<State> = ({ injector }) =>
+  injector
+    .get(StateOptionsService)
+    .getStates()
+    .pipe(
+      map(states =>
+        states.map(value => ({
+          label: value.name,
+          value
+        }))
+      )
+    );
 
 const studentFieldOptions = () =>
-  ['Enabled', 'Admin', 'Disabled'].map(value => ({
-    value,
-    label: value
-  }));
+  of(
+    ['Enabled', 'Admin', 'Disabled'].map(value => ({
+      value,
+      label: value
+    }))
+  );
 
 export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
-    // TODO add not blank requirement
+    // TODO enforce one+ values selected
   },
   'aggregate.statewideUserAssessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
+    // TODO enforce one+ values selected
   },
   'aggregate.stateAggregateAssessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
+    // TODO enforce one+ values selected
   },
   'archive.pathPrefix': {
     dataType: 'string',

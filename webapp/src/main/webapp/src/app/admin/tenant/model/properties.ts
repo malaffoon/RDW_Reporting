@@ -1,6 +1,7 @@
 import { ConfigurationProperty, Property } from './property';
 import { field } from './fields';
 import { TranslateService } from '@ngx-translate/core';
+import { FieldConfigurationContext } from './field';
 
 export function toProperty(
   key: string,
@@ -18,10 +19,10 @@ export function toConfigurationProperty(
   key: string,
   originalValue: any,
   writable: boolean,
-  translationService: TranslateService
+  context: FieldConfigurationContext
 ): ConfigurationProperty {
   return {
     ...toProperty(key, originalValue, writable),
-    ...field(key, translationService)
+    ...field(key, context)
   };
 }

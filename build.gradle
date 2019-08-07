@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.4.0-183"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.4.0-184"
 String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.4.0-427"
 String dockerPrefix = "smarterbalanced"
 
@@ -87,10 +87,13 @@ subprojects {
             // spring extensions aren't included in the the bom
             dependency 'org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE'
             
-            //add security for messaging
+            // security for messaging
             dependency 'org.springframework.security:spring-security-core:4.2.10.RELEASE'
             dependency 'org.springframework.integration:spring-integration-security:4.3.18.RELEASE'
-            
+
+            // security for art client
+            dependency 'org.springframework.security.oauth:spring-security-oauth2:2.0.16.RELEASE'
+
             // commonly used test libraries
             dependency 'junit:junit:4.12'
             dependency 'org.assertj:assertj-core:3.11.1'

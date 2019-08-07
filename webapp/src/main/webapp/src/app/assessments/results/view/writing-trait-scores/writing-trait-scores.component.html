@@ -109,7 +109,12 @@
           ></claim-target>
 
           <span *ngSwitchCase="'purpose'">
-            {{ writingTraitType }}
+            {{
+              writingTraitType != null
+                ? writingTraitType
+                : ('common.results.assessment-item-columns.purpose-not-specified'
+                  | translate)
+            }}
           </span>
 
           <span *ngSwitchCase="'difficulty'">
@@ -142,6 +147,7 @@
         <td [attr.colspan]="columns.length">
           <item-tab
             [item]="itemView.item"
+            [responsesAssessmentItem]="itemView.responsesAssessmentItem"
             [showResponse]="false"
             [exams]="exams"
             [showItemDetails]="assessment.type !== 'sum'"

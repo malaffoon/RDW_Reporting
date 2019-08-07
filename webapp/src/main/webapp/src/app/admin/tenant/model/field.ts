@@ -1,6 +1,8 @@
 import { TranslateService } from '@ngx-translate/core';
 import { ValidatorFn } from '@angular/forms';
 import { TenantType } from './tenant-type';
+import { Observable } from 'rxjs';
+import { Injector } from '@angular/core';
 
 /**
  * The different field data types
@@ -34,11 +36,16 @@ export interface Option<T = any> {
   label?: string;
 }
 
+export interface FieldConfigurationContext {
+  readonly translateService: TranslateService;
+  readonly injector: Injector;
+}
+
 /**
  * Provides options for lists and map data types
  */
 export interface OptionsProvider<T = any> {
-  (translateService: TranslateService): Option<T>[];
+  (context: FieldConfigurationContext): Observable<Option<T>[]>;
 }
 
 export interface Equals<T = any> {
@@ -101,5 +108,5 @@ export interface Field<DataTypes = any, T = any> {
   /**
    * The possible values of the field if it is a list or map
    */
-  options?: Option<T>[];
+  options?: Observable<Option<T>[]>;
 }

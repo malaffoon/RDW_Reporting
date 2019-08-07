@@ -165,7 +165,9 @@ export class PropertyOverrideTreeTableComponent
   }
 
   readonlyValue(property: ConfigurationProperty): any {
-    const value = this.formGroup.value[property.key];
+    // needs to be raw value because these fields will be disabled
+    // and disabled field values do not appear in formGroup.value
+    const value = this.formGroup.getRawValue()[property.key];
     if (value != null) {
       return value;
     }

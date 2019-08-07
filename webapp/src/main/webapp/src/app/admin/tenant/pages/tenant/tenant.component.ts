@@ -31,6 +31,8 @@ import { flatten } from '../../../../shared/support/support';
 import { TenantModalService } from '../../service/tenant-modal.service';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
+import { State } from '../../model/state';
+import { StateOptionsService } from '../../service/state-options.service';
 
 const byLabel = ordering(byString).on<TenantConfiguration | DataSet>(
   ({ label }) => label
@@ -50,6 +52,7 @@ export class TenantComponent implements OnDestroy {
   configurationDefaults$: Observable<any>;
   localizationDefaults$: Observable<any>;
   writable$: Observable<boolean>;
+  states$: Observable<State[]>;
   tenantKeyAvailable: (value: string) => Observable<boolean>;
   initialized$: Observable<boolean>;
   state$: Subject<FormState> = new BehaviorSubject(undefined);
@@ -60,6 +63,7 @@ export class TenantComponent implements OnDestroy {
     private router: Router,
     private service: TenantService,
     private userService: UserService,
+    private stateOptionService: StateOptionsService,
     private languageStore: LanguageStore,
     private modalService: TenantModalService,
     private notificationService: NotificationService,
@@ -127,6 +131,8 @@ export class TenantComponent implements OnDestroy {
       .getUser()
       .pipe(map(({ permissions }) => permissions.includes('TENANT_WRITE')));
 
+    this.states$ = this.stateOptionService.getStates();
+
     this.initialized$ = combineLatest(
       this.type$,
       this.mode$,
@@ -134,7 +140,8 @@ export class TenantComponent implements OnDestroy {
       this.dataSets$,
       this.configurationDefaults$,
       this.localizationDefaults$,
-      this.tenant$
+      this.tenant$,
+      this.states$
     ).pipe(
       takeUntil(this.destroyed$),
       mapTo(true)

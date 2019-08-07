@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { StudentResponsesAssessmentItem } from '../../../student/responses/student-responses-item.model';
 import { WritingTrait } from '../../model/writing-trait.model';
+import { StudentResponsesAssessmentItem } from '../../model/student-responses-item.model';
 
 @Component({
   selector: 'item-writing-trait-scores',
@@ -21,9 +21,9 @@ export class ItemWritingTraitScoresComponent {
     if (
       this.responsesAssessmentItem == null ||
       this.responsesAssessmentItem.writingTraitScores == null
-    )
+    ) {
       return null;
-
+    }
     return this.responsesAssessmentItem.writingTraitScores.evidence;
   }
 
