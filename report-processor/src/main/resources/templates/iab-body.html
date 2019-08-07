@@ -139,8 +139,12 @@
                     <div th:each="exam : ${entry.value}">
                         <div class="row"
                              th:if="${exam.sessionId == entry.value[0].sessionId && exam.writingTraitScores != null}">
-                            <h2 class="pb-sm pl-sm" th:if="${scored}"
-                                th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></h2>
+                            <div th:if="${scored}">
+                                <h2 class="pb-sm pl-sm" th:if="${exam.performanceWritingType != null}"
+                                    th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></h2>
+                                <h2 class="pb-sm pl-sm" th:if="${exam.performanceWritingType == null}"
+                                    th:text="#{'report.writing.trait.purpose-not-specified'}"></h2>
+                            </div>
 
                             <div class="col-md-4 pull-left" data-width="33">
                                 <h3 class="text-center" th:text="#{'report.writing.trait.Evidence'}"></h3>
