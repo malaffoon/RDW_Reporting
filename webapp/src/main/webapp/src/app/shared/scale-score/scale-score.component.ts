@@ -20,7 +20,7 @@ export class ScaleScoreComponent {
   _score: number;
   _roundedScaleScore: number;
 
-  _standardError: number;
+  _standardError?: number;
   _roundedStandardError: number;
 
   @Input()
