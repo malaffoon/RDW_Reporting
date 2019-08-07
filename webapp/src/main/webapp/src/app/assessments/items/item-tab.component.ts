@@ -9,7 +9,7 @@ import { AssessmentItem } from '../model/assessment-item.model';
 import { TabsetComponent, TabDirective } from 'ngx-bootstrap';
 import { Exam } from '../model/exam';
 import { Angulartics2 } from 'angulartics2';
-import { StudentResponsesAssessmentItem } from '../../student/responses/student-responses-item.model';
+import { StudentResponsesAssessmentItem } from '../model/student-responses-item.model';
 
 @Component({
   selector: 'item-tab',
@@ -116,6 +116,13 @@ export class ItemTabComponent implements AfterViewInit {
     }
 
     this.trackAnalyticsEvent('ItemTabSelection', tabName);
+  }
+
+  hasWritingType(item: AssessmentItem): boolean {
+    return (
+      item.performanceTaskWritingType != null ||
+      item.scores.some(({ writingTraitScores }) => writingTraitScores != null)
+    );
   }
 
   private trackAnalyticsEvent(action: string, details: string) {

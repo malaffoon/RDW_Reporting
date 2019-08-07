@@ -21,9 +21,12 @@ import { tap } from 'rxjs/internal/operators/tap';
 import { sum } from '../../../../exam/model/score-statistics';
 import { ExportWritingTraitsRequest } from '../../../model/export-writing-trait-request.model';
 import { ExportResults } from '../export-results';
+import { toStudentResponsesAssessmentItem } from '../../../model/student-responses';
+import { StudentResponsesAssessmentItem } from '../../../model/student-responses-item.model';
 
 interface ItemView {
   item: AssessmentItem;
+  responsesAssessmentItem?: StudentResponsesAssessmentItem;
   fullCreditCount: number;
   fullCreditPercent: number;
 }
@@ -221,6 +224,8 @@ export class WritingTraitScoresComponent
               exams.some(exam => exam.id == score.examId)
             )
           }),
+          // TODO Uncomment to enable the writing trait tab
+          // responsesAssessmentItem: toStudentResponsesAssessmentItem(item),
           fullCreditCount: fullCreditItemCount(item.scores, item.maxPoints),
           fullCreditPercent: fullCreditItemPercent(item.scores, item.maxPoints)
         }))

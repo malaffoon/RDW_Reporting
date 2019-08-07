@@ -111,9 +111,15 @@
                         </div>
                     </div>
 
-                    <div class="writing-traits" th:if="${writingClaim}"
+                    <div class="writing-traits"
+                         th:if="${writingClaim}"
                          th:with="scored=true,assessment=${report.assessment},exam=${report.exam}">
-                        <span class="title" th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></span>
+                        <span class="title"
+                              th:if="${exam.performanceWritingType != null}"
+                              th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></span>
+                        <span class="title"
+                              th:if="${exam.performanceWritingType == null}"
+                              th:text="#{'report.writing.trait.purpose-not-specified'}"></span>
                         <div class="description" th:text="#{('report.writing.description')(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></div>
                         <div class="trait">
                             <span class="title" th:text="#{'report.writing.trait.Evidence'}"></span>

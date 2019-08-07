@@ -3,10 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { AssessmentItem } from '../../assessments/model/assessment-item.model';
 import { Exam } from '../../assessments/model/exam';
 import { Assessment } from '../../assessments/model/assessment';
-import { StudentResponsesAssessmentItem } from './student-responses-item.model';
 import { Student } from '../model/student.model';
-import { ExamItemScore } from '../../assessments/model/exam-item-score.model';
 import { gradeColor } from '../../shared/colors';
+import { toStudentResponsesAssessmentItem } from '../../assessments/model/student-responses';
+import { StudentResponsesAssessmentItem } from '../../assessments/model/student-responses-item.model';
 
 /**
  * This component is responsible for displaying a student's responses to a
@@ -52,7 +52,7 @@ export class StudentResponsesComponent implements OnInit {
     ];
     if (routeItems) {
       this.assessmentItems = routeItems.map(item =>
-        this.mapAssessmentItem(item)
+        toStudentResponsesAssessmentItem(item)
       );
     }
 
@@ -60,28 +60,6 @@ export class StudentResponsesComponent implements OnInit {
     this.exam = exam;
     this.assessment = assessment;
     this.student = student;
-  }
-
-  private mapAssessmentItem(
-    item: AssessmentItem
-  ): StudentResponsesAssessmentItem {
-    const responseItem = new StudentResponsesAssessmentItem();
-    responseItem.assessmentItem = item;
-
-    if (item.scores.length !== 1) {
-      return responseItem;
-    }
-
-    const score: ExamItemScore = item.scores[0];
-    if (score.points >= 0) {
-      responseItem.score = score.points;
-      responseItem.correctness = responseItem.score / item.maxPoints;
-    }
-
-    responseItem.response = score.response;
-    responseItem.writingTraitScores = score.writingTraitScores;
-
-    return responseItem;
   }
 }
 

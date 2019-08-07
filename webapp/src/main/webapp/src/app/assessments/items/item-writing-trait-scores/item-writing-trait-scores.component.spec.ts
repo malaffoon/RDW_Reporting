@@ -4,10 +4,10 @@ import { ItemWritingTraitScoresComponent } from './item-writing-trait-scores.com
 import { Component } from '@angular/core';
 import { ReportingCommonModule } from '../../../shared/reporting-common.module';
 import { TestModule } from '../../../../test/test.module';
-import { StudentResponsesAssessmentItem } from '../../../student/responses/student-responses-item.model';
 import { AssessmentItem } from '../../model/assessment-item.model';
 import { TranslateModule } from '@ngx-translate/core';
 import { PopoverModule } from 'ngx-bootstrap';
+import { StudentResponsesAssessmentItem } from '../../model/student-responses-item.model';
 
 describe('ItemWritingTraitScoresComponent', () => {
   let component: ItemWritingTraitScoresComponent;
@@ -43,9 +43,11 @@ describe('ItemWritingTraitScoresComponent', () => {
     '<item-writing-trait-scores [responsesAssessmentItem]="item"></item-writing-trait-scores>'
 })
 class TestComponentWrapper {
-  item = new StudentResponsesAssessmentItem();
+  item: StudentResponsesAssessmentItem;
 
   constructor() {
-    this.item.assessmentItem = new AssessmentItem();
+    this.item = {
+      assessmentItem: new AssessmentItem()
+    };
   }
 }

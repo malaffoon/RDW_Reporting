@@ -16,7 +16,7 @@
     </div>
   </tab>
   <tab
-    *ngIf="item.performanceTaskWritingType && responsesAssessmentItem"
+    *ngIf="hasWritingType(item) && responsesAssessmentItem"
     (select)="selectTab('Writing Trait Scores')"
     heading="{{ 'item-tab.writing-trait-scores' | translate }}"
   >

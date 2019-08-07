@@ -1,11 +1,15 @@
-<h5>
+<h5
+  *ngIf="{
+    traitType:
+      responsesAssessmentItem.assessmentItem.performanceTaskWritingType != null
+        ? responsesAssessmentItem.assessmentItem.performanceTaskWritingType
+        : ('common.results.assessment-item-columns.purpose-not-specified'
+          | translate)
+  } as translateParameters"
+>
   {{
     'item-writing-trait-score.writing-trait-purpose'
-      | translate
-        : {
-            traitType:
-              responsesAssessmentItem.assessmentItem.performanceTaskWritingType
-          }
+      | translate: translateParameters
   }}
 </h5>
 
