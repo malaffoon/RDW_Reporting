@@ -864,6 +864,7 @@
         "max-points": "Max Points",
         "number": "Item #",
         "purpose": "Writing Purpose",
+        "purpose-not-specified": "Not Specified",
         "purpose-info": "Students write extended responses that that have one of the following purposes: narrative, opinion, informational, explanatory, or argumentative. Writing purpose varies by grade of assessment. For more information, see the Interpretive Guide.",
         "standard": "Standard",
         "x-points": "{{id}}"
