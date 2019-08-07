@@ -1,13 +1,16 @@
-import { languageCodes } from './data/languages';
 import { studentFields } from './data/student-fields';
 import { FieldConfiguration, OptionsProvider } from './field';
 import { isEqual } from 'lodash';
+import { byString } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
 import { of } from 'rxjs';
 import { StateOptionsService } from '../service/state-options.service';
 import { State } from './state';
 import { map } from 'rxjs/operators';
 
 const sandboxHidden = type => type === 'SANDBOX';
+
+const byLabel = ordering(byString).on(({ label }) => label).compare;
 
 function dataSources(
   sources: string[],
@@ -37,6 +40,26 @@ const assessmentTypeOptions = ({ translateService }) =>
     }))
   );
 
+const languageOptions = ({ translateService }) =>
+  of(
+    ['en']
+      .map(value => ({
+        value,
+        label: translateService.instant(`common.language.${value}`)
+      }))
+      .sort(byLabel)
+  );
+
+const reportLanguageOptions = ({ translateService }) =>
+  of(
+    ['en', 'es']
+      .map(value => ({
+        value,
+        label: translateService.instant(`common.language.${value}`)
+      }))
+      .sort(byLabel)
+  );
+
 const stateOptions: OptionsProvider<State> = ({ injector }) =>
   injector
     .get(StateOptionsService)
@@ -50,14 +73,6 @@ const stateOptions: OptionsProvider<State> = ({ injector }) =>
       )
     );
 
-const languageOptions = ({ translateService }) =>
-  of(
-    languageCodes.map(value => ({
-      value,
-      label: translateService.instant(`common.language.${value}`)
-    }))
-  );
-
 const studentFieldOptions = () =>
   of(
     ['Enabled', 'Admin', 'Disabled'].map(value => ({
@@ -70,15 +85,17 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
-    // TODO add not blank requirement
+    // TODO enforce one+ values selected
   },
   'aggregate.statewideUserAssessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
+    // TODO enforce one+ values selected
   },
   'aggregate.stateAggregateAssessmentTypes': {
     dataType: 'enumeration-list',
     options: assessmentTypeOptions
+    // TODO enforce one+ values selected
   },
   'archive.pathPrefix': {
     dataType: 'string',
@@ -175,7 +192,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   },
   'reporting.reportLanguages': {
     dataType: 'enumeration-list',
-    options: languageOptions
+    options: reportLanguageOptions
   },
   'reporting.uiLanguages': {
     dataType: 'enumeration-list',
