@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { StateOptionsService } from '../service/state-options.service';
 import { State } from './state';
 import { map } from 'rxjs/operators';
+import { configurableDataElements } from './data/configurable-data-elements';
 
 const sandboxHidden = type => type === 'SANDBOX';
 
@@ -76,6 +77,14 @@ const stateOptions: OptionsProvider<State> = ({ injector }) =>
 const studentFieldOptions = () =>
   of(
     ['Enabled', 'Admin', 'Disabled'].map(value => ({
+      value,
+      label: value
+    }))
+  );
+
+const examProcessorRequiredDataElements = () =>
+  of(
+    configurableDataElements.map(value => ({
       value,
       label: value
     }))
@@ -215,5 +224,9 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
         (a || 'Enabled').toLowerCase() === (b || 'Enabled').toLowerCase()
     };
     return configurations;
-  }, {})
+  }, {}),
+  'validation.requiredDataElements': {
+    dataType: 'enumeration-list',
+    options: examProcessorRequiredDataElements
+  }
 };

@@ -1527,7 +1527,8 @@
       "datasources": "Data Sources",
       "task": "Task",
       "archive": "Archive",
-      "aggregate": "Aggregate"
+      "aggregate": "Aggregate",
+      "validation": "Exam Ingest Validation"
     },
     "popover": {
       "required": "This field is required",
