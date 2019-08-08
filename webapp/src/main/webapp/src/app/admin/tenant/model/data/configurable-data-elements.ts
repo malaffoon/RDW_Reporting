@@ -1,3 +1,5 @@
+import { byString } from '@kourge/ordering/comparator';
+
 export const configurableDataElements = [
   'FirstName',
   'LastOrSurname',
@@ -25,4 +27,4 @@ export const configurableDataElements = [
   'Completeness',
   'AdministrationCondition',
   'ExamItems'
-];
+].sort(byString);
