@@ -20,10 +20,18 @@ sql:
         d.name AS district_name,
         round(p.mean) AS percentile_mean,
         ps.percentile_rank,
-        ${sql.snippet.writingTraits},
+        ei.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        ei.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        ei.trait_conventions_score as ei_trait_conventions_score,
+        i.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
       LEFT JOIN exam_item ei ON ei.exam_id=e.id
+        AND (
+          ei.trait_evidence_elaboration_score IS NOT NULL
+          OR ei.trait_organization_purpose_score IS NOT NULL
+          OR ei.trait_conventions_score IS NOT NULL
+        )
       LEFT JOIN item i ON i.id = ei.item_id
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
@@ -33,8 +41,7 @@ sql:
         AND a.type_id = 2
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
-      ORDER BY e.completed_at DESC,
-        i.performance_task_writing_type DESC
+      ORDER BY e.completed_at DESC
 
     # this is used to query for IABs for report generation
     findAllIabsByStudentIdsAndQueryParamsGroupPermissions: >-
@@ -42,11 +49,19 @@ sql:
         d.name AS district_name,
         round(p.mean) AS percentile_mean,
         ps.percentile_rank,
-        ${sql.snippet.writingTraits},
+        ei.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        ei.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        ei.trait_conventions_score as ei_trait_conventions_score,
+        i.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
       $[groupJoinPlaceholder]
       LEFT JOIN exam_item ei ON ei.exam_id=e.id
+        AND (
+          ei.trait_evidence_elaboration_score IS NOT NULL
+          OR ei.trait_organization_purpose_score IS NOT NULL
+          OR ei.trait_conventions_score IS NOT NULL
+        )
       LEFT JOIN item i ON i.id=ei.item_id
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
@@ -57,8 +72,7 @@ sql:
         AND a.type_id=2
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
-      ORDER BY e.completed_at DESC,
-              i.performance_task_writing_type DESC
+      ORDER BY e.completed_at DESC
 
     # this is used to query for results for report generation
     findAllIcasOrSummativesByStudentIdsAndQueryParamsUnknownPermissions: >-

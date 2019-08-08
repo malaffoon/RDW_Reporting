@@ -134,12 +134,12 @@
                 </div>
 
                 <!-- Writing trait scores-->
-                <div class="col-lg-12" th:if="${entry.value[0].writingTraitScores}"
-                     th:with="scored=true,assessment=${entry.key}">
-                    <div th:each="exam : ${entry.value}">
-                        <div class="row"
-                             th:if="${exam.sessionId == entry.value[0].sessionId && exam.writingTraitScores != null}">
-                            <div th:if="${scored}">
+                <div class="col-lg-12"
+                     th:if="${entry.value[0].writingTraitScores}"
+                     th:with="exam=${entry.value[0]}">
+                    <div>
+                        <div class="row">
+                            <div>
                                 <h2 class="pb-sm pl-sm" th:if="${exam.performanceWritingType != null}"
                                     th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></h2>
                                 <h2 class="pb-sm pl-sm" th:if="${exam.performanceWritingType == null}"
