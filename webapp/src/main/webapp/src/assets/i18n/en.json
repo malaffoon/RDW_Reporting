@@ -1528,7 +1528,7 @@
       "task": "Task",
       "archive": "Archive",
       "aggregate": "Aggregate",
-      "validation": "Exam Ingest Validation"
+      "validation": "Ingest Validation"
     },
     "popover": {
       "required": "This field is required",
