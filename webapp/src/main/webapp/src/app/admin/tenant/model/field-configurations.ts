@@ -227,6 +227,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   }, {}),
   'validation.requiredDataElements': {
     dataType: 'enumeration-list',
-    options: examProcessorRequiredDataElements
+    options: examProcessorRequiredDataElements,
+    hidden: sandboxHidden
   }
 };
