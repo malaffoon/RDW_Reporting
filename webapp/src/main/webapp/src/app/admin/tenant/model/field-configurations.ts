@@ -13,24 +13,6 @@ const sandboxHidden = type => type === 'SANDBOX';
 
 const byLabel = ordering(byString).on(({ label }) => label).compare;
 
-function dataSources(
-  sources: string[],
-  mapper: (source: string) => { [key: string]: FieldConfiguration }
-): { [key: string]: FieldConfiguration } {
-  return sources.reduce((configurations, source) => {
-    return {
-      ...configurations,
-      ...[`datasources.${source}_ro`, `datasources.${source}_rw`].reduce(
-        (subConfigurations, path) => ({
-          ...subConfigurations,
-          ...mapper(path)
-        }),
-        {}
-      )
-    };
-  }, {});
-}
-
 const assessmentTypeOptions = ({ translateService }) =>
   of(
     ['sum', 'ica', 'iab'].map(value => ({
@@ -90,6 +72,141 @@ const examProcessorRequiredDataElements = () =>
     }))
   );
 
+function dataSources(
+  sources: string[],
+  mapper: (source: string) => { [key: string]: FieldConfiguration }
+): { [key: string]: FieldConfiguration } {
+  return sources.reduce((configurations, source) => {
+    return {
+      ...configurations,
+      ...mapper(`datasources.${source}`)
+    };
+  }, {});
+}
+
+function mysqlDataSource(
+  basePath: string
+): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.urlParts.database`]: {
+      dataType: 'string',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.username`]: {
+      dataType: 'username',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.password`]: {
+      dataType: 'password',
+      required: true,
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function postgresDataSource(
+  basePath: string
+): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.schemaSearchPath`]: {
+      dataType: 'string',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.username`]: {
+      dataType: 'username',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.password`]: {
+      dataType: 'password',
+      required: true,
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function oauth2(basePath: string): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.access-token-uri`]: {
+      dataType: 'uri',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.client-id`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.client-secret`]: {
+      dataType: 'string',
+      required: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.username`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+      // can we provide a reasonable default?
+    },
+    [`${basePath}.password`]: {
+      dataType: 'string',
+      required: true,
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function archive(
+  basePath: string,
+  pathPrefixRequired: boolean = true
+): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.pathPrefix`]: {
+      dataType: 'string',
+      required: pathPrefixRequired,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.uriRoot`]: {
+      dataType: 'archive-uri',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3AccessKey`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3RegionStatic`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3SecretKey`]: {
+      dataType: 'password',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3Sse`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function archives(
+  basePath: string,
+  count: number
+): { [key: string]: FieldConfiguration } {
+  let archives = {};
+  for (let i = 0; i < count; i++) {
+    archives = {
+      ...archives,
+      ...archive(`${basePath}.${i}`, false)
+    };
+  }
+  return archives;
+}
+
 export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
@@ -106,69 +223,12 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     options: assessmentTypeOptions,
     required: true
   },
-  'archive.pathPrefix': {
-    dataType: 'string',
-    required: true,
-    hidden: sandboxHidden
-  },
-  'archive.uriRoot': {
-    dataType: 'archive-uri',
-    hidden: sandboxHidden
-  },
-  'archive.s3AccessKey': {
-    dataType: 'string',
-    hidden: sandboxHidden
-  },
-  'archive.s3RegionStatic': {
-    dataType: 'string',
-    hidden: sandboxHidden
-  },
-  'archive.s3SecretKey': {
-    dataType: 'password',
-    hidden: sandboxHidden
-  },
-  'archive.s3sse': {
-    dataType: 'string',
-    hidden: sandboxHidden
-  },
-  ...dataSources(['reporting', 'warehouse', 'migrate'], dataSource => ({
-    [`${dataSource}.urlParts.database`]: {
-      dataType: 'string',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.username`]: {
-      dataType: 'username',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.password`]: {
-      dataType: 'password',
-      required: true,
-      hidden: sandboxHidden
-    }
-  })),
-  ...dataSources(['olap'], dataSource => ({
-    [`${dataSource}.schemaSearchPath`]: {
-      dataType: 'string',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.username`]: {
-      dataType: 'username',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.password`]: {
-      dataType: 'password',
-      required: true,
-      hidden: sandboxHidden
-    }
-  })),
+  ...archive('archive'),
+  ...dataSources(
+    ['reporting_ro', 'reporting_rw', 'warehouse_rw', 'migrate_rw'],
+    mysqlDataSource
+  ),
+  ...dataSources(['olap_ro', 'olap_rw'], postgresDataSource),
   'reporting.accessDeniedUrl': {
     dataType: 'string', // not url-fragment b/c of spring forward: prefix
     hidden: sandboxHidden
@@ -229,5 +289,14 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'enumeration-list',
     options: examProcessorRequiredDataElements,
     hidden: sandboxHidden
-  }
+  },
+  ...oauth2('artClient.oauth2'),
+  ...oauth2('importServiceClient.oauth2'),
+  'sendReconciliationReport.log': {
+    dataType: 'boolean'
+  },
+  'sendReconciliationReport.query': {
+    dataType: 'string'
+  },
+  ...archives('sendReconciliationReport.archives', 2)
 };

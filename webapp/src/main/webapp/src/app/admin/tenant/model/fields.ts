@@ -18,7 +18,6 @@ import {
 import { TenantType } from './tenant-type';
 import { isBlank } from '../../../shared/support/support';
 import { isEqual } from 'lodash';
-import { Injector } from '@angular/core';
 
 const inputTypeByPropertyDataType: { [key: string]: InputType } = <
   { [key: string]: InputType }

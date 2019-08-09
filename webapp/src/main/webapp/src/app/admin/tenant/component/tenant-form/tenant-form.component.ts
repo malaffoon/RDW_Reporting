@@ -51,15 +51,16 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { fieldRequired, isModified } from '../../model/fields';
 import { notBlank } from '../../../../shared/validator/custom-validators';
-import { byString } from '@kourge/ordering/comparator';
+import { byString, Comparator, join } from '@kourge/ordering/comparator';
 import { TenantService } from '../../service/tenant.service';
 import { FieldConfigurationContext } from '../../model/field';
 import { State } from '../../model/state';
+import { ordering } from '@kourge/ordering';
 
 export type FormMode = 'create' | 'update';
 export type FormState = 'creating' | 'saving' | 'deleting';
 const keyboardDebounceInMilliseconds = 300;
-const updateModeWritableConfigurationsPattern = /^(aggregate|reporting)\..+$/;
+const updateModeWritableConfigurationsPattern = /^(aggregate|reporting|artClient|importServiceClient|sendReconciliationReport)\..+$/;
 
 export function tenantFormGroup(
   mode: FormMode,
@@ -155,16 +156,17 @@ interface PropertySearch {
  * @param defaults The default values of the form
  * @param submitted$ Observable that produces a signal when the form is submitted (used for configurations)
  * @param keyTransform Transform placed on keys before matching them with the search word (used for configurations)
+ * @param comparator The result comparison method to use for sorting
  */
 function toPropertiesProvider(
   searchFormGroup: FormGroup,
   formGroup: FormGroup,
   defaults: { [key: string]: any },
   submitted$: Observable<boolean> = of(false),
-  keyTransform: (key: string) => string = value => value
+  keyTransform: (key: string) => string = value => value,
+  comparator: Comparator<string> = byString
 ): Observable<PropertySearch> {
   const { controls, value } = searchFormGroup;
-  //const entries = Object.entries(defaults);
   return combineLatest(
     controls.search.valueChanges.pipe(
       startWith(value.search),
@@ -184,7 +186,7 @@ function toPropertiesProvider(
           formGroup.invalid &&
           showErrorsRecursive(formGroup, submitted),
         results: Object.keys(formGroup.controls)
-          .sort(byString)
+          .sort(comparator)
           .filter(controlKey => {
             const defaultValue = defaults[controlKey];
             const caseInsensitiveSearch = search.toLowerCase();
@@ -249,7 +251,8 @@ function stateToTenant(
   };
 }
 
-// lookup values
+// dont fill the send report archives
+const archivePathPrefixPattern = /^archive\.pathPrefix$/;
 const datasourcePattern = /^datasources\.(\w+)\..+$/;
 const defaultDatabaseNameProviderByDatasource = {
   migrate: key => `migrate_olap_${key}`,
@@ -262,15 +265,18 @@ const defaultDatabaseNameProviderByDatasource = {
 // get marked as modified and using FormControl.dirty isn't enough because it doesn't
 // detect that the value is the same as it started
 // apply default passwords for sandboxes based on key
-function setDefaultDatabaseNameAndUsername(
+function setDefaultsUsingTenantKey(
   formGroup: FormGroup,
   inputKey: string
 ): void {
-  const key = (inputKey || '').toLowerCase();
+  const tenantKey = (inputKey || '').toLowerCase();
+  const defaultUsername = `rdw_${tenantKey}`;
 
-  const defaultUsername = `rdw_${key}`;
-
-  patch(formGroup.controls[`archive.pathPrefix`], key);
+  Object.entries(formGroup.controls)
+    .filter(([key]) => archivePathPrefixPattern.test(key))
+    .forEach(([key]) => {
+      patch(formGroup.controls[key], tenantKey);
+    });
 
   Object.entries(formGroup.controls)
     // find datasource controls
@@ -294,7 +300,7 @@ function setDefaultDatabaseNameAndUsername(
       const sourceName = source.replace(/_r(o|w)$/, '');
       const defaultDatabaseName = defaultDatabaseNameProviderByDatasource[
         sourceName
-      ](key);
+      ](tenantKey);
 
       [
         formGroup.controls[`datasources.${source}.urlParts.database`],
@@ -468,6 +474,15 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         required: this.requiredConfiguration
       });
 
+      const configurationPropertyComparator = join(
+        ordering(byString).on<string>(key =>
+          this.translateService.instant(
+            `tenant-configuration-form.group.${key.split('.')[0]}`
+          )
+        ).compare,
+        byString
+      );
+
       const context: FieldConfigurationContext = {
         translateService: this.translateService,
         injector: this.injector
@@ -478,7 +493,8 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         this.formGroup.controls.configurations as FormGroup,
         configurationDefaults,
         this.submitted$,
-        key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1] // only match last segment of key
+        key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1], // only match last segment of key
+        configurationPropertyComparator
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
@@ -572,7 +588,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
   // TODO debounce this?
   onKeyInput(value: string): void {
-    setDefaultDatabaseNameAndUsername(
+    setDefaultsUsingTenantKey(
       this.formGroup.controls.configurations as FormGroup,
       value
     );
