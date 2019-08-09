@@ -849,5 +849,87 @@
       "path": "/.",
       "threshold": 10485760
     }
+  },
+  "scopedTarget.artClientPropertiesRoot": {
+    "prefix": "task-update-organizations-art-client",
+    "properties": {
+      "tenants": {
+        "TS": {
+          "oauth2": {
+            "grantType": "password",
+            "clientAuthenticationScheme": "header",
+            "tokenName": "access_token",
+            "username": "ca.user@example.com",
+            "password": "******",
+            "authenticationScheme": "header"
+          }
+        }
+      },
+      "groupsOfSchoolsUrl": "https://art-deployment.sbtds.org/rest/groupofinstitution?stateAbbreviation={state}&pageSize=1000",
+      "groupsOfDistrictsUrl": "https://art-deployment.sbtds.org/rest/groupofdistrict?stateAbbreviation={state}&pageSize=1000",
+      "districtsUrl": "https://art-deployment.sbtds.org/rest/district?stateAbbreviation={state}&pageSize=5000",
+      "statusUrl": "https://art-deployment.sbtds.org/rest/status",
+      "oauth2": {
+        "grantType": "password",
+        "clientId": "sbacdw",
+        "accessTokenUri": "https://sso-deployment.sbtds.org:443/auth/oauth2/access_token?realm=/sbac",
+        "clientSecret": "******",
+        "clientAuthenticationScheme": "header",
+        "tokenName": "access_token",
+        "username": "prime.user@example.com",
+        "password": "******",
+        "authenticationScheme": "header"
+      }
+    }
+  },
+  "scopedTarget.sendReconciliationReportPropertiesRoot": {
+    "prefix": "task-send-reconciliation-report",
+    "properties": {
+      "tenants": {
+        "TS": {
+          "archives": [
+            {
+              "uriRoot": "file:///tmp/"
+            },
+            {
+              "uriRoot": "s3:///bucket",
+              "s3AccessKey": "AccessKey",
+              "s3SecretKey": "******",
+              "s3RegionStatic": "us-west-2",
+              "s3Sse": "AES256"
+            }
+          ],
+          "log": false
+        }
+      }
+    }
+  },
+  "scopedTarget.importServiceClientPropertiesRoot": {
+    "prefix": "task-update-organizations-import-service-client",
+    "properties": {
+      "organizationsImportsUrl": "http://localhost:8080/organizations/imports",
+      "tenants": {
+        "TS": {
+          "oauth2": {
+            "grantType": "password",
+            "clientAuthenticationScheme": "header",
+            "tokenName": "access_token",
+            "username": "ca.user@example.com",
+            "password": "******",
+            "authenticationScheme": "header"
+          }
+        }
+      },
+      "oauth2": {
+        "grantType": "password",
+        "clientId": "sbacdw",
+        "accessTokenUri": "https://sso-deployment.sbtds.org:443/auth/oauth2/access_token?realm=/sbac",
+        "clientSecret": "******",
+        "clientAuthenticationScheme": "header",
+        "tokenName": "access_token",
+        "authenticationScheme": "header"
+      },
+      "statusUrl": "http://localhost:8081/status"
+    }
   }
 }
