@@ -9,7 +9,7 @@ export interface ExportTargetReportRequest extends ExportRequest {
   group: string;
   schoolYear: number;
   averageScaleScore: number;
-  standardError: number;
+  standardError?: number;
   subjectDefinition: SubjectDefinition;
   targetScoreRows: AggregateTargetScoreRow[];
 }

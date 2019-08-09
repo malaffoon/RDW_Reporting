@@ -72,7 +72,7 @@
                                             <span class="score label"
                                                 th:classappend="#{'subject.' + ${report.subject} + '.asmt-type.iab.level.' + ${exam.scaleScore.level} + '.color'}"
                                                 th:text="${exam.scaleScore.value}"></span>
-                                            <span class="error-band">&plusmn;
+                                            <span th:if="${exam.scaleScore.standardError != null}" class="error-band">&plusmn;
                                                 <span th:text="${support.round(exam.scaleScore.standardError)}" th:remove="tag"></span>
                                             </span>
                                         </span>

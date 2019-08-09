@@ -16,7 +16,10 @@
               <span class="score label label-primary">{{
                 overview.averageScaleScore
               }}</span>
-              <span class="error-band black">
+              <span
+                class="error-band black"
+                *ngIf="overview.averageStandardError != null"
+              >
                 {{
                   'common.error-band-value'
                     | translate
