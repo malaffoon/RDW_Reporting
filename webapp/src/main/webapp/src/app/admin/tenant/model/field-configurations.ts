@@ -93,18 +93,18 @@ const examProcessorRequiredDataElements = () =>
 export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
-    options: assessmentTypeOptions
-    // TODO enforce one+ values selected
+    options: assessmentTypeOptions,
+    required: true
   },
   'aggregate.statewideUserAssessmentTypes': {
     dataType: 'enumeration-list',
-    options: assessmentTypeOptions
-    // TODO enforce one+ values selected
+    options: assessmentTypeOptions,
+    required: true
   },
   'aggregate.stateAggregateAssessmentTypes': {
     dataType: 'enumeration-list',
-    options: assessmentTypeOptions
-    // TODO enforce one+ values selected
+    options: assessmentTypeOptions,
+    required: true
   },
   'archive.pathPrefix': {
     dataType: 'string',

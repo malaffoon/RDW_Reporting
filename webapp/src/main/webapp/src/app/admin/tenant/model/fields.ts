@@ -11,6 +11,7 @@ import {
   archiveUri,
   notPostgresReservedWord,
   password,
+  requiredList,
   uri,
   url
 } from './field-validators';
@@ -73,8 +74,13 @@ export function fieldConfiguration(key: string): FieldConfiguration {
 
 export function fieldValidators(key: string): ValidatorFn[] {
   const configuration = fieldConfiguration(key);
+  const requiredValidator: ValidatorFn =
+    configuration.dataType === 'enumeration-list'
+      ? requiredList
+      : Validators.required;
+
   return [
-    ...(configuration.required ? [Validators.required] : []),
+    ...(configuration.required ? [requiredValidator] : []),
     ...(validatorsByPropertyDataType[configuration.dataType] || [])
   ];
 }

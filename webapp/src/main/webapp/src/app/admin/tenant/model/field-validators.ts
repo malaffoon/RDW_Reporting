@@ -16,6 +16,14 @@ export const password = Validators.compose([
   )
 ]);
 
+export function requiredList(
+  control: AbstractControl
+): { required: boolean } | null {
+  return control.value != null && control.value.length > 0
+    ? null
+    : { required: true };
+}
+
 const postgresReservedWords = [
   'ALL',
   'ANALYSE',
