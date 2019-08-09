@@ -13,6 +13,65 @@ const sandboxHidden = type => type === 'SANDBOX';
 
 const byLabel = ordering(byString).on(({ label }) => label).compare;
 
+const assessmentTypeOptions = ({ translateService }) =>
+  of(
+    ['sum', 'ica', 'iab'].map(value => ({
+      value,
+      label: translateService.instant(
+        `common.assessment-type.${value}.short-name`
+      )
+    }))
+  );
+
+const languageOptions = ({ translateService }) =>
+  of(
+    ['en']
+      .map(value => ({
+        value,
+        label: translateService.instant(`common.language.${value}`)
+      }))
+      .sort(byLabel)
+  );
+
+const reportLanguageOptions = ({ translateService }) =>
+  of(
+    ['en', 'es']
+      .map(value => ({
+        value,
+        label: translateService.instant(`common.language.${value}`)
+      }))
+      .sort(byLabel)
+  );
+
+const stateOptions: OptionsProvider<State> = ({ injector }) =>
+  injector
+    .get(StateOptionsService)
+    .getStates()
+    .pipe(
+      map(states =>
+        states.map(value => ({
+          label: value.name,
+          value
+        }))
+      )
+    );
+
+const studentFieldOptions = () =>
+  of(
+    ['Enabled', 'Admin', 'Disabled'].map(value => ({
+      value,
+      label: value
+    }))
+  );
+
+const examProcessorRequiredDataElements = () =>
+  of(
+    configurableDataElements.map(value => ({
+      value,
+      label: value
+    }))
+  );
+
 function dataSources(
   sources: string[],
   mapper: (source: string) => { [key: string]: FieldConfiguration }
@@ -20,15 +79,57 @@ function dataSources(
   return sources.reduce((configurations, source) => {
     return {
       ...configurations,
-      ...[`datasources.${source}_ro`, `datasources.${source}_rw`].reduce(
-        (subConfigurations, path) => ({
-          ...subConfigurations,
-          ...mapper(path)
-        }),
-        {}
-      )
+      ...mapper(`datasources.${source}`)
     };
   }, {});
+}
+
+function mysqlDataSource(
+  basePath: string
+): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.urlParts.database`]: {
+      dataType: 'string',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.username`]: {
+      dataType: 'username',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.password`]: {
+      dataType: 'password',
+      required: true,
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function postgresDataSource(
+  basePath: string
+): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.schemaSearchPath`]: {
+      dataType: 'string',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.username`]: {
+      dataType: 'username',
+      required: true,
+      lowercase: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.password`]: {
+      dataType: 'password',
+      required: true,
+      hidden: sandboxHidden
+    }
+  };
 }
 
 function oauth2(basePath: string): { [key: string]: FieldConfiguration } {
@@ -106,65 +207,6 @@ function archives(
   return archives;
 }
 
-const assessmentTypeOptions = ({ translateService }) =>
-  of(
-    ['sum', 'ica', 'iab'].map(value => ({
-      value,
-      label: translateService.instant(
-        `common.assessment-type.${value}.short-name`
-      )
-    }))
-  );
-
-const languageOptions = ({ translateService }) =>
-  of(
-    ['en']
-      .map(value => ({
-        value,
-        label: translateService.instant(`common.language.${value}`)
-      }))
-      .sort(byLabel)
-  );
-
-const reportLanguageOptions = ({ translateService }) =>
-  of(
-    ['en', 'es']
-      .map(value => ({
-        value,
-        label: translateService.instant(`common.language.${value}`)
-      }))
-      .sort(byLabel)
-  );
-
-const stateOptions: OptionsProvider<State> = ({ injector }) =>
-  injector
-    .get(StateOptionsService)
-    .getStates()
-    .pipe(
-      map(states =>
-        states.map(value => ({
-          label: value.name,
-          value
-        }))
-      )
-    );
-
-const studentFieldOptions = () =>
-  of(
-    ['Enabled', 'Admin', 'Disabled'].map(value => ({
-      value,
-      label: value
-    }))
-  );
-
-const examProcessorRequiredDataElements = () =>
-  of(
-    configurableDataElements.map(value => ({
-      value,
-      label: value
-    }))
-  );
-
 export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
   'aggregate.assessmentTypes': {
     dataType: 'enumeration-list',
@@ -182,44 +224,11 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     required: true
   },
   ...archive('archive'),
-  ...dataSources(['reporting', 'warehouse', 'migrate'], dataSource => ({
-    [`${dataSource}.urlParts.database`]: {
-      dataType: 'string',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.username`]: {
-      dataType: 'username',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.password`]: {
-      dataType: 'password',
-      required: true,
-      hidden: sandboxHidden
-    }
-  })),
-  ...dataSources(['olap'], dataSource => ({
-    [`${dataSource}.schemaSearchPath`]: {
-      dataType: 'string',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.username`]: {
-      dataType: 'username',
-      required: true,
-      lowercase: true,
-      hidden: sandboxHidden
-    },
-    [`${dataSource}.password`]: {
-      dataType: 'password',
-      required: true,
-      hidden: sandboxHidden
-    }
-  })),
+  ...dataSources(
+    ['reporting_ro', 'reporting_rw', 'warehouse_rw', 'migrate_rw'],
+    mysqlDataSource
+  ),
+  ...dataSources(['olap_ro', 'olap_rw'], postgresDataSource),
   'reporting.accessDeniedUrl': {
     dataType: 'string', // not url-fragment b/c of spring forward: prefix
     hidden: sandboxHidden
