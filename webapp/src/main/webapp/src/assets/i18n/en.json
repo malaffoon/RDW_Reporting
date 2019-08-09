@@ -1528,7 +1528,10 @@
       "task": "Task",
       "archive": "Archive",
       "aggregate": "Aggregate",
-      "validation": "Ingest Validation"
+      "validation": "Ingest Validation",
+      "artClient": "Task Update Organizations ART Client",
+      "importServiceClient": "Task Update Organizations Import Client",
+      "sendReconciliationReport": "Task Reconciliation Report"
     },
     "popover": {
       "required": "This field is required",

@@ -31,6 +31,81 @@ function dataSources(
   }, {});
 }
 
+function oauth2(basePath: string): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.access-token-uri`]: {
+      dataType: 'uri',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.client-id`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.client-secret`]: {
+      dataType: 'string',
+      required: true,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.username`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+      // can we provide a reasonable default?
+    },
+    [`${basePath}.password`]: {
+      dataType: 'string',
+      required: true,
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function archive(
+  basePath: string,
+  pathPrefixRequired: boolean = true
+): { [key: string]: FieldConfiguration } {
+  return {
+    [`${basePath}.pathPrefix`]: {
+      dataType: 'string',
+      required: pathPrefixRequired,
+      hidden: sandboxHidden
+    },
+    [`${basePath}.uriRoot`]: {
+      dataType: 'archive-uri',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3AccessKey`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3RegionStatic`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3SecretKey`]: {
+      dataType: 'password',
+      hidden: sandboxHidden
+    },
+    [`${basePath}.s3Sse`]: {
+      dataType: 'string',
+      hidden: sandboxHidden
+    }
+  };
+}
+
+function archives(
+  basePath: string,
+  count: number
+): { [key: string]: FieldConfiguration } {
+  let archives = {};
+  for (let i = 0; i < count; i++) {
+    archives = {
+      ...archives,
+      ...archive(`${basePath}.${i}`, false)
+    };
+  }
+  return archives;
+}
+
 const assessmentTypeOptions = ({ translateService }) =>
   of(
     ['sum', 'ica', 'iab'].map(value => ({
@@ -106,31 +181,7 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     options: assessmentTypeOptions,
     required: true
   },
-  'archive.pathPrefix': {
-    dataType: 'string',
-    required: true,
-    hidden: sandboxHidden
-  },
-  'archive.uriRoot': {
-    dataType: 'archive-uri',
-    hidden: sandboxHidden
-  },
-  'archive.s3AccessKey': {
-    dataType: 'string',
-    hidden: sandboxHidden
-  },
-  'archive.s3RegionStatic': {
-    dataType: 'string',
-    hidden: sandboxHidden
-  },
-  'archive.s3SecretKey': {
-    dataType: 'password',
-    hidden: sandboxHidden
-  },
-  'archive.s3sse': {
-    dataType: 'string',
-    hidden: sandboxHidden
-  },
+  ...archive('archive'),
   ...dataSources(['reporting', 'warehouse', 'migrate'], dataSource => ({
     [`${dataSource}.urlParts.database`]: {
       dataType: 'string',
@@ -229,5 +280,14 @@ export const fieldConfigurationsByKey: { [key: string]: FieldConfiguration } = {
     dataType: 'enumeration-list',
     options: examProcessorRequiredDataElements,
     hidden: sandboxHidden
-  }
+  },
+  ...oauth2('artClient.oauth2'),
+  ...oauth2('importServiceClient.oauth2'),
+  'sendReconciliationReport.log': {
+    dataType: 'boolean'
+  },
+  'sendReconciliationReport.query': {
+    dataType: 'string'
+  },
+  ...archives('sendReconciliationReport.archives', 2)
 };
