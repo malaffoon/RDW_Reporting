@@ -101,7 +101,7 @@ export interface Field<DataTypes = any, T = any> {
   inputType: InputType;
 
   /**
-   * The field-specific validators
+   * The form-specific validators
    */
   validators: ValidatorFn[];
 
