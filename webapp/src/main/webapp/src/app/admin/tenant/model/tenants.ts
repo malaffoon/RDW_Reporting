@@ -217,5 +217,19 @@ export function toServerTenant(tenant: TenantConfiguration): any {
 }
 
 export function toServerConfigurations(configurations: any): any {
-  return unflatten(lowercase(trimStrings(configurations)));
+  const serverConfigurations = unflatten(
+    lowercase(trimStrings(configurations))
+  );
+
+  // Remove empty archive configurations
+  const {
+    sendReconciliationReport: { archives } = <any>{}
+  } = serverConfigurations;
+  if (archives != null) {
+    serverConfigurations.sendReconciliationReport.archives = archives.filter(
+      archive => Object.keys(archive).length > 0
+    );
+  }
+
+  return serverConfigurations;
 }
