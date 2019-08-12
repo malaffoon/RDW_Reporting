@@ -1,6 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  debounceTime,
   finalize,
   map,
   mapTo,
@@ -8,13 +9,14 @@ import {
   publishReplay,
   refCount,
   share,
+  startWith,
   switchMap,
   takeUntil,
   tap
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, fromEvent, Observable, Subject, zip } from 'rxjs';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
@@ -33,6 +35,9 @@ import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 import { State } from '../../model/state';
 import { StateOptionsService } from '../../service/state-options.service';
+import { KeepAliveService } from '../../../../shared/service/keep-alive.service';
+
+const keepAliveDebounce = 1000 * 10; // 10 seconds
 
 const byLabel = ordering(byString).on<TenantConfiguration | DataSet>(
   ({ label }) => label
@@ -43,7 +48,7 @@ const byLabel = ordering(byString).on<TenantConfiguration | DataSet>(
   templateUrl: './tenant.component.html',
   styleUrls: ['./tenant.component.less']
 })
-export class TenantComponent implements OnDestroy {
+export class TenantComponent implements OnInit, OnDestroy {
   type$: Observable<TenantType>;
   mode$: Observable<FormMode>;
   tenant$: Observable<TenantConfiguration>;
@@ -67,7 +72,8 @@ export class TenantComponent implements OnDestroy {
     private languageStore: LanguageStore,
     private modalService: TenantModalService,
     private notificationService: NotificationService,
-    private translationLoader: RdwTranslateLoader
+    private translationLoader: RdwTranslateLoader,
+    private keepAliveService: KeepAliveService
   ) {
     const sandboxDataSets$ = this.service.getSandboxDataSets().pipe(
       map(values => values.slice().sort(byLabel)),
@@ -146,6 +152,21 @@ export class TenantComponent implements OnDestroy {
       takeUntil(this.destroyed$),
       mapTo(true)
     );
+  }
+
+  ngOnInit(): void {
+    combineLatest(
+      // give these an artificial starting value so the stream
+      // is "filled" when either of these events is triggered
+      fromEvent(document, 'click').pipe(startWith(null)),
+      fromEvent(document, 'keydown').pipe(startWith(null))
+    )
+      .pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(keepAliveDebounce),
+        switchMap(() => this.keepAliveService.extendSession())
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {

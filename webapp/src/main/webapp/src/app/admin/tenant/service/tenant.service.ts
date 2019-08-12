@@ -89,6 +89,8 @@ export class TenantService {
    * @param tenant - The sandbox to update
    */
   update(tenant: TenantConfiguration): Observable<TenantConfiguration> {
+    console.log('update', toServerTenant(tenant));
+    return of(tenant);
     return this.dataService
       .put(ResourceRoute, toServerTenant(tenant))
       .pipe(map(() => tenant));
