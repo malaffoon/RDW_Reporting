@@ -183,7 +183,7 @@ function archive(
       hidden: sandboxHidden
     },
     [`${basePath}.s3SecretKey`]: {
-      dataType: 'password',
+      dataType: 'string',
       hidden: sandboxHidden
     },
     [`${basePath}.s3Sse`]: {
