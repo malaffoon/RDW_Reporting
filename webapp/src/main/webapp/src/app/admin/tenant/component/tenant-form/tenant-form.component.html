@@ -2,6 +2,7 @@
   *ngIf="formGroup"
   [formGroup]="formGroup"
   (ngSubmit)="onSubmit()"
+  (keydown.enter)="$event.preventDefault()"
   #form="ngForm"
 >
   <page-heading>
