@@ -1445,7 +1445,7 @@
         "error": {
           "required": "Please enter a tenant key",
           "unavailable": "A tenant with the same key already exists",
-          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
+          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters and underscores ('_') are allowed"
         }
       },
       "id": {
