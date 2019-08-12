@@ -73,7 +73,7 @@ interface PerformancePath extends DiscretePath<PerformancePoint> {
 interface PerformancePoint extends Point {
   readonly levelRange: LevelRange;
   readonly scaleScore: number;
-  readonly standardError: number;
+  readonly standardError?: number;
 }
 
 interface PerformanceLevelPath extends Path {
@@ -330,8 +330,8 @@ export class LongitudinalCohortChartComponent implements OnInit {
                     styles: `point color-stroke`,
                     x: xScale(j),
                     y: yScale(scaleScore),
-                    scaleScore: scaleScore,
-                    standardError: standardError || 0,
+                    scaleScore,
+                    standardError,
                     levelRange: findPerformanceLevelRange(
                       levelRangesByYearGradeIndex,
                       j,

@@ -4,7 +4,7 @@
 export class ExamStatistics {
   total: number;
   average: number;
-  standardError: number;
+  standardError?: number;
   levels: ExamStatisticsLevel[];
   percents: ExamStatisticsLevel[];
   claims: ClaimStatistics[];

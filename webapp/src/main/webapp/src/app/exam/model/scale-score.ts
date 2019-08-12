@@ -1,5 +1,5 @@
 export interface ScaleScore {
   level: number;
-  standardError: number;
+  standardError?: number;
   score: number;
 }
