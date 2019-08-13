@@ -1,3 +1,8 @@
+@gray-darkest: #2a2b2d;
+@gray-darker: #84888d;
+@gray-dark: #a7a7a7;
+@gray: #b8b8b8;
+
 @gray-lighter: #e6e6e6;
 @gray-lightest: #f8f8f8;
 
@@ -6,7 +11,11 @@ a {
   padding: 30px 30px 15px 30px;
   text-decoration: none;
   color: inherit;
+  .edit-icon {
+    visibility: hidden;
+  }
   &:not(.status-active):not(.status-update_failed) {
+    color: @gray-dark;
     pointer-events: none;
     a,
     button {
@@ -17,6 +26,9 @@ a {
   &.status-update_failed {
     &:hover {
       background-color: @gray-lightest;
+      .edit-icon {
+        visibility: visible;
+      }
     }
     &:active {
       background-color: @gray-lighter;
@@ -51,5 +63,9 @@ h2 {
 }
 
 .label {
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.edit-icon {
+  font-size: 24px;
 }

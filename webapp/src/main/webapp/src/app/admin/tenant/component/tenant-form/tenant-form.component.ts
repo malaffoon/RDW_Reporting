@@ -68,6 +68,7 @@ export function tenantFormGroup(
   configurationDefaults: any,
   localizationDefaults: any,
   tenantKeyAvailable: (value: string) => Observable<boolean>,
+  tenantIdAvailable: (value: string) => Observable<boolean>,
   tenants: TenantConfiguration[] = [],
   dataSets: DataSet[] = []
 ): FormGroup {
@@ -133,7 +134,11 @@ export function tenantFormGroup(
             ],
             mode === 'create' ? [available(tenantKeyAvailable)] : []
           ),
-          id: new FormControl(value.id || '', [Validators.required, notBlank]),
+          id: new FormControl(
+            value.id || '',
+            [Validators.required, notBlank],
+            mode == 'create' ? [available(tenantIdAvailable)] : []
+          ),
           label,
           description,
           configurations,
@@ -342,6 +347,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   tenantKeyAvailable: (value: string) => Observable<boolean>;
 
   @Input()
+  tenantIdAvailable: (value: string) => Observable<boolean>;
+
+  @Input()
   mode: FormMode;
 
   @Input()
@@ -445,6 +453,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       configurationDefaults,
       localizationDefaults,
       tenantKeyAvailable,
+      tenantIdAvailable,
       requiredConfiguration,
       states
     } = this;
@@ -455,6 +464,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       configurationDefaults != null &&
       localizationDefaults != null &&
       tenantKeyAvailable != null &&
+      tenantIdAvailable != null &&
       requiredConfiguration != null &&
       states != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
@@ -465,6 +475,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         configurationDefaults,
         localizationDefaults,
         tenantKeyAvailable,
+        tenantIdAvailable,
         tenants,
         dataSets
       );

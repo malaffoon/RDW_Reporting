@@ -42,6 +42,18 @@ export class TenantService {
     );
   }
 
+  existsId(id: string): Observable<boolean> {
+    return this.dataService.head(`${ResourceRoute}/id/${id}`).pipe(
+      mapTo(true),
+      catchError(error => {
+        if (error.status === 404) {
+          return of(false);
+        }
+        return throwError(error);
+      })
+    );
+  }
+
   getAll(type: TenantType): Observable<TenantConfiguration[]> {
     const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
     const defaults$ = this.cachingDataService.get(DefaultsRoute);

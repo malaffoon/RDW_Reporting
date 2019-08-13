@@ -913,24 +913,24 @@
     },
     "subject-select-label": "Subject",
     "tenant-status": {
-      "CREATE_STARTED": "Creating",
-      "CREATE_SETTING_UP_DATABASES": "Creating Database Resources",
-      "CREATE_PERSISTING_CONFIGURATION": "Saving Configurations",
-      "CREATE_PUBLISHING_CONFIGURATION_CHANGES": "Publishing Configuration Changes",
-      "CREATE_RUNNING_MIGRATIONS": "Running Database Migrations",
-      "CREATE_CLEARING_CACHES": "Clearing Caches",
+      "CREATE_STARTED": "Creating {{tenantType}}",
+      "CREATE_SETTING_UP_DATABASES": "Creating {{tenantType}}: Creating Database Resources",
+      "CREATE_PERSISTING_CONFIGURATION": "Creating {{tenantType}}: Saving Configurations",
+      "CREATE_PUBLISHING_CONFIGURATION_CHANGES": "Creating {{tenantType}}: Publishing Configuration Changes",
+      "CREATE_RUNNING_MIGRATIONS": "Creating {{tenantType}}: Running Database Migrations",
+      "CREATE_CLEARING_CACHES": "Creating {{tenantType}}: Clearing Caches",
       "CREATE_FAILED": "Creation Failed",
-      "DELETE_STARTED": "Deleting",
-      "DELETE_PERSISTING_CONFIGURATION": "Saving Configurations",
-      "DELETE_PUBLISHING_CONFIGURATION_CHANGES": "Publishing Configuration Changes",
-      "DELETE_CLEARING_DATABASE_RESOURCES": "Deleting Database Resources",
-      "DELETE_CLEARING_S3_RESOURCES": "Deleting Archive Resources",
-      "DELETE_CLEAR_CACHES": "Clearing Caches",
+      "DELETE_STARTED": "Deleting {{tenantType}}",
+      "DELETE_PERSISTING_CONFIGURATION": "Deleting {{tenantType}}: Saving Configurations",
+      "DELETE_PUBLISHING_CONFIGURATION_CHANGES": "Deleting {{tenantType}}: Publishing Configuration Changes",
+      "DELETE_CLEARING_DATABASE_RESOURCES": "Deleting {{tenantType}}: Deleting Database Resources",
+      "DELETE_CLEARING_S3_RESOURCES": "Deleting {{tenantType}}: Deleting Archive Resources",
+      "DELETE_CLEAR_CACHES": "Deleting {{tenantType}}: Clearing Caches",
       "DELETE_FAILED": "Deletion Failed",
-      "UPDATE_STARTED": "Updating",
-      "UPDATE_PERSISTING_CONFIGURATION": "Saving Configurations",
-      "UPDATE_PUBLISHING_CONFIGURATION_CHANGES": "Publishing Configuration Changes",
-      "UPDATE_CLEAR_CACHES": "Clearing Caches",
+      "UPDATE_STARTED": "Updating {{tenantType}}",
+      "UPDATE_PERSISTING_CONFIGURATION": "Updating {{tenantType}}: Saving Configurations",
+      "UPDATE_PUBLISHING_CONFIGURATION_CHANGES": "Updating {{tenantType}}: Publishing Configuration Changes",
+      "UPDATE_CLEAR_CACHES": "Updating {{tenantType}}: Clearing Caches",
       "UPDATE_FAILED": "Update Failed",
       "ACTIVE": "Active"
     },
@@ -1397,6 +1397,16 @@
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
   },
   "tenant": {
+    "initialization-error": {
+      "create": {
+        "SANDBOX": "Failed to load the new sandbox form. Please contact a system administrator if this issue continues.",
+        "TENANT": "Failed to load the new tenant form. Please contact a system administrator if this issue continues."
+      },
+      "update": {
+        "SANDBOX": "Failed to load sandbox {{tenantKey}}. Please contact a system administrator if this issue continues.",
+        "TENANT": "Failed to load tenant {{tenantKey}}. Please contact a system administrator if this issue continues."
+      }
+    },
     "create": {
       "error": {
         "SANDBOX": "An error occurred when creating the sandbox",
@@ -1423,6 +1433,10 @@
       }
     }
   },
+  "tenant-type": {
+    "TENANT": "Tenant",
+    "SANDBOX": "Sandbox"
+  },
   "tenants": {
     "heading": {
       "SANDBOX": "Sandboxes",
@@ -1445,7 +1459,7 @@
         "error": {
           "required": "Please enter a tenant key",
           "unavailable": "A tenant with the same key already exists",
-          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
+          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters and underscores ('_') are allowed"
         }
       },
       "id": {
@@ -1453,7 +1467,7 @@
         "info": "This is the external identifier for the tenant. It must match the ID in the tenancy chain. Typically, this is a state code.",
         "error": {
           "required": "Please enter a tenant ID",
-          "exists": "A tenant with the same ID already exists",
+          "unavailable": "A tenant with the same ID already exists",
           "pattern": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
         }
       },

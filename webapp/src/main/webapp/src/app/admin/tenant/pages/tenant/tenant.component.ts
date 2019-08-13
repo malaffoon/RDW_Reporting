@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  catchError,
   debounceTime,
   finalize,
   map,
@@ -16,7 +17,7 @@ import {
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { BehaviorSubject, fromEvent, Observable, Subject, zip } from 'rxjs';
+import { BehaviorSubject, fromEvent, Observable, Subject } from 'rxjs';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
@@ -59,7 +60,9 @@ export class TenantComponent implements OnInit, OnDestroy {
   writable$: Observable<boolean>;
   states$: Observable<State[]>;
   tenantKeyAvailable: (value: string) => Observable<boolean>;
+  tenantIdAvailable: (value: string) => Observable<boolean>;
   initialized$: Observable<boolean>;
+  initializationError$: Observable<any>;
   state$: Subject<FormState> = new BehaviorSubject(undefined);
   destroyed$: Subject<void> = new Subject();
 
@@ -87,6 +90,11 @@ export class TenantComponent implements OnInit, OnDestroy {
     this.tenantKeyAvailable = (value: string) =>
       this.service
         .exists((value || '').toUpperCase())
+        .pipe(map(exists => !exists));
+
+    this.tenantIdAvailable = (value: string) =>
+      this.service
+        .existsId((value || '').toUpperCase())
         .pipe(map(exists => !exists));
 
     this.type$ = this.route.data.pipe(map(({ type }) => type));
@@ -151,6 +159,10 @@ export class TenantComponent implements OnInit, OnDestroy {
     ).pipe(
       takeUntil(this.destroyed$),
       mapTo(true)
+    );
+
+    this.initializationError$ = this.initialized$.pipe(
+      catchError(error => of(error))
     );
   }
 
