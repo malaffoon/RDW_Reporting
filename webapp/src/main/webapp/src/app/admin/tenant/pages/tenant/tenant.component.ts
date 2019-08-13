@@ -143,8 +143,7 @@ export class TenantComponent implements OnDestroy {
       this.configurationDefaults$,
       this.localizationDefaults$,
       this.tenant$,
-      this.states$,
-      throwError(new Error('hi'))
+      this.states$
     ).pipe(
       takeUntil(this.destroyed$),
       mapTo(true)
