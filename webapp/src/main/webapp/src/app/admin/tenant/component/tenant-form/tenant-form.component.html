@@ -155,6 +155,9 @@
             <ng-container *ngIf="control.errors.pattern">
               {{ 'tenant-form.field.id.error.pattern' | translate }}
             </ng-container>
+            <ng-container *ngIf="control.errors.unavailable">
+              {{ 'tenant-form.field.id.error.unavailable' | translate }}
+            </ng-container>
           </span>
         </ng-container>
         <ng-template #readonlyId>

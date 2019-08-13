@@ -8,6 +8,7 @@
     [configurationDefaults]="configurationDefaults$ | async"
     [localizationDefaults]="localizationDefaults$ | async"
     [tenantKeyAvailable]="tenantKeyAvailable"
+    [tenantIdAvailable]="tenantIdAvailable"
     [writable]="writable$ | async"
     [states]="states$ | async"
     [configurationOpen]="(type$ | async) === 'TENANT'"

@@ -1467,7 +1467,7 @@
         "info": "This is the external identifier for the tenant. It must match the ID in the tenancy chain. Typically, this is a state code.",
         "error": {
           "required": "Please enter a tenant ID",
-          "exists": "A tenant with the same ID already exists",
+          "unavailable": "A tenant with the same ID already exists",
           "pattern": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
         }
       },
