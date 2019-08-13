@@ -7,7 +7,10 @@
     failed: tenant.status.endsWith('FAILED'),
     deletable:
       tenant.status === 'CREATE_FAILED' || tenant.status === 'DELETE_FAILED',
-    processing: tenant.status !== 'ACTIVE' && !tenant.status.endsWith('FAILED')
+    processing: tenant.status !== 'ACTIVE' && !tenant.status.endsWith('FAILED'),
+    creating: tenant.status.startsWith('CREATE'),
+    updating: tenant.status.startsWith('UPDATE'),
+    deleting: tenant.status.startsWith('DELETE')
   } as status"
 >
   <div class="head">
@@ -15,28 +18,47 @@
       {{ tenant.label }}
       <span class="sandbox-key">({{ tenant.code }})</span>
     </h2>
-    <div class="menu">
-      <div
-        class="label border-only"
+    <ng-container *ngIf="status.processing; else notProcessing">
+      <span
+        class="processing-status"
         [ngClass]="{
-          'blue-dark': status.active,
-          aqua: status.processing,
-          maroon: status.failed
+          green: status.creating,
+          aqua: status.updating,
+          red: status.deleting
         }"
       >
-        <i *ngIf="status.processing" class="fa fa-spinner fa-pulse"></i>
-        {{ 'common.tenant-status.' + tenant.status | translate }}
+        <i class="fa fa-spinner fa-pulse"></i>
+        {{
+          'common.tenant-status.' + tenant.status
+            | translate
+              : {
+                  tenantType: 'tenant-type.' + tenant.type | translate
+                }
+        }}
+      </span>
+    </ng-container>
+    <ng-template #notProcessing>
+      <div class="menu" *ngIf="status.failed">
+        <div class="label border-only red">
+          <i class="fa fa-warning"></i>
+          {{ 'common.tenant-status.' + tenant.status | translate }}
+        </div>
+        <button
+          *ngIf="status.deletable"
+          type="button"
+          class="btn btn-danger btn-xs"
+          (click)="$event.stopPropagation(); tenantDelete.emit(tenant)"
+        >
+          {{ 'common.action.delete' | translate }}
+        </button>
+        <i
+          *ngIf="tenant.status === 'UPDATE_FAILED'"
+          class="edit-icon fa fa-pencil"
+        ></i>
       </div>
-      <button
-        *ngIf="status.deletable"
-        type="button"
-        class="btn btn-danger btn-xs"
-        (click)="$event.stopPropagation(); tenantDelete.emit(tenant)"
-      >
-        {{ 'common.action.delete' | translate }}
-      </button>
-      <i class="edit-icon fa fa-edit"></i>
-    </div>
+
+      <i *ngIf="status.active" class="edit-icon fa fa-pencil"></i>
+    </ng-template>
   </div>
   <div class="body">
     <!-- TODO add created date -->

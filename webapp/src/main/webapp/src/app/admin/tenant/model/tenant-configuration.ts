@@ -43,12 +43,12 @@ export interface TenantConfiguration {
   /**
    * Flat map of localization codes to messages
    */
-  localizations: { [key: string]: string };
+  localizations?: { [key: string]: string };
 
   /**
    * Flat map of configuration properties to values
    */
-  configurations: { [key: string]: string | boolean | number };
+  configurations?: { [key: string]: string | boolean | number };
 
   /**
    * The current status of this tenant.
