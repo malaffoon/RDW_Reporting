@@ -1398,16 +1398,13 @@
   },
   "tenant": {
     "initialization-error": {
-      "head": "System Error",
-      "body": {
-        "create": {
-          "SANDBOX": "Failed to load the new sandbox form. Please contact a system administrator if this issue continues.",
-          "TENANT": "Failed to load the new tenant form. Please contact a system administrator if this issue continues."
-        },
-        "update": {
-          "SANDBOX": "Failed to load sandbox {{tenantKey}}. Please contact a system administrator if this issue continues.",
-          "TENANT": "Failed to load tenant {{tenantKey}}. Please contact a system administrator if this issue continues."
-        }
+      "create": {
+        "SANDBOX": "Failed to load the new sandbox form. Please contact a system administrator if this issue continues.",
+        "TENANT": "Failed to load the new tenant form. Please contact a system administrator if this issue continues."
+      },
+      "update": {
+        "SANDBOX": "Failed to load sandbox {{tenantKey}}. Please contact a system administrator if this issue continues.",
+        "TENANT": "Failed to load tenant {{tenantKey}}. Please contact a system administrator if this issue continues."
       }
     },
     "create": {
