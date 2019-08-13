@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   catchError,
-  debounceTime,
   finalize,
   map,
   mapTo,
@@ -13,7 +12,8 @@ import {
   startWith,
   switchMap,
   takeUntil,
-  tap
+  tap,
+  throttleTime
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
@@ -38,7 +38,7 @@ import { State } from '../../model/state';
 import { StateOptionsService } from '../../service/state-options.service';
 import { KeepAliveService } from '../../../../shared/security/service/keep-alive.service';
 
-const keepAliveDebounce = 1000 * 10; // 10 seconds
+const keepAliveThrottleTime = 1000 * 60; // 1 minute
 
 const byLabel = ordering(byString).on<TenantConfiguration | DataSet>(
   ({ label }) => label
@@ -175,7 +175,7 @@ export class TenantComponent implements OnInit, OnDestroy {
     )
       .pipe(
         takeUntil(this.destroyed$),
-        debounceTime(keepAliveDebounce),
+        throttleTime(keepAliveThrottleTime),
         switchMap(() => this.keepAliveService.extendSession())
       )
       .subscribe();
