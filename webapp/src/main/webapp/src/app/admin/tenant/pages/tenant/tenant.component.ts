@@ -54,6 +54,7 @@ export class TenantComponent implements OnDestroy {
   writable$: Observable<boolean>;
   states$: Observable<State[]>;
   tenantKeyAvailable: (value: string) => Observable<boolean>;
+  tenantIdAvailable: (value: string) => Observable<boolean>;
   initialized$: Observable<boolean>;
   state$: Subject<FormState> = new BehaviorSubject(undefined);
   destroyed$: Subject<void> = new Subject();
@@ -81,6 +82,11 @@ export class TenantComponent implements OnDestroy {
     this.tenantKeyAvailable = (value: string) =>
       this.service
         .exists((value || '').toUpperCase())
+        .pipe(map(exists => !exists));
+
+    this.tenantIdAvailable = (value: string) =>
+      this.service
+        .existsId((value || '').toUpperCase())
         .pipe(map(exists => !exists));
 
     this.type$ = this.route.data.pipe(map(({ type }) => type));
