@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+  catchError,
   finalize,
   map,
   mapTo,
@@ -14,7 +15,7 @@ import {
 } from 'rxjs/operators';
 import { TenantService } from '../../service/tenant.service';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, throwError } from 'rxjs';
 import { UserService } from '../../../../shared/security/service/user.service';
 import { LanguageStore } from '../../../../shared/i18n/language.store';
 import { NotificationService } from '../../../../shared/notification/notification.service';
@@ -55,6 +56,7 @@ export class TenantComponent implements OnDestroy {
   states$: Observable<State[]>;
   tenantKeyAvailable: (value: string) => Observable<boolean>;
   initialized$: Observable<boolean>;
+  initializationError$: Observable<any>;
   state$: Subject<FormState> = new BehaviorSubject(undefined);
   destroyed$: Subject<void> = new Subject();
 
@@ -145,6 +147,10 @@ export class TenantComponent implements OnDestroy {
     ).pipe(
       takeUntil(this.destroyed$),
       mapTo(true)
+    );
+
+    this.initializationError$ = this.initialized$.pipe(
+      catchError(error => of(error))
     );
   }
 

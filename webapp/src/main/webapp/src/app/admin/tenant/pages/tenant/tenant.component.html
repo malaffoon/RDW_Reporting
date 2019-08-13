@@ -21,5 +21,23 @@
   ></app-tenant-form>
 </ng-container>
 <ng-template #loading>
-  <spinner></spinner>
+  <ng-container
+    *ngIf="(initializationError$ | async) as error; else showSpinner"
+  >
+    <p class="alert alert-danger">
+      {{
+        'tenant.initialization-error.' +
+          (mode$ | async) +
+          '.' +
+          (type$ | async)
+          | translate
+            : {
+                tenantKey: (route.params | async).id
+              }
+      }}
+    </p>
+  </ng-container>
+  <ng-template #showSpinner>
+    <spinner></spinner>
+  </ng-template>
 </ng-template>
