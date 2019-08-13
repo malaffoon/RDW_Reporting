@@ -35,7 +35,7 @@ import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 import { State } from '../../model/state';
 import { StateOptionsService } from '../../service/state-options.service';
-import { KeepAliveService } from '../../../../shared/service/keep-alive.service';
+import { KeepAliveService } from '../../../../shared/security/service/keep-alive.service';
 
 const keepAliveDebounce = 1000 * 10; // 10 seconds
 

@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { DataService } from '../data/data.service';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-const ResourceRoute = '/keep-alive';
+const ResourceRoute = '/api/keep-alive';
 
+/**
+ * Use this service to ping the server and keep the user's session alive
+ */
 @Injectable({
   providedIn: 'root'
 })
