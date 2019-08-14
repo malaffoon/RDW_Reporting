@@ -134,15 +134,15 @@ function postgresDataSource(
 
 function oauth2(basePath: string): { [key: string]: FieldConfiguration } {
   return {
-    [`${basePath}.access-token-uri`]: {
+    [`${basePath}.accessTokenUri`]: {
       dataType: 'uri',
       hidden: sandboxHidden
     },
-    [`${basePath}.client-id`]: {
+    [`${basePath}.clientId`]: {
       dataType: 'string',
       hidden: sandboxHidden
     },
-    [`${basePath}.client-secret`]: {
+    [`${basePath}.clientSecret`]: {
       dataType: 'string',
       required: true,
       hidden: sandboxHidden

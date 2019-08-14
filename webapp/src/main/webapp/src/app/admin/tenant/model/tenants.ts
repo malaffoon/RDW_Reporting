@@ -149,7 +149,15 @@ export function toTenant(
  * @param type
  */
 export function toConfigurations(
-  { aggregate, archive, datasources, reporting }: any,
+  {
+    aggregate,
+    archive,
+    artClient,
+    datasources,
+    importServiceClient,
+    reporting,
+    sendReconciliationReport
+  }: any,
   type: TenantType
 ): any {
   const relevantConfigurations =
@@ -161,8 +169,11 @@ export function toConfigurations(
       : {
           aggregate,
           archive,
+          artClient,
           datasources,
-          reporting
+          importServiceClient,
+          reporting,
+          sendReconciliationReport
         };
 
   // TODO this valued filter wont be needed after the api update
