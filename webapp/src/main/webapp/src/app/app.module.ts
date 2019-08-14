@@ -13,7 +13,6 @@ import {
 } from 'ngx-bootstrap';
 import { ReportingCommonModule } from './shared/reporting-common.module';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
-import { TranslateResolve } from './translate.resolve';
 import { Angulartics2Module } from 'angulartics2';
 import { RdwRouteReuseStrategy } from './shared/rdw-route-reuse.strategy';
 import { DashboardModule } from './dashboard/dashboard.module';
@@ -28,7 +27,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { translateModuleConfiguration } from './shared/translate-module-configuration';
 import { routes } from './app.routes';
 import { CommonModule } from '@angular/common';
-import { AutoCompleteModule, MultiSelectModule } from 'primeng/primeng';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,6 +36,7 @@ import { AutoCompleteModule, MultiSelectModule } from 'primeng/primeng';
     NoopAnimationsModule,
     CommonModule,
     HttpModule,
+    HttpClientModule,
     ReportingCommonModule,
     // TODO lazy load
     DashboardModule,

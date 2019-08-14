@@ -10,6 +10,8 @@ import { AuthorizationDirective } from './directive/authorization.directive';
 import { AuthenticatedHttpService } from './service/authenticated-http.service';
 import { SecuritySettingService } from './service/security-settings.service';
 import { DefaultSecuritySettingsService } from './service/default-security-settings.service';
+import { NotAuthenticatedHttpInterceptor } from './service/not-authenticated.http-interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 /**
  * Common security module.
@@ -44,6 +46,11 @@ import { DefaultSecuritySettingsService } from './service/default-security-setti
     {
       provide: SecuritySettingService,
       useClass: DefaultSecuritySettingsService
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NotAuthenticatedHttpInterceptor,
+      multi: true
     }
   ]
 })

@@ -11,6 +11,9 @@ import { Observable, of, throwError as _throw } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SecurityService } from './security.service';
 
+/**
+ * @deprecated use {@link HttpClient} and {@link NotAuthenticatedHttpInterceptor}
+ */
 @Injectable()
 export class AuthenticatedHttpService extends Http {
   constructor(
