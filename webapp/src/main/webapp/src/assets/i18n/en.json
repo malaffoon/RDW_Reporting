@@ -1428,7 +1428,7 @@
         "head": "Delete <strong>{{label}} ({{code}})</strong>?",
         "body": {
           "SANDBOX": "Are you sure you want to delete sandbox <strong>{{label}} ({{code}})</strong>?",
-          "TENANT": "Are you sure you want to delete tenant <strong>{{label}} ({{code}})</strong>?"
+          "TENANT": "<strong>WARNING!!! This is a tenant, not a sandbox!</strong><br>Are you really sure you want to delete tenant <strong>{{label}} ({{code}})</strong>?"
         }
       }
     }
