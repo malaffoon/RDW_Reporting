@@ -159,27 +159,16 @@
                       </ng-container>
 
                       <ng-template #errorsPopover>
-                        <ng-container *ngIf="getErrors(data) as errorNames">
-                          <ng-container
-                            *ngIf="errorNames.length > 0; else noErrors"
-                          >
-                            <div *ngFor="let errorName of errorNames">
-                              <span class="maroon">
-                                {{
-                                  'tenant-configuration-form.error.' +
-                                    errorName
-                                    | translate
-                                      : formGroup.controls[
-                                          data.configuration.name
-                                        ].errors
-                                }}
-                              </span>
-                            </div>
-                          </ng-container>
-                          <ng-template #noErrors>
-                            <i class="green fa fa-check"></i>
-                          </ng-template>
-                        </ng-container>
+                        <div *ngFor="let errorName of getErrors(data)">
+                          <span class="maroon">
+                            {{
+                              'tenant-configuration-form.error.' + errorName
+                                | translate
+                                  : formGroup.controls[data.configuration.name]
+                                      .errors
+                            }}
+                          </span>
+                        </div>
                       </ng-template>
 
                       <div class="input-controls">
