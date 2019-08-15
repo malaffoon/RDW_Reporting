@@ -12,7 +12,11 @@ import {
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { ConfigurationProperty, Property } from '../../model/property';
-import { isModified } from '../../model/fields';
+import {
+  fieldInputType,
+  fieldValidators,
+  isModified
+} from '../../model/fields';
 
 export function localizationsFormGroup(
   defaults: any,
@@ -20,11 +24,16 @@ export function localizationsFormGroup(
 ): FormGroup {
   overrides = overrides || {};
   return new FormGroup(
-    Object.entries(defaults).reduce((controlsByName, [key, defaultValue]) => {
-      const overrideValue = overrides[key];
-      const value = overrideValue != null ? overrideValue : defaultValue;
-      const validators = []; // TODO? do localizations need validation?
-      controlsByName[key] = new FormControl(value, validators);
+    Object.keys(defaults).reduce((controlsByName, key) => {
+      // don't populate form control values for inputs
+      // show a placeholder instead to indicate that entering nothing will
+      // result in that default value
+      const value =
+        fieldInputType(key) !== 'input'
+          ? overrides[key] || defaults[key]
+          : overrides[key];
+
+      controlsByName[key] = new FormControl(value, fieldValidators(key));
       return controlsByName;
     }, {})
   );
