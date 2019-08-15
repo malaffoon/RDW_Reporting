@@ -1,54 +1,28 @@
-import { Component, forwardRef, Input, ViewChild } from '@angular/core';
 import {
+  Component,
+  forwardRef,
+  Injector,
+  Input,
+  ViewChild
+} from '@angular/core';
+import {
+  AbstractControl,
   ControlContainer,
   ControlValueAccessor,
-  FormControl,
   FormGroup,
-  NG_VALUE_ACCESSOR,
-  ValidatorFn
+  NG_VALUE_ACCESSOR
 } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { TreeTable, TreeTableToggler } from 'primeng/primeng';
 import { showErrors } from '../../../../shared/form/forms';
-import { ConfigurationProperty } from '../../model/property';
-import {
-  configurationFormFields,
-  fieldInputType,
-  fieldValidators,
-  isModified
-} from '../../model/fields';
-import { TenantType } from '../../model/tenant-type';
-import {
-  oneDatabasePerDataSource,
-  onePasswordPerUser,
-  uniqueDatabasePerInstance
-} from '../tenant-form/tenant-form.validators';
-
-export function configurationsFormGroup(
-  type: TenantType,
-  defaults: any,
-  overrides: any = {},
-  validators: ValidatorFn | ValidatorFn[] = []
-): FormGroup {
-  overrides = overrides || {};
-
-  // TODO consider reworking - this uses so much of the field metadata that it probably should be a product of the fields
-  return new FormGroup(
-    Object.keys(configurationFormFields(type)).reduce((controlsByName, key) => {
-      // don't populate form control values for inputs
-      // show a placeholder instead to indicate that entering nothing will
-      // result in that default value
-      const value =
-        fieldInputType(key) !== 'input'
-          ? overrides[key] || defaults[key]
-          : overrides[key];
-
-      controlsByName[key] = new FormControl(value, fieldValidators(key));
-      return controlsByName;
-    }, {}),
-    validators
-  );
-}
+import { formFieldModified } from '../../model/form/form-fields';
+import { Property } from '../../model/property';
+import { isEqual } from 'lodash';
+import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { Option } from '../../model/form/option';
+import { ConstraintType } from '../../model/form/constraint-type';
+import { share } from 'rxjs/operators';
 
 function addTreeNodesRecursively(
   nodes: TreeNode[],
@@ -66,7 +40,7 @@ function addTreeNodesRecursively(
     const path = parentPath.length > 0 ? `${parentPath}.${key}` : key;
 
     // configuration property
-    if (child.key != null) {
+    if (child.configuration != null) {
       nodes.push({
         leaf: true,
         key: path, // shortcut
@@ -102,6 +76,7 @@ function addTreeNodesRecursively(
  * Creates a ng-prime tree table data structure from the given json object
  *
  * @param value The object to convert
+ * @param expanded Set to true if you want the tree nodes expanded
  */
 export function toTreeNodes(value: any, expanded: boolean = false): TreeNode[] {
   const nodes = [];
@@ -130,6 +105,7 @@ function rowTrackBy(index: number, { node }: any): string {
 export class PropertyOverrideTreeTableComponent
   implements ControlValueAccessor {
   readonly showErrors = showErrors;
+  readonly compareWith = isEqual;
   readonly rowTrackBy = rowTrackBy;
 
   @ViewChild('table')
@@ -141,41 +117,73 @@ export class PropertyOverrideTreeTableComponent
   @Input()
   tree: TreeNode[] = [];
 
-  constructor(private controlContainer: ControlContainer) {}
+  optionsByPropertyName: { [name: string]: Observable<Option<any>[]> } = {};
+
+  constructor(
+    private controlContainer: ControlContainer,
+    private translateService: TranslateService,
+    private injector: Injector
+  ) {}
 
   get formGroup(): FormGroup {
     return this.controlContainer.control as FormGroup;
   }
 
-  modified(property: ConfigurationProperty): boolean {
-    return isModified(
-      property.key,
-      this.formGroup.value[property.key],
+  modified(property: Property): boolean {
+    return formFieldModified(
+      property.configuration.dataType.inputType,
+      this.formGroup.value[property.configuration.name],
       property.originalValue
     );
   }
 
-  showPasswordToggle(property: ConfigurationProperty): boolean {
-    const value = this.formGroup.value[property.key];
+  showPasswordToggle(property: Property): boolean {
+    const value = this.formGroup.value[property.configuration.name];
     return (
-      property.configuration.dataType === 'password' &&
-      value != null &&
-      value !== ''
+      property.configuration.dataType.masked && value != null && value !== ''
     );
   }
 
-  readonlyValue(property: ConfigurationProperty): any {
+  hasConstraint(property: Property, constraint: ConstraintType): boolean {
+    const { constraints } = property.configuration.dataType;
+    return constraints != null && constraints.includes(constraint);
+  }
+
+  readonlyValue(property: Property): any {
+    const { name } = property.configuration;
     // needs to be raw value because these fields will be disabled
     // and disabled field values do not appear in formGroup.value
-    const value = this.formGroup.getRawValue()[property.key];
+    const value = this.formGroup.getRawValue()[name];
     if (value != null) {
       return value;
     }
-    const defaultValue = this.defaults[property.key];
+    const defaultValue = this.defaults[name]; // property.originalValue?
     if (defaultValue != null) {
       return defaultValue;
     }
+    // TODO mask values?
     return '';
+  }
+
+  getOptions(property: Property): Observable<Option<any>[]> {
+    const {
+      configuration: { name, dataType }
+    } = property;
+    const options = this.optionsByPropertyName[name];
+    if (options != null) {
+      return options;
+    }
+    return (this.optionsByPropertyName[name] = dataType
+      .options({
+        translateService: this.translateService,
+        injector: this.injector
+      })
+      .pipe(share()));
+  }
+
+  getErrors(property: Property): string[] {
+    const { errors } = this.formGroup.controls[property.configuration.name];
+    return Object.keys(errors);
   }
 
   // control value accessor implementation:
@@ -211,9 +219,9 @@ export class PropertyOverrideTreeTableComponent
     toggler.onClick(event);
   }
 
-  onResetButtonClick(property: ConfigurationProperty): void {
+  onResetButtonClick(property: Property): void {
     this.formGroup.patchValue({
-      [property.key]: property.originalValue
+      [property.configuration.name]: property.originalValue
     });
   }
 }

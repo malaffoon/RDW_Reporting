@@ -1,24 +1,17 @@
 import {
   Component,
   EventEmitter,
-  Injector,
   Input,
   OnChanges,
   OnDestroy,
   Output,
   SimpleChanges
 } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { showErrors, showErrorsRecursive } from '../../../../shared/form/forms';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { showErrors } from '../../../../shared/form/forms';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import {
-  debounceTime,
   finalize,
   map,
   startWith,
@@ -26,194 +19,27 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
+import { toTreeNodes } from '../property-override-tree-table/property-override-tree-table.component';
 import {
-  configurationsFormGroup,
-  toTreeNodes
-} from '../property-override-tree-table/property-override-tree-table.component';
-import { localizationsFormGroup } from '../property-override-table/property-override-table.component';
-import {
-  isBlank,
   rightDifference,
   unflatten,
   valued
 } from '../../../../shared/support/support';
-import { Property } from '../../model/property';
-import { toConfigurationProperty, toProperty } from '../../model/properties';
 import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
-import {
-  available,
-  oneDatabasePerDataSource,
-  onePasswordPerUser,
-  tenantKey,
-  uniqueDatabasePerInstance
-} from './tenant-form.validators';
 import { TranslateService } from '@ngx-translate/core';
-import { fieldRequired, isModified } from '../../model/fields';
-import { notBlank } from '../../../../shared/validator/custom-validators';
-import { byString, Comparator, join } from '@kourge/ordering/comparator';
+import { byString, join } from '@kourge/ordering/comparator';
 import { TenantService } from '../../service/tenant.service';
-import { FieldConfigurationContext } from '../../model/field';
 import { State } from '../../model/state';
 import { ordering } from '@kourge/ordering';
+import { Property } from '../../model/property';
+import { configurationFormFields } from '../../model/configuration-forms';
+import { stringDataType } from '../../model/data-types';
+import { propertyForm } from '../../model/property-forms';
+import { propertiesProvider, tenantForm } from './tenant-forms';
 
 export type FormMode = 'create' | 'update';
 export type FormState = 'creating' | 'saving' | 'deleting';
-const keyboardDebounceInMilliseconds = 300;
-const updateModeWritableConfigurationsPattern = /^(aggregate|reporting|artClient|importServiceClient|sendReconciliationReport)\..+$/;
-
-export function tenantFormGroup(
-  mode: FormMode,
-  value: TenantConfiguration,
-  configurationDefaults: any,
-  localizationDefaults: any,
-  tenantKeyAvailable: (value: string) => Observable<boolean>,
-  tenantIdAvailable: (value: string) => Observable<boolean>,
-  tenants: TenantConfiguration[] = [],
-  dataSets: DataSet[] = []
-): FormGroup {
-  const label = new FormControl(value.label || '', [
-    Validators.required,
-    notBlank
-  ]);
-
-  const description = new FormControl(value.description || '');
-
-  const configurations = configurationsFormGroup(
-    value.type,
-    configurationDefaults,
-    value.configurations,
-    mode === 'create'
-      ? [
-          onePasswordPerUser,
-          oneDatabasePerDataSource,
-          uniqueDatabasePerInstance
-        ]
-      : [] // validators not needed because these are readonly fields in update mode
-  );
-
-  // disable validation of readonly fields
-  // TODO this should be done in the configurationsFormGroup() method
-  if (mode === 'update') {
-    Object.entries(configurations.controls)
-      .filter(([key]) => !updateModeWritableConfigurationsPattern.test(key))
-      .forEach(([, control]) => {
-        control.disable();
-      });
-  }
-  const localizations = localizationsFormGroup(
-    localizationDefaults,
-    value.localizations
-  );
-
-  // setup sandbox/tenant specific form
-  return new FormGroup(
-    value.type === 'SANDBOX'
-      ? {
-          label,
-          description,
-          dataSet: new FormControl(
-            dataSets.find(({ id }) => id === (value.dataSet || <DataSet>{}).id),
-            [Validators.required]
-          ),
-          tenant: new FormControl(
-            tenants.find(({ code }) => code === value.parentTenantCode),
-            [Validators.required]
-          ),
-          configurations,
-          localizations
-        }
-      : {
-          key: new FormControl(
-            value.code || '',
-            [
-              Validators.required,
-              Validators.maxLength(20),
-              tenantKey,
-              notBlank
-            ],
-            mode === 'create' ? [available(tenantKeyAvailable)] : []
-          ),
-          id: new FormControl(
-            value.id || '',
-            [Validators.required, notBlank],
-            mode == 'create' ? [available(tenantIdAvailable)] : []
-          ),
-          label,
-          description,
-          configurations,
-          localizations
-        }
-  );
-}
-
-interface PropertySearch {
-  results: string[];
-  hasSearch: boolean;
-  invalid: boolean;
-}
-
-/**
- * Produces an observable of properties shared by the configuration and localization properties
- *
- * @param searchFormGroup The search parameter form
- * @param formGroup The form being searched
- * @param defaults The default values of the form
- * @param submitted$ Observable that produces a signal when the form is submitted (used for configurations)
- * @param keyTransform Transform placed on keys before matching them with the search word (used for configurations)
- * @param comparator The result comparison method to use for sorting
- */
-function toPropertiesProvider(
-  searchFormGroup: FormGroup,
-  formGroup: FormGroup,
-  defaults: { [key: string]: any },
-  submitted$: Observable<boolean> = of(false),
-  keyTransform: (key: string) => string = value => value,
-  comparator: Comparator<string> = byString
-): Observable<PropertySearch> {
-  const { controls, value } = searchFormGroup;
-  return combineLatest(
-    controls.search.valueChanges.pipe(
-      startWith(value.search),
-      debounceTime(keyboardDebounceInMilliseconds)
-    ),
-    controls.modified.valueChanges.pipe(startWith(value.modified)),
-    controls.required != null
-      ? controls.required.valueChanges.pipe(startWith(value.required))
-      : of(false),
-    submitted$
-  ).pipe(
-    map(([search, modified, required, submitted]) => {
-      return {
-        hasSearch: !isBlank(search) || modified || required,
-        invalid:
-          submitted &&
-          formGroup.invalid &&
-          showErrorsRecursive(formGroup, submitted),
-        results: Object.keys(formGroup.controls)
-          .sort(comparator)
-          .filter(controlKey => {
-            const defaultValue = defaults[controlKey];
-            const caseInsensitiveSearch = search.toLowerCase();
-            const key = keyTransform(controlKey);
-            const value = formGroup.controls[controlKey].value;
-            return (
-              (isBlank(search) ||
-                (key.toLowerCase().includes(caseInsensitiveSearch) ||
-                  (typeof value === 'string' &&
-                    value.toLowerCase().includes(caseInsensitiveSearch)) ||
-                  (Object(value) !== value &&
-                    String(value)
-                      .toLowerCase()
-                      .includes(caseInsensitiveSearch)))) &&
-              (!modified || isModified(controlKey, value, defaultValue)) &&
-              (!required || fieldRequired(controlKey))
-            );
-          })
-      };
-    })
-  );
-}
 
 function stateToTenant(
   initialValue: TenantConfiguration,
@@ -402,12 +228,15 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     modified: new FormControl(false)
   });
   configurations$: Observable<TreeNode[]>;
+  configurationProperties: Property[];
 
   localizationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     modified: new FormControl(false)
   });
   localizations$: Observable<Property[]>;
+  localizationProperties: Property[];
+
   formGroup: FormGroup;
   configurationsOpen$: Subject<boolean> = new BehaviorSubject(false);
   submitted$: Subject<boolean> = new BehaviorSubject(false);
@@ -416,8 +245,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
 
   constructor(
     private translateService: TranslateService,
-    private tenantService: TenantService,
-    private injector: Injector
+    private tenantService: TenantService
   ) {}
 
   onSubmit(): void {
@@ -469,11 +297,30 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       states != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
-      this.formGroup = tenantFormGroup(
+      this.configurationProperties = configurationFormFields(
+        value.type,
+        mode
+      ).map(field => ({
+        ...field,
+        originalValue: configurationDefaults[field.configuration.name]
+      }));
+
+      this.localizationProperties = Object.keys(localizationDefaults).map(
+        name => ({
+          configuration: {
+            name,
+            dataType: stringDataType
+          },
+          validators: [],
+          originalValue: localizationDefaults[name]
+        })
+      );
+
+      this.formGroup = tenantForm(
         mode,
         value,
-        configurationDefaults,
-        localizationDefaults,
+        this.configurationProperties,
+        this.localizationProperties,
         tenantKeyAvailable,
         tenantIdAvailable,
         tenants,
@@ -486,63 +333,43 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       });
 
       const configurationPropertyComparator = join(
-        ordering(byString).on<string>(key =>
+        ordering(byString).on<Property>(({ configuration: { name } }) =>
           this.translateService.instant(
-            `tenant-configuration-form.group.${key.split('.')[0]}`
+            `tenant-configuration-form.group.${name.split('.')[0]}`
           )
         ).compare,
-        byString
+        ordering(byString).on<Property>(({ configuration: { name } }) => name)
+          .compare
       );
 
-      const context: FieldConfigurationContext = {
-        translateService: this.translateService,
-        injector: this.injector
-      };
-
-      this.configurations$ = toPropertiesProvider(
+      this.configurations$ = propertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
-        configurationDefaults,
+        this.configurationProperties,
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1], // only match last segment of key
         configurationPropertyComparator
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
-          const properties = results.map(key => {
-            const originalValue = configurationDefaults[key];
-
-            // in create mode all props can be set
-            // in update mode only aggregate and reporting props can be set
-            const writable =
-              this.writable &&
-              (this.mode === 'create' ||
-                updateModeWritableConfigurationsPattern.test(key));
-
-            return toConfigurationProperty(
-              key,
-              originalValue,
-              writable,
-              context
-            );
-          });
-          const flattened = keyBy(properties, ({ key }) => key);
+          const flattened = keyBy(
+            results,
+            ({ configuration: { name } }) => name
+          );
           const unflattened = unflatten(flattened);
           return toTreeNodes(unflattened, hasSearch || invalid);
         })
       );
 
-      this.localizations$ = toPropertiesProvider(
+      this.localizations$ = propertiesProvider(
         this.localizationControlsFormGroup as FormGroup,
         this.formGroup.controls.localizations as FormGroup,
-        localizationDefaults,
+        this.localizationProperties,
         of(false),
         key => key.replace(/\./g, '')
       ).pipe(
         takeUntil(this.destroyed$),
-        map(({ results }) =>
-          results.map(key => toProperty(key, localizationDefaults[key]))
-        )
+        map(({ results }) => results)
       );
 
       // open invalid sections up
@@ -585,13 +412,12 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     patch(this.formGroup.controls.label, `${tenant.label} Sandbox`);
     // TODO improve by only writing over pristine form fields
     this.formGroup.patchValue({
-      configurations: configurationsFormGroup(
-        tenant.type,
-        this.configurationDefaults,
+      configurations: propertyForm(
+        this.configurationProperties,
         tenant.configurations
       ).value,
-      localizations: localizationsFormGroup(
-        this.localizationDefaults,
+      localizations: propertyForm(
+        this.localizationProperties,
         tenant.localizations
       ).value
     });

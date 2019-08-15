@@ -7,40 +7,14 @@ import {
 import {
   ControlContainer,
   ControlValueAccessor,
-  FormControl,
   FormGroup,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import { ConfigurationProperty, Property } from '../../model/property';
-import {
-  fieldInputType,
-  fieldValidators,
-  isModified
-} from '../../model/fields';
-
-export function localizationsFormGroup(
-  defaults: any,
-  overrides: any = {}
-): FormGroup {
-  overrides = overrides || {};
-  return new FormGroup(
-    Object.keys(defaults).reduce((controlsByName, key) => {
-      // don't populate form control values for inputs
-      // show a placeholder instead to indicate that entering nothing will
-      // result in that default value
-      const value =
-        fieldInputType(key) !== 'input'
-          ? overrides[key] || defaults[key]
-          : overrides[key];
-
-      controlsByName[key] = new FormControl(value, fieldValidators(key));
-      return controlsByName;
-    }, {})
-  );
-}
+import { Property } from '../../model/property';
+import { formFieldModified } from '../../model/form/form-fields';
 
 function rowTrackBy(index: number, value: Property) {
-  return value.key;
+  return value.configuration.name;
 }
 
 @Component({
@@ -77,12 +51,27 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
     this._first = 0;
   }
 
-  modified(property: ConfigurationProperty): boolean {
-    return isModified(
-      property.key,
-      this.formGroup.value[property.key],
+  modified(property: Property): boolean {
+    return formFieldModified(
+      property.configuration.dataType.inputType,
+      this.formGroup.value[property.configuration.name],
       property.originalValue
     );
+  }
+
+  readonlyValue(property: Property): any {
+    const { name } = property.configuration;
+    // needs to be raw value because these fields will be disabled
+    // and disabled field values do not appear in formGroup.value
+    const value = this.formGroup.getRawValue()[name];
+    if (value != null) {
+      return value;
+    }
+    const defaultValue = this.defaults[name]; // property.originalValue?
+    if (defaultValue != null) {
+      return defaultValue;
+    }
+    return '';
   }
 
   get formGroup(): FormGroup {
@@ -115,7 +104,7 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
 
   onResetButtonClick(property: Property): void {
     this.formGroup.patchValue({
-      [property.key]: property.originalValue
+      [property.configuration.name]: property.originalValue
     });
   }
 }
