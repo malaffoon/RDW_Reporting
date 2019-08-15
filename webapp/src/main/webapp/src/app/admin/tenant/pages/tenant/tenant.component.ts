@@ -40,6 +40,9 @@ import { KeepAliveService } from '../../../../shared/security/service/keep-alive
 
 const keepAliveThrottleTime = 1000 * 60; // 1 minute
 
+const validTenantStatus = status =>
+  ['ACTIVE', 'UPDATE_FAILED'].includes(status);
+
 const byLabel = ordering(byString).on<TenantConfiguration | DataSet>(
   ({ label }) => label
 ).compare;
@@ -83,7 +86,12 @@ export class TenantComponent implements OnInit, OnDestroy {
       share()
     );
     const tenants$ = this.service.getAll('TENANT').pipe(
-      map(values => values.slice().sort(byLabel)),
+      map(values =>
+        values
+          .slice()
+          .filter(({ status }) => validTenantStatus(status))
+          .sort(byLabel)
+      ),
       share()
     );
 
