@@ -37,6 +37,10 @@ import { configurationFormFields } from '../../model/configuration-forms';
 import { stringDataType } from '../../model/data-types';
 import { propertyForm } from '../../model/property-forms';
 import { propertiesProvider, tenantForm } from './tenant-forms';
+import {
+  toConfigurationProperties,
+  toLocalizationProperties
+} from '../../model/properties';
 
 export type FormMode = 'create' | 'update';
 export type FormState = 'creating' | 'saving' | 'deleting';
@@ -228,14 +232,12 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     modified: new FormControl(false)
   });
   configurations$: Observable<TreeNode[]>;
-  configurationProperties: Property[];
 
   localizationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
     modified: new FormControl(false)
   });
   localizations$: Observable<Property[]>;
-  localizationProperties: Property[];
 
   formGroup: FormGroup;
   configurationsOpen$: Subject<boolean> = new BehaviorSubject(false);
@@ -297,30 +299,20 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       states != null &&
       (value.type !== 'SANDBOX' || (tenants != null && dataSets != null))
     ) {
-      this.configurationProperties = configurationFormFields(
+      const configurationProperties = toConfigurationProperties(
+        configurationDefaults,
         value.type,
         mode
-      ).map(field => ({
-        ...field,
-        originalValue: configurationDefaults[field.configuration.name]
-      }));
-
-      this.localizationProperties = Object.keys(localizationDefaults).map(
-        name => ({
-          configuration: {
-            name,
-            dataType: stringDataType
-          },
-          validators: [],
-          originalValue: localizationDefaults[name]
-        })
+      );
+      const localizationProperties = toLocalizationProperties(
+        localizationDefaults
       );
 
       this.formGroup = tenantForm(
         mode,
         value,
-        this.configurationProperties,
-        this.localizationProperties,
+        configurationProperties,
+        localizationProperties,
         tenantKeyAvailable,
         tenantIdAvailable,
         tenants,
@@ -345,7 +337,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.configurations$ = propertiesProvider(
         this.configurationControlsFormGroup as FormGroup,
         this.formGroup.controls.configurations as FormGroup,
-        this.configurationProperties,
+        configurationProperties,
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1], // only match last segment of key
         configurationPropertyComparator
@@ -364,7 +356,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       this.localizations$ = propertiesProvider(
         this.localizationControlsFormGroup as FormGroup,
         this.formGroup.controls.localizations as FormGroup,
-        this.localizationProperties,
+        localizationProperties,
         of(false),
         key => key.replace(/\./g, '')
       ).pipe(
@@ -413,11 +405,15 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     // TODO improve by only writing over pristine form fields
     this.formGroup.patchValue({
       configurations: propertyForm(
-        this.configurationProperties,
+        toConfigurationProperties(
+          this.configurationDefaults,
+          tenant.type,
+          this.mode
+        ),
         tenant.configurations
       ).value,
       localizations: propertyForm(
-        this.localizationProperties,
+        toLocalizationProperties(this.localizationDefaults),
         tenant.localizations
       ).value
     });
