@@ -190,7 +190,7 @@
           </select>
           <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-form.field.tenant.required' | translate }}
+              {{ 'tenant-form.field.tenant.error.required' | translate }}
             </ng-container>
           </span>
         </ng-container>
