@@ -36,9 +36,6 @@ reporting:
   landing-page-url: forward:/landing.html
   min-item-data-year: 2016
   school-year: 2019
-  state:
-    code: CA
-    name: California
   user-guide-url: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
   target-report:
     insufficient-data-cutoff: 0.2

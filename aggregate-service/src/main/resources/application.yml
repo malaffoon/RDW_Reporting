@@ -49,9 +49,6 @@ jwt:
 
 reporting:
   school-year: 2019
-  state:
-    code: CA
-    name: California
   target-report:
     insufficient-data-cutoff: 0.2
     min-number-of-students: 0
