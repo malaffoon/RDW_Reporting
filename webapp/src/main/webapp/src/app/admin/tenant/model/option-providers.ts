@@ -42,10 +42,12 @@ export const reportLanguageOptions = ({ translateService }) =>
 export const stateOptions: OptionsProvider<State> = ({ injector }) =>
   (<StateOptionsService>injector.get(StateOptionsService)).getStates().pipe(
     map(states =>
-      states.map(value => ({
-        label: value.name,
-        value
-      }))
+      states
+        .map(value => ({
+          label: value.name,
+          value
+        }))
+        .sort(byLabel)
     )
   );
 
