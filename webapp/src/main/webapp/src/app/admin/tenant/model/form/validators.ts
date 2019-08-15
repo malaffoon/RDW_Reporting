@@ -5,7 +5,7 @@ import {
   ValidatorFn,
   Validators
 } from '@angular/forms';
-import { isBlank } from '../../../../shared/support/support';
+import { isBlank, isNullOrBlank } from '../../../../shared/support/support';
 
 // requires a scheme
 const uriPattern = Validators.pattern(/^.+:\/\/.+$/);
@@ -161,10 +161,6 @@ export function requiredList(
   return control.value != null && control.value.length > 0
     ? null
     : { required: true };
-}
-
-function isNullOrBlank(value: any): boolean {
-  return value == null || (typeof value === 'string' && isBlank(value));
 }
 
 const onlySelf = { onlySelf: true };

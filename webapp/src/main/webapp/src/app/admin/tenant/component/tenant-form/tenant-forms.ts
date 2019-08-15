@@ -15,7 +15,7 @@ import { FormMode } from './tenant-form.component';
 import { ordering } from '@kourge/ordering';
 import { byString, Comparator } from '@kourge/ordering/comparator';
 import { debounceTime, map, startWith } from 'rxjs/operators';
-import { isBlank } from '../../../../shared/support/support';
+import { isBlank, isNullOrBlank } from '../../../../shared/support/support';
 import { showErrorsRecursive } from '../../../../shared/form/forms';
 import { formFieldModified } from '../../model/form/form-fields';
 
@@ -153,7 +153,15 @@ export function propertiesProvider(
             } = property;
             const caseInsensitiveSearch = search.toLowerCase();
             const key = keyTransform(name);
-            const value = formGroup.controls[name].value;
+            const formValue = formGroup.getRawValue()[name];
+
+            // support search of input's property placeholders
+            const value =
+              inputType === 'input'
+                ? isNullOrBlank(formValue)
+                  ? originalValue
+                  : formValue
+                : formValue;
             return (
               (isBlank(search) ||
                 (key.toLowerCase().includes(caseInsensitiveSearch) ||
@@ -166,7 +174,6 @@ export function propertiesProvider(
               (!modified ||
                 formFieldModified(inputType, value, originalValue)) &&
               (!required || configuration.required) // TODO make this conditional on form state
-              // TODO search original value for inputType='input'
             );
           })
           .sort(comparator)
