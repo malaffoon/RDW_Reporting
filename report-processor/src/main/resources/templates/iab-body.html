@@ -65,7 +65,7 @@
                         </div>
                         <div class="row relative-container">
                             <div class="col-xs-9">
-                                <div th:if="${exam.scaleScore != null and exam.scaleScore.standardError != null}" class="scale-score-graph individual"
+                                <div th:if="${exam.scaleScore != null}" class="scale-score-graph individual"
                                      th:with="scaleScoreView=${support.getScaleScoreView(exam, assessment)}">
                                     <div class="bar-container">
                                         <span class="scale-score" th:attr="data-left=${scaleScoreView.position}">
@@ -93,7 +93,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div th:if="${exam.scaleScore == null or exam.scaleScore.standardError == null}" class="text-center mt-sm ml-xl">
+                                <div th:if="${exam.scaleScore == null}" class="text-center mt-sm ml-xl">
                                     <span class="gray-darker h2" th:text="#{report.not-scored}"></span>
                                 </div>
                             </div>
