@@ -22,25 +22,6 @@ export type PropertyDataType =
   | 'username'
   | 'database';
 
-export type InputType = 'input' | 'checkbox' | 'select' | 'multiselect';
-
-export interface Option<T = any> {
-  /**
-   * The option value
-   */
-  value: T;
-
-  /**
-   * The option display name
-   */
-  label?: string;
-}
-
-export interface FieldConfigurationContext {
-  readonly translateService: TranslateService;
-  readonly injector: Injector;
-}
-
 /**
  * Provides options for lists and map data types
  */
@@ -77,11 +58,6 @@ export interface FieldConfiguration<DataTypes = any, T = any> {
    * lowercase constraint
    */
   lowercase?: boolean;
-
-  /**
-   * Used to provide leniency when comparing values for enumerations
-   */
-  equals?: Equals<T>;
 
   /**
    * If true the field will be omitted from the form
