@@ -4,8 +4,8 @@ export function isBlank(value: string): boolean {
   return value.trim().length === 0;
 }
 
-export function isNullOrBlank(value: string): boolean {
-  return value == null || isBlank(value);
+export function isNullOrBlank(value: any): boolean {
+  return value == null || (typeof value === 'string' && isBlank(value));
 }
 
 /**

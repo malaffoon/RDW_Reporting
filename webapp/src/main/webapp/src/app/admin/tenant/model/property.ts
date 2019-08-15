@@ -1,15 +1,11 @@
-import { Field } from './field';
+import { FormField } from './form/form-field';
 
-export interface Property {
-  key: string;
-  originalValue: any;
-  writable?: boolean;
-}
-
-export interface ConfigurationProperty extends Property, Field {
-  required?: boolean;
-  /** @deprecated use dataType */
-  password?: boolean;
-  /** @deprecated use inputType string:lowercase */
-  lowercase?: boolean;
+/**
+ * Represents an override
+ */
+export interface Property<T = any> extends FormField {
+  /**
+   * The instance level default value
+   */
+  originalValue: T;
 }

@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { password } from './field-validators';
+import { databasePassword } from './validators';
 
-describe('passwordValidators', () => {
+describe('databasePassword', () => {
   [
     {
       name: 'should accept cipher despite missing other criteria',
@@ -51,7 +51,7 @@ describe('passwordValidators', () => {
     }
   ].forEach(({ name, value, expectation }) => {
     it(name, () => {
-      expectation(expect(password(<AbstractControl>{ value })));
+      expectation(expect(databasePassword(<AbstractControl>{ value })));
     });
   });
 });
