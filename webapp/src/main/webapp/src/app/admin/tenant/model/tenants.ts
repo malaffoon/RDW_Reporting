@@ -195,7 +195,7 @@ export function toConfigurations(
 export function toDefaultConfigurations(defaults: any, type: TenantType): any {
   return omitByKey(toConfigurations(defaults, type), key =>
     // blank out any defaults for these fields
-    /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath))$/.test(
+    /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath)|\w+\.oauth2\.password)$/.test(
       key
     )
   );
