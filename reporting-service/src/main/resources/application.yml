@@ -139,9 +139,6 @@ jdbc:
 
 reporting:
   school-year: 2019
-  state:
-    code: CA
-    name: California
   student-fields:
     EconomicDisadvantage: Enabled
     EnglishLanguageAcquisitionStatus: Disabled

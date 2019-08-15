@@ -238,9 +238,6 @@ app:
 
 reporting:
   school-year: 2019
-  state:
-    code: CA
-    name: California
 
 sandbox-properties:
   sandboxDatasets:
