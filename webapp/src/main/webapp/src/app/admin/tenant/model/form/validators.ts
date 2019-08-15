@@ -1,4 +1,11 @@
-import { AbstractControl, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
+import { isBlank } from '../../../../shared/support/support';
 
 // requires a scheme
 const uriPattern = Validators.pattern(/^.+:\/\/.+$/);
@@ -154,4 +161,47 @@ export function requiredList(
   return control.value != null && control.value.length > 0
     ? null
     : { required: true };
+}
+
+function isNullOrBlank(value: any): boolean {
+  return value == null || (typeof value === 'string' && isBlank(value));
+}
+
+const onlySelf = { onlySelf: true };
+
+// used to prevent stack overflow
+let recursionCount = 0;
+
+export function requiredIfOthersPresent(
+  keys: string[],
+  errorName: string = 'required'
+): ValidatorFn {
+  return function(control: AbstractControl): ValidationErrors {
+    const value = control.value;
+    const formGroup = control.parent as FormGroup;
+    if (formGroup == null) {
+      return null;
+    }
+
+    // only do this for the first control in the chain
+    if (recursionCount++ === 0) {
+      // touch other fields
+      keys.forEach(key => {
+        const control = formGroup.controls[key];
+        if (isNullOrBlank(control.value)) {
+          // causes recursion and there is no way to check if it was touched this frame already without the recursion counter
+          control.markAsTouched(onlySelf);
+          control.updateValueAndValidity(onlySelf);
+        }
+      });
+    } else {
+      // don't touch fields and reset counter
+      recursionCount = 0;
+    }
+
+    return isNullOrBlank(value) &&
+      keys.some(key => !isNullOrBlank(formGroup.getRawValue()[key]))
+      ? { [errorName]: true }
+      : null;
+  };
 }

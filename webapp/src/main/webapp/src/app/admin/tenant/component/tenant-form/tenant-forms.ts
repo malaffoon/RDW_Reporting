@@ -145,9 +145,9 @@ export function propertiesProvider(
           .filter(property => {
             const {
               originalValue,
+              configuration,
               configuration: {
                 name,
-                required,
                 dataType: { inputType }
               }
             } = property;
@@ -165,7 +165,7 @@ export function propertiesProvider(
                       .includes(caseInsensitiveSearch)))) &&
               (!modified ||
                 formFieldModified(inputType, value, originalValue)) &&
-              (!required || required) // TODO make this conditional on form state
+              (!required || configuration.required) // TODO make this conditional on form state
               // TODO search original value for inputType='input'
             );
           })

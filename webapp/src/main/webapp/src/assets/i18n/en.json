@@ -1555,6 +1555,7 @@
       "archiveUri": "Archive URI must start with s3:// or file://",
       "databasePassword": "The password must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number.",
       "required": "This field is required",
+      "requiredOAuth2Field": "Please enter both oauth2 username and password or leave both blank",
       "reservedWord": "{{reservedWord}} is a reserved word and cannot be used",
       "uri": "Please enter a valid URL",
       "urlFragment": "Please enter a valid URL fragment"

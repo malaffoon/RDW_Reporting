@@ -23,6 +23,7 @@ import { TenantType } from './tenant-type';
 import { FormMode } from '../component/tenant-form/tenant-form.component';
 import { FormField } from './form/form-field';
 import { formFields } from './form/form-fields';
+import { requiredIfOthersPresent } from './form/validators';
 
 function dataSources(
   sources: string[],
@@ -93,17 +94,18 @@ function oauth2(basePath: string): FormFieldConfiguration[] {
     },
     {
       name: `${basePath}.username`,
-      dataType: stringDataType
-      // validators: [
-      //   requiredIfOthersNotBlank(`${basePath}.username`)
-      // ]
+      dataType: stringDataType,
+      validators: [
+        // TODO updating this needs to dirty the other fields
+        requiredIfOthersPresent([`${basePath}.password`], 'requiredOAuth2Field')
+      ]
     },
     {
       name: `${basePath}.password`,
-      dataType: secretDataType
-      // validators: [
-      //   requiredIfOthersNotBlank(`${basePath}.username`)
-      // ]
+      dataType: secretDataType,
+      validators: [
+        requiredIfOthersPresent([`${basePath}.username`], 'requiredOAuth2Field')
+      ]
     }
   ];
 }
