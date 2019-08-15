@@ -1486,14 +1486,16 @@
         "info": "The tenant to base the sandbox on. The selected tenant's configurations and localizations will be copied over to this sandbox.",
         "error": {
           "required": "Please select a tenant to base the sandbox off of"
-        }
+        },
+        "missing": "No longer available"
       },
       "dataSet": {
         "label": "Data Set",
         "info": "The sample data that the sandbox will be initialized with",
         "error": {
           "required": "Please select a data set to initialize the sandbox with"
-        }
+        },
+        "missing": "No longer available"
       },
       "configurations": {
         "label": "Configurations",

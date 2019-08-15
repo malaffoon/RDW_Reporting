@@ -190,12 +190,21 @@
           </select>
           <span class="help-block" *ngIf="showErrors(control, form.submitted)">
             <ng-container *ngIf="control.errors.required">
-              {{ 'tenant-form.field.tenant.required' | translate }}
+              {{ 'tenant-form.field.tenant.error.required' | translate }}
             </ng-container>
           </span>
         </ng-container>
         <ng-template #readonlyTenant>
-          <div>{{ control.value.label }}</div>
+          <div>
+            <ng-container *ngIf="control.value != null; else tenantMissing">
+              {{ control.value.label }}
+            </ng-container>
+            <ng-template #tenantMissing>
+              <span class="gray-darker">
+                {{ 'tenant-form.field.tenant.missing' | translate }}
+              </span>
+            </ng-template>
+          </div>
         </ng-template>
       </div>
 
@@ -227,7 +236,16 @@
           </span>
         </ng-container>
         <ng-template #readonlyDataSet>
-          <div>{{ value.dataSet?.label }}</div>
+          <div>
+            <ng-container *ngIf="control.value != null; else dataSetMissing">
+              {{ control.value.label }}
+            </ng-container>
+            <ng-template #dataSetMissing>
+              <span class="gray-darker">
+                {{ 'tenant-form.field.dataSet.missing' | translate }}
+              </span>
+            </ng-template>
+          </div>
         </ng-template>
       </div>
     </ng-container>

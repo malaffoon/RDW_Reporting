@@ -15,10 +15,6 @@ import {
   notPostgresReservedWord
 } from './form/validators';
 
-export const defaultDataType: DataType = {
-  inputType: 'input'
-};
-
 export const stringDataType: DataType = {
   inputType: 'input'
 };
