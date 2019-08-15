@@ -163,7 +163,7 @@ export function requiredList(
     : { required: true };
 }
 
-const onlySelf = { onlySelf: true };
+const touchOptions = { onlySelf: true, emitEvent: false };
 
 // used to prevent stack overflow
 let recursionCount = 0;
@@ -179,19 +179,17 @@ export function requiredIfOthersPresent(
       return null;
     }
 
-    // only do this for the first control in the chain
+    // only do this for the first two controls in the chain
     if (recursionCount++ === 0) {
       // touch other fields
       keys.forEach(key => {
         const control = formGroup.controls[key];
-        if (isNullOrBlank(control.value)) {
-          // causes recursion and there is no way to check if it was touched this frame already without the recursion counter
-          control.markAsTouched(onlySelf);
-          control.updateValueAndValidity(onlySelf);
-        }
+        // causes recursion and there is no way to check if it was touched this frame already without the recursion counter
+        control.markAsTouched(touchOptions);
+        control.updateValueAndValidity(touchOptions);
       });
     } else {
-      // don't touch fields and reset counter
+      // don't touch fields and reset counter so next invocation touches fields
       recursionCount = 0;
     }
 
