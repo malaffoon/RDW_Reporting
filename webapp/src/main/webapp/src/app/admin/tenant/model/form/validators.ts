@@ -1,28 +1,17 @@
 import { AbstractControl, Validators } from '@angular/forms';
 
 // requires a scheme
-export const uri = Validators.pattern(/^.+:\/\/.+$/);
-
+const uriPattern = Validators.pattern(/^.+:\/\/.+$/);
 // can be a fragment
-export const urlFragment = Validators.pattern(/^(\/|\w+:\/\/).+$/);
-
-export const archiveUri = Validators.pattern(/^(file|s3):\/\/.+$/);
-
-export const databasePassword = Validators.compose([
+const urlFragmentPattern = Validators.pattern(/^(\/|\w+:\/\/).+$/);
+const archiveUriPattern = Validators.pattern(/^(file|s3):\/\/.+$/);
+const databasePasswordPattern = Validators.compose([
   Validators.minLength(8),
   Validators.maxLength(64),
   Validators.pattern(
     '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[A-Za-z].{8,}|^{cipher}.+'
   )
 ]);
-
-export function requiredList(
-  control: AbstractControl
-): { required: boolean } | null {
-  return control.value != null && control.value.length > 0
-    ? null
-    : { required: true };
-}
 
 const postgresReservedWords = [
   'ALL',
@@ -135,4 +124,34 @@ export function notPostgresReservedWord(
     word => word === trimmedValue
   );
   return reservedWord != null ? { reservedWord } : null;
+}
+
+export function uri(control: AbstractControl): { uri: boolean } {
+  return uriPattern(control) != null ? { uri: true } : null;
+}
+
+export function urlFragment(
+  control: AbstractControl
+): { urlFragment: boolean } {
+  return urlFragmentPattern(control) != null ? { urlFragment: true } : null;
+}
+
+export function archiveUri(control: AbstractControl): { archiveUri: boolean } {
+  return archiveUriPattern(control) != null ? { archiveUri: true } : null;
+}
+
+export function databasePassword(
+  control: AbstractControl
+): { databasePassword: boolean } {
+  return databasePasswordPattern(control) != null
+    ? { databasePassword: true }
+    : null;
+}
+
+export function requiredList(
+  control: AbstractControl
+): { required: boolean } | null {
+  return control.value != null && control.value.length > 0
+    ? null
+    : { required: true };
 }

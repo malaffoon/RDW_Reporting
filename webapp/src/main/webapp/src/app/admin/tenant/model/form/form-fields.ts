@@ -55,14 +55,13 @@ export function formFields(
 export function formFieldValidators(
   configuration: FormFieldConfiguration
 ): ValidatorFn[] {
-  const requiredValidators: ValidatorFn[] =
-    configuration.dataType.inputType === 'multiselect'
-      ? [requiredList]
-      : [Validators.required];
-
   return [
     ...(configuration.dataType.validators || []),
     ...(configuration.validators || []),
-    ...requiredValidators
+    ...(configuration.required
+      ? configuration.dataType.inputType === 'multiselect'
+        ? [requiredList]
+        : [Validators.required]
+      : [])
   ];
 }

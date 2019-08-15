@@ -1,11 +1,11 @@
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
 import { of } from 'rxjs';
-import { OptionsProvider } from './field';
 import { State } from './state';
 import { StateOptionsService } from '../service/state-options.service';
 import { map } from 'rxjs/operators';
 import { configurableDataElements } from './data/configurable-data-elements';
+import { OptionsProvider } from './form/data-type';
 
 const byLabel = ordering(byString).on(({ label }) => label).compare;
 
@@ -40,17 +40,14 @@ export const reportLanguageOptions = ({ translateService }) =>
   );
 
 export const stateOptions: OptionsProvider<State> = ({ injector }) =>
-  injector
-    .get(StateOptionsService)
-    .getStates()
-    .pipe(
-      map(states =>
-        states.map(value => ({
-          label: value.name,
-          value
-        }))
-      )
-    );
+  (<StateOptionsService>injector.get(StateOptionsService)).getStates().pipe(
+    map(states =>
+      states.map(value => ({
+        label: value.name,
+        value
+      }))
+    )
+  );
 
 export const studentFieldOptions = () =>
   of(

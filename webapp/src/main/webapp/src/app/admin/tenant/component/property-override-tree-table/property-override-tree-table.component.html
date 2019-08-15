@@ -50,19 +50,22 @@
               </tr>
             </ng-container>
             <ng-template #leafNode>
-              <ng-container *ngIf="data.writable; else readonlyNode">
+              <ng-container
+                *ngIf="!data.configuration.readonly; else readonlyNode"
+              >
                 <tr
+                  *ngIf="data.configuration as configuration"
                   [ttRow]="rowNode"
                   [ngClass]="{
                     leaf: node.leaf,
                     modified: modified(data),
                     required: showErrors(
-                      formGroup.controls[data.key],
+                      formGroup.controls[configuration.name],
                       form.submitted
                     )
                   }"
                 >
-                  <td [title]="data.key">
+                  <td [title]="configuration.name">
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
@@ -70,90 +73,69 @@
                   </td>
                   <td>
                     <div
-                      class="form-group"
-                      [ngClass]="{
-                        'has-error': showErrors(
-                          formGroup.controls[data.key],
+                      *ngIf="{
+                        hasErrors: showErrors(
+                          formGroup.controls[configuration.name],
                           form.submitted
                         )
+                      } as context"
+                      class="form-group"
+                      [ngClass]="{
+                        'has-error': context.hasErrors
                       }"
                     >
-                      <ng-container [ngSwitch]="data.inputType">
+                      <ng-container
+                        [ngSwitch]="configuration.dataType.inputType"
+                      >
                         <ng-container *ngSwitchCase="'input'">
                           <!-- switch on data type here -->
-                          <ng-container
-                            [ngSwitch]="data.configuration.dataType"
-                          >
-                            <ng-container *ngSwitchCase="'positive-integer'">
-                              <input
-                                type="text"
-                                id="{{ data.key }}"
-                                name="{{ data.key }}"
-                                formControlName="{{ data.key }}"
-                                placeholder="{{ data.originalValue }}"
-                                class="form-control"
-                                min="0"
-                                step="1"
-                              />
-                            </ng-container>
-                            <ng-container *ngSwitchCase="'positive-decimal'">
-                              <input
-                                type="text"
-                                id="{{ data.key }}"
-                                name="{{ data.key }}"
-                                formControlName="{{ data.key }}"
-                                placeholder="{{ data.originalValue }}"
-                                class="form-control"
-                                min="0"
-                              />
-                            </ng-container>
-                            <ng-container *ngSwitchDefault>
-                              <input
-                                [type]="
-                                  data.configuration.dataType === 'password' &&
-                                  !data.showSecure
-                                    ? 'password'
-                                    : 'text'
-                                "
-                                id="{{ data.key }}"
-                                name="{{ data.key }}"
-                                formControlName="{{ data.key }}"
-                                placeholder="{{ data.originalValue }}"
-                                data-lpignore="true"
-                                class="form-control"
-                                [ngClass]="{
-                                  'text-lowercase': data.configuration.lowercase
-                                }"
-                              />
-                            </ng-container>
-                          </ng-container>
+                          <input
+                            [type]="
+                              data.configuration.dataType.masked &&
+                              !data.showSecure
+                                ? 'password'
+                                : 'text'
+                            "
+                            id="{{ configuration.name }}"
+                            name="{{ configuration.name }}"
+                            formControlName="{{ configuration.name }}"
+                            placeholder="{{ data.originalValue }}"
+                            class="form-control"
+                            [ngClass]="{
+                              'text-lowercase': hasConstraint(data, 'lowercase')
+                            }"
+                            [min]="hasConstraint(data, 'positive') ? 0 : null"
+                            [step]="hasConstraint(data, 'integer') ? 1 : null"
+                            data-lpignore="true"
+                          />
                         </ng-container>
                         <ng-container *ngSwitchCase="'checkbox'">
-                          <label for="{{ data.key }}">
+                          <label for="{{ configuration.name }}">
                             <input
                               type="checkbox"
-                              id="{{ data.key }}"
-                              name="{{ data.key }}"
-                              formControlName="{{ data.key }}"
+                              id="{{ configuration.name }}"
+                              name="{{ configuration.name }}"
+                              formControlName="{{ configuration.name }}"
                             />
                             <span>
                               {{
                                 'tenant-configuration-form.boolean.' +
-                                  formGroup.value[data.key] | translate
+                                  formGroup.value[configuration.name]
+                                  | translate
                               }}
                             </span>
                           </label>
                         </ng-container>
                         <ng-container *ngSwitchCase="'select'">
                           <select
-                            id="{{ data.key }}"
-                            name="{{ data.key }}"
-                            formControlName="{{ data.key }}"
+                            id="{{ configuration.name }}"
+                            name="{{ configuration.name }}"
+                            formControlName="{{ configuration.name }}"
                             class="form-control"
-                            [compareWith]="data.configuration.equals"
+                            [compareWith]="compareWith"
                           >
                             <option
-                              *ngFor="let option of (data.options | async)"
+                              *ngFor="let option of (getOptions(data) | async)"
                               [ngValue]="option.value"
                             >
                               {{ option.label }}
@@ -164,10 +146,10 @@
                           <!-- todo switch to typeahead based on amount of options -->
                           <p-multiSelect
                             tabindex="0"
-                            inputId="{{ data.key }}"
-                            name="{{ data.key }}"
-                            formControlName="{{ data.key }}"
-                            [options]="data.options | async"
+                            inputId="{{ configuration.name }}"
+                            name="{{ configuration.name }}"
+                            formControlName="{{ configuration.name }}"
+                            [options]="getOptions(data) | async"
                             appendTo="body"
                             defaultLabel="None"
                             [showHeader]="false"
@@ -175,6 +157,30 @@
                           ></p-multiSelect>
                         </ng-container>
                       </ng-container>
+
+                      <ng-template #errorsPopover>
+                        <ng-container *ngIf="getErrors(data) as errorNames">
+                          <ng-container
+                            *ngIf="errorNames.length > 0; else noErrors"
+                          >
+                            <div *ngFor="let errorName of errorNames">
+                              <span class="maroon">
+                                {{
+                                  'tenant-configuration-form.error.' +
+                                    errorName
+                                    | translate
+                                      : formGroup.controls[
+                                          data.configuration.name
+                                        ].errors
+                                }}
+                              </span>
+                            </div>
+                          </ng-container>
+                          <ng-template #noErrors>
+                            <i class="green fa fa-check"></i>
+                          </ng-template>
+                        </ng-container>
+                      </ng-template>
 
                       <div class="input-controls">
                         <a
@@ -204,18 +210,27 @@
                           <i class="fa fa-undo fa-md"></i>
                         </a>
                         <a
-                          *ngIf="data.configuration.required"
+                          *ngIf="
+                            data.configuration.required && !context.hasErrors
+                          "
                           href="javascript:void(0)"
                           popover="{{
-                            (data.configuration.dataType === 'password'
-                              ? 'tenant-configuration-form.popover.password'
-                              : 'tenant-configuration-form.popover.required')
+                            'tenant-configuration-form.popover.required'
                               | translate
                           }}"
                           container="body"
                           triggers="mouseenter:mouseleave"
                         >
                           <i class="fa fa-asterisk fa-md"></i>
+                        </a>
+                        <a
+                          *ngIf="context.hasErrors"
+                          href="javascript:void(0)"
+                          [popover]="errorsPopover"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-warning fa-md red"></i>
                         </a>
                       </div>
                     </div>

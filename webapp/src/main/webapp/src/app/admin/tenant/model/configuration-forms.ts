@@ -21,9 +21,6 @@ import {
 import { FormFieldConfiguration } from './form/form-field-configuration';
 import { TenantType } from './tenant-type';
 import { FormMode } from '../component/tenant-form/tenant-form.component';
-import { FieldConfiguration } from './field';
-import { fieldConfigurationsByKey } from './field-configurations';
-import { fieldConfiguration } from './fields';
 import { FormField } from './form/form-field';
 import { formFields } from './form/form-fields';
 
@@ -177,7 +174,7 @@ export function aggregateFieldConfigurations(): FormFieldConfiguration[] {
 }
 
 export function archiveFieldConfigurations(
-  readonly: boolean
+  readonly: boolean = false
 ): FormFieldConfiguration[] {
   return archive('archive', true).map(configuration => ({
     ...configuration,
@@ -186,7 +183,7 @@ export function archiveFieldConfigurations(
 }
 
 export function dataSourceFieldConfigurations(
-  readonly: boolean
+  readonly: boolean = false
 ): FormFieldConfiguration[] {
   return [
     ...dataSources(
@@ -266,7 +263,8 @@ export function validationFieldConfigurations(): FormFieldConfiguration[] {
   return [
     {
       name: 'validation.requiredDataElements',
-      dataType: requiredDataElementsDataType
+      dataType: requiredDataElementsDataType,
+      required: true
     }
   ];
 }
@@ -291,6 +289,23 @@ export function taskServiceReconciliationReportFieldConfigurations(): FormFieldC
     },
     ...archives('sendReconciliationReport.archives', 2, false)
   ];
+}
+
+const configurations = [
+  ...aggregateFieldConfigurations(),
+  ...archiveFieldConfigurations(),
+  ...dataSourceFieldConfigurations(),
+  ...reportingFieldConfigurations(),
+  ...validationFieldConfigurations(),
+  ...taskServiceArtClientFieldConfigurations(),
+  ...taskServiceImportServiceClientFieldConfigurations(),
+  ...taskServiceReconciliationReportFieldConfigurations()
+];
+
+export function configurationsFormFieldConfiguration(
+  name: string
+): FormFieldConfiguration {
+  return configurations.find(configuration => configuration.name === name);
 }
 
 export function configurationsFormFieldConfigurations(

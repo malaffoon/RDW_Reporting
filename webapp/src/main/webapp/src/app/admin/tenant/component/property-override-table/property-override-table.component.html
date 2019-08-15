@@ -30,13 +30,18 @@
             modified: modified(property)
           }"
         >
-          <td [title]="property.key">
-            {{ property.key }}
+          <td [title]="property.configuration.name">
+            {{ property.configuration.name }}
           </td>
           <td>
-            <ng-container *ngIf="readonly; else writableValue">
+            <ng-container
+              *ngIf="
+                readonly || property.configuration.readonly;
+                else writableValue
+              "
+            >
               <span>
-                {{ property.value }}
+                {{ readonlyValue(property) }}
               </span>
             </ng-container>
             <ng-template #writableValue>
@@ -44,11 +49,14 @@
                 <input
                   type="text"
                   class="form-control"
-                  [formControlName]="property.key"
+                  id="{{ property.configuration.name }}"
+                  name="{{ property.configuration.name }}"
+                  formControlName="{{ property.configuration.name }}"
+                  placeholder="{{ property.originalValue }}"
                 />
                 <div class="input-controls">
                   <a
-                    *ngIf="modified(property) && !readonly"
+                    *ngIf="modified(property)"
                     href="javascript:void(0)"
                     (click)="onResetButtonClick(property)"
                     popover="{{
