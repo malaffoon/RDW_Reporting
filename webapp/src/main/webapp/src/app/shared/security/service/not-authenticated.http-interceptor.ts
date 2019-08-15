@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { SecurityService } from './security.service';
 
 /**
  * Intercepts API responses with HTTP 401 and redirects the user to the session expired page when detected
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
  */
 @Injectable()
 export class NotAuthenticatedHttpInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(private service: SecurityService) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -25,7 +25,7 @@ export class NotAuthenticatedHttpInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(error => {
         if (error.status === 401) {
-          this.router.navigateByUrl('/session-expired');
+          this.service.expireSession();
         }
         return throwError(error);
       })
