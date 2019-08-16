@@ -13,6 +13,7 @@ import { showErrors } from '../../../../shared/form/forms';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import {
   finalize,
+  first,
   map,
   startWith,
   switchMap,
@@ -28,7 +29,7 @@ import {
 import { TreeNode } from 'primeng/api';
 import { keyBy } from 'lodash';
 import { TranslateService } from '@ngx-translate/core';
-import { byString, join } from '@kourge/ordering/comparator';
+import { byString, Comparator, join } from '@kourge/ordering/comparator';
 import { TenantService } from '../../service/tenant.service';
 import { State } from '../../model/state';
 import { ordering } from '@kourge/ordering';
@@ -36,7 +37,11 @@ import { Property } from '../../model/property';
 import { configurationFormFields } from '../../model/configuration-forms';
 import { stringDataType } from '../../model/data-types';
 import { propertyForm } from '../../model/property-forms';
-import { propertiesProvider, tenantForm } from './tenant-forms';
+import {
+  getFirstInvalidFormFieldName,
+  propertiesProvider,
+  tenantForm
+} from './tenant-forms';
 import {
   toConfigurationProperties,
   toLocalizationProperties
@@ -232,6 +237,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     modified: new FormControl(false)
   });
   configurations$: Observable<TreeNode[]>;
+  configurationPropertyComparator: Comparator<Property>;
 
   localizationControlsFormGroup: FormGroup = new FormGroup({
     search: new FormControl(''),
@@ -249,22 +255,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     private translateService: TranslateService,
     private tenantService: TenantService
   ) {}
-
-  onSubmit(): void {
-    this.submitted$.next(true);
-    if (this.formGroup.valid) {
-      const emitter = this.mode === 'create' ? this.create : this.update;
-      emitter.emit(
-        stateToTenant(
-          this.value,
-          this.configurationDefaults,
-          this.localizationDefaults,
-          this.formGroup.value,
-          this.mode
-        )
-      );
-    }
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     const { state } = changes;
@@ -324,7 +314,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         required: this.requiredConfiguration
       });
 
-      const configurationPropertyComparator = join(
+      this.configurationPropertyComparator = join(
         ordering(byString).on<Property>(({ configuration: { name } }) =>
           this.translateService.instant(
             `tenant-configuration-form.group.${name.split('.')[0]}`
@@ -340,7 +330,7 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         configurationProperties,
         this.submitted$,
         key => (/^\w+\.(.*)$/.exec(key) || ['', ''])[1], // only match last segment of key
-        configurationPropertyComparator
+        this.configurationPropertyComparator
       ).pipe(
         takeUntil(this.destroyed$),
         map(({ results, hasSearch, invalid }) => {
@@ -435,5 +425,39 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
       value,
       this.states
     );
+  }
+
+  onSubmit(): void {
+    this.submitted$.next(true);
+
+    if (this.formGroup.valid) {
+      const emitter = this.mode === 'create' ? this.create : this.update;
+      emitter.emit(
+        stateToTenant(
+          this.value,
+          this.configurationDefaults,
+          this.localizationDefaults,
+          this.formGroup.value,
+          this.mode
+        )
+      );
+    } else {
+      const firstInvalidFieldName = getFirstInvalidFormFieldName(
+        this.formGroup,
+        toConfigurationProperties(
+          this.configurationDefaults,
+          this.value.type,
+          this.mode
+        )
+          .sort(this.configurationPropertyComparator)
+          .map(({ configuration: { name } }) => name)
+      );
+      if (firstInvalidFieldName != null) {
+        const field = document.querySelector<HTMLElement>(
+          `[name="${firstInvalidFieldName}"]`
+        );
+        field.focus({ preventScroll: false });
+      }
+    }
   }
 }

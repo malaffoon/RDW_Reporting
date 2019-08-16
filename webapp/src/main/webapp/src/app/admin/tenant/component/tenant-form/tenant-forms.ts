@@ -14,7 +14,7 @@ import {
 import { FormMode } from './tenant-form.component';
 import { ordering } from '@kourge/ordering';
 import { byString, Comparator } from '@kourge/ordering/comparator';
-import { debounceTime, map, startWith } from 'rxjs/operators';
+import { debounceTime, map, share, startWith } from 'rxjs/operators';
 import { isBlank, isNullOrBlank } from '../../../../shared/support/support';
 import { showErrorsRecursive } from '../../../../shared/form/forms';
 import { formFieldModified } from '../../model/form/form-fields';
@@ -63,24 +63,29 @@ export function tenantForm(
     value.localizations
   );
 
+  const sharedControls = {
+    label,
+    description,
+    configurations,
+    localizations
+  };
+
   // setup sandbox/tenant specific form
   return new FormGroup(
     value.type === 'SANDBOX'
       ? {
-          label,
-          description,
-          dataSet: new FormControl(
-            dataSets.find(({ id }) => id === (value.dataSet || <DataSet>{}).id),
-            [Validators.required]
-          ),
+          ...sharedControls,
           tenant: new FormControl(
             tenants.find(({ code }) => code === value.parentTenantCode),
             [Validators.required]
           ),
-          configurations,
-          localizations
+          dataSet: new FormControl(
+            dataSets.find(({ id }) => id === (value.dataSet || <DataSet>{}).id),
+            [Validators.required]
+          )
         }
       : {
+          ...sharedControls,
           key: new FormControl(
             value.code || '',
             [
@@ -95,11 +100,7 @@ export function tenantForm(
             value.id || '',
             [Validators.required, notBlank],
             mode == 'create' ? [available(tenantIdAvailable)] : []
-          ),
-          label,
-          description,
-          configurations,
-          localizations
+          )
         }
   );
 }
@@ -180,4 +181,50 @@ export function propertiesProvider(
       };
     })
   );
+}
+
+/**
+ * Searches the form for the first form field that is invalid and returns it's name
+ *
+ * @param formGroup The tenant form form group to search
+ * @param orderedConfigurationPropertyNames The configuration property names ordered
+ */
+export function getFirstInvalidFormFieldName(
+  formGroup: FormGroup,
+  orderedConfigurationPropertyNames: string[]
+): string {
+  // check top level fields
+  const firstInvalidFieldName = [
+    'tenant',
+    'dataSet',
+    'key',
+    'id',
+    'label',
+    'description'
+  ].find(name => {
+    const control = formGroup.controls[name];
+    return control != null && control.invalid;
+  });
+
+  if (firstInvalidFieldName != null) {
+    return firstInvalidFieldName;
+  }
+
+  // check configuration fields
+  // using properties here because they are ordered
+  const firstInvalidConfigurationPropertyName = orderedConfigurationPropertyNames.find(
+    name => {
+      const control = (<FormGroup>formGroup.controls.configurations).controls[
+        name
+      ];
+      return control != null && control.invalid;
+    }
+  );
+
+  if (firstInvalidConfigurationPropertyName != null) {
+    return firstInvalidConfigurationPropertyName;
+  }
+
+  // found nothing
+  return null;
 }
