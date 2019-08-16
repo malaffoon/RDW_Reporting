@@ -185,7 +185,7 @@
         >
           <select id="tenant" class="form-control" formControlName="tenant">
             <option *ngFor="let tenant of tenants" [ngValue]="tenant">
-              {{ tenant.label }}
+              {{ tenant.label }} ({{ tenant.code }})
             </option>
           </select>
           <span class="help-block" *ngIf="showErrors(control, form.submitted)">
