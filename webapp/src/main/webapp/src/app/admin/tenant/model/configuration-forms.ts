@@ -74,7 +74,10 @@ function postgresDataSource(basePath: string): FormFieldConfiguration[] {
   ];
 }
 
-function oauth2(basePath: string): FormFieldConfiguration[] {
+function oauth2(
+  basePath: string,
+  hasDefaultCredentials: boolean
+): FormFieldConfiguration[] {
   return [
     {
       name: `${basePath}.accessTokenUri`,
@@ -95,17 +98,26 @@ function oauth2(basePath: string): FormFieldConfiguration[] {
     {
       name: `${basePath}.username`,
       dataType: stringDataType,
-      validators: [
-        // TODO updating this needs to dirty the other fields
-        requiredIfOthersPresent([`${basePath}.password`], 'requiredOAuth2Field')
-      ]
+      validators: hasDefaultCredentials
+        ? []
+        : [
+            requiredIfOthersPresent(
+              [`${basePath}.password`],
+              'requiredOAuth2Field'
+            )
+          ]
     },
     {
       name: `${basePath}.password`,
       dataType: secretDataType,
-      validators: [
-        requiredIfOthersPresent([`${basePath}.username`], 'requiredOAuth2Field')
-      ]
+      validators: hasDefaultCredentials
+        ? []
+        : [
+            requiredIfOthersPresent(
+              [`${basePath}.username`],
+              'requiredOAuth2Field'
+            )
+          ]
     }
   ];
 }
@@ -272,11 +284,11 @@ export function validationFieldConfigurations(): FormFieldConfiguration[] {
 }
 
 export function taskServiceArtClientFieldConfigurations(): FormFieldConfiguration[] {
-  return oauth2('artClient.oauth2');
+  return oauth2('artClient.oauth2', true);
 }
 
 export function taskServiceImportServiceClientFieldConfigurations(): FormFieldConfiguration[] {
-  return oauth2('importServiceClient.oauth2');
+  return oauth2('importServiceClient.oauth2', false);
 }
 
 export function taskServiceReconciliationReportFieldConfigurations(): FormFieldConfiguration[] {
