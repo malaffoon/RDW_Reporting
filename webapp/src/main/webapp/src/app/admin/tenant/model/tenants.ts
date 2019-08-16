@@ -193,9 +193,18 @@ export function toConfigurations(
 }
 
 export function toDefaultConfigurations(defaults: any, type: TenantType): any {
-  return omitByKey(toConfigurations(defaults, type), key =>
+  const configurations = toConfigurations(defaults, type);
+
+  // set default school year to current year
+  configurations['reporting.schoolYear'] = new Date().getFullYear();
+
+  delete configurations['aggregate.tenant'];
+  delete configurations['importServiceClient.oauth2.username'];
+  delete configurations['importServiceClient.oauth2.password'];
+
+  return omitByKey(configurations, key =>
     // blank out any defaults for these fields
-    /^(aggregate\.tenant|datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath)|\w+\.oauth2\.password)$/.test(
+    /^datasources\.\w+\.(username|password|urlParts\.database|schemaSearchPath)$/.test(
       key
     )
   );

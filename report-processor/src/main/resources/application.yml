@@ -160,5 +160,3 @@ app:
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
 
-reporting:
-  school-year: 2019
