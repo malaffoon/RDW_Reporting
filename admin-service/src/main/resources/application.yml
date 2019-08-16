@@ -236,9 +236,6 @@ app:
       createDelayMinutes: 5
       updateDelayMinutes: 1
 
-reporting:
-  school-year: 2019
-
 sandbox-properties:
   sandboxDatasets:
     - label: Demo Dataset

@@ -138,7 +138,6 @@ jdbc:
       multiplier: 2
 
 reporting:
-  school-year: 2019
   student-fields:
     EconomicDisadvantage: Enabled
     EnglishLanguageAcquisitionStatus: Disabled

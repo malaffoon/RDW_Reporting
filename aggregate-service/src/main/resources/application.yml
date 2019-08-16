@@ -48,7 +48,6 @@ jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
 
 reporting:
-  school-year: 2019
   target-report:
     insufficient-data-cutoff: 0.2
     min-number-of-students: 0
