@@ -10,6 +10,10 @@ import {
 import { isEmpty, isObject, transform } from 'lodash';
 import { configurationsFormFieldConfiguration } from './configuration-forms';
 
+function defaultSchoolYear(): number {
+  return new Date().getFullYear();
+}
+
 /**
  * Utility to force some form fields into their required lower case form
  */
@@ -208,7 +212,7 @@ export function toDefaultConfigurations(defaults: any, type: TenantType): any {
   const configurations = toConfigurations(defaults, type);
 
   // set default school year to current year
-  configurations['reporting.schoolYear'] = new Date().getFullYear();
+  configurations['reporting.schoolYear'] = defaultSchoolYear();
 
   delete configurations['aggregate.tenant'];
   delete configurations['importServiceClient.oauth2.username'];
@@ -251,6 +255,12 @@ export function toServerTenant(tenant: TenantConfiguration): any {
 }
 
 export function toServerConfigurations(configurations: any): any {
+  // Account for default school year
+  // set default school year to current year
+  if (configurations['reporting.schoolYear'] == null) {
+    configurations['reporting.schoolYear'] = defaultSchoolYear();
+  }
+
   const serverConfigurations = unflatten(
     lowercase(trimStrings(configurations))
   );
