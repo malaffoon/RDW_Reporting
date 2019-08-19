@@ -168,7 +168,8 @@ export function toConfigurations(
     datasources,
     importServiceClient,
     reporting,
-    sendReconciliationReport
+    sendReconciliationReport,
+    validation
   }: any,
   type: TenantType
 ): any {
@@ -185,7 +186,8 @@ export function toConfigurations(
           datasources,
           importServiceClient,
           reporting,
-          sendReconciliationReport
+          sendReconciliationReport,
+          validation
         };
 
   // TODO this valued filter wont be needed after the api update
