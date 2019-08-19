@@ -1570,6 +1570,9 @@
       "true": "True"
     }
   },
+  "tenant-link": {
+    "see-logs": "See application logs for more details."
+  },
   "tenant-localization-form": {
     "column": {
       "key": {

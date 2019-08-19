@@ -124,7 +124,12 @@ export function toTenant(
       sandbox,
       sandboxDataset: dataSetId
     },
-    administrationStatus: { tenantAdministrationStatus: status },
+    administrationStatus: {
+      message,
+      stackTrace,
+      updated,
+      tenantAdministrationStatus: status
+    },
     parentTenantKey: parentTenantCode,
     localization: localizations
   } = serverTenant;
@@ -137,6 +142,11 @@ export function toTenant(
     description,
     type,
     status,
+    error: {
+      message,
+      stackTrace
+    },
+    updatedOn: new Date(updated),
     configurations: toConfigurations(serverTenant, type),
     localizations: valued(flatten(localizations || {})),
     parentTenantCode,

@@ -39,7 +39,12 @@
     </ng-container>
     <ng-template #notProcessing>
       <div class="menu" *ngIf="status.failed">
-        <div class="label border-only red">
+        <div
+          class="label border-only red"
+          [popover]="errorsPopover"
+          container="body"
+          triggers="mouseenter:mouseleave"
+        >
           <i class="fa fa-warning"></i>
           {{ 'common.tenant-status.' + tenant.status | translate }}
         </div>
@@ -70,3 +75,14 @@
     </strong>
   </div>
 </a>
+
+<ng-template #errorsPopover>
+  <div>
+    <p>
+      {{ tenant.error.message }}
+    </p>
+    <p>
+      {{ 'tenant-link.see-logs' | translate }}
+    </p>
+  </div>
+</ng-template>

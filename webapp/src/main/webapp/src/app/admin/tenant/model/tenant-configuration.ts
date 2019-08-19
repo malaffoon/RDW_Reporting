@@ -54,6 +54,16 @@ export interface TenantConfiguration {
    * The current status of this tenant.
    */
   status?: TenantStatus;
+
+  /**
+   * The error message and stack trace for when there is a failure tenant status
+   */
+  error?: TenantConfigurationError;
+
+  /**
+   * The time of the last update
+   */
+  updatedOn?: Date;
 }
 
 export interface DataSet {
@@ -66,4 +76,12 @@ export interface DataSet {
    * A more human-readable label for a data template
    */
   label: string;
+}
+
+/**
+ * Represents a tenant operation exception
+ */
+export interface TenantConfigurationError {
+  message: string;
+  stackTrace?: string;
 }
