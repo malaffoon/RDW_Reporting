@@ -154,7 +154,12 @@ export function propertiesProvider(
             } = property;
             const caseInsensitiveSearch = search.toLowerCase();
             const key = keyTransform(name);
-            const formValue = formGroup.getRawValue()[name];
+
+            // getRawValue() here causes an EXTREME performance hit
+            // likely some issue with infinite looping internally
+            // The below code walks around the issue by getting the raw value without the method
+            const control = formGroup.controls[name];
+            const formValue = control.value;
 
             // support search of input's property placeholders
             const value =
