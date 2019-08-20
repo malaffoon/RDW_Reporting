@@ -63,7 +63,7 @@ export class PropertyOverrideTableComponent implements ControlValueAccessor {
     const { name } = property.configuration;
     // needs to be raw value because these fields will be disabled
     // and disabled field values do not appear in formGroup.value
-    const value = this.formGroup.getRawValue()[name];
+    const { value } = this.formGroup.controls[name];
     if (value != null) {
       return value;
     }

@@ -155,7 +155,7 @@ export function propertiesProvider(
             const caseInsensitiveSearch = search.toLowerCase();
             const key = keyTransform(name);
 
-            // getRawValue() here causes an EXTREME performance hit
+            // getRawValue() here caused an EXTREME performance hit
             // likely some issue with infinite looping internally
             // The below code walks around the issue by getting the raw value without the method
             const control = formGroup.controls[name];
@@ -168,6 +168,7 @@ export function propertiesProvider(
                   ? originalValue
                   : formValue
                 : formValue;
+
             return (
               (isBlank(search) ||
                 (key.toLowerCase().includes(caseInsensitiveSearch) ||
