@@ -194,7 +194,7 @@ export function requiredIfOthersPresent(
     }
 
     return isNullOrBlank(value) &&
-      keys.some(key => !isNullOrBlank(formGroup.getRawValue()[key]))
+      keys.some(key => !isNullOrBlank(formGroup.controls[key].value))
       ? { [errorName]: true }
       : null;
   };
