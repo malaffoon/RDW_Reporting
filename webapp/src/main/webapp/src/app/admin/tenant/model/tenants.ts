@@ -215,6 +215,7 @@ export function toDefaultConfigurations(defaults: any, type: TenantType): any {
   configurations['reporting.schoolYear'] = defaultSchoolYear();
 
   delete configurations['aggregate.tenant'];
+  delete configurations['archive.s3RegionStatic']; // TODO delete instance level application.yml entry for this
   delete configurations['importServiceClient.oauth2.username'];
   delete configurations['importServiceClient.oauth2.password'];
 

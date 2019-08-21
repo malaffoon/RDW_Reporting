@@ -412,7 +412,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     });
   }
 
-  // TODO debounce this?
   onKeyInput(value: string): void {
     setDefaultsUsingTenantKey(
       this.formGroup.controls.configurations as FormGroup,

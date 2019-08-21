@@ -122,15 +122,11 @@ function oauth2(
   ];
 }
 
-function archive(
-  basePath: string,
-  pathPrefixRequired: boolean
-): FormFieldConfiguration[] {
+function archive(basePath: string): FormFieldConfiguration[] {
   return [
     {
       name: `${basePath}.pathPrefix`,
-      dataType: stringDataType,
-      required: pathPrefixRequired
+      dataType: stringDataType
     },
     {
       name: `${basePath}.uriRoot`,
@@ -155,14 +151,10 @@ function archive(
   ];
 }
 
-function archives(
-  basePath: string,
-  count: number,
-  pathPrefixRequired: boolean
-): FormFieldConfiguration[] {
+function archives(basePath: string, count: number): FormFieldConfiguration[] {
   const archives = [];
   for (let i = 0; i < count; i++) {
-    archives.push(...archive(`${basePath}.${i}`, pathPrefixRequired));
+    archives.push(...archive(`${basePath}.${i}`));
   }
   return archives;
 }
@@ -190,7 +182,7 @@ export function aggregateFieldConfigurations(): FormFieldConfiguration[] {
 export function archiveFieldConfigurations(
   readonly: boolean = false
 ): FormFieldConfiguration[] {
-  return archive('archive', true).map(configuration => ({
+  return archive('archive').map(configuration => ({
     ...configuration,
     readonly
   }));
@@ -301,7 +293,7 @@ export function taskServiceReconciliationReportFieldConfigurations(): FormFieldC
       name: 'sendReconciliationReport.query',
       dataType: stringDataType
     },
-    ...archives('sendReconciliationReport.archives', 2, false)
+    ...archives('sendReconciliationReport.archives', 2)
   ];
 }
 
