@@ -29,6 +29,15 @@ const configurationsCreateModeValidators = [
   uniqueDatabasePerInstance
 ];
 
+export const topLevelConfigurationFormFieldNames = [
+  'tenant',
+  'dataSet',
+  'key',
+  'id',
+  'label',
+  'description'
+];
+
 interface PropertySearch {
   results: Property[];
   hasSearch: boolean;
@@ -200,17 +209,12 @@ export function getFirstInvalidFormFieldName(
   orderedConfigurationPropertyNames: string[]
 ): string {
   // check top level fields
-  const firstInvalidFieldName = [
-    'tenant',
-    'dataSet',
-    'key',
-    'id',
-    'label',
-    'description'
-  ].find(name => {
-    const control = formGroup.controls[name];
-    return control != null && control.invalid;
-  });
+  const firstInvalidFieldName = topLevelConfigurationFormFieldNames.find(
+    name => {
+      const control = formGroup.controls[name];
+      return control != null && control.invalid;
+    }
+  );
 
   if (firstInvalidFieldName != null) {
     return firstInvalidFieldName;
