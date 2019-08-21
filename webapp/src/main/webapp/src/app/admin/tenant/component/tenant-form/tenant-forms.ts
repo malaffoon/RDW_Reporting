@@ -1,8 +1,12 @@
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
 import { Property } from '../../model/property';
 import { combineLatest, Observable, of } from 'rxjs';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { notBlank } from '../../../../shared/validator/custom-validators';
+import {
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import { propertyForm } from '../../model/property-forms';
 import {
   available,
@@ -14,19 +18,34 @@ import {
 import { FormMode } from './tenant-form.component';
 import { ordering } from '@kourge/ordering';
 import { byString, Comparator } from '@kourge/ordering/comparator';
-import { debounceTime, map, share, startWith } from 'rxjs/operators';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 import { isBlank, isNullOrBlank } from '../../../../shared/support/support';
 import { showErrorsRecursive } from '../../../../shared/form/forms';
 import { formFieldModified } from '../../model/form/form-fields';
+import { archives } from '../../model/form/validators';
+import { notBlank } from '../../../../shared/form/validators';
 
 const byName = ordering(byString).on<Property>(
   ({ configuration: { name } }) => name
 ).compare;
 const keyboardDebounceInMilliseconds = 300;
-const configurationsCreateModeValidators = [
-  onePasswordPerUser,
-  oneDatabasePerDataSource,
-  uniqueDatabasePerInstance
+const configurationsValidatorsByMode: { [mode: string]: ValidatorFn[] } = {
+  create: [
+    onePasswordPerUser,
+    oneDatabasePerDataSource,
+    uniqueDatabasePerInstance,
+    archives
+  ],
+  update: [archives]
+};
+
+export const topLevelConfigurationFormFieldNames = [
+  'tenant',
+  'dataSet',
+  'key',
+  'id',
+  'label',
+  'description'
 ];
 
 interface PropertySearch {
@@ -55,7 +74,7 @@ export function tenantForm(
   const configurations = propertyForm(
     configurationProperties,
     value.configurations,
-    mode === 'create' ? configurationsCreateModeValidators : [] // validators not needed because these are readonly fields in update mode
+    configurationsValidatorsByMode[mode]
   );
 
   const localizations = propertyForm(
@@ -200,17 +219,12 @@ export function getFirstInvalidFormFieldName(
   orderedConfigurationPropertyNames: string[]
 ): string {
   // check top level fields
-  const firstInvalidFieldName = [
-    'tenant',
-    'dataSet',
-    'key',
-    'id',
-    'label',
-    'description'
-  ].find(name => {
-    const control = formGroup.controls[name];
-    return control != null && control.invalid;
-  });
+  const firstInvalidFieldName = topLevelConfigurationFormFieldNames.find(
+    name => {
+      const control = formGroup.controls[name];
+      return control != null && control.invalid;
+    }
+  );
 
   if (firstInvalidFieldName != null) {
     return firstInvalidFieldName;

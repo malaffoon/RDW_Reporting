@@ -9,11 +9,10 @@ import {
 } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { DataSet, TenantConfiguration } from '../../model/tenant-configuration';
-import { showErrors } from '../../../../shared/form/forms';
+import { showErrors, validate } from '../../../../shared/form/forms';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import {
   finalize,
-  first,
   map,
   startWith,
   switchMap,
@@ -40,7 +39,8 @@ import { propertyForm } from '../../model/property-forms';
 import {
   getFirstInvalidFormFieldName,
   propertiesProvider,
-  tenantForm
+  tenantForm,
+  topLevelConfigurationFormFieldNames
 } from './tenant-forms';
 import {
   toConfigurationProperties,
@@ -251,6 +251,9 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
   private destroyed$: Subject<void> = new Subject();
   private loadingTenant$: Subject<boolean> = new BehaviorSubject(false);
 
+  private invalidConfigurationIntervalDuration: number = 250;
+  private invalidConfigurationInterval: number;
+
   constructor(
     private translateService: TranslateService,
     private tenantService: TenantService
@@ -409,7 +412,6 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
     });
   }
 
-  // TODO debounce this?
   onKeyInput(value: string): void {
     setDefaultsUsingTenantKey(
       this.formGroup.controls.configurations as FormGroup,
@@ -442,20 +444,66 @@ export class TenantFormComponent implements OnChanges, OnDestroy {
         )
       );
     } else {
-      const firstInvalidFieldName = getFirstInvalidFormFieldName(
-        this.formGroup,
-        toConfigurationProperties(
-          this.configurationDefaults,
-          this.value.type,
-          this.mode
-        )
-          .sort(this.configurationPropertyComparator)
-          .map(({ configuration: { name } }) => name)
+      this.scrollToFirstInvalidFormField();
+    }
+  }
+
+  private scrollToFirstInvalidFormField(): void {
+    const firstInvalidFieldName = getFirstInvalidFormFieldName(
+      this.formGroup,
+      toConfigurationProperties(
+        this.configurationDefaults,
+        this.value.type,
+        this.mode
+      )
+        .sort(this.configurationPropertyComparator)
+        .map(({ configuration: { name } }) => name)
+    );
+
+    if (firstInvalidFieldName == null) {
+      return;
+    }
+
+    // clear existing interval if present
+    if (this.invalidConfigurationInterval != null) {
+      clearInterval(this.invalidConfigurationInterval);
+    }
+
+    const isConfigurationProperty = !topLevelConfigurationFormFieldNames.includes(
+      firstInvalidFieldName
+    );
+
+    // open configurations form and select first invalid form field
+    if (isConfigurationProperty) {
+      // clear searches
+      this.configurationControlsFormGroup.patchValue({
+        search: '',
+        modified: false,
+        required: false
+      });
+
+      // poll until the form control is rendered
+      this.invalidConfigurationInterval = setInterval(
+        <TimerHandler>(() => {
+          if (firstInvalidFieldName != null) {
+            const field = document.querySelector<HTMLElement>(
+              `[name="${firstInvalidFieldName}"]`
+            );
+            if (field != null) {
+              field.focus({ preventScroll: false });
+              clearInterval(this.invalidConfigurationInterval);
+              // mark each as touched and update validation results
+              validate(this.formGroup.controls.configurations as FormGroup);
+            }
+          }
+        }),
+        this.invalidConfigurationIntervalDuration
       );
-      if (firstInvalidFieldName != null) {
-        const field = document.querySelector<HTMLElement>(
-          `[name="${firstInvalidFieldName}"]`
-        );
+    } else {
+      const field = document.querySelector<HTMLElement>(
+        `[name="${firstInvalidFieldName}"]`
+      );
+      if (field != null) {
         field.focus({ preventScroll: false });
       }
     }

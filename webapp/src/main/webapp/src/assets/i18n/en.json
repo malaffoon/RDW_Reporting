@@ -1559,6 +1559,7 @@
       "required": "This field is required",
       "requiredOAuth2Field": "Please enter both oauth2 username and password or leave both blank",
       "reservedWord": "{{reservedWord}} is a reserved word and cannot be used",
+      "s3scheme": "Archive URI must start with s3://",
       "uri": "Please enter a valid URL",
       "urlFragment": "Please enter a valid URL fragment"
     },
