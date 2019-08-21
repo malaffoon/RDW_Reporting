@@ -885,6 +885,8 @@
   "scopedTarget.sendReconciliationReportPropertiesRoot": {
     "prefix": "task-send-reconciliation-report",
     "properties": {
+      "query": "DEFAULT QUERY",
+      "log": false,
       "tenants": {
         "TS": {
           "archives": [
