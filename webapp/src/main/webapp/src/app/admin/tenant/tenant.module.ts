@@ -27,6 +27,8 @@ import { TenantLinkComponent } from './component/tenant-link/tenant-link.compone
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { TenantComponent } from './pages/tenant/tenant.component';
 import { ToggleLabelComponent } from './component/toggle-label/toggle-label.component';
+import { TenantMetricsTable } from './component/tenant-metrics/tenant-metrics-table.component';
+import { TenantMetricsComponent } from './pages/tenant-metrics/tenant-metrics.component';
 
 @NgModule({
   imports: [
@@ -54,7 +56,9 @@ import { ToggleLabelComponent } from './component/toggle-label/toggle-label.comp
     TenantLinkComponent,
     TenantsComponent,
     TenantComponent,
-    ToggleLabelComponent
+    ToggleLabelComponent,
+    TenantMetricsTable,
+    TenantMetricsComponent
   ]
 })
 export class TenantModule {}

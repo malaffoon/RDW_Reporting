@@ -6,13 +6,16 @@
 @gray-lighter: #e6e6e6;
 @gray-lightest: #f8f8f8;
 
-a {
+.tenant-link {
   display: block;
   padding: 30px 30px 15px 30px;
   text-decoration: none;
   color: inherit;
-  .edit-icon {
+  .edit-icon,
+  .controls {
+    opacity: 0;
     visibility: hidden;
+    transition: all 0.2s ease-out;
   }
   &:not(.status-active):not(.status-update_failed) {
     color: @gray-dark;
@@ -26,13 +29,15 @@ a {
   &.status-active,
   &.status-update_failed {
     &:hover {
-      background-color: @gray-lightest;
-      .edit-icon {
+      //background-color: @gray-lightest;
+      .edit-icon,
+      .controls {
         visibility: visible;
+        opacity: 1;
       }
     }
     &:active {
-      background-color: @gray-lighter;
+      //background-color: @gray-lighter;
     }
   }
 }
@@ -69,4 +74,12 @@ h2 {
 
 .edit-icon {
   font-size: 24px;
+}
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  > * + * {
+    margin-left: 10px;
+  }
 }

@@ -131,4 +131,8 @@ export class TenantService {
       .get(DataSetsRoute)
       .pipe(catchError(ResponseUtils.throwError));
   }
+
+  getMetrics(key: string): Observable<any> {
+    return of({}); // TODO
+  }
 }

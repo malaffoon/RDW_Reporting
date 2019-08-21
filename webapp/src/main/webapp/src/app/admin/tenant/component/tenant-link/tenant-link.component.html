@@ -1,10 +1,9 @@
-<a
-  href="javascript:void(0)"
-  class="status-{{ tenant.status.toLowerCase() }}"
-  (click)="$event.stopPropagation(); tenantClick.emit(tenant)"
+<div
+  class="tenant-link status-{{ tenant.status.toLowerCase() }}"
   *ngIf="{
     active: tenant.status === 'ACTIVE',
     failed: tenant.status.endsWith('FAILED'),
+    editable: tenant.status === 'ACTIVE' || tenant.status === 'UPDATE_FAILED',
     deletable:
       tenant.status === 'CREATE_FAILED' || tenant.status === 'DELETE_FAILED',
     processing: tenant.status !== 'ACTIVE' && !tenant.status.endsWith('FAILED'),
@@ -56,13 +55,30 @@
         >
           {{ 'common.action.delete' | translate }}
         </button>
-        <i
-          *ngIf="tenant.status === 'UPDATE_FAILED'"
-          class="edit-icon fa fa-pencil"
-        ></i>
+        <!--        <i-->
+        <!--          *ngIf="tenant.status === 'UPDATE_FAILED'"-->
+        <!--          class="edit-icon fa fa-pencil"-->
+        <!--        ></i>-->
       </div>
 
-      <i *ngIf="status.active" class="edit-icon fa fa-pencil"></i>
+      <div class="controls">
+        <button
+          type="button"
+          class="btn btn-success btn-sm btn-outlined"
+          [routerLink]="[tenant.id, 'metrics']"
+        >
+          <i class="fa fa-bar-chart"></i> Stats
+        </button>
+
+        <button
+          *ngIf="status.editable"
+          type="button"
+          class="btn btn-primary btn-sm btn-outlined"
+          (click)="tenantClick.emit(tenant)"
+        >
+          <i class="fa fa-pencil"></i> Edit
+        </button>
+      </div>
     </ng-template>
   </div>
   <div class="body">
@@ -74,7 +90,7 @@
       {{ tenant.dataSet.label }}
     </strong>
   </div>
-</a>
+</div>
 
 <ng-template #errorsPopover>
   <div>
