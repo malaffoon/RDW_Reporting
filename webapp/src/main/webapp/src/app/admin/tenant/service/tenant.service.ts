@@ -56,27 +56,6 @@ export class TenantService {
   }
 
   getAll(type: TenantType): Observable<TenantConfiguration[]> {
-    return of(<TenantConfiguration[]>[
-      'CREATE_STARTED',
-      'CREATE_FAILED',
-      'DELETE_STARTED',
-      'DELETE_FAILED',
-      'UPDATE_STARTED',
-      'UPDATE_FAILED',
-      'ACTIVE'
-    ].map((status, index) => ({
-      label: `California ${index + 1}`,
-      type: 'TENANT',
-      id: `${index + 1}`,
-      code: `${index + 1}`.padStart(2, '0'),
-      updatedOn: new Date(),
-      error: {
-        message:
-          'This is the error message and it is long and explains everything you need to know about errors and why they happen.'
-      },
-      status
-    })));
-
     const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
     const defaults$ = this.cachingDataService.get(DefaultsRoute);
     const dataSets$ = this.cachingDataService.get(DataSetsRoute);
