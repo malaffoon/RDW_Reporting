@@ -43,7 +43,7 @@ export class RdwTranslateLoader implements TranslateLoader {
       .getUser()
       .pipe(
         mergeMap(user =>
-          user.anonymous
+          user.anonymous || user.tenantName == null
             ? this.getClientTranslations(languageCode)
             : this.getUserTranslations(languageCode)
         )

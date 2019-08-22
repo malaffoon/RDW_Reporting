@@ -13,6 +13,7 @@ import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
 import { of } from 'rxjs/internal/observable/of';
+import { TenantStatus } from '../model/tenant-status';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -75,8 +76,8 @@ export class TenantService {
     return type === 'TENANT' ? allTenants$ : allSandboxes$;
   }
 
-  get(code: string): Observable<TenantConfiguration> {
-    const tenant$ = this.dataService.get(`${ResourceRoute}/${code}`);
+  get(key: string): Observable<TenantConfiguration> {
+    const tenant$ = this.dataService.get(`${ResourceRoute}/${key}`);
     const defaults$ = this.cachingDataService.get(DefaultsRoute);
     const dataSets$ = this.cachingDataService.get(DataSetsRoute);
     return forkJoin(tenant$, defaults$, dataSets$).pipe(
@@ -108,11 +109,11 @@ export class TenantService {
 
   /**
    * Deletes an existing tenant
-   * @param code - The code or "key" of the tenant to delete
+   * @param key - The code or "key" of the tenant to delete
    */
-  delete(code: string): Observable<void> {
+  delete(key: string): Observable<void> {
     return this.dataService
-      .delete(`${ResourceRoute}/${code}`)
+      .delete(`${ResourceRoute}/${key}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
 
@@ -130,5 +131,17 @@ export class TenantService {
     return this.cachingDataService
       .get(DataSetsRoute)
       .pipe(catchError(ResponseUtils.throwError));
+  }
+
+  getMetrics(key: string): Observable<any> {
+    return of({}); // TODO
+  }
+
+  updateStatus(key: string, status: TenantStatus): Observable<void> {
+    return this.dataService.put(`${ResourceRoute}/${key}/status`, status);
+  }
+
+  deleteStatus(key: string): Observable<void> {
+    return this.dataService.delete(`${ResourceRoute}/${key}/status`);
   }
 }

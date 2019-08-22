@@ -21,7 +21,8 @@ describe('RdwTranslateLoader', () => {
       firstName: 'test',
       lastNane: 'test',
       permissions: [],
-      anonymous: false
+      anonymous: false,
+      tenantName: 'something'
     })
   );
 

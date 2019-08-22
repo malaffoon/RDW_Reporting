@@ -21,5 +21,5 @@ export class TenantLinkComponent {
   tenantClick: EventEmitter<TenantConfiguration> = new EventEmitter();
 
   @Output()
-  tenantDelete: EventEmitter<TenantConfiguration> = new EventEmitter();
+  tenantStatusAccept: EventEmitter<TenantConfiguration> = new EventEmitter();
 }

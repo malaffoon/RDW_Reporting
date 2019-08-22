@@ -1572,6 +1572,7 @@
     }
   },
   "tenant-link": {
+    "updated-on": "Last updated {{dateTime}}",
     "see-logs": "See application logs for more details."
   },
   "tenant-localization-form": {
@@ -1584,6 +1585,10 @@
       }
     },
     "no-results": "There are no localization properties matching your search"
+  },
+  "tenant-metrics": {
+    "heading": "{{label}} ({{code}}) Metrics",
+    "breadcrumb": "Metrics"
   },
   "sandbox-login": {
     "title": "Reporting System Sandbox",

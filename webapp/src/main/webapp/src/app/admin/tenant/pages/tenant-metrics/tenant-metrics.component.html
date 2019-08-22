@@ -1,0 +1,16 @@
+<ng-container *ngIf="(initialized$ | async); else loading">
+  <page-heading>
+    <h1 class="h2" heading>
+      {{ 'tenant-metrics.heading' | translate: (tenant$ | async) }}
+    </h1>
+    <button controls class="btn btn-default" [routerLink]="['..']">
+      {{ 'common.action.cancel' | translate }}
+    </button>
+  </page-heading>
+  <app-tenant-metrics-table
+    [metrics]="metrics$ | async"
+  ></app-tenant-metrics-table>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>
