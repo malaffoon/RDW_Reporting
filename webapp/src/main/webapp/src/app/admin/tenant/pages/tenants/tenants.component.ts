@@ -14,9 +14,7 @@ import { TenantType } from '../../model/tenant-type';
 import { tap } from 'rxjs/internal/operators/tap';
 import { ordering } from '@kourge/ordering';
 import { byString } from '@kourge/ordering/comparator';
-import { TenantModalService } from '../../service/tenant-modal.service';
 import { TenantsStore } from '../../state/tenants.store';
-import { NotificationService } from '../../../../shared/notification/notification.service';
 
 const pollingInterval = 1000 * 15; // backend polls at 30s
 
@@ -36,9 +34,7 @@ export class TenantsComponent implements OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private service: TenantService,
-    private store: TenantsStore,
-    private modalService: TenantModalService,
-    private notificationService: NotificationService
+    private store: TenantsStore
   ) {
     this.tenantType$ = this.route.data.pipe(map(({ type }) => type));
 
@@ -77,32 +73,58 @@ export class TenantsComponent implements OnDestroy {
     });
   }
 
-  onTenantDeleteButtonClick(tenant: TenantConfiguration): void {
-    this.modalService.openDeleteConfirmationModal(tenant).subscribe(() => {
-      // Find and replace deleted tenant status with deleting status
-      this.store.setState(
-        this.store.state.map(t =>
-          t.code === tenant.code
-            ? <TenantConfiguration>{
-                ...t,
-                status: 'DELETE_STARTED'
-              }
-            : t
-        )
-      );
-
-      this.service.delete(tenant.code).subscribe(
-        () => {
-          // we already updated the status
-        },
-        error => {
-          this.notificationService.error({
-            id: `tenant.delete.error.${tenant.type}`
-          });
-        }
-      );
-    });
+  onTenantStatusAccept(tenant: TenantConfiguration): void {
+    this.polling$.next(true);
+    if (tenant.status === 'CREATE_FAILED') {
+      this.service.deleteStatus(tenant.code).subscribe(() => {
+        this.store.setState(
+          this.store.state.filter(t => t.code !== tenant.code)
+        );
+        this.polling$.next(false);
+      });
+    } else {
+      this.service.updateStatus(tenant.code, 'ACTIVE').subscribe(() => {
+        this.store.setState(
+          this.store.state.map(t =>
+            t.code === tenant.code
+              ? <TenantConfiguration>{
+                  ...t,
+                  status: 'ACTIVE'
+                }
+              : t
+          )
+        );
+        this.polling$.next(false);
+      });
+    }
   }
+
+  // onTenantDeleteButtonClick(tenant: TenantConfiguration): void {
+  //   this.modalService.openDeleteConfirmationModal(tenant).subscribe(() => {
+  //     // Find and replace deleted tenant status with deleting status
+  //     this.store.setState(
+  //       this.store.state.map(t =>
+  //         t.code === tenant.code
+  //           ? <TenantConfiguration>{
+  //               ...t,
+  //               status: 'DELETE_STARTED'
+  //             }
+  //           : t
+  //       )
+  //     );
+  //
+  //     this.service.delete(tenant.code).subscribe(
+  //       () => {
+  //         // we already updated the status
+  //       },
+  //       error => {
+  //         this.notificationService.error({
+  //           id: `tenant.delete.error.${tenant.type}`
+  //         });
+  //       }
+  //     );
+  //   });
+  // }
 
   ngOnDestroy(): void {
     this.destroyed$.next();

@@ -2,42 +2,31 @@
 @gray-darker: #84888d;
 @gray-dark: #a7a7a7;
 @gray: #b8b8b8;
-
 @gray-lighter: #e6e6e6;
 @gray-lightest: #f8f8f8;
+@red: #d5124a;
+@red-dark: #8a1538;
+@maroon: #5b1931;
 
 .tenant-link {
   display: block;
-  padding: 30px 30px 15px 30px;
+  padding: 30px;
   text-decoration: none;
   color: inherit;
-  .edit-icon,
   .controls {
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease-out;
   }
-  &:not(.status-active):not(.status-update_failed) {
-    color: @gray-dark;
-    pointer-events: none;
-    a,
-    button,
-    .label {
-      pointer-events: all;
-    }
+  &.disabled {
+    color: @gray-darker;
   }
-  &.status-active,
-  &.status-update_failed {
+  &:not(.disabled) {
     &:hover {
-      //background-color: @gray-lightest;
-      .edit-icon,
       .controls {
         visibility: visible;
         opacity: 1;
       }
-    }
-    &:active {
-      //background-color: @gray-lighter;
     }
   }
 }
@@ -82,4 +71,15 @@ h2 {
   > * + * {
     margin-left: 10px;
   }
+}
+
+.error {
+  color: @red-dark;
+}
+
+.error-message {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: end;
+  gap: 15px;
 }

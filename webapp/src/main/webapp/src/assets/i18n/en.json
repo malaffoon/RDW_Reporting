@@ -1572,6 +1572,7 @@
     }
   },
   "tenant-link": {
+    "updated-on": "Last updated {{dateTime}}",
     "see-logs": "See application logs for more details."
   },
   "tenant-localization-form": {

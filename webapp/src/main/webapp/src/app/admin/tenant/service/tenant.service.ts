@@ -13,6 +13,7 @@ import { DataSet, TenantConfiguration } from '../model/tenant-configuration';
 import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
 import { of } from 'rxjs/internal/observable/of';
+import { TenantStatus } from '../model/tenant-status';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -55,6 +56,27 @@ export class TenantService {
   }
 
   getAll(type: TenantType): Observable<TenantConfiguration[]> {
+    return of(<TenantConfiguration[]>[
+      'CREATE_STARTED',
+      'CREATE_FAILED',
+      'DELETE_STARTED',
+      'DELETE_FAILED',
+      'UPDATE_STARTED',
+      'UPDATE_FAILED',
+      'ACTIVE'
+    ].map((status, index) => ({
+      label: `California ${index + 1}`,
+      type: 'TENANT',
+      id: `${index + 1}`,
+      code: `${index + 1}`.padStart(2, '0'),
+      updatedOn: new Date(),
+      error: {
+        message:
+          'This is the error message and it is long and explains everything you need to know about errors and why they happen.'
+      },
+      status
+    })));
+
     const tenants$ = this.dataService.get(ResourceRoute, { params: { type } });
     const defaults$ = this.cachingDataService.get(DefaultsRoute);
     const dataSets$ = this.cachingDataService.get(DataSetsRoute);
@@ -75,8 +97,8 @@ export class TenantService {
     return type === 'TENANT' ? allTenants$ : allSandboxes$;
   }
 
-  get(code: string): Observable<TenantConfiguration> {
-    const tenant$ = this.dataService.get(`${ResourceRoute}/${code}`);
+  get(key: string): Observable<TenantConfiguration> {
+    const tenant$ = this.dataService.get(`${ResourceRoute}/${key}`);
     const defaults$ = this.cachingDataService.get(DefaultsRoute);
     const dataSets$ = this.cachingDataService.get(DataSetsRoute);
     return forkJoin(tenant$, defaults$, dataSets$).pipe(
@@ -108,11 +130,11 @@ export class TenantService {
 
   /**
    * Deletes an existing tenant
-   * @param code - The code or "key" of the tenant to delete
+   * @param key - The code or "key" of the tenant to delete
    */
-  delete(code: string): Observable<void> {
+  delete(key: string): Observable<void> {
     return this.dataService
-      .delete(`${ResourceRoute}/${code}`)
+      .delete(`${ResourceRoute}/${key}`)
       .pipe(catchError(ResponseUtils.throwError));
   }
 
@@ -134,5 +156,13 @@ export class TenantService {
 
   getMetrics(key: string): Observable<any> {
     return of({}); // TODO
+  }
+
+  updateStatus(key: string, status: TenantStatus): Observable<void> {
+    return this.dataService.put(`${ResourceRoute}/${key}/status`, status);
+  }
+
+  deleteStatus(key: string): Observable<void> {
+    return this.dataService.delete(`${ResourceRoute}/${key}/status`);
   }
 }
