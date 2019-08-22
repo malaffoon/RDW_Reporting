@@ -99,33 +99,6 @@ export class TenantsComponent implements OnDestroy {
     }
   }
 
-  // onTenantDeleteButtonClick(tenant: TenantConfiguration): void {
-  //   this.modalService.openDeleteConfirmationModal(tenant).subscribe(() => {
-  //     // Find and replace deleted tenant status with deleting status
-  //     this.store.setState(
-  //       this.store.state.map(t =>
-  //         t.code === tenant.code
-  //           ? <TenantConfiguration>{
-  //               ...t,
-  //               status: 'DELETE_STARTED'
-  //             }
-  //           : t
-  //       )
-  //     );
-  //
-  //     this.service.delete(tenant.code).subscribe(
-  //       () => {
-  //         // we already updated the status
-  //       },
-  //       error => {
-  //         this.notificationService.error({
-  //           id: `tenant.delete.error.${tenant.type}`
-  //         });
-  //       }
-  //     );
-  //   });
-  // }
-
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();
