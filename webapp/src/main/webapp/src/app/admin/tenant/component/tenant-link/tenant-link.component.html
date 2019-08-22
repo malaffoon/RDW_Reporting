@@ -37,8 +37,9 @@
       </span>
     </ng-container>
     <ng-template #notProcessing>
-      <div class="menu" *ngIf="status.failed">
+      <div class="controls">
         <div
+          *ngIf="status.failed"
           class="label border-only red"
           [popover]="errorsPopover"
           container="body"
@@ -47,28 +48,15 @@
           <i class="fa fa-warning"></i>
           {{ 'common.tenant-status.' + tenant.status | translate }}
         </div>
-        <button
-          *ngIf="status.deletable"
-          type="button"
-          class="btn btn-danger btn-xs"
-          (click)="$event.stopPropagation(); tenantDelete.emit(tenant)"
-        >
-          {{ 'common.action.delete' | translate }}
-        </button>
-        <!--        <i-->
-        <!--          *ngIf="tenant.status === 'UPDATE_FAILED'"-->
-        <!--          class="edit-icon fa fa-pencil"-->
-        <!--        ></i>-->
-      </div>
 
-      <div class="controls">
-        <button
-          type="button"
-          class="btn btn-success btn-sm btn-outlined"
-          [routerLink]="[tenant.id, 'metrics']"
-        >
-          <i class="fa fa-bar-chart"></i> Stats
-        </button>
+        <!-- Disabled until there is content on the metrics page -->
+        <!--        <button-->
+        <!--          type="button"-->
+        <!--          class="btn btn-success btn-sm btn-outlined"-->
+        <!--          [routerLink]="[tenant.id, 'metrics']"-->
+        <!--        >-->
+        <!--          <i class="fa fa-bar-chart"></i> Stats-->
+        <!--        </button>-->
 
         <button
           *ngIf="status.editable"
@@ -77,6 +65,15 @@
           (click)="tenantClick.emit(tenant)"
         >
           <i class="fa fa-pencil"></i> Edit
+        </button>
+
+        <button
+          *ngIf="status.deletable"
+          type="button"
+          class="btn btn-danger btn-xs"
+          (click)="$event.stopPropagation(); tenantDelete.emit(tenant)"
+        >
+          {{ 'common.action.delete' | translate }}
         </button>
       </div>
     </ng-template>
