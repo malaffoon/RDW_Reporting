@@ -218,11 +218,7 @@ export class TenantComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(
-        () => {
-          this.router.navigateByUrl(
-            tenant.type === 'TENANT' ? '/tenants' : '/sandboxes'
-          );
-        },
+        () => this.navigateToListPage(tenant.type),
         () => {
           this.notificationService.error({
             id: `tenant.delete.error.${tenant.type}`
@@ -258,11 +254,7 @@ export class TenantComponent implements OnInit, OnDestroy {
           })
         )
         .subscribe(
-          () => {
-            this.router.navigate(['..'], {
-              relativeTo: this.route
-            });
-          },
+          () => this.navigateToListPage(value.type),
           error => {
             try {
               this.notificationService.error({ id: error.json().message });
@@ -274,5 +266,11 @@ export class TenantComponent implements OnInit, OnDestroy {
           }
         );
     });
+  }
+
+  private navigateToListPage(tenantType: TenantType): void {
+    this.router.navigateByUrl(
+      tenantType === 'TENANT' ? '/tenants' : '/sandboxes'
+    );
   }
 }
