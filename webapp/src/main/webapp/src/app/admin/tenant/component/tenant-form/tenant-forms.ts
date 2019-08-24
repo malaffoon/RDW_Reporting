@@ -24,6 +24,7 @@ import { showErrorsRecursive } from '../../../../shared/form/forms';
 import { formFieldModified } from '../../model/form/form-fields';
 import { archives } from '../../model/form/validators';
 import { notBlank } from '../../../../shared/form/validators';
+import { booleanDataType } from '../../model/data-types';
 
 const byName = ordering(byString).on<Property>(
   ({ configuration: { name } }) => name
@@ -188,18 +189,35 @@ export function propertiesProvider(
                   : formValue
                 : formValue;
 
+            const normalizedValue =
+              value == null
+                ? // ideally this logic would be ignorant to the data type impl
+                  // and could instead invoke the impls "normalize" method or something
+                  configuration.dataType === booleanDataType
+                  ? 'false'
+                  : ''
+                : typeof value === 'string'
+                ? value
+                : Array.isArray(value)
+                ? // only ", " because this is exactly how we display the values
+                  value.join(', ')
+                : Object(value) !== value
+                ? String(value)
+                : // not searchable
+                  undefined;
+
             return (
               (isBlank(search) ||
                 (key.toLowerCase().includes(caseInsensitiveSearch) ||
-                  (typeof value === 'string' &&
-                    value.toLowerCase().includes(caseInsensitiveSearch)) ||
-                  (Object(value) !== value &&
-                    String(value)
+                  (normalizedValue != null &&
+                    normalizedValue
                       .toLowerCase()
                       .includes(caseInsensitiveSearch)))) &&
               (!modified ||
                 formFieldModified(inputType, value, originalValue)) &&
-              (!required || configuration.required) // TODO make this conditional on form state
+              (!required ||
+                // TODO make this conditional on form state
+                configuration.required)
             );
           })
           .sort(comparator)
