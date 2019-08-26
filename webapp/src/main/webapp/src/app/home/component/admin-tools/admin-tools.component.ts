@@ -87,7 +87,7 @@ export class AdminToolsComponent {
       map(([settings, user]) =>
         links.filter(
           link =>
-            (link.disabled == null || !link.disabled(settings)) &&
+            (link.disabled == null || link.disabled(settings)) &&
             (link.permission == null ||
               user.permissions.includes(link.permission))
         )
