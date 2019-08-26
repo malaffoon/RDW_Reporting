@@ -23,7 +23,7 @@ export class UserService {
       map(serverUser => ({
         firstName: serverUser.firstName,
         lastName: serverUser.lastName,
-        permissions: serverUser.permissions,
+        permissions: serverUser.permissions || [],
         anonymous: serverUser.anonymous,
         tenantName: serverUser.tenant.name,
         logoutUrl: serverUser.tenant.logoutUrl,
