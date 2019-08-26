@@ -39,6 +39,7 @@ reporting:
   target-report:
     insufficient-data-cutoff: 0.2
     min-number-of-students: 0
+  tenant-administration-disabled: false
 
 saml:
   # SAML keystore path: file:/some/path/saml.jks
