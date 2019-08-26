@@ -55,14 +55,14 @@ const links: Link[] = [
     path: '/sandboxes',
     icon: 'fa-cog',
     permission: 'TENANT_READ',
-    disabled: ({ tenantAdministrationEnabled }) => !tenantAdministrationEnabled
+    disabled: ({ tenantAdministrationDisabled }) => tenantAdministrationDisabled
   },
   {
     id: 'tenants',
     path: '/tenants',
     icon: 'fa-cog',
     permission: 'TENANT_READ',
-    disabled: ({ tenantAdministrationEnabled }) => !tenantAdministrationEnabled
+    disabled: ({ tenantAdministrationDisabled }) => tenantAdministrationDisabled
   }
 ];
 

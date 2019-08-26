@@ -14,7 +14,7 @@ export interface ApplicationSettings {
   readonly state: StateSettings;
   readonly studentFields: Map<StudentFieldType, StudentFieldPermissionLevel>;
   readonly targetReport: TargetReportSettings;
-  readonly tenantAdministrationEnabled: boolean;
+  readonly tenantAdministrationDisabled: boolean;
   readonly transferAccess: boolean;
   readonly schoolYear: number;
 }
@@ -77,7 +77,7 @@ export function toApplicationSettings(
         serverSettings.targetReport.insufficientDataCutoff,
       minimumStudentCount: serverSettings.targetReport.minNumberOfStudents
     },
-    tenantAdministrationEnabled: serverSettings.tenantAdministrationEnabled,
+    tenantAdministrationDisabled: serverSettings.tenantAdministrationDisabled,
     transferAccess: serverSettings.transferAccessEnabled,
     uiLanguages: serverSettings.uiLanguages,
     userGuideUrl: serverSettings.userGuideUrl
