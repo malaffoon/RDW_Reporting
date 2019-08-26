@@ -7,7 +7,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export const tenantKey = Validators.pattern(/^\w+$/);
+export const tenantKey = Validators.pattern(/^[a-zA-Z_]{2,}$/);
 
 export function available(
   isAvailable: (value: string) => Observable<boolean>
