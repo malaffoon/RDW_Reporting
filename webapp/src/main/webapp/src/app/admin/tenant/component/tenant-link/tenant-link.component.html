@@ -88,18 +88,19 @@
       </div>
     </ng-container>
     <ng-template #body>
-      <p class="description">
-        {{ tenant.description }}
+      <p class="data-set-o" *ngIf="tenant.dataSet != null">
+        <i class="fa fa-database mr-xs"></i> {{ tenant.dataSet.label }}
       </p>
-      <strong class="data-set" *ngIf="tenant.dataSet != null">
-        {{ tenant.dataSet.label }}
-      </strong>
-      <div class="small text-muted" *ngIf="tenant.updatedOn != null">
+      <p class="updated-on" *ngIf="tenant.updatedOn != null">
+        <i class="fa fa-calendar mr-xs"></i>
         {{
           'tenant-link.updated-on'
             | translate: { dateTime: tenant.updatedOn | date: 'medium' }
         }}
-      </div>
+      </p>
+      <p class="description" *ngIf="tenant.description != null">
+        {{ tenant.description }}
+      </p>
     </ng-template>
   </div>
 </div>
