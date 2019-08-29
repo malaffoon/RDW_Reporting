@@ -39,14 +39,14 @@
     </ng-container>
     <ng-template #notProcessing>
       <div class="controls">
-        <!--        <button-->
-        <!--          *ngIf="tenant.type === 'TENANT'"-->
-        <!--          type="button"-->
-        <!--          class="btn btn-success btn-outlined"-->
-        <!--          [routerLink]="[tenant.id, 'metrics']"-->
-        <!--        >-->
-        <!--          <i class="fa fa-bar-chart"></i> Stats-->
-        <!--        </button>-->
+        <button
+          *ngIf="tenant.type === 'TENANT'"
+          type="button"
+          class="btn btn-success btn-outlined"
+          [routerLink]="[tenant.id, 'metrics']"
+        >
+          <i class="fa fa-bar-chart"></i> Stats
+        </button>
         <button
           *ngIf="status.active"
           type="button"
