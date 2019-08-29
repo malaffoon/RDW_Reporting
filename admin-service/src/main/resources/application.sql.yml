@@ -538,7 +538,7 @@ sql:
       SELECT 'Subjects' AS category,
           sy.year,
           s.code,
-          COUNT(e.id)
+          COUNT(e.id) as count
       FROM exam e
           JOIN asmt a ON a.id = e.asmt_id
           LEFT OUTER JOIN subject s ON s.id = a.subject_id
@@ -548,7 +548,7 @@ sql:
       SELECT 'Students' AS category,
           sy.year,
           'Students' AS code,
-          COUNT(s.id)
+          COUNT(s.id) as count
       FROM exam e
           JOIN student s ON s.id = e.student_id
           JOIN asmt a ON a.id = e.asmt_id
@@ -558,7 +558,7 @@ sql:
       SELECT 'Schools' AS category,
           sy.year,
           'Schools' AS code,
-          COUNT(sc.id)
+          COUNT(sc.id) as count
       FROM exam e
           JOIN school sc ON sc.id = e.school_id
           JOIN asmt a ON a.id = e.asmt_id
