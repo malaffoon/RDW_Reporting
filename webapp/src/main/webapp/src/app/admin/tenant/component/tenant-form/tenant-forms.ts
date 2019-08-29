@@ -108,12 +108,7 @@ export function tenantForm(
           ...sharedControls,
           key: new FormControl(
             value.code || '',
-            [
-              Validators.required,
-              Validators.maxLength(20),
-              tenantKey,
-              notBlank
-            ],
+            [Validators.required, tenantKey, notBlank],
             mode === 'create' ? [available(tenantKeyAvailable)] : []
           ),
           id: new FormControl(
