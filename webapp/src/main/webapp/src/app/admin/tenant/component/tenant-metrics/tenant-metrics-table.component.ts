@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { TenantMetric } from '../../model/tenant-metric';
 
 @Component({
   selector: 'app-tenant-metrics-table',
@@ -7,6 +8,12 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TenantMetricsTable {
+  _rows: TenantMetric[];
+  _hasSubjects: boolean;
+
   @Input()
-  metrics: any;
+  set metrics(values: TenantMetric[]) {
+    this._rows = values;
+    this._hasSubjects = values.some(({ subjectCode }) => subjectCode != null);
+  }
 }
