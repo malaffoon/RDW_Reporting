@@ -532,3 +532,36 @@ sql:
     dropSandboxOlapSchemaAndUser:
       - DROP SCHEMA IF EXISTS $[schema] CASCADE
       - DROP USER IF EXISTS $[username]
+
+  metrics:
+    findAll: >-
+      SELECT 'Subjects' AS category,
+          sy.year,
+          s.code,
+          COUNT(e.id)
+      FROM exam e
+          JOIN asmt a ON a.id = e.asmt_id
+          LEFT OUTER JOIN subject s ON s.id = a.subject_id
+          JOIN school_year sy ON a.school_year = sy.year
+      GROUP BY category, sy.year, s.code
+      UNION ALL
+      SELECT 'Students' AS category,
+          sy.year,
+          'Students' AS code,
+          COUNT(s.id)
+      FROM exam e
+          JOIN student s ON s.id = e.student_id
+          JOIN asmt a ON a.id = e.asmt_id
+          JOIN school_year sy ON sy.year = a.school_year
+      GROUP BY category, sy.year, code
+      UNION ALL
+      SELECT 'Schools' AS category,
+          sy.year,
+          'Schools' AS code,
+          COUNT(sc.id)
+      FROM exam e
+          JOIN school sc ON sc.id = e.school_id
+          JOIN asmt a ON a.id = e.asmt_id
+          JOIN school_year sy ON sy.year = a.school_year
+      GROUP BY category, sy.year, code
+      ORDER BY category, year DESC, code;
