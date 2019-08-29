@@ -93,8 +93,12 @@
       <p class="updated-on" *ngIf="tenant.updatedOn != null">
         <i class="fa fa-calendar mr-xs"></i>
         {{
-          'tenant-link.updated-on'
-            | translate: { dateTime: tenant.updatedOn | date: 'medium' }
+          'tenant-link.updatedOn'
+            | translate
+              : {
+                  dateTime: tenant.updatedOn | date: 'medium',
+                  username: tenant.updatedBy
+                }
         }}
       </p>
       <p class="description" *ngIf="tenant.description != null">
