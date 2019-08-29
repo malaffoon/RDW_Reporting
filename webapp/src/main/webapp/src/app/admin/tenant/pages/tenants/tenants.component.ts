@@ -54,7 +54,12 @@ export class TenantsComponent implements OnDestroy {
         }),
         flatMap(([type]) =>
           this.service.getAll(type).pipe(
-            map(tenants => tenants.slice().sort(byKey)),
+            map(tenants =>
+              tenants
+                .slice()
+                .sort(byKey)
+                .map(x => ({ ...x, updatedOn: new Date() }))
+            ),
             // would like a less side-effecty way to do this but it works at least
             tap(tenants => {
               this.polling$.next(false);

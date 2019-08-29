@@ -1437,6 +1437,18 @@
     "TENANT": "Tenant",
     "SANDBOX": "Sandbox"
   },
+  "tenant-metric-type": {
+    "Schools": "Schools",
+    "Students": "Students",
+    "Subjects": "Exams"
+  },
+  "tenant-metric-table": {
+    "column": {
+      "schoolYear": "School Year",
+      "subjectCode": "Subject",
+      "count": "Count"
+    }
+  },
   "tenants": {
     "heading": {
       "SANDBOX": "Sandboxes",

@@ -14,6 +14,7 @@ import { TenantType } from '../model/tenant-type';
 import { CachingDataService } from '../../../shared/data/caching-data.service';
 import { of } from 'rxjs/internal/observable/of';
 import { TenantStatus } from '../model/tenant-status';
+import { TenantMetric, TenantMetricType } from '../model/tenant-metric';
 
 const ResourceRoute = `${AdminServiceRoute}/tenants`;
 const DefaultsRoute = `${AdminServiceRoute}/tenantDefaults`;
@@ -133,8 +134,8 @@ export class TenantService {
       .pipe(catchError(ResponseUtils.throwError));
   }
 
-  getMetrics(key: string): Observable<any> {
-    return of({}); // TODO
+  getMetrics(key: string): Observable<TenantMetric[]> {
+    return this.dataService.get(`${ResourceRoute}/${key}/metrics`);
   }
 
   updateStatus(key: string, status: TenantStatus): Observable<void> {
