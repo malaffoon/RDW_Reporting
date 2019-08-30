@@ -90,11 +90,15 @@
       <p class="data-set-o" *ngIf="tenant.dataSet != null">
         <i class="fa fa-database mr-xs"></i> {{ tenant.dataSet.label }}
       </p>
-      <p class="updated-on" *ngIf="tenant.updatedOn != null">
+      <p class="updated-on" *ngIf="tenant.updatedOn">
         <i class="fa fa-calendar mr-xs"></i>
         {{
-          'tenant-link.updated-on'
-            | translate: { dateTime: tenant.updatedOn | date: 'medium' }
+          'tenant-link.updatedOn'
+            | translate
+              : {
+                  dateTime: tenant.updatedOn | date: 'medium',
+                  username: tenant.updatedBy
+                }
         }}
       </p>
       <p class="description" *ngIf="tenant.description != null">

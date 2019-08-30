@@ -61,9 +61,24 @@ export interface TenantConfiguration {
   error?: TenantConfigurationError;
 
   /**
+   * The time of creation
+   */
+  createdOn?: Date;
+
+  /**
+   * The user that created the tenant
+   */
+  createdBy?: string;
+
+  /**
    * The time of the last update
    */
   updatedOn?: Date;
+
+  /**
+   * The user that last updated the tenant
+   */
+  updatedBy?: string;
 }
 
 export interface DataSet {

@@ -1753,8 +1753,7 @@
           "name": "California",
           "description": null,
           "sandbox": false,
-          "sandboxDataset": null,
-          "created": {}
+          "sandboxDataset": null
         },
         "TS": {
           "id": "TS",
@@ -1762,8 +1761,7 @@
           "name": "Test Tenant",
           "description": null,
           "sandbox": false,
-          "sandboxDataset": null,
-          "created": {}
+          "sandboxDataset": null
         }
       },
       "status": {
