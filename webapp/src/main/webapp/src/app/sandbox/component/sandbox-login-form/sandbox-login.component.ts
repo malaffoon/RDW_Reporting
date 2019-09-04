@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SandboxLoginService } from './sandbox-login.service';
-import { Sandbox } from './sandbox';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { uuid } from '../shared/support/support';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
+import { Sandbox } from '../../model/sandbox';
+import { SandboxLoginService } from '../../service/sandbox-login.service';
+import { uuid } from '../../../shared/support/support';
 
 const byKey = ordering(byString).on(({ key }) => key).compare;
 

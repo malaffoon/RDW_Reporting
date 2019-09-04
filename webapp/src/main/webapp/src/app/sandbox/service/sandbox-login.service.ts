@@ -1,9 +1,9 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { DataService } from '../shared/data/data.service';
 import { catchError } from 'rxjs/operators';
-import { ResponseUtils } from '../shared/response-utils';
-import { Sandbox } from './sandbox';
+import { ResponseUtils } from '../../shared/response-utils';
+import { Sandbox } from '../model/sandbox';
+import { DataService } from '../../shared/data/data.service';
 
 const ResourceRoute = `/sandboxes`;
 
