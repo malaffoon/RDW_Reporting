@@ -48,6 +48,9 @@ export class RdwTranslateLoader implements TranslateLoader {
     languageCode: string,
     tenantKey: string
   ): Observable<any> {
+    if (tenantKey == null) {
+      return this.getClientTranslations(languageCode);
+    }
     return forkJoin(
       this.getClientTranslations(languageCode),
       this.getServerTranslations(languageCode, tenantKey)

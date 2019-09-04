@@ -50,61 +50,54 @@
         </div>
       </ng-container>
       <div [hidden]="formGroup.controls.sandbox.value == null">
-        <ng-container
-          *ngIf="(loadingTranslations$ | async); else translationsLoaded"
-        >
-          <spinner></spinner>
-        </ng-container>
-        <ng-template #translationsLoaded>
-          <div class="form-group">
-            <label for="role">
-              {{ 'sandbox-login.labels.role' | translate }}</label
-            >
-            <button
-              class="btn btn-borderless btn-xs icon-only"
-              type="button"
-              [popover]="rolePopover"
-              placement="top"
-              container="body"
-              outsideClick="true"
-            >
-              <span class="sr-only">{{
-                'info-button.more-info' | translate
-              }}</span
-              ><i class="fa fa-info-circle"></i>
-            </button>
-            <ng-template #rolePopover>
-              {{ 'sandbox-login.sandbox-role-info' | translate }}
-            </ng-template>
-            <select
-              id="role"
-              name="role"
-              formControlName="role"
-              class="form-control"
-            >
-              <ng-container
-                *ngIf="formGroup.controls.sandbox.value as selectedSandbox"
-              >
-                <option
-                  *ngFor="let role of selectedSandbox.roles"
-                  [ngValue]="role"
-                >
-                  {{
-                    'sandbox-login.sandbox-role-label.' + role.type
-                      | translate: { organizationName: role.organization.name }
-                  }}
-                </option>
-              </ng-container>
-            </select>
-          </div>
-          <button
-            type="submit"
-            class="btn btn-primary btn-block"
-            [disabled]="formGroup.invalid"
+        <div class="form-group">
+          <label for="role">
+            {{ 'sandbox-login.labels.role' | translate }}</label
           >
-            {{ 'sandbox-login.login' | translate }}
+          <button
+            class="btn btn-borderless btn-xs icon-only"
+            type="button"
+            [popover]="rolePopover"
+            placement="top"
+            container="body"
+            outsideClick="true"
+          >
+            <span class="sr-only">{{
+              'info-button.more-info' | translate
+            }}</span
+            ><i class="fa fa-info-circle"></i>
           </button>
-        </ng-template>
+          <ng-template #rolePopover>
+            {{ 'sandbox-login.sandbox-role-info' | translate }}
+          </ng-template>
+          <select
+            id="role"
+            name="role"
+            formControlName="role"
+            class="form-control"
+          >
+            <ng-container
+              *ngIf="formGroup.controls.sandbox.value as selectedSandbox"
+            >
+              <option
+                *ngFor="let role of selectedSandbox.roles"
+                [ngValue]="role"
+              >
+                {{
+                  'sandbox-login.sandbox-role-label.' + role.type
+                    | translate: { organizationName: role.organization.name }
+                }}
+              </option>
+            </ng-container>
+          </select>
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary btn-block"
+          [disabled]="formGroup.invalid"
+        >
+          {{ 'sandbox-login.login' | translate }}
+        </button>
       </div>
     </div>
   </form>

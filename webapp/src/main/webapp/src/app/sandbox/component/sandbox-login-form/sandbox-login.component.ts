@@ -2,7 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
-import { finalize, flatMap, mergeMap, takeUntil } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  finalize,
+  flatMap,
+  mergeMap,
+  takeUntil
+} from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
@@ -14,15 +20,6 @@ import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 import { LanguageSelect } from '../../../shared/i18n/language-select.component';
 
 const byKey = ordering(byString).on(({ key }) => key).compare;
-
-const stubSandboxes = [
-  {
-    id: 'CA',
-    key: 'CA',
-    label: 'Cali',
-    roles: []
-  }
-];
 
 @Component({
   selector: 'sandbox-login',
@@ -37,7 +34,6 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
   initialized: boolean;
   sandboxes: Sandbox[];
-  loadingTranslations$: Subject<boolean> = new BehaviorSubject(false);
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
@@ -48,22 +44,18 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    combineLatest(
-      this.route.queryParams,
-      of(stubSandboxes),
-      this.route.queryParams.pipe(
-        flatMap(({ sandbox }) =>
-          sandbox != null
-            ? this.translationLoader.getTenantTranslation(
-                this.translateService.currentLang,
-                sandbox
-              )
-            : of({})
-        )
+    this.formGroup.controls.sandbox.valueChanges
+      .pipe(
+        takeUntil(this._destroyed),
+        distinctUntilChanged()
       )
-    )
+      .subscribe(() => {
+        this.onSandboxChange();
+      });
+
+    combineLatest(this.route.queryParams, this.service.getAll())
       .pipe(takeUntil(this._destroyed))
-      .subscribe(([params, sandboxes, translations]) => {
+      .subscribe(([params, sandboxes]) => {
         this.sandboxes = sandboxes.slice().sort(byKey);
 
         const sandbox = sandboxes.find(({ key }) => key === params.sandbox);
@@ -79,19 +71,9 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
         if (sandbox != null) {
           this.formGroup.controls.sandbox.disable();
-          this.translateService.setTranslation(
-            this.translateService.currentLang,
-            translations
-          );
         }
 
         this.initialized = true;
-      });
-
-    this.formGroup.controls.sandbox.valueChanges
-      .pipe(takeUntil(this._destroyed))
-      .subscribe(() => {
-        this.onSandboxChange();
       });
   }
 
@@ -105,12 +87,20 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     if (sandbox.value == null) {
       role.disable();
       role.setValue(null);
-      this.updateTranslations(sandbox.value.key);
     } else {
       role.enable();
       role.setValue(sandbox.value.roles[0]);
-      this.updateTranslations(sandbox.value.key);
     }
+    // update translations
+    const tenantKey = sandbox.value != null ? sandbox.value.key : undefined;
+    this.translationLoader
+      .getTenantTranslation(this.translateService.currentLang, tenantKey)
+      .subscribe(translations => {
+        this.translateService.setTranslation(
+          this.translateService.currentLang,
+          translations
+        );
+      });
   }
 
   onSubmit(): void {
@@ -126,22 +116,5 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     )}&sandboxLocked=${encode(
       this.formGroup.controls.sandbox.disabled.toString()
     )}`;
-  }
-
-  private updateTranslations(tenantKey: string): void {
-    this.loadingTranslations$.next(true);
-    this.translationLoader
-      .getTenantTranslation(this.translateService.currentLang, tenantKey)
-      .pipe(
-        finalize(() => {
-          this.loadingTranslations$.next(false);
-        })
-      )
-      .subscribe(translations => {
-        this.translateService.setTranslation(
-          this.translateService.currentLang,
-          translations
-        );
-      });
   }
 }
