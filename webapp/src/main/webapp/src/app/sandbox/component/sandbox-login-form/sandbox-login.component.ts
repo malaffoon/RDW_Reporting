@@ -1,23 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
-import {
-  distinctUntilChanged,
-  finalize,
-  flatMap,
-  mergeMap,
-  takeUntil
-} from 'rxjs/operators';
+import { combineLatest, Subject } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { Sandbox } from '../../model/sandbox';
 import { SandboxLoginService } from '../../service/sandbox-login.service';
 import { uuid } from '../../../shared/support/support';
-import { LanguageStore } from '../../../shared/i18n/language.store';
 import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
-import { LanguageSelect } from '../../../shared/i18n/language-select.component';
 
 const byKey = ordering(byString).on(({ key }) => key).compare;
 
