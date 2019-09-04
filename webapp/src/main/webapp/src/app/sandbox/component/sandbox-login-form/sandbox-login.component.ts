@@ -1,16 +1,28 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
+import { finalize, flatMap, mergeMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
 import { Sandbox } from '../../model/sandbox';
 import { SandboxLoginService } from '../../service/sandbox-login.service';
 import { uuid } from '../../../shared/support/support';
+import { LanguageStore } from '../../../shared/i18n/language.store';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
+import { LanguageSelect } from '../../../shared/i18n/language-select.component';
 
 const byKey = ordering(byString).on(({ key }) => key).compare;
+
+const stubSandboxes = [
+  {
+    id: 'CA',
+    key: 'CA',
+    label: 'Cali',
+    roles: []
+  }
+];
 
 @Component({
   selector: 'sandbox-login',
@@ -25,18 +37,33 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
   initialized: boolean;
   sandboxes: Sandbox[];
+  loadingTranslations$: Subject<boolean> = new BehaviorSubject(false);
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private service: SandboxLoginService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private translationLoader: RdwTranslateLoader
   ) {}
 
   ngOnInit(): void {
-    combineLatest(this.route.queryParams, this.service.getAll())
+    combineLatest(
+      this.route.queryParams,
+      of(stubSandboxes),
+      this.route.queryParams.pipe(
+        flatMap(({ sandbox }) =>
+          sandbox != null
+            ? this.translationLoader.getTenantTranslation(
+                this.translateService.currentLang,
+                sandbox
+              )
+            : of({})
+        )
+      )
+    )
       .pipe(takeUntil(this._destroyed))
-      .subscribe(([params, sandboxes]) => {
+      .subscribe(([params, sandboxes, translations]) => {
         this.sandboxes = sandboxes.slice().sort(byKey);
 
         const sandbox = sandboxes.find(({ key }) => key === params.sandbox);
@@ -52,6 +79,10 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
         if (sandbox != null) {
           this.formGroup.controls.sandbox.disable();
+          this.translateService.setTranslation(
+            this.translateService.currentLang,
+            translations
+          );
         }
 
         this.initialized = true;
@@ -74,9 +105,11 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     if (sandbox.value == null) {
       role.disable();
       role.setValue(null);
+      this.updateTranslations(sandbox.value.key);
     } else {
       role.enable();
       role.setValue(sandbox.value.roles[0]);
+      this.updateTranslations(sandbox.value.key);
     }
   }
 
@@ -93,5 +126,22 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
     )}&sandboxLocked=${encode(
       this.formGroup.controls.sandbox.disabled.toString()
     )}`;
+  }
+
+  private updateTranslations(tenantKey: string): void {
+    this.loadingTranslations$.next(true);
+    this.translationLoader
+      .getTenantTranslation(this.translateService.currentLang, tenantKey)
+      .pipe(
+        finalize(() => {
+          this.loadingTranslations$.next(false);
+        })
+      )
+      .subscribe(translations => {
+        this.translateService.setTranslation(
+          this.translateService.currentLang,
+          translations
+        );
+      });
   }
 }
