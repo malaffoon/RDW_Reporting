@@ -1,4 +1,4 @@
-import { Organization } from '../shared/organization/organization';
+import { Organization } from '../../shared/organization/organization';
 
 export interface Sandbox {
   key: string;
