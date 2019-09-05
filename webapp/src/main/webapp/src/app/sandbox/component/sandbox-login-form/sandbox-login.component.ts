@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { distinctUntilChanged, finalize, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
@@ -26,6 +26,7 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
   initialized: boolean;
   sandboxes: Sandbox[];
+  loadingTranslations$: Subject<boolean> = new BehaviorSubject(false);
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
@@ -76,6 +77,7 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
   onSandboxChange(): void {
     const { sandbox, role } = this.formGroup.controls;
+    // auto-select first role of the sandbox
     if (sandbox.value == null) {
       role.disable();
       role.setValue(null);
@@ -84,9 +86,15 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
       role.setValue(sandbox.value.roles[0]);
     }
     // update translations
+    this.loadingTranslations$.next(true);
     const tenantKey = sandbox.value != null ? sandbox.value.key : undefined;
     this.translationLoader
       .getTenantTranslation(this.translateService.currentLang, tenantKey)
+      .pipe(
+        finalize(() => {
+          this.loadingTranslations$.next(false);
+        })
+      )
       .subscribe(translations => {
         this.translateService.setTranslation(
           this.translateService.currentLang,
