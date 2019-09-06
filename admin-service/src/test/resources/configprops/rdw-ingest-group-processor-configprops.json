@@ -805,8 +805,7 @@
           "name": "California Sandbox 001",
           "description": null,
           "sandbox": true,
-          "sandboxDataset": "demo-dataset",
-          "created": {}
+          "sandboxDataset": "demo-dataset"
         },
         "CA_S002": {
           "id": "CA_S002",
@@ -814,8 +813,7 @@
           "name": "California Sandbox 002",
           "description": null,
           "sandbox": true,
-          "sandboxDataset": "sbac-dataset",
-          "created": {}
+          "sandboxDataset": "sbac-dataset"
         },
         "CA": {
           "id": "CA",
@@ -823,8 +821,7 @@
           "name": "California",
           "description": null,
           "sandbox": false,
-          "sandboxDataset": null,
-          "created": {}
+          "sandboxDataset": null
         },
         "TS": {
           "id": "TS",
@@ -832,8 +829,7 @@
           "name": "Test State Tenant",
           "description": null,
           "sandbox": false,
-          "sandboxDataset": null,
-          "created": {}
+          "sandboxDataset": null
         }
       },
       "status": {

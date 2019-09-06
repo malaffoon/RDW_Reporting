@@ -1437,6 +1437,18 @@
     "TENANT": "Tenant",
     "SANDBOX": "Sandbox"
   },
+  "tenant-metric-type": {
+    "Schools": "Schools",
+    "Students": "Students",
+    "Subjects": "Exams"
+  },
+  "tenant-metric-table": {
+    "column": {
+      "schoolYear": "School Year",
+      "subjectCode": "Subject",
+      "count": "Count"
+    }
+  },
   "tenants": {
     "heading": {
       "SANDBOX": "Sandboxes",
@@ -1459,7 +1471,7 @@
         "error": {
           "required": "Please enter a tenant key",
           "unavailable": "A tenant with the same key already exists",
-          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters and underscores ('_') are allowed"
+          "pattern": "The tenant key must be at least two characters long and contain only alphabetic characters and underscores"
         }
       },
       "id": {
@@ -1572,7 +1584,7 @@
     }
   },
   "tenant-link": {
-    "updated-on": "Last updated {{dateTime}}",
+    "updatedOn": "Last updated by {{username}} on {{dateTime}}",
     "see-logs": "See application logs for more details."
   },
   "tenant-localization-form": {
