@@ -3,7 +3,6 @@ const Percent = 'Percent';
 const Number = 'Number';
 
 export abstract class ValueDisplayTypes {
-
   static get Percent(): string {
     return Percent;
   }
@@ -13,7 +12,7 @@ export abstract class ValueDisplayTypes {
   }
 
   static values(): string[] {
-    return [ Percent, Number ];
+    return [Percent, Number];
   }
 
   static valueOf(input: string): string {
@@ -23,5 +22,4 @@ export abstract class ValueDisplayTypes {
     }
     throw new Error('Unknown ValueDisplayType: ' + input);
   }
-
 }

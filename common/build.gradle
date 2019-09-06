@@ -7,6 +7,7 @@ bootRun.enabled = false
 
 dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
+    compile 'org.opentestsystem.rdw.common:rdw-common-multi-tenant'
     compile 'org.opentestsystem.rdw.common:rdw-common-security'
     compile 'org.opentestsystem.rdw.common:rdw-common-utils'
     compile 'javax.validation:validation-api'
@@ -16,10 +17,11 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind'
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-properties'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-guava'
-    compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'com.healthmarketscience.sqlbuilder:sqlbuilder:2.1.7'
-
-    optional 'org.springframework.boot:spring-boot-configuration-processor'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.security:spring-security-core'
+    compile 'org.springframework.cloud:spring-cloud-starter-config'
+    compile 'org.springframework:spring-messaging'
 
     testCompile('org.springframework.boot:spring-boot-starter-test') {
         exclude(module: 'commons-logging')
@@ -28,6 +30,7 @@ dependencies {
     // IT test complained about not having this
     testCompile 'org.hibernate:hibernate-validator:5.4.1.Final'
     testCompile 'mysql:mysql-connector-java'
+    testCompile 'org.springframework.security:spring-security-test'
 }
 
 // generate coverage report automatically (./build/reports/jacoco/test/html/index.html)

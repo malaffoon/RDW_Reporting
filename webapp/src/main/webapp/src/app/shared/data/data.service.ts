@@ -1,7 +1,12 @@
-import { Inject, Injectable, InjectionToken } from "@angular/core";
-import { Http, RequestOptionsArgs, Response, ResponseContentType } from "@angular/http";
-import { Observable } from "rxjs";
-import { Download } from "./download.model";
+import { Inject, Injectable, InjectionToken } from '@angular/core';
+import {
+  Http,
+  RequestOptionsArgs,
+  Response,
+  ResponseContentType
+} from '@angular/http';
+import { Observable, throwError } from 'rxjs';
+import { Download } from './download.model';
 import { map } from 'rxjs/operators';
 
 export const DATA_CONTEXT_URL = new InjectionToken<string>('CONTEXT_URL');
@@ -11,9 +16,23 @@ export const DATA_CONTEXT_URL = new InjectionToken<string>('CONTEXT_URL');
  */
 @Injectable()
 export class DataService {
+  constructor(
+    private http: Http,
+    @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api'
+  ) {}
 
-  constructor(private http: Http,
-              @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api') {
+  /**
+   * Gets data from the API server
+   *
+   * @param url the API endpoint
+   * @param options parameters to communicate to the API
+   * @returns {Observable<R>}
+   */
+  head<T = any>(
+    url: string,
+    options?: RequestOptionsArgs
+  ): Observable<Response> {
+    return this.http.head(`${this.contextUrl}${url}`, options);
   }
 
   /**
@@ -24,10 +43,9 @@ export class DataService {
    * @returns {Observable<R>}
    */
   get(url: string, options?: RequestOptionsArgs): Observable<any> {
-    return this.http.get(`${this.contextUrl}${url}`, options)
-      .pipe(
-        map(this.getMapper(options))
-      );
+    return this.http
+      .get(`${this.contextUrl}${url}`, options)
+      .pipe(map(this.getMapper(options)));
   }
 
   /**
@@ -39,10 +57,9 @@ export class DataService {
    * @returns {Observable<R>}
    */
   post(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
-    return this.http.post(`${this.contextUrl}${url}`, body, options)
-      .pipe(
-        map(this.getMapper(options))
-      );
+    return this.http
+      .post(`${this.contextUrl}${url}`, body, options)
+      .pipe(map(this.getMapper(options)));
   }
 
   /**
@@ -54,10 +71,9 @@ export class DataService {
    * @returns {Observable<R>}
    */
   put(url: string, body: any, options?: RequestOptionsArgs): Observable<any> {
-    return this.http.put(`${this.contextUrl}${url}`, body, options)
-      .pipe(
-        map(this.getMapper(options))
-      );
+    return this.http
+      .put(`${this.contextUrl}${url}`, body, options)
+      .pipe(map(this.getMapper(options)));
   }
 
   /**
@@ -68,10 +84,9 @@ export class DataService {
    * @returns {Observable<any>}
    */
   delete(url: string, options?: RequestOptionsArgs): Observable<any> {
-    return this.http.delete(`${this.contextUrl}${url}`, options)
-      .pipe(
-        map(this.getMapper(options))
-      );
+    return this.http
+      .delete(`${this.contextUrl}${url}`, options)
+      .pipe(map(this.getMapper(options)));
   }
 
   /**
@@ -84,20 +99,26 @@ export class DataService {
    */
   private getMapper(options?: RequestOptionsArgs): (response: Response) => any {
     if (options != null && options.responseType == ResponseContentType.Blob) {
-      return (response: Response) => new Download(
-        this.safelyFormatFileName(this.getFileNameFromResponse(response)),
-        new Blob([ response.blob() ], { type: this.getContentType(response) })
-      );
+      return (response: Response) =>
+        new Download(
+          this.safelyFormatFileName(this.getFileNameFromResponse(response)),
+          new Blob([response.blob()], { type: this.getContentType(response) })
+        );
+    } else if (
+      options != null &&
+      options.responseType == ResponseContentType.Text
+    ) {
+      return (response: Response) => response.text();
     }
     return response => {
-      const contentLength = response.headers.get("content-length");
+      const contentLength = response.headers.get('content-length');
       // content-length is 0 when there is no response body and is optional otherwise
       // response.json() throws an exception when content-length is 0
       if (contentLength == null || Number.parseInt(contentLength) > 0) {
         return response.json();
       }
       return null;
-    }
+    };
   }
 
   /**
@@ -108,7 +129,9 @@ export class DataService {
    * @returns {string} thre formatted name
    */
   private safelyFormatFileName(name: string) {
-    return name == null ? null : name.replace(/[&~@#$^*_+=/:?;\\|<>"',]/g, '').replace(/\s+/g, '_');
+    return name == null
+      ? null
+      : name.replace(/[&~@#$^*_+=/:?;\\|<>"',]/g, '').replace(/\s+/g, '_');
   }
 
   /**
@@ -119,7 +142,11 @@ export class DataService {
    */
   private getFileNameFromResponse(response: Response): string {
     const header: string = response.headers.get('Content-Disposition');
-    return header == null ? null : this.decodeHeaderFieldValue(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g.exec(header)[ 1 ]);
+    return header == null
+      ? null
+      : this.decodeHeaderFieldValue(
+          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g.exec(header)[1]
+        );
   }
 
   /**
@@ -149,5 +176,4 @@ export class DataService {
     const header: string = response.headers.get('Content-Type');
     return header == null ? null : header.trim();
   }
-
 }

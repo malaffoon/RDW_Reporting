@@ -1,10 +1,10 @@
-import { Assessment } from '../assessments/model/assessment.model';
+import { Assessment } from '../assessments/model/assessment';
 
 export interface MeasuredAssessment {
   readonly assessment: Assessment;
   readonly studentCountByPerformanceLevel: DetailsByPerformanceLevel[];
   readonly averageScaleScore: number;
-  readonly averageStandardError: number;
+  readonly averageStandardError?: number;
   readonly date: Date;
   readonly studentsTested: number;
 }

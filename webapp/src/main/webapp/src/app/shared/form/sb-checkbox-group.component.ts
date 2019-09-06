@@ -1,8 +1,7 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { AbstractControlValueAccessor } from "./abstract-control-value-accessor";
-import { Forms } from "./forms";
-import { Utils } from "../support/support";
-
+import { Component, Input, OnInit } from '@angular/core';
+import { AbstractControlValueAccessor } from './abstract-control-value-accessor';
+import { Forms } from './forms';
+import { Utils } from '../support/support';
 
 const DefaultButtonGroupStyles = 'btn-group-sm';
 const DefaultButtonStyles = 'btn-primary';
@@ -25,62 +24,75 @@ const DefaultButtonStyles = 'btn-primary';
 @Component({
   selector: 'sb-checkbox-group',
   template: `
-    <div data-toggle="buttons"
-         class="btn-group-sm toggle-group"
-         [ngClass]="computeStylesInternal(buttonGroupStyles, {
-           'vertical': !horizontal, 
-           'all-option': allOptionEnabled,
-           'nested-btn-group': allOptionEnabled || !horizontal
-         })">
-      <label *ngIf="allOptionEnabled"
-             class="btn btn-primary"
-             [ngClass]="computeStylesInternal(buttonStyles, { 
-               active: selectedAllOptionInternal, 
-               disabled: disabled
-             })">
-        <input type="checkbox"
-               [name]="name"
-               [disabled]="disabled"
-               [(ngModel)]="selectedAllOptionInternal"
-               (ngModelChange)="allOptionChangedInternal()"
-               autocomplete="off"
-               checked=""
-               angulartics2On="click"
-               angularticsAction="{{analyticsEvent}}"
-               angularticsCategory="{{analyticsCategory}}"
-               [angularticsProperties]="allOptionAnalyticsProperties">
-        {{'common.buttons.all' | translate}}
+    <div
+      data-toggle="buttons"
+      class="btn-group-sm toggle-group"
+      [ngClass]="
+        computeStylesInternal(buttonGroupStyles, {
+          vertical: !horizontal,
+          'all-option': allOptionEnabled,
+          'nested-btn-group': allOptionEnabled || !horizontal
+        })
+      "
+    >
+      <label
+        *ngIf="allOptionEnabled"
+        class="btn btn-primary"
+        [ngClass]="
+          computeStylesInternal(buttonStyles, {
+            active: selectedAllOptionInternal,
+            disabled: disabled
+          })
+        "
+      >
+        <input
+          type="checkbox"
+          [name]="name"
+          [disabled]="disabled"
+          [(ngModel)]="selectedAllOptionInternal"
+          (ngModelChange)="allOptionChangedInternal()"
+          autocomplete="off"
+          checked=""
+          angulartics2On="click"
+          angularticsAction="{{ analyticsEvent }}"
+          angularticsCategory="{{ analyticsCategory }}"
+          [angularticsProperties]="allOptionAnalyticsProperties"
+        />
+        {{ 'common.buttons.all' | translate }}
       </label>
-      <div class="btn-group"
-           [ngClass]="buttonGroupStyles">
-        <label *ngFor="let option of options; let i = index"
-               class="btn btn-primary"
-               [ngClass]="computeStylesInternal(buttonStyles, { 
-                   active: selectedOptionsInternal[ i ], 
-                   disabled: disabled 
-               })">
-          <input type="checkbox"
-                 [name]="name"
-                 [disabled]="disabled"
-                 [(ngModel)]="selectedOptionsInternal[ i ]"
-                 (ngModelChange)="optionChangedInternal()"
-                 autocomplete="off"
-                 [attr.selected]="selectedOptionsInternal[ i ] ? 'true' : 'false'"
-                 angulartics2On="click"
-                 angularticsAction="{{analyticsEvent}}"
-                 angularticsCategory="{{analyticsCategory}}"
-                 [angularticsProperties]="option.analyticsProperties">
-          {{option.text}}
+      <div class="btn-group" [ngClass]="buttonGroupStyles">
+        <label
+          *ngFor="let option of options; let i = index"
+          class="btn btn-primary"
+          [ngClass]="
+            computeStylesInternal(buttonStyles, {
+              active: selectedOptionsInternal[i],
+              disabled: disabled
+            })
+          "
+        >
+          <input
+            type="checkbox"
+            [name]="name"
+            [disabled]="disabled"
+            [(ngModel)]="selectedOptionsInternal[i]"
+            (ngModelChange)="optionChangedInternal()"
+            autocomplete="off"
+            [attr.selected]="selectedOptionsInternal[i] ? 'true' : 'false'"
+            angulartics2On="click"
+            angularticsAction="{{ analyticsEvent }}"
+            angularticsCategory="{{ analyticsCategory }}"
+            [angularticsProperties]="option.analyticsProperties"
+          />
+          {{ option.text }}
         </label>
       </div>
     </div>
   `,
-  providers: [
-    Forms.valueAccessor(SBCheckboxGroup)
-  ]
+  providers: [Forms.valueAccessor(SBCheckboxGroup)]
 })
-export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> implements OnInit {
-
+export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]>
+  implements OnInit {
   @Input()
   public horizontal: boolean = false;
 
@@ -133,11 +145,14 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
     if (options == null || typeof options === 'undefined') {
       this.throwError('options must not be null or undefined');
     }
-    this._options = options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value,
-      analyticsProperties: option.analyticsProperties
-    });
+    this._options = options.map(
+      option =>
+        <Option>{
+          value: option.value,
+          text: option.text ? option.text : option.value,
+          analyticsProperties: option.analyticsProperties
+        }
+    );
   }
 
   get value(): any[] {
@@ -150,7 +165,8 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
     if (this.allOptionEnabled) {
       this.selectedAllOptionInternal = value.length === this.options.length;
       this.selectedOptionsInternal = this.selectedAllOptionInternal
-        ? [] : this.options.map(valueMapper);
+        ? []
+        : this.options.map(valueMapper);
     } else {
       this.selectedOptionsInternal = this.options.map(valueMapper);
     }
@@ -172,7 +188,9 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
   }
 
   optionChangedInternal(): void {
-    this.selectedAllOptionInternal = this.selectedOptionsInternal.every(selected => !selected);
+    this.selectedAllOptionInternal = this.selectedOptionsInternal.every(
+      selected => !selected
+    );
     this.updateValue();
   }
 
@@ -187,16 +205,18 @@ export class SBCheckboxGroup extends AbstractControlValueAccessor<any[]> impleme
   }
 
   private updateValue(): void {
-    const selectedOptions = this.allOptionEnabled && this.selectedAllOptionInternal
-      ? this.options
-      : this.options.filter((option, index) => this.selectedOptionsInternal[ index ]);
+    const selectedOptions =
+      this.allOptionEnabled && this.selectedAllOptionInternal
+        ? this.options
+        : this.options.filter(
+            (option, index) => this.selectedOptionsInternal[index]
+          );
     this.valueInternal = selectedOptions.map(option => option.value);
   }
 
   private throwError(message: string): void {
     throw new Error(this.constructor.name + ' ' + message);
   }
-
 }
 
 /**

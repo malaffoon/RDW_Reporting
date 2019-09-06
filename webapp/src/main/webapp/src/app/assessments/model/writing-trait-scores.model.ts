@@ -6,4 +6,3 @@ export class WritingTraitScores {
   organization: number;
   conventions: number;
 }
-

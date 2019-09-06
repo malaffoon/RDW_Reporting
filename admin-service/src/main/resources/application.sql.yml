@@ -13,12 +13,7 @@ sql:
           a.grade_code,
           a.type_id,
           a.school_year,
-          a.claim1_score_code,
-          a.claim2_score_code,
-          a.claim3_score_code,
-          a.claim4_score_code,
-          a.claim5_score_code,
-          a.claim6_score_code,
+          ${sql.snippet.asmtScoreCodeColumns},
           a.min_score,
           a.max_score,
           a.cut_point_1,
@@ -327,3 +322,213 @@ sql:
         AND asmt_name = :asmt_name
         AND performance_level = :performance_level
         AND org_id <=> :org_id
+
+  pipeline:
+    findAll: >-
+      SELECT
+        id,
+        code,
+        input_type,
+        active_version
+      FROM pipeline
+      ORDER BY id ASC
+
+    findById: >-
+      SELECT
+        id,
+        code,
+        input_type,
+        active_version
+      FROM pipeline
+      WHERE id = :id
+
+    update:
+      UPDATE pipeline
+      SET active_version = :active_version
+      WHERE id = :id
+
+  pipeline-script:
+    findAllByPipeline: >-
+      SELECT
+        id,
+        pipeline_id,
+        body,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_script
+      WHERE pipeline_id = :pipeline_id
+      ORDER BY id DESC
+
+    findById: >-
+      SELECT
+        id,
+        pipeline_id,
+        body,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_script
+      WHERE id = :id
+
+    create: >-
+      INSERT INTO pipeline_script (pipeline_id, body, updated_by)
+      VALUES (:pipeline_id, :body, :updated_by)
+
+    update: >-
+      UPDATE pipeline_script
+      SET
+        body = :body,
+        updated_by = :updated_by
+      WHERE id = :id
+
+  pipeline-test:
+    findAllByPipeline: >-
+      SELECT
+        id,
+        pipeline_id,
+        name,
+        example_input,
+        expected_output,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_test
+      WHERE pipeline_id = :pipeline_id
+      ORDER BY created DESC
+
+    findById: >-
+      SELECT
+        id,
+        pipeline_id,
+        name,
+        example_input,
+        expected_output,
+        created,
+        updated,
+        updated_by
+      FROM pipeline_test
+      WHERE id = :id
+
+    create: >-
+      INSERT INTO pipeline_test (pipeline_id, name, example_input, expected_output, updated_by)
+      VALUES (:pipeline_id, :name, :example_input, :expected_output, :updated_by)
+
+    update: >-
+      UPDATE pipeline_test
+      SET
+        name = :name,
+        example_input = :example_input,
+        expected_output = :expected_output,
+        updated_by = :updated_by
+      WHERE id = :id
+
+    deleteById: >-
+      DELETE FROM pipeline_test
+      WHERE id = :id
+
+  multitenantDatabaseAdmin:
+    truncateAuroraTable: >-
+      TRUNCATE TABLE `$[databaseName]`.`$[tableName]`
+
+    auroraS3LoadData: >-
+      LOAD DATA FROM S3 '$[s3Uri]'
+      INTO TABLE `$[databaseName]`.`$[tableName]`
+
+    mySqlFileLoadData: >-
+      LOAD DATA INFILE '$[filePath]'
+      INTO TABLE `$[databaseName]`.`$[tableName]`
+
+    useDatabase: >-
+      USE $[databaseName]
+
+    disableForeignKeyChecks: >-
+      SET FOREIGN_KEY_CHECKS=0
+
+    enableForeignKeyChecks: >-
+      SET FOREIGN_KEY_CHECKS=1
+
+    tableEmptyProbe: >-
+      SELECT COUNT(*)
+      FROM `$[databaseName]`.`$[tableName]`
+
+    databaseExists: >-
+      SELECT EXISTS(SELECT SCHEMA_NAME
+      FROM INFORMATION_SCHEMA.SCHEMATA
+      WHERE SCHEMA_NAME = :targetDatabase)
+
+    createDatabase: >-
+      CREATE DATABASE $[databaseName]
+      DEFAULT CHARACTER SET 'utf8'
+      COLLATE 'utf8_unicode_ci'
+
+    userExists: >-
+      SELECT EXISTS(SELECT 1
+                    FROM mysql.user
+                    WHERE user = :username)
+
+    createDatabaseUser: >-
+      CREATE USER :username @'%' IDENTIFIED BY :password
+
+#    grantUserToDatabase: >-
+#      GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%'
+#
+#    grantUserOnSelectProc: >-
+#      GRANT SELECT ON mysql.proc TO :username @'%'
+#
+#    grantUserLoadFromS3: >-
+#      GRANT LOAD FROM S3 ON *.* TO :username @'%'
+#
+#    grantUserSelectIntoS3: >-
+#      GRANT SELECT INTO S3 ON *.* to :username @'%'
+#
+#    grantUserFile: >-
+#      GRANT FILE ON *.* TO :username @'%'
+
+    grantBasicPermissions:
+      - GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%'
+      - GRANT SELECT ON mysql.proc TO :username @'%'
+      - GRANT LOAD FROM S3 ON *.* TO :username @'%'
+      - GRANT SELECT INTO S3 ON *.* to :username @'%'
+
+    grantBasicPermissionsLocal:
+      - GRANT ALL PRIVILEGES ON $[databaseName].* TO :username @'%'
+      - GRANT SELECT ON mysql.proc TO :username @'%'
+      - GRANT FILE ON *.* TO :username @'%'
+
+    dropSandboxDatabase: >-
+      DROP DATABASE IF EXISTS $[databaseName]
+
+    dropSandboxUser: >-
+      DROP USER $[username]
+
+    olapDatabaseUserExists: >-
+      SELECT COUNT(usename) FROM pg_user where usename = :username;
+
+    createOlapDatabaseUser: >-
+      CREATE USER $[username] PASSWORD '$[password]'
+
+    olapSchemaExists: >-
+      SELECT COUNT(schema_name)
+      FROM information_schema.schemata
+      WHERE schema_name = :schema
+
+    createOlapSchema: >-
+      CREATE SCHEMA $[schema]
+
+    grantAllOlapUserToSchema: >-
+      GRANT ALL ON SCHEMA $[schema] to $[username]
+
+    grantAllOlapUserToSchemaTables: >-
+      GRANT ALL ON ALL TABLES IN SCHEMA $[schema] to $[username]
+
+    searchPathOlapUserToSchema: >-
+      ALTER USER $[username] SET SEARCH_PATH TO $[schema];
+
+    # storing as array - may be some additional actions needed here
+    revokeOlapUser:
+      - REVOKE ALL ON SCHEMA $[schema] FROM $[username]
+
+    dropSandboxOlapSchemaAndUser:
+      - DROP SCHEMA IF EXISTS $[schema] CASCADE
+      - DROP USER IF EXISTS $[username]

@@ -1,2 +1,2 @@
 export const EmbeddedLanguage: string = 'en';
-export const EmbeddedLanguages: string[] = [ EmbeddedLanguage ];
+export const EmbeddedLanguages: string[] = [EmbeddedLanguage];

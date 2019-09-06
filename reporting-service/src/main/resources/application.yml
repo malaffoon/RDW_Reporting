@@ -3,6 +3,18 @@ management:
   port: 8008
   security:
     enabled: false
+  # disable health check for tenant-specific features
+  health:
+    db:
+      enabled: false
+
+# configure actuator endpoints to unmask "key" properties so tenant keys won't be masked. However, we still
+# mask secret keys (i.e. props ending with secretKey, secret-key, or secret_key in lower, upper, or mixed case)
+endpoints:
+  env:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,secret[-_]?key
+  configprops:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,secret[-_]?key
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
@@ -19,53 +31,6 @@ spring:
     type: SIMPLE
     cache-names: subjects, subjectdefinitions
 
-  datasource:
-    url: "\
-      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\
-      ?useSSL=${spring.datasource.use-ssl:false}\
-      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
-      &characterEncoding=${spring.datasource.character-encoding:utf8}\
-      &useCompression=${spring.datasource.use-compression:true}\
-      &connectTimeout=${spring.datasource.connect-timeout:10000}\
-      &socketTimeout=${spring.datasource.socket-timeout:40000}\
-      "
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
-    username: root
-    password:
-    testWhileIdle: true
-    validationQuery: SELECT 1
-    validationQueryTimeout: 10000
-    driverClassName: com.mysql.jdbc.Driver
-    initialize: false
-    initialSize: 4
-    maxActive: 10
-    minIdle: ${spring.datasource.initialSize}
-    maxIdle: ${spring.datasource.maxActive}
-
-  writable_datasource:
-    url: "\
-      jdbc:mysql://${spring.writable_datasource.url-server:localhost:3306}/${spring.writable_datasource.url-schema:reporting}\
-      ?useSSL=${spring.writable_datasource.use-ssl:false}\
-      &useLegacyDatetimeCode=${spring.writable_datasource.use-legacy-datetime-code:false}\
-      &characterEncoding=${spring.writable_datasource.character-encoding:utf8}\
-      &rewriteBatchedStatements=${spring.writable_datasource.rewrite-batched-statements:true}\
-      &useCompression=${spring.writable_datasource.use-compression:true}\
-      &connectTimeout=${spring.writable_datasource.connect-timeout:10000}\
-      &socketTimeout=${spring.writable_datasource.socket-timeout:40000}\
-      "
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.writable_datasource.query-timeout:30})"
-    username: root
-    password:
-    testWhileIdle: true
-    validationQuery: SELECT 1
-    validationQueryTimeout: 10000
-    driverClassName: com.mysql.jdbc.Driver
-    initialize: false
-    initialSize: 4
-    maxActive: 10
-    minIdle: ${spring.writable_datasource.initialSize}
-    maxIdle: ${spring.writable_datasource.maxActive}
-
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -74,6 +39,72 @@ spring:
     chain:
       enabled: true
       gzipped: true
+
+  cloud:
+    stream:
+      bindings:
+        ConfigpropsUpdateOutput:
+          destination: ConfigpropsUpdateExchange
+
+datasources:
+  reporting_ro:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${datasources.reporting_ro.url-server:localhost:3306}"
+      database: "${datasources.reporting_ro.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_ro.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_ro.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_ro.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_ro.rewrite-batched-statements:true}\
+                   &connectTimeout=${datasources.reporting_ro.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_ro.socket-timeout:40000}\
+                   "
+    url: "${datasources.reporting_ro.url-parts.protocol}//${datasources.reporting_ro.url-parts.hosts}/${datasources.reporting_ro.url-parts.database}?${datasources.reporting_ro.url-parts.properties}"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationInterval: 35000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${datasources.reporting_ro.initialSize}
+    maxIdle: ${datasources.reporting_ro.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
+
+  reporting_rw:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${datasources.reporting_rw.url-server:localhost:3306}"
+      database: "${datasources.reporting_rw.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_rw.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_rw.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_rw.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_rw.rewrite-batched-statements:true}\
+                   &useCompression=${datasources.reporting_rw.use-compression:true}\
+                   &connectTimeout=${datasources.reporting_rw.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_rw.socket-timeout:40000}\
+                   "
+    url: "${datasources.reporting_rw.url-parts.protocol}//${datasources.reporting_rw.url-parts.hosts}/${datasources.reporting_rw.url-parts.database}?${datasources.reporting_rw.url-parts.properties}"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationInterval: 35000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${datasources.reporting_rw.initialSize}
+    maxIdle: ${datasources.reporting_rw.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
 cloud:
   aws:
@@ -107,12 +138,15 @@ jdbc:
       multiplier: 2
 
 reporting:
-  school-year: 2018
-  state:
-    code: CA
-    name: California
-
-  # english-learners should be lep or elas
-  english-learners:
-    - elas
+  student-fields:
+    EconomicDisadvantage: Enabled
+    EnglishLanguageAcquisitionStatus: Disabled
+    Ethnicity: Enabled
+    Gender: Enabled
+    IndividualEducationPlan: Enabled
+    LimitedEnglishProficiency: Enabled
+    MigrantStatus: Enabled
+    MilitaryStudentIdentifier: Enabled
+    PrimaryLanguage: Enabled
+    Section504: Enabled
 

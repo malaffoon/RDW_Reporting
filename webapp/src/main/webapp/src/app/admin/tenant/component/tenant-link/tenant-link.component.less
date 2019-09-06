@@ -1,0 +1,85 @@
+@gray-darkest: #2a2b2d;
+@gray-darker: #84888d;
+@gray-dark: #a7a7a7;
+@gray: #b8b8b8;
+@gray-lighter: #e6e6e6;
+@gray-lightest: #f8f8f8;
+@red: #d5124a;
+@red-dark: #8a1538;
+@maroon: #5b1931;
+
+.tenant-link {
+  display: block;
+  padding: 30px;
+  text-decoration: none;
+  color: inherit;
+  .controls {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease-out;
+  }
+  &.disabled {
+    color: @gray-darker;
+  }
+  &:not(.disabled) {
+    &:hover {
+      .controls {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+h2 {
+  margin: 0;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 15px;
+  align-items: center;
+
+  .menu {
+    display: flex;
+    > * + * {
+      margin-left: 15px;
+    }
+  }
+}
+
+.body {
+  margin-top: 15px;
+}
+
+:host {
+  display: block;
+}
+
+.label {
+  font-size: 16px;
+}
+
+.edit-icon {
+  font-size: 24px;
+}
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  > * + * {
+    margin-left: 10px;
+  }
+}
+
+.error {
+  color: @red-dark;
+}
+
+.error-message {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: end;
+  gap: 15px;
+}

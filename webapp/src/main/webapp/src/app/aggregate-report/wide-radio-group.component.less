@@ -1,0 +1,28 @@
+.btn-toolbar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 30px;
+
+  .btn > input {
+    display: none;
+  }
+}
+
+.toggle-group {
+  .btn {
+    &.disabled {
+      pointer-events: auto;
+      color: #2a2b2d;
+      border-color: rgb(132, 136, 141);
+      &:hover,
+      &:focus,
+      &:active {
+        background-color: #fff;
+      }
+    }
+  }
+}
+
+p.disabled {
+  opacity: 0.65;
+}

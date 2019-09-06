@@ -1,90 +1,118 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AggregateReportOptions } from './aggregate-report-options';
+import {
+  AggregateReportOptions,
+  Claim,
+  Subject
+} from './aggregate-report-options';
 import { CachingDataService } from '../shared/data/caching-data.service';
 import { OrganizationMapper } from '../shared/organization/organization.mapper';
 import { map } from 'rxjs/operators';
 import { AggregateServiceRoute } from '../shared/service-route';
-import { AssessmentTypeOrdering, BooleanOrdering, CompletenessOrdering } from '../shared/ordering/orderings';
-import { AggregateReportType } from "./aggregate-report-form-settings";
-import {SubjectDefinition} from "../subject/subject";
+import {
+  AssessmentTypeOrdering,
+  BooleanOrdering,
+  CompletenessOrdering
+} from '../shared/ordering/orderings';
+import { ReportQueryType } from '../report/report';
+import { Filter } from '../exam/model/filter';
+import { StudentFieldType } from '../app-settings';
 
 const ServiceRoute = AggregateServiceRoute;
 const assessmentTypeComparator = AssessmentTypeOrdering.compare;
 const booleanComparator = BooleanOrdering.compare;
 const completenessComparator = CompletenessOrdering.compare;
 
+function toSubject(serverSubject: any): Subject {
+  return serverSubject;
+}
+
+function toClaim(serverClaim: any): Claim {
+  return {
+    assessmentType: serverClaim.assessmentTypeCode,
+    subject: serverClaim.subjectCode,
+    code: serverClaim.code
+  };
+}
+
+// NOTE: Disabled student fields result in an empty array being returned
+function select(filters: Filter[], studentField: StudentFieldType): string[] {
+  const filter = filters.find(({ id }) => id === studentField);
+  return filter != null ? filter.values.slice() : [];
+}
+
 /**
  * Service responsible for gathering aggregate report options from the server
  */
 @Injectable()
 export class AggregateReportOptionsService {
-
-  constructor(private dataService: CachingDataService,
-              private organizationMapper: OrganizationMapper) {
-  }
+  constructor(
+    private dataService: CachingDataService,
+    private organizationMapper: OrganizationMapper
+  ) {}
 
   getReportOptions(): Observable<AggregateReportOptions> {
     return this.dataService.get(`${ServiceRoute}/reportOptions`).pipe(
-      map(serverOptions => <AggregateReportOptions>{
-        assessmentGrades: serverOptions.assessmentGrades.concat(),
-        assessmentTypes: serverOptions.assessmentTypes.concat().sort(assessmentTypeComparator),
-        claims: this.mapClaims(serverOptions.claims.concat()),
-        completenesses: serverOptions.completenesses.concat().sort(completenessComparator),
+      map(serverOptions => ({
+        assessmentGrades: serverOptions.assessmentGrades.slice(),
+        assessmentTypes: serverOptions.assessmentTypes
+          .slice()
+          .sort(assessmentTypeComparator),
+        claims: serverOptions.claims.map(toClaim),
+        completenesses: serverOptions.completenesses
+          .slice()
+          .sort(completenessComparator),
         defaultOrganization: serverOptions.defaultOrganization
           ? this.organizationMapper.map(serverOptions.defaultOrganization)
           : undefined,
-        dimensionTypes: serverOptions.dimensionTypes.concat(),
-        interimAdministrationConditions: serverOptions.interimAdministrationConditions.concat(),
-        queryTypes: [ 'Basic', 'FilteredSubgroup' ],
+        dimensionTypes: serverOptions.dimensionTypes.slice(),
+        interimAdministrationConditions: serverOptions.interimAdministrationConditions.slice(),
+        queryTypes: ['Basic', 'FilteredSubgroup'],
         reportTypes: serverOptions.assessmentTypes.some(x => x == 'sum')
-          ? [ AggregateReportType.GeneralPopulation, AggregateReportType.LongitudinalCohort, AggregateReportType.Claim, AggregateReportType.Target ]
-          : [ AggregateReportType.GeneralPopulation, AggregateReportType.Claim ],
-        schoolYears: serverOptions.schoolYears.concat(),
+          ? <ReportQueryType[]>[
+              'CustomAggregate',
+              'Longitudinal',
+              'Claim',
+              'Target'
+            ]
+          : <ReportQueryType[]>['CustomAggregate', 'Claim'],
+        schoolYears: serverOptions.schoolYears.slice(),
         statewideReporter: serverOptions.statewideReporter,
-        subjects: this.mapSubjects(serverOptions.subjects.concat()),
-        summativeAdministrationConditions: serverOptions.summativeAdministrationConditions.concat(),
+        subjects: serverOptions.subjects.map(toSubject),
+        summativeAdministrationConditions: serverOptions.summativeAdministrationConditions.slice(),
         studentFilters: {
-          economicDisadvantages: serverOptions.economicDisadvantages.concat().sort(booleanComparator),
-          ethnicities: serverOptions.ethnicities.concat(),
-          genders: serverOptions.genders.concat(),
-          individualEducationPlans: serverOptions.individualEducationPlans.concat().sort(booleanComparator),
-          limitedEnglishProficiencies: serverOptions.limitedEnglishProficiencies.concat().sort(booleanComparator),
-          englishLanguageAcquisitionStatuses: serverOptions.englishLanguageAcquisitionStatuses.concat(),
-          migrantStatuses: serverOptions.migrantStatuses.concat().sort(booleanComparator),
-          section504s: serverOptions.section504s.concat().sort(booleanComparator),
-          languages: serverOptions.languages.concat()
+          economicDisadvantages: select(
+            serverOptions.studentFilters,
+            'EconomicDisadvantage'
+          ).sort(booleanComparator),
+          ethnicities: select(serverOptions.studentFilters, 'Ethnicity'),
+          genders: select(serverOptions.studentFilters, 'Gender'),
+          individualEducationPlans: select(
+            serverOptions.studentFilters,
+            'IndividualEducationPlan'
+          ).sort(booleanComparator),
+          limitedEnglishProficiencies: select(
+            serverOptions.studentFilters,
+            'LimitedEnglishProficiency'
+          ).sort(booleanComparator),
+          englishLanguageAcquisitionStatuses: select(
+            serverOptions.studentFilters,
+            'EnglishLanguageAcquisitionStatus'
+          ).sort(booleanComparator),
+          migrantStatuses: select(
+            serverOptions.studentFilters,
+            'MigrantStatus'
+          ).sort(booleanComparator),
+          section504s: select(serverOptions.studentFilters, 'Section504').sort(
+            booleanComparator
+          ),
+          languages: select(serverOptions.studentFilters, 'PrimaryLanguage'),
+          militaryConnectedCodes: select(
+            serverOptions.studentFilters,
+            'MilitaryStudentIdentifier'
+          )
         }
-      })
+      }))
     );
   }
-
-  mapClaims(claims: any[]): Claim[] {
-    return claims.map(claim => <Claim>{
-      assessmentType: claim.assessmentTypeCode,
-      subject: claim.subjectCode,
-      code: claim.code
-    });
-  }
-
-  mapSubjects(subjects: any[]): Subject[] {
-    return subjects.map(subject => <Subject>{
-      assessmentType: subject.assessmentType,
-      code: subject.code,
-      targetReport: subject.targetReport
-    });
-  }
-
-}
-
-export interface Claim {
-  readonly assessmentType: string;
-  readonly subject: string;
-  readonly code: string;
-}
-
-export interface Subject {
-  readonly code: string;
-  readonly assessmentType: string;
-  readonly targetReport?: boolean;
 }

@@ -1,9 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { Group } from '../../groups/group';
 import { MeasuredAssessment } from '../measured-assessment';
-import { ColorService } from '../../shared/color.service';
-import { GradeCode } from '../../shared/enum/grade-code.enum';
-import { ExamStatisticsCalculator } from '../../assessments/results/exam-statistics-calculator';
+import { roundPercentages } from 'app/exam/model/score-statistics';
+import { gradeColor } from '../../shared/colors';
 
 export interface GroupCard {
   readonly group: Group;
@@ -18,61 +23,50 @@ export interface AssessmentCardEvent {
 
 @Component({
   selector: 'group-assessment-card',
-  templateUrl: './group-assessment-card.component.html'
+  templateUrl: './group-assessment-card.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GroupAssessmentCardComponent implements OnInit {
-
-  @Input()
-  card: GroupCard;
-
+export class GroupAssessmentCardComponent {
   @Output()
   selectedAssessment: EventEmitter<AssessmentCardEvent> = new EventEmitter();
 
-  percents: number[] = [];
-  dataWidths: number[] = [];
+  _card: GroupCard;
+  _color: string;
+  _percents: number[] = [];
+  _dataWidths: number[] = [];
+  _studentCountFill: number;
+
   selected = false;
+
+  // TODO this is needed because it is using a bootstrap column layout instead of flexbox/css grid
   hasIcon: boolean = true;
 
-  constructor(public colorService: ColorService, private examCalculator: ExamStatisticsCalculator) {
-  }
-
-  get measuredAssessment(): MeasuredAssessment {
-    return this.card.measuredAssessment;
-  }
-
-  get group(): Group {
-    return this.card.group;
-  }
-
-  get performanceLevels(): number[] {
-    return this.card.performanceLevels;
-  }
-
-  ngOnInit() {
-    this.percents = this.measuredAssessment.studentCountByPerformanceLevel.map(x => Math.round(x.percent));
-    this.dataWidths = this.examCalculator.getDataWidths(
-      this.measuredAssessment.studentCountByPerformanceLevel.map(x => x.percent)
+  @Input()
+  set card(value: GroupCard) {
+    this._card = value;
+    this._color = gradeColor(value.measuredAssessment.assessment.grade);
+    this._percents = value.measuredAssessment.studentCountByPerformanceLevel.map(
+      x => Math.round(x.percent)
+    );
+    this._dataWidths = roundPercentages(
+      value.measuredAssessment.studentCountByPerformanceLevel.map(
+        x => x.percent
+      )
+    );
+    this._studentCountFill = Math.min(
+      Math.round(
+        (value.measuredAssessment.studentsTested / value.group.totalStudents) *
+          100
+      ),
+      100
     );
   }
 
-  get date(): Date {
-    return this.measuredAssessment.date;
-  }
-
-  get studentCountFill(): number {
-    return Math.min(Math.round((this.measuredAssessment.studentsTested / this.group.totalStudents) * 100), 100);
-  }
-
-  selectCard(): void {
+  onClick(): void {
     this.selected = !this.selected;
     this.selectedAssessment.emit(<AssessmentCardEvent>{
-      measuredAssessment: this.measuredAssessment,
+      measuredAssessment: this._card.measuredAssessment,
       selected: this.selected
     });
   }
-
-  getGradeColor(): string {
-    return this.colorService.getColor(GradeCode.getIndex(this.measuredAssessment.assessment.grade));
-  }
-
 }

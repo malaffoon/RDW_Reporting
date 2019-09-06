@@ -1,0 +1,50 @@
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 15px;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .body-container {
+    max-height: 560px;
+    overflow: scroll;
+  }
+}
+
+.test-result-icon {
+  font-size: 20px;
+  position: absolute;
+  top: 20px;
+  left: 8px;
+}
+
+.passed-icon {
+  .test-result-icon;
+  color: green;
+}
+
+.failed-icon {
+  .test-result-icon;
+  color: red;
+}
+
+.passed {
+  margin-top: 80px;
+  text-align: center;
+  > i {
+    color: green;
+  }
+}
+
+.close {
+  line-height: 1rem;
+}

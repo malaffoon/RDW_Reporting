@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectAssessmentsComponent } from './select-assessments.component';
-import { HttpModule } from "@angular/http";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "../../../shared/common.module";
-import { Assessment } from "../../model/assessment.model";
+import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
+import { Assessment } from '../../model/assessment';
 import { Angulartics2Module } from 'angulartics2';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SelectAssessmentsComponent', () => {
   let component: SelectAssessmentsComponent;
@@ -13,10 +14,15 @@ describe('SelectAssessmentsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SelectAssessmentsComponent ],
-      imports: [ HttpModule, FormsModule, CommonModule, Angulartics2Module.forRoot() ]
-    })
-    .compileComponents();
+      declarations: [SelectAssessmentsComponent],
+      imports: [
+        HttpModule,
+        FormsModule,
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
+        Angulartics2Module.forRoot()
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -29,19 +35,14 @@ describe('SelectAssessmentsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should group assessments by grade', ()=> {
-    let assessments = [
-      { grade: '03', label: "asmt1" },
-      { grade: '03', label: "asmt2" },
-      { grade: '04', label: "asmt3" },
-      { grade: '05', label: "asmt4" },
-      { grade: '05', label: "asmt5" },
-    ].map(x =>{
-      let asmt = new Assessment();
-      asmt.grade = x.grade;
-      asmt.label = x.label;
-      return asmt;
-    });
+  it('should group assessments by grade', () => {
+    let assessments = <Assessment[]>[
+      { grade: '03', label: 'asmt1' },
+      { grade: '03', label: 'asmt2' },
+      { grade: '04', label: 'asmt3' },
+      { grade: '05', label: 'asmt4' },
+      { grade: '05', label: 'asmt5' }
+    ];
 
     component.assessments = assessments;
 
@@ -55,5 +56,5 @@ describe('SelectAssessmentsComponent', () => {
 
     expect(actual[2].grade).toBe('05');
     expect(actual[2].assessments.length).toBe(2);
-  })
+  });
 });

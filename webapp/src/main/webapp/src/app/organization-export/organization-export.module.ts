@@ -1,43 +1,27 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { SharedModule } from "primeng/components/common/shared";
-import { Angulartics2Module } from "angulartics2";
-import { CommonModule } from "../shared/common.module";
-import { OrganizationExportComponent } from "./organization-export.component";
-import { UserModule } from "../user/user.module";
-import { OrganizationService } from "./organization/organization.service";
-import { OrganizationMapper } from "./organization/organization.mapper";
-import { OrganizationTreeComponent } from "./organization/organization-tree.component";
-import { UserOrganizationsResolve } from "./organization/user-organizations.resolve";
-import { OrganizationExportService } from "./organization-export.service";
-import { OrganizationGroupingService } from "./organization-grouping.service";
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from 'primeng/components/common/shared';
+import { Angulartics2Module } from 'angulartics2';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
+import { OrganizationExportComponent } from './organization-export.component';
+import { OrganizationTreeComponent } from './organization/organization-tree.component';
+import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+import { translateModuleConfiguration } from '../shared/translate-module-configuration';
+import { RouterModule } from '@angular/router';
+import { organizationExportRoutes } from './organization-export.routes';
 
 @NgModule({
-  declarations: [
-    OrganizationExportComponent,
-    OrganizationTreeComponent
-  ],
   imports: [
-    BrowserModule,
+    CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule,
+    ReportingCommonModule,
     SharedModule,
-    UserModule,
-    Angulartics2Module.forRoot(),
+    Angulartics2Module,
+    TranslateModule.forChild(translateModuleConfiguration),
+    RouterModule.forChild(organizationExportRoutes)
   ],
-  exports: [
-    OrganizationExportComponent,
-    OrganizationTreeComponent
-  ],
-  providers: [
-    OrganizationExportService,
-    OrganizationService,
-    OrganizationMapper,
-    OrganizationGroupingService,
-    UserOrganizationsResolve
-  ]
+  declarations: [OrganizationExportComponent, OrganizationTreeComponent]
 })
-export class OrganizationExportModule {
-}
+export class OrganizationExportModule {}

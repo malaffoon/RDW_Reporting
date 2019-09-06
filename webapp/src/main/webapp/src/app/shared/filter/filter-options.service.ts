@@ -7,35 +7,37 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class FilterOptionsService {
-
-  constructor(private dataService: CachingDataService) {
-  }
+  constructor(private dataService: CachingDataService) {}
 
   getFilterOptions(): Observable<FilterOptions> {
-
     const Booleans = ['yes', 'no', 'undefined'];
 
-    return this.dataService.get(`${ReportingServiceRoute}/examFilterOptions`).pipe(
-      map(serverOptions => <FilterOptions>{
+    return this.dataService
+      .get(`${ReportingServiceRoute}/examFilterOptions`)
+      .pipe(
+        map(
+          serverOptions =>
+            <FilterOptions>{
+              // exam related
+              schoolYears: serverOptions.schoolYears,
+              subjects: serverOptions.subjects,
+              completenesses: ['Complete', 'Partial'],
+              interimAdministrationConditions: ['SD', 'NS'],
+              summativeAdministrationConditions: ['Valid', 'IN'],
 
-        // exam related
-        schoolYears: serverOptions.schoolYears,
-        subjects: serverOptions.subjects,
-        completenesses: ['Complete', 'Partial'],
-        interimAdministrationConditions: ['SD', 'NS'],
-        summativeAdministrationConditions: ['Valid', 'IN'],
-
-        // student related
-        genders: serverOptions.genders,
-        ethnicities: serverOptions.ethnicities,
-        englishLanguageAcquisitionStatuses: serverOptions.elasCodes,
-        individualEducationPlans: Booleans,
-        limitedEnglishProficiencies: Booleans,
-        section504s: Booleans,
-        migrantStatuses: Booleans,
-        languages: serverOptions.languages
-      })
-    );
+              // student related
+              genders: serverOptions.genders,
+              economicDisadvantages: Booleans,
+              ethnicities: serverOptions.ethnicities,
+              englishLanguageAcquisitionStatuses: serverOptions.elasCodes,
+              individualEducationPlans: Booleans,
+              limitedEnglishProficiencies: Booleans,
+              section504s: Booleans,
+              migrantStatuses: Booleans,
+              languages: serverOptions.languages,
+              militaryConnectedCodes: serverOptions.militaryConnectedCodes
+            }
+        )
+      );
   }
-
 }

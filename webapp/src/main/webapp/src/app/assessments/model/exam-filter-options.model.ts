@@ -1,3 +1,5 @@
+import { Filter } from '../../exam/model/filter';
+
 export class ExamFilterOptions {
   schoolYears: number[] = [];
   ethnicities: string[] = [];
@@ -7,4 +9,6 @@ export class ExamFilterOptions {
   languages: string[] = [];
   hasSummative: boolean = false;
   hasInterim: boolean = false;
+  militaryConnectedCodes: string[] = [];
+  studentFilters: Filter[] = [];
 }

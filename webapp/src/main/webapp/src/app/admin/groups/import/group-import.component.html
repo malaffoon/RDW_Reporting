@@ -1,25 +1,31 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{'group-import.title' | translate}}</h2>
-  </ng-template>
-  <ng-template #content>
-    <button [routerLink]="['fileformat']" class="btn btn-default btn-sm"><i class="fa fa-file-text"></i> {{'file-format.header' | translate}}</button>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'group-import.title' | translate }}</h1>
+  <button controls [routerLink]="['fileformat']" class="btn btn-default btn-sm">
+    <i class="fa fa-file-text"></i> {{ 'file-format.header' | translate }}
+  </button>
 </page-heading>
 
 <div class="well">
   <p>{{ 'group-import.replacement-instruct' | translate }}</p>
-  <div class="alert alert-warning" [innerHTML]="'group-import.warning-html' | translate"></div>
-  <div ng2FileDrop
-       *ngIf="!uploader.isUploading"
-       class="my-drop-zone point"
-       [class.nv-file-over]="hasDropZoneOver"
-       [uploader]="uploader"
-       (fileOver)="hasDropZoneOver = $event">
+  <div
+    class="alert alert-warning"
+    [innerHTML]="'group-import.warning-html' | translate"
+  ></div>
+  <div
+    ng2FileDrop
+    *ngIf="!uploader.isUploading"
+    class="my-drop-zone point"
+    [class.nv-file-over]="hasDropZoneOver"
+    [uploader]="uploader"
+    (fileOver)="hasDropZoneOver = $event"
+  >
     <div class="text-center pt-lg pb-lg">
       <span class="gray-darkest">
         <i class="fa fa-cloud-upload"></i>
-        {{ 'group-import.drag-instruct' | translate }} <a href="javascript:void(0)" (click)="openFileDialog()">{{'group-import.browse-instruct' | translate }}</a>
+        {{ 'group-import.drag-instruct' | translate }}
+        <a href="javascript:void(0)" (click)="openFileDialog()">{{
+          'group-import.browse-instruct' | translate
+        }}</a>
       </span>
     </div>
   </div>
@@ -28,13 +34,21 @@
       <div class="text-center pt-lg pb-lg inner">
         <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
         <span class="text">
-          {{ 'group-import.sending' | translate }} {{ uploader.queue.length - uploader.getNotUploadedItems().length }} / {{ uploader.queue.length }}
+          {{ 'group-import.sending' | translate }}
+          {{ uploader.queue.length - uploader.getNotUploadedItems().length }} /
+          {{ uploader.queue.length }}
         </span>
       </div>
     </div>
   </div>
   <div hidden>
-    <input #fileDialog type="file" ng2FileSelect [uploader]="uploader" multiple />
+    <input
+      #fileDialog
+      type="file"
+      ng2FileSelect
+      [uploader]="uploader"
+      multiple
+    />
   </div>
 </div>
 <div class="well">

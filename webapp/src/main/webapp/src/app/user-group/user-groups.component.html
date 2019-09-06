@@ -1,35 +1,51 @@
 <ng-container *ngIf="!initialized; else loaded">
-  <span class="gray-darker"><i class="fa fa-spinner fa-pulse fa-2x"></i></span>
+  <spinner></spinner>
 </ng-container>
-
 <ng-template #loaded>
   <div class="flex-children">
     <div class="flex-child grow">
-      <label *ngIf="groups.length">{{'user-groups.heading' | translate}}</label>
+      <label *ngIf="groups.length">{{
+        'user-groups.heading' | translate
+      }}</label>
 
-      <p *ngIf="groups.length === 0"
-         class="text-muted">
-        {{(createButtonDisabled ? 'user-groups.create-button-disabled-popover' : 'user-groups.create-group-prompt') | translate }}
+      <p *ngIf="groups.length === 0" class="text-muted">
+        {{
+          (createButtonDisabled
+            ? 'user-groups.create-button-disabled-popover'
+            : 'user-groups.create-group-prompt') | translate
+        }}
       </p>
     </div>
     <div class="flex-child">
       <ul class="list-unstyled list-inline">
-        <li>
-          <button class="btn btn-xs btn-primary"
-                  [ngClass]="{disabled: createButtonDisabled}"
-                  title="{{'common.action.create' | translate}}"
-                  [popover]="createButtonDisabled ? ('user-groups.create-button-disabled-popover' | translate) : ''"
-                  triggers="mouseenter:mouseleave"
-                  container="body"
-                  (click)="onCreateButtonClick()">
-            <i class="fa fa-plus"></i> {{'common.action.create' | translate}}
+        <li *hasPermission="'TEACHER_GROUP_WRITE'">
+          <button
+            class="btn btn-xs btn-primary"
+            [ngClass]="{ disabled: createButtonDisabled }"
+            title="{{ 'common.action.create' | translate }}"
+            [popover]="
+              createButtonDisabled
+                ? ('user-groups.create-button-disabled-popover' | translate)
+                : ''
+            "
+            triggers="mouseenter:mouseleave"
+            container="body"
+            (click)="onCreateButtonClick()"
+          >
+            <i class="fa fa-plus"></i> {{ 'common.action.create' | translate }}
           </button>
         </li>
         <li *ngIf="defaultGroup">
-          <a [routerLink]="['/', 'group-dashboard', {userGroupId: defaultGroup.id}]"
-             title="{{'groups.view-dashboard' | translate}}"
-             class="btn btn-xs btn-default">
-            <i class="fa fa-bars"></i> {{'groups.view-dashboard' | translate}}
+          <a
+            [routerLink]="[
+              '/',
+              'group-dashboard',
+              { userGroupId: defaultGroup.id }
+            ]"
+            title="{{ 'groups.view-dashboard' | translate }}"
+            class="btn btn-xs btn-default"
+          >
+            <i class="fa fa-bars"></i> {{ 'groups.view-dashboard' | translate }}
           </a>
         </li>
       </ul>
@@ -37,21 +53,28 @@
   </div>
 
   <ng-container *ngIf="groups.length">
-    <div *ngIf="groups.length > searchThreshold"
-         class="table-search-form-container">
-      <label for="search" class="sr-only">{{'groups.filter' | translate}}</label>
-      <input [(ngModel)]="search"
-             class="search form-control"
-             id="search"
-             type="text"
-             placeholder="{{'groups.filter' | translate}}"
-             autocomplete="off"
-             (ngModelChange)="onSearchChange($event)">
+    <div
+      *ngIf="groups.length > searchThreshold"
+      class="table-search-form-container"
+    >
+      <label for="search" class="sr-only">{{
+        'groups.filter' | translate
+      }}</label>
+      <input
+        [(ngModel)]="search"
+        class="search form-control"
+        id="search"
+        type="text"
+        placeholder="{{ 'groups.filter' | translate }}"
+        autocomplete="off"
+        (ngModelChange)="onSearchChange()"
+      />
     </div>
     <div class="table-list-container">
-      <user-group-table [groups]="filteredGroups"
-                        [subjects]="subjects"></user-group-table>
+      <user-group-table
+        [groups]="filteredGroups"
+        [subjects]="subjects"
+      ></user-group-table>
     </div>
   </ng-container>
-
 </ng-template>

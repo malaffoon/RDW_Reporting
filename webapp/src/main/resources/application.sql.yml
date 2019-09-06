@@ -2,3 +2,62 @@ sql:
   status:
     readTest: >-
       SELECT code FROM asmt_type
+
+  # this relies on the student groups being named with school name first, "Demo Elementary blah blah"
+  user-student-group:
+    create:
+      INSERT IGNORE INTO user_student_group ( user_login, student_group_id )
+      SELECT :user_login, id
+      FROM student_group
+      WHERE name LIKE CONCAT(:organization_name, '%')
+
+  sandboxRoles:
+    findAll: >-
+      (
+        SELECT
+          'Teacher' as type,
+          1 as type_order,
+          CONCAT('teacher_', s.natural_id) AS id,
+          'School' as organization_type,
+          s.natural_id as organization_natural_id,
+          s.id as organization_id,
+          s.name as organization_name,
+          max(g.sequence) as grade_order
+        FROM school s
+        JOIN exam e ON s.id = e.school_id
+        JOIN grade g ON e.grade_id = g.id
+        GROUP BY s.id
+      )
+      UNION ALL
+      (
+        SELECT
+            'SchoolAdministrator' as type,
+            2 as type_order,
+            CONCAT('school_', natural_id) AS id,
+            'School' as organization_type,
+            s.natural_id as organization_natural_id,
+            s.id as organization_id,
+            s.name as organization_name,
+            MAX(g.sequence) as grade_order
+        FROM school s
+        JOIN exam e ON s.id = e.school_id
+        JOIN grade g ON e.grade_id = g.id
+        GROUP BY s.id
+      )
+      UNION ALL
+      (
+        SELECT
+          'DistrictAdministrator' as type,
+          3 as type_order,
+          CONCAT('district_', natural_id) AS id,
+          'District' as organization_type,
+          natural_id as organization_natural_id,
+          id as organization_id,
+          name as organization_name,
+          null as grade_order
+        FROM district
+      )
+      ORDER BY
+        type_order,
+        grade_order,
+        organization_name

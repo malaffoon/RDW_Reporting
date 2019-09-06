@@ -1,0 +1,99 @@
+// The !important is because somehow the global styles are applied after the component styles...
+
+:host {
+  ::ng-deep {
+    table {
+      width: 100% !important;
+    }
+    td:nth-child(2) {
+      padding: 0 !important;
+      white-space: pre-wrap !important;
+      word-break: break-word;
+      input {
+        padding-right: 50px;
+      }
+    }
+
+    p-treeTableToggler > .ui-treetable-toggler {
+      color: inherit;
+      font-size: 14px;
+      margin-right: 2px;
+    }
+
+    // pointer event corrections
+    p-treeTableToggler {
+      pointer-events: none;
+      cursor: pointer;
+    }
+
+    tr {
+      cursor: pointer;
+      &.leaf > td {
+        // TODO would like this
+        pointer-events: none;
+        > * {
+          pointer-events: all;
+        }
+        &:first-child {
+          border-right: none;
+        }
+        &:last-child {
+          padding: 0 !important;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
+
+.group-node {
+  line-height: 30px;
+  font-size: 16px;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr max-content max-content;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+label {
+  margin: 0;
+  padding: 6px 0;
+  width: 100%;
+  font-weight: normal;
+  > span {
+    margin-left: 5px;
+  }
+}
+
+.form-group {
+  margin-bottom: 0;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  > * {
+    grid-column: 1/1;
+    grid-row: 1/1;
+  }
+  > .input-controls {
+    // hack to get it above the prime ng controls
+    z-index: 1;
+
+    justify-self: right;
+    align-self: center;
+    margin-right: 10px;
+
+    display: flex;
+
+    > a {
+      font-size: 16px;
+    }
+    > a + a {
+      margin-left: 5px;
+    }
+  }
+}

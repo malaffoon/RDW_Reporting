@@ -1,4 +1,4 @@
-import { OptionalPipe } from "./optional.pipe";
+import { OptionalPipe } from './optional.pipe';
 
 describe('OptionalPipe', () => {
   let pipe: OptionalPipe;

@@ -3,9 +3,21 @@ management:
   port: 8008
   security:
     enabled: false
+  # disable health check for tenant-specific features
   health:
+    db:
+      enabled: false
     redis:
       enabled: false
+
+# configure actuator endpoints to unmask "key" properties so tenant keys won't be masked. However, we still
+# mask secret keys (i.e. props ending with secretKey, secret-key, or secret_key in lower, upper, or mixed case)
+endpoints:
+  sensitive: false
+  env:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,secret[-_]?key
+  configprops:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,secret[-_]?key
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
@@ -23,18 +35,11 @@ reporting:
   iris-vendor-id: ${rdw.reporting.iris.vendorId}
   landing-page-url: forward:/landing.html
   min-item-data-year: 2016
-  school-year: 2018
-  state:
-    code: CA
-    name: California
   user-guide-url: https://portal.smarterbalanced.org/library/en/reporting-system-user-guide.pdf
-  # english-learners should be lep or elas
-  english-learners:
-    - elas
-
   target-report:
     insufficient-data-cutoff: 0.2
     min-number-of-students: 0
+  tenant-administration-disabled: false
 
 saml:
   # SAML keystore path: file:/some/path/saml.jks
@@ -67,29 +72,6 @@ server:
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
 
 spring:
-  datasource:
-    url: "\
-      jdbc:mysql://${spring.datasource.url-server:localhost:3306}/${spring.datasource.url-schema:reporting}\
-      ?useSSL=${spring.datasource.use-ssl:false}\
-      &useLegacyDatetimeCode=${spring.datasource.use-legacy-datetime-code:false}\
-      &characterEncoding=${spring.datasource.character-encoding:utf8}\
-      &useCompression=${spring.datasource.use-compression:true}\
-      &connectTimeout=${spring.datasource.connect-timeout:10000}\
-      &socketTimeout=${spring.datasource.socket-timeout:40000}\
-      "
-    jdbcInterceptors: "QueryTimeoutInterceptor(queryTimeout=${spring.datasource.query-timeout:30})"
-    username: root
-    password:
-    testWhileIdle: true
-    validationQuery: SELECT 1
-    validationQueryTimeout: 10000
-    driverClassName: com.mysql.jdbc.Driver
-    initialize: false
-    initialSize: 4
-    maxActive: 10
-    minIdle: ${spring.datasource.initialSize}
-    maxIdle: ${spring.datasource.maxActive}
-
   resources:
     chain:
       enabled: true
@@ -112,6 +94,72 @@ spring:
   cache:
     type: SIMPLE
     cache-names: permissionsByRole, translations, translation_properties
+
+  cloud:
+    stream:
+      bindings:
+        ConfigpropsUpdateOutput:
+          destination: ConfigpropsUpdateExchange
+
+datasources:
+  reporting_ro:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${datasources.reporting_ro.url-server:localhost:3306}"
+      database: "${datasources.reporting_ro.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_ro.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_ro.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_ro.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_ro.rewrite-batched-statements:true}\
+                   &connectTimeout=${datasources.reporting_ro.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_ro.socket-timeout:40000}\
+                   "
+    url: "${datasources.reporting_ro.url-parts.protocol}//${datasources.reporting_ro.url-parts.hosts}/${datasources.reporting_ro.url-parts.database}?${datasources.reporting_ro.url-parts.properties}"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationInterval: 35000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${datasources.reporting_ro.initialSize}
+    maxIdle: ${datasources.reporting_ro.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
+
+  reporting_rw:
+    url-parts:
+      #This is the generic format of the connection URL protocol//[hosts][/database][?properties]
+      protocol: "jdbc:mysql:"
+      hosts: "${datasources.reporting_rw.url-server:localhost:3306}"
+      database: "${datasources.reporting_rw.url-schema:reporting}"
+      properties: "useSSL=${datasources.reporting_rw.use-ssl:false}\
+                   &useLegacyDatetimeCode=${datasources.reporting_rw.use-legacy-datetime-code:false}\
+                   &characterEncoding=${datasources.reporting_rw.character-encoding:utf8}\
+                   &rewriteBatchedStatements=${datasources.reporting_rw.rewrite-batched-statements:true}\
+                   &useCompression=${datasources.reporting_rw.use-compression:true}\
+                   &connectTimeout=${datasources.reporting_rw.connect-timeout:10000}\
+                   &socketTimeout=${datasources.reporting_rw.socket-timeout:40000}\
+                   "
+    url: "${datasources.reporting_rw.url-parts.protocol}//${datasources.reporting_rw.url-parts.hosts}/${datasources.reporting_rw.url-parts.database}?${datasources.reporting_rw.url-parts.properties}"
+    username: root
+    password:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    validationInterval: 35000
+    driverClassName: com.mysql.jdbc.Driver
+    initialize: false
+    initialSize: 4
+    maxActive: 10
+    minIdle: ${datasources.reporting_rw.initialSize}
+    maxIdle: ${datasources.reporting_rw.maxActive}
+    removeAbandoned: false
+    removeAbandonedTimeout: 60
+    logAbandoned: false
 
 # Netflix zuul configuration.
 zuul:

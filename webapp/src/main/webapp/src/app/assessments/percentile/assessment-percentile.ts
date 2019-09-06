@@ -2,7 +2,6 @@
  * Represents percentile data for an assessment and date range
  */
 export interface Percentile {
-
   /**
    * The assessment entity ID to which the percentiles belong
    */
@@ -37,7 +36,6 @@ export interface Percentile {
    * The rank-score pairs used to categorize a score into a percentile
    */
   scores: PercentileScore[];
-
 }
 
 /**

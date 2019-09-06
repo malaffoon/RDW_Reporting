@@ -1,0 +1,49 @@
+.controls {
+  margin-bottom: 4px;
+}
+
+.form-group + .form-group {
+  margin-top: 15px;
+}
+
+.primary-form-controls {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 15px;
+  align-items: center;
+}
+
+.toggles {
+  margin-top: 15px;
+}
+
+.configuration-controls {
+  display: flex;
+  align-items: center;
+  > :first-child {
+    flex: 1;
+  }
+  > * + * {
+    margin-left: 15px;
+  }
+  margin-bottom: 15px;
+}
+
+.form-controls {
+  position: relative;
+}
+
+.tenant-dependent-controls {
+  margin-top: 15px;
+  position: relative;
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  opacity: 0.75;
+}

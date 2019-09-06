@@ -1,14 +1,14 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { StudentComponent } from "./student.component";
-import { CommonModule } from "../shared/common.module";
-import { AbstractControl } from "@angular/forms";
-import { StudentExamHistoryService } from "./student-exam-history.service";
-import { Router } from "@angular/router";
-import { MockRouter } from "../../test/mock.router";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { StudentComponent } from './student.component';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
+import { StudentExamHistoryService } from './student-exam-history.service';
+import { Router } from '@angular/router';
+import { MockRouter } from '../../test/mock.router';
 import { of } from 'rxjs';
-import { TestModule } from "../../test/test.module";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { TestModule } from '../../test/test.module';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import Spy = jasmine.Spy;
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('StudentComponent', () => {
   let component: StudentComponent;
@@ -19,17 +19,11 @@ describe('StudentComponent', () => {
   beforeEach(async(() => {
     service = new MockStudentExamHistoryService();
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        TestModule
-      ],
-      declarations: [ StudentComponent ],
-      providers: [
-        { provide: StudentExamHistoryService, useValue: service }
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ]
-    })
-    .compileComponents();
+      imports: [ReportingCommonModule, TranslateModule.forRoot(), TestModule],
+      declarations: [StudentComponent],
+      providers: [{ provide: StudentExamHistoryService, useValue: service }],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -44,30 +38,32 @@ describe('StudentComponent', () => {
   });
 
   it('should search for an existing student with exams and navigate if it exists', () => {
-    let textInput: AbstractControl = component.searchForm.controls['ssid'];
-    textInput.setValue("test-ssid");
+    component.formGroup.patchValue({
+      ssid: 'test-ssid'
+    });
 
-    service.existsBySsid.and.returnValue(of({id: 123}));
-    component.performSearch();
+    service.existsBySsid.and.returnValue(of({ id: 123 }));
+    component.onSubmit();
 
-    expect(service.existsBySsid.calls.first().args[0]).toBe("test-ssid");
-    expect(router.navigateByUrl.calls.first().args[0]).toBe("/students/123");
+    expect(service.existsBySsid.calls.first().args[0]).toBe('test-ssid');
+    expect(router.navigateByUrl.calls.first().args[0]).toBe('/students/123');
     expect(component.studentNotFound).toBe(false);
   });
 
   it('should search for an existing student with exams and show error if it does not exist', () => {
-    let textInput: AbstractControl = component.searchForm.controls['ssid'];
-    textInput.setValue("test-ssid");
+    component.formGroup.patchValue({
+      ssid: 'test-ssid'
+    });
 
-    service.existsBySsid.and.returnValue(of(false));
-    component.performSearch();
+    service.existsBySsid.and.returnValue(of(null));
+    component.onSubmit();
 
     expect(component.studentNotFound).toBe(true);
   });
 });
 
 class MockStudentExamHistoryService {
-  public existsBySsid: Spy = jasmine.createSpy("existsBySsid");
+  public existsBySsid: Spy = jasmine.createSpy('existsBySsid');
 
-  constructor() { }
+  constructor() {}
 }

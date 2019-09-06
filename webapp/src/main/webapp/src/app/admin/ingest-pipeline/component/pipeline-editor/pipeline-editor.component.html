@@ -1,0 +1,209 @@
+<page-heading>
+  <h1 heading class="h2">
+    {{ 'ingest-pipeline.' + pipeline.code + '.name' | translate }}
+  </h1>
+
+  <ul
+    controls
+    *hasPermission="'PIPELINE_WRITE'"
+    class="list-unstyled list-inline"
+  >
+    <ng-container [ngSwitch]="selectedItem.type">
+      <ng-container *ngSwitchCase="'Script'">
+        <li
+          class="compilation-status"
+          [ngClass]="{
+            compiling: compilationState === 'Compiling',
+            failed: compilationState === 'Failed'
+          }"
+        >
+          <ng-container [ngSwitch]="compilationState">
+            <ng-container *ngSwitchCase="'Compiling'">
+              <i class="fa fa-spinner fa-pulse"></i>
+              {{ 'pipeline-compilation-state.' + compilationState | translate }}
+            </ng-container>
+            <ng-container *ngSwitchCase="'Failed'">
+              <i class="fa fa-warning"></i>
+              {{ 'pipeline-compilation-state.' + compilationState | translate }}
+            </ng-container>
+          </ng-container>
+        </li>
+
+        <li>
+          <div [tooltip]="saveButtonDisabledTooltip">
+            <button
+              type="button"
+              class="btn btn-primary btn-outlined"
+              [ngClass]="{ disabled: !selectedItem.changed }"
+              (click)="scriptUpdate.emit(selectedItem.value)"
+            >
+              <ng-container *ngIf="saving; else notSaving">
+                <i class="fa fa-spinner fa-pulse"></i>
+                {{ 'pipeline-save-state.Saving' | translate }}
+              </ng-container>
+              <ng-template #notSaving>
+                <ng-container *ngIf="selectedItem.changed; else saved">
+                  {{ 'pipeline-editor.save-script' | translate }}
+                </ng-container>
+                <ng-template #saved>
+                  {{ 'pipeline-save-state.Saved' | translate }}
+                </ng-template>
+              </ng-template>
+            </button>
+          </div>
+        </li>
+        <li>
+          <div [tooltip]="testButtonDisabledTooltip">
+            <button
+              type="button"
+              class="btn btn-success btn-outlined"
+              [ngClass]="{ disabled: testButtonDisabled }"
+              (click)="scriptTest.emit(selectedItem.value)"
+            >
+              <ng-container *ngIf="testState == null; else hasTestState">
+                {{ 'pipeline-editor.run-tests' | translate }}
+              </ng-container>
+              <ng-template #hasTestState>
+                <i class="fa fa-spinner fa-pulse"></i>
+                {{ 'pipeline-test-state.' + testState | translate }}
+              </ng-template>
+            </button>
+          </div>
+        </li>
+        <li>
+          <div class="btn-group">
+            <div class="btn-group" [tooltip]="publishButtonDisabledTooltip">
+              <button
+                type="button"
+                class="btn btn-primary"
+                [ngClass]="{ disabled: publishButtonDisabled }"
+                (click)="scriptPublish.emit(selectedItem.value)"
+              >
+                <ng-container
+                  *ngIf="publishState == null; else hasPublishState"
+                >
+                  {{ 'pipeline-editor.publish-script' | translate }}
+                </ng-container>
+                <ng-template #hasPublishState>
+                  <i
+                    *ngIf="publishState !== 'Published'"
+                    class="fa fa-spinner fa-pulse"
+                  ></i>
+                  {{ 'pipeline-publish-state.' + publishState | translate }}
+                </ng-template>
+              </button>
+            </div>
+            <div class="btn-group" dropdown *ngIf="hasPublishedScript">
+              <button
+                type="button"
+                class="btn btn-primary dropdown-toggle"
+                dropdownToggle
+                aria-controls="publish-dropdown"
+              >
+                <i class="fa fa-ellipsis-v"></i>
+              </button>
+              <ul
+                *dropdownMenu
+                id="publish-dropdown"
+                class="dropdown-menu dropdown-menu-right"
+                role="menu"
+                aria-labelledby="button-basic"
+              >
+                <li role="menuitem">
+                  <a class="dropdown-item" [routerLink]="['history']">
+                    {{ 'pipeline-editor.publishing-history' | translate }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </ng-container>
+      <ng-container *ngSwitchCase="'Test'">
+        <li>
+          <div [tooltip]="saveButtonDisabledTooltip">
+            <button
+              class="btn btn-primary btn-outlined"
+              [ngClass]="{
+                disabled:
+                  !selectedItem.changed ||
+                  !isValidPipelineTest(selectedItem.value, pipeline.inputType)
+              }"
+              (click)="testUpdate.emit(selectedItem.value)"
+            >
+              <ng-container *ngIf="testUpdating; else testNotUpdating">
+                <i class="fa fa-spinner fa-pulse"></i>
+                {{ 'pipeline-save-state.Saving' | translate }}
+              </ng-container>
+              <ng-template #testNotUpdating>
+                <ng-container *ngIf="selectedItem.changed; else saved">
+                  {{ 'pipeline-editor.save-test' | translate }}
+                </ng-container>
+                <ng-template #saved>
+                  {{ 'pipeline-save-state.Saved' | translate }}
+                </ng-template>
+              </ng-template>
+            </button>
+          </div>
+        </li>
+        <li>
+          <div [tooltip]="testButtonDisabledTooltip">
+            <button
+              class="btn btn-success btn-outlined"
+              [ngClass]="{ disabled: testButtonDisabled }"
+              (click)="testRun.emit(selectedItem.value)"
+            >
+              <ng-container *ngIf="testState == null; else hasSingleTestState">
+                {{ 'pipeline-editor.run-test' | translate }}
+              </ng-container>
+              <ng-template #hasSingleTestState>
+                <i class="fa fa-spinner fa-pulse"></i>
+                {{ 'pipeline-test-state.' + testState | translate }}
+              </ng-template>
+            </button>
+          </div>
+        </li>
+      </ng-container>
+    </ng-container>
+  </ul>
+</page-heading>
+
+<div class="editor-container">
+  <pipeline-explorer
+    [inputType]="pipeline.inputType"
+    [items]="items"
+    [selectedItem]="selectedItem"
+    (itemSelected)="itemSelected.emit($event)"
+    (createTestButtonClick)="testCreate.emit()"
+    (deleteTestButtonClick)="testDelete.emit($event)"
+  ></pipeline-explorer>
+
+  <div *ngFor="let item of items" [hidden]="item !== selectedItem">
+    <ng-container *ngIf="selectedItemLoading; else itemLoaded">
+      <spinner></spinner>
+    </ng-container>
+    <ng-template #itemLoaded>
+      <ng-container [ngSwitch]="item.type">
+        <ng-container *ngSwitchCase="'Script'">
+          <code-editor
+            [readonly]="readonly"
+            [theme]="codeEditorTheme"
+            [lines]="35"
+            [messages]="messages"
+            [language]="item.value.language"
+            [(ngModel)]="item.value.body"
+            (ngModelChange)="scriptChange.emit($event)"
+          ></code-editor>
+        </ng-container>
+        <ng-container *ngSwitchCase="'Test'">
+          <pipeline-test-form
+            [readonly]="readonly"
+            [inputType]="pipeline.inputType"
+            [test]="item.value"
+            (testChange)="testChange.emit(item)"
+          ></pipeline-test-form>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+  </div>
+</div>

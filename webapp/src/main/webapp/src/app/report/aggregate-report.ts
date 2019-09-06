@@ -1,10 +1,9 @@
 /**
  * Represents server aggregate report model interface
  */
-import { TargetReportingLevel } from "../assessments/model/aggregate-target-score-row.model";
+import { TargetReportingLevel } from '../assessments/model/aggregate-target-score-row.model';
 
 export interface AggregateReportRow {
-
   readonly dimension: AggregateReportRowDimension;
   readonly organization: ServerOrganization;
   readonly assessment: AggregateReportRowAssessment;
@@ -45,7 +44,7 @@ export interface AggregateReportRowAssessment {
 
 export interface AggregateReportRowMeasure {
   readonly avgScaleScore: number;
-  readonly avgStdErr: number;
+  readonly avgStdErr?: number;
   readonly level1Count: number;
   readonly level2Count: number;
   readonly level3Count: number;

@@ -1,0 +1,16 @@
+<page-heading>
+  <h1 heading class="h2">{{ 'pipelines.heading' | translate }}</h1>
+</page-heading>
+<ng-container *ngIf="(pipelines | async) as _pipelines; else loading">
+  <div class="pipelines-container">
+    <ng-container *ngFor="let pipeline of _pipelines">
+      <pipeline-card
+        [pipeline]="pipeline"
+        [routerLink]="[pipeline.id]"
+      ></pipeline-card>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>

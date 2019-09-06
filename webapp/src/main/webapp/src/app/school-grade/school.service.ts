@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { Grade } from "./grade.model";
-import { ResponseUtils } from "../shared/response-utils";
-import { DataService } from "../shared/data/data.service";
-import { Utils } from "../shared/support/support";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Grade } from './grade.model';
+import { ResponseUtils } from '../shared/response-utils';
+import { DataService } from '../shared/data/data.service';
+import { Utils } from '../shared/support/support';
 import { catchError, map } from 'rxjs/operators';
 import { ReportingServiceRoute } from '../shared/service-route';
 
@@ -14,9 +14,7 @@ const ServiceRoute = ReportingServiceRoute;
  */
 @Injectable()
 export class SchoolService {
-
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   /**
    * Given a school, find the grades with visible assessments.
@@ -40,8 +38,10 @@ export class SchoolService {
   }
 
   private isValidGrade(serverGrade: any): boolean {
-    return !Utils.isNullOrUndefined(serverGrade)
-      && !Utils.isNullOrUndefined(serverGrade.code);
+    return (
+      !Utils.isNullOrUndefined(serverGrade) &&
+      !Utils.isNullOrUndefined(serverGrade.code)
+    );
   }
 
   private mapGradeFromApi(serverGrade: any): Grade {
@@ -50,5 +50,4 @@ export class SchoolService {
     grade.code = serverGrade.code;
     return grade;
   }
-
 }

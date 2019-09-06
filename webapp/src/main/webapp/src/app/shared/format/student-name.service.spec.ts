@@ -1,4 +1,4 @@
-import { async } from "@angular/core/testing";
+import { async } from '@angular/core/testing';
 import { StudentNameService } from './student-name.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Student } from '../../student/model/student.model';
@@ -9,13 +9,9 @@ describe('SchoolYearPipe', () => {
   let translateService;
 
   beforeEach(async(() => {
-
-    translateService = jasmine.createSpyObj('TranslateService', [
-      'instant'
-    ]);
+    translateService = jasmine.createSpyObj('TranslateService', ['instant']);
 
     target = new StudentNameService(translateService);
-
   }));
 
   it('should return null for null student', async(() => {
@@ -25,19 +21,27 @@ describe('SchoolYearPipe', () => {
   }));
 
   it('should return ssid for null first and last name', async(() => {
-    let actual = target.getDisplayName(<Student>{ssid: 'SSID1', firstName: null, lastName: null});
+    let actual = target.getDisplayName(<Student>{
+      ssid: 'SSID1',
+      firstName: null,
+      lastName: null
+    });
 
     expect(actual).toEqual('SSID1');
   }));
 
   it('should return ssid for missing first and last name', async(() => {
-    let actual = target.getDisplayName(<Student>{ssid: 'SSID1'});
+    let actual = target.getDisplayName(<Student>{ ssid: 'SSID1' });
 
     expect(actual).toEqual('SSID1');
   }));
 
   it('should return translation for student with first and last name', async(() => {
-    let student = <Student>{ssid: 'SSID1', firstName: 'first', lastName: 'last'};
+    let student = <Student>{
+      ssid: 'SSID1',
+      firstName: 'first',
+      lastName: 'last'
+    };
     let expectedDisplayName = student.lastName + ', ' + student.firstName;
 
     (translateService.instant as Spy).and.callFake(() => expectedDisplayName);
@@ -47,7 +51,7 @@ describe('SchoolYearPipe', () => {
   }));
 
   it('should return translation for student with only last name', async(() => {
-    let student = <Student>{ssid: 'SSID1', lastName: 'last'};
+    let student = <Student>{ ssid: 'SSID1', lastName: 'last' };
     let expectedDisplayName = student.lastName + ', ' + student.firstName;
 
     (translateService.instant as Spy).and.callFake(() => expectedDisplayName);
@@ -57,7 +61,7 @@ describe('SchoolYearPipe', () => {
   }));
 
   it('should return translation for student with only first name', async(() => {
-    let student = <Student>{ssid: 'SSID1', firstName: 'first'};
+    let student = <Student>{ ssid: 'SSID1', firstName: 'first' };
     let expectedDisplayName = student.lastName + ', ' + student.firstName;
 
     (translateService.instant as Spy).and.callFake(() => expectedDisplayName);
@@ -65,5 +69,4 @@ describe('SchoolYearPipe', () => {
 
     expect(actual).toEqual(expectedDisplayName);
   }));
-
 });

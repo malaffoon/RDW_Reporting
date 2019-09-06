@@ -1,4 +1,4 @@
-import { WritingTrait } from "./writing-trait.model";
+import { WritingTrait } from './writing-trait.model';
 
 /**
  * An aggregate representation of a writing trait for a group of results

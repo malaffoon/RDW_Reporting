@@ -3,63 +3,102 @@
     <div class="form-group row">
       <!-- School Grade -->
       <div class="col-md-2">
-        <label for="select-year">{{'common.school-year-select-label' | translate}}</label>
-        <select id="select-year"
-                name="select-year"
-                [(ngModel)]="filterState.schoolYear"
-                (change)="onFilterChange('Year')"
-                class="form-control">
-          <option selected
-                  [ngValue]="undefined">{{ 'common.collection-selection.all' | translate }}</option>
-          <option *ngFor="let year of filterState.schoolYears"
-                  [ngValue]="year">{{year | schoolYear}}</option>
+        <label for="select-year">{{
+          'common.school-year-select-label' | translate
+        }}</label>
+        <select
+          id="select-year"
+          name="select-year"
+          [(ngModel)]="filterState.schoolYear"
+          (change)="onFilterChange('Year')"
+          class="form-control"
+        >
+          <option selected [ngValue]="undefined">{{
+            'common.collection-selection.all' | translate
+          }}</option>
+          <option
+            *ngFor="let year of filterState.schoolYears"
+            [ngValue]="year"
+            >{{ year | schoolYear }}</option
+          >
         </select>
       </div>
 
       <!-- Subject -->
       <div class="col-md-2">
-        <label for="select-subject">{{'common.subject-select-label' | translate}}</label>
-        <select id="select-subject"
-                name="select-subject"
-                class="form-control"
-                [(ngModel)]="filterState.subject"
-                (change)="onFilterChange('Subject')">
-          <option selected
-                  [ngValue]="undefined">{{'common.collection-selection.all' | translate}}</option>
-          <option *ngFor="let subject of filterState.subjects"
-                  [ngValue]="subject">{{'subject.' + subject + '.name' | translate}}</option>
+        <label for="select-subject">{{
+          'common.subject-select-label' | translate
+        }}</label>
+        <select
+          id="select-subject"
+          name="select-subject"
+          class="form-control"
+          [(ngModel)]="filterState.subject"
+          (change)="onFilterChange('Subject')"
+        >
+          <option selected [ngValue]="undefined">{{
+            'common.collection-selection.all' | translate
+          }}</option>
+          <option
+            *ngFor="let subject of filterState.subjects"
+            [ngValue]="subject"
+            >{{ 'subject.' + subject + '.name' | translate }}</option
+          >
         </select>
       </div>
 
       <!-- Subject -->
       <div class="col-md-2">
-        <label for="select-assessmentType">{{'common.assessment-type-select-label' | translate}}</label>
-        <select id="select-assessmentType"
-                name="select-subject"
-                class="form-control"
-                [(ngModel)]="filterState.assessmentType"
-                (change)="onFilterChange('AssessmentType')">
-          <option selected
-                  [ngValue]="undefined">{{'common.collection-selection.all' | translate}}</option>
-          <option *ngFor="let assessmentType of filterState.assessmentTypes"
-                  [ngValue]="assessmentType">{{'common.assessment-type.' + assessmentType + '.short-name' | translate}}</option>
+        <label for="select-assessmentType">{{
+          'common.assessment-type-select-label' | translate
+        }}</label>
+        <select
+          id="select-assessmentType"
+          name="select-subject"
+          class="form-control"
+          [(ngModel)]="filterState.assessmentType"
+          (change)="onFilterChange('AssessmentType')"
+        >
+          <option selected [ngValue]="undefined">{{
+            'common.collection-selection.all' | translate
+          }}</option>
+          <option
+            *ngFor="let assessmentType of filterState.assessmentTypes"
+            [ngValue]="assessmentType"
+            >{{
+              'common.assessment-type.' + assessmentType + '.short-name'
+                | translate
+            }}</option
+          >
         </select>
       </div>
 
       <!-- Advanced Filters -->
       <div class="col-md-2 col-md-offset-4">
         <div class="pull-right text-right">
-          <label for="show-advanced-filters">{{'adv-filters.label' | translate}}</label>
-          <button id="show-advanced-filters"
-                  class="btn btn-default form-control pull-right"
-                  (click)="showAdvancedFilters = !showAdvancedFilters"
-                  angulartics2On="click"
-                  angularticsAction="ToggleAdvancedFilters"
-                  angularticsCategory="StudentHistoryAdvancedFilters">
-            {{'common.action.' + (showAdvancedFilters ? 'hide' : 'show') | translate}}
-            <i class="fa"
-               aria-hidden="true"
-               [ngClass]="{'fa-caret-square-o-up': showAdvancedFilters, 'fa-caret-square-o-down': !showAdvancedFilters}"></i>
+          <label for="show-advanced-filters">{{
+            'adv-filters.label' | translate
+          }}</label>
+          <button
+            id="show-advanced-filters"
+            class="btn btn-default form-control pull-right"
+            (click)="showAdvancedFilters = !showAdvancedFilters"
+            angulartics2On="click"
+            angularticsAction="ToggleAdvancedFilters"
+            angularticsCategory="StudentHistoryAdvancedFilters"
+          >
+            {{
+              'common.action.' + (showAdvancedFilters ? 'hide' : 'show')
+                | translate
+            }}
+            <i
+              class="fa"
+              aria-hidden="true"
+              [ngClass]="{
+                'fa-caret-square-o-up': showAdvancedFilters,
+                'fa-caret-square-o-down': !showAdvancedFilters
+              }"
+            ></i>
           </button>
         </div>
       </div>
@@ -67,25 +106,38 @@
   </div>
 
   <!-- Selected Filters -->
-  <div id="results-adv-filters"
-       [hidden]="!showAdvancedFilters"
-       class="well gray-lightest">
-    <adv-filters-toggle [displayOptions]="filterDisplayOptions"
-                        [filterBy]="advancedFilters"
-                        (removed)="removeFilter($event)"></adv-filters-toggle>
+  <div
+    id="results-adv-filters"
+    [hidden]="!showAdvancedFilters"
+    class="well gray-lightest"
+  >
+    <adv-filters-toggle
+      [displayOptions]="filterDisplayOptions"
+      [filterBy]="advancedFilters"
+      (removed)="removeFilter($event)"
+    ></adv-filters-toggle>
   </div>
 
   <!-- Advanced Filters -->
-  <div id="group-results-adv-filter-options"
-       [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded"
-       class="well gray-lighter">
-    <adv-filters [filterBy]="advancedFilters"
-                 [filterOptions]="filterOptions"
-                 [showStudentFilter]="false"></adv-filters>
+  <div
+    id="group-results-adv-filter-options"
+    [hidden]="!showAdvancedFilters || !filterDisplayOptions.expanded"
+    class="well gray-lighter"
+  >
+    <adv-filters
+      [filterBy]="advancedFilters"
+      [filterOptions]="filterOptions"
+      [showStudentFilter]="false"
+    ></adv-filters>
   </div>
 
   <div class="fab">
-    <button class="btn btn-primary btn-sm"
-            (click)="openAndScrollToAdvancedFilters()"><i class="fa fa-filter"></i> {{'adv-filters.floating-action-button' | translate}}</button>
+    <button
+      class="btn btn-primary btn-sm"
+      (click)="openAndScrollToAdvancedFilters()"
+    >
+      <i class="fa fa-filter"></i>
+      {{ 'adv-filters.floating-action-button' | translate }}
+    </button>
   </div>
 </div>

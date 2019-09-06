@@ -1,8 +1,19 @@
-import { FilterBy } from "./filter-by.model";
+import { FilterBy } from './filter-by.model';
 
-describe('FilterBy model', () =>{
+describe('FilterBy model', () => {
+  it('should detect changes to economicDisadvantage', () => {
+    let fixture = new FilterBy();
+    let actual = false;
+    fixture.onChanges.subscribe(property => {
+      expect(property).toBe('economicDisadvantage');
+      actual = true;
+    });
 
-  it('should detect changes to offGradeAssessment', () =>{
+    fixture.economicDisadvantage = 1;
+    expect(actual).toBeTruthy();
+  });
+
+  it('should detect changes to offGradeAssessment', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -14,7 +25,7 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to administration', () =>{
+  it('should detect changes to administration', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -26,7 +37,7 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to summativeStatus', () =>{
+  it('should detect changes to summativeStatus', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -38,7 +49,7 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to completion', () =>{
+  it('should detect changes to completion', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -50,7 +61,7 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to genders', () =>{
+  it('should detect changes to genders', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -58,11 +69,11 @@ describe('FilterBy model', () =>{
       actual = true;
     });
 
-    fixture.genders = [ true ];
+    fixture.genders = [true];
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to migrantStatus', () =>{
+  it('should detect changes to migrantStatus', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -74,7 +85,31 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to plan504', () =>{
+  it('should detect changes to languageCodes', () => {
+    let fixture = new FilterBy();
+    let actual = false;
+    fixture.onChanges.subscribe(property => {
+      expect(property).toBe('languageCodes');
+      actual = true;
+    });
+
+    fixture.languageCodes = ['eng'];
+    expect(actual).toBeTruthy();
+  });
+
+  it('should detect changes to militaryConnectedCodes', () => {
+    let fixture = new FilterBy();
+    let actual = false;
+    fixture.onChanges.subscribe(property => {
+      expect(property).toBe('militaryConnectedCodes');
+      actual = true;
+    });
+
+    fixture.militaryConnectedCodes = [true];
+    expect(actual).toBeTruthy();
+  });
+
+  it('should detect changes to plan504', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -86,7 +121,7 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to iep', () =>{
+  it('should detect changes to iep', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -98,7 +133,7 @@ describe('FilterBy model', () =>{
     expect(actual).toBeTruthy();
   });
 
-  it('should detect changes to limitedEnglishProficiency', () =>{
+  it('should detect changes to limitedEnglishProficiency', () => {
     let fixture = new FilterBy();
     let actual = false;
     fixture.onChanges.subscribe(property => {
@@ -124,6 +159,7 @@ describe('FilterBy model', () =>{
 
   it('should return all selected filters', () => {
     let fixture = new FilterBy();
+    fixture.economicDisadvantage = 1;
     fixture.offGradeAssessment = true;
     fixture.administration = 1;
     fixture.summativeStatus = 1;
@@ -134,8 +170,9 @@ describe('FilterBy model', () =>{
     fixture.iep = 1;
     fixture.limitedEnglishProficiency = 2;
     fixture.ethnicities[3] = true;
+    fixture.militaryConnectedCodes[2] = true;
 
-    expect(fixture.all.length).toBe(10);
+    expect(fixture.all.length).toBe(12);
     expect(fixture.all).toContain('offGradeAssessment');
     expect(fixture.all).toContain('administration');
     expect(fixture.all).toContain('summativeStatus');
@@ -146,9 +183,10 @@ describe('FilterBy model', () =>{
     expect(fixture.all).toContain('iep');
     expect(fixture.all).toContain('limitedEnglishProficiency');
     expect(fixture.all).toContain('ethnicities.3');
+    expect(fixture.all).toContain('militaryConnectedCodes.2');
   });
 
-  it('should return only selected ethnicities', () =>{
+  it('should return only selected ethnicities', () => {
     let fixture = new FilterBy();
     fixture.ethnicities['Asian'] = true;
     fixture.ethnicities['White'] = true;
@@ -160,7 +198,7 @@ describe('FilterBy model', () =>{
     expect(fixture.filteredEthnicities).toContain('Filipino');
   });
 
-  it('should return only selected genders', () =>{
+  it('should return only selected genders', () => {
     let fixture = new FilterBy();
     fixture.genders['Female'] = true;
     fixture.genders['Nonbinary'] = true;
@@ -168,5 +206,18 @@ describe('FilterBy model', () =>{
     expect(fixture.filteredGenders.length).toBe(2);
     expect(fixture.filteredGenders).toContain('Female');
     expect(fixture.filteredGenders).toContain('Nonbinary');
+  });
+
+  it('should return only selected militaryConnectedCodes', () => {
+    let fixture = new FilterBy();
+    fixture.militaryConnectedCodes['ActiveDuty'] = true;
+    fixture.militaryConnectedCodes['NotMilitaryConnected'] = true;
+    fixture.militaryConnectedCodes['NationalGuardOrReserve'] = false;
+
+    expect(fixture.filteredMilitaryConnectedCodes.length).toBe(2);
+    expect(fixture.filteredMilitaryConnectedCodes).toContain('ActiveDuty');
+    expect(fixture.filteredMilitaryConnectedCodes).toContain(
+      'NotMilitaryConnected'
+    );
   });
 });

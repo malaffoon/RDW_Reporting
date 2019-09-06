@@ -1,0 +1,448 @@
+<form
+  *ngIf="formGroup"
+  [formGroup]="formGroup"
+  (ngSubmit)="onSubmit()"
+  (keydown.enter)="$event.preventDefault()"
+  #form="ngForm"
+>
+  <page-heading>
+    <h1 class="h2" heading>
+      <ng-container *ngIf="mode === 'create'; else updateModeHeading">
+        {{ 'tenants.create.' + value.type | translate }}
+      </ng-container>
+      <ng-template #updateModeHeading>
+        {{ value.label }}
+        <span *ngIf="value.type === 'SANDBOX'" class="sandbox-key">
+          ({{ value.code }})
+        </span>
+      </ng-template>
+    </h1>
+
+    <div controls>
+      <ul class="list-unstyled list-inline">
+        <li>
+          <div class="btn-group">
+            <div class="btn-group">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="state || (loadingTenant$ | async)"
+              >
+                <i *ngIf="state" class="fa fa-spinner fa-pulse"></i>
+                {{
+                  'common.action.' +
+                    (state != null
+                      ? state
+                      : mode === 'create'
+                      ? 'create'
+                      : 'save') | translate
+                }}
+              </button>
+            </div>
+            <ng-container *ngIf="mode === 'update'">
+              <div class="btn-group" dropdown>
+                <button
+                  id="dropdown-button"
+                  type="button"
+                  class="btn btn-primary dropdown-toggle"
+                  dropdownToggle
+                  aria-controls="tenant-dropdown"
+                  [disabled]="state || (loadingTenant$ | async)"
+                >
+                  <i class="fa fa-ellipsis-v"></i>
+                </button>
+                <ul
+                  *dropdownMenu
+                  id="tenant-dropdown"
+                  class="dropdown-menu dropdown-menu-right"
+                  role="menu"
+                  aria-labelledby="dropdown-button"
+                >
+                  <li role="menuitem">
+                    <a
+                      class="dropdown-item"
+                      href="javascript:void(0)"
+                      (click)="delete.emit(value)"
+                    >
+                      <i class="fa fa-trash"></i>
+                      {{ 'common.action.delete' | translate }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </ng-container>
+          </div>
+        </li>
+        <li>
+          <a class="btn btn-default" [routerLink]="['..']">
+            {{ 'common.action.cancel' | translate }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </page-heading>
+
+  <div class="well form-controls">
+    <ng-container *ngIf="value.type === 'TENANT'">
+      <div
+        *ngIf="formGroup.get('key') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="key">
+          {{ 'tenant-form.field.key.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.key.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container *ngIf="writable && mode === 'create'; else readonlyKey">
+          <input
+            type="text"
+            class="form-control text-uppercase"
+            maxlength="20"
+            id="key"
+            name="key"
+            formControlName="key"
+            (input)="onKeyInput($event.target.value)"
+            data-lpignore
+          />
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.key.error.required' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.errors.pattern">
+              {{ 'tenant-form.field.key.error.pattern' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.errors.unavailable">
+              {{ 'tenant-form.field.key.error.unavailable' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyKey>
+          <div>{{ value.code }}</div>
+        </ng-template>
+      </div>
+
+      <div
+        *ngIf="formGroup.get('id') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+        (input)="onIdInput($event.target.value)"
+      >
+        <label for="id">
+          {{ 'tenant-form.field.id.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.id.info' | translate }}"
+          ></app-info>
+        </label>
+
+        <ng-container *ngIf="writable && mode === 'create'; else readonlyId">
+          <input
+            id="id"
+            name="id"
+            type="text"
+            class="form-control"
+            formControlName="id"
+          />
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.id.error.required' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.errors.pattern">
+              {{ 'tenant-form.field.id.error.pattern' | translate }}
+            </ng-container>
+            <ng-container *ngIf="control.errors.unavailable">
+              {{ 'tenant-form.field.id.error.unavailable' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyId>
+          <div>{{ value.id }}</div>
+        </ng-template>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="value.type === 'SANDBOX'">
+      <div
+        *ngIf="formGroup.get('tenant') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="tenant">
+          {{ 'tenant-form.field.tenant.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.tenant.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container
+          *ngIf="writable && mode === 'create'; else readonlyTenant"
+        >
+          <select id="tenant" class="form-control" formControlName="tenant">
+            <option *ngFor="let tenant of tenants" [ngValue]="tenant">
+              {{ tenant.label }} ({{ tenant.code }})
+            </option>
+          </select>
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.tenant.error.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyTenant>
+          <div>
+            <ng-container *ngIf="control.value != null; else tenantMissing">
+              {{ control.value.label }}
+            </ng-container>
+            <ng-template #tenantMissing>
+              <span class="gray-darker">
+                {{ 'tenant-form.field.tenant.missing' | translate }}
+              </span>
+            </ng-template>
+          </div>
+        </ng-template>
+      </div>
+
+      <div
+        *ngIf="formGroup.get('dataSet') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="dataSet">
+          {{ 'tenant-form.field.dataSet.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.dataSet.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container
+          *ngIf="writable && mode === 'create'; else readonlyDataSet"
+        >
+          <select id="dataSet" class="form-control" formControlName="dataSet">
+            <option *ngFor="let dataSet of dataSets" [ngValue]="dataSet">
+              {{ dataSet.label }}
+            </option>
+          </select>
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.dataSet.error.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyDataSet>
+          <div>
+            <ng-container *ngIf="control.value != null; else dataSetMissing">
+              {{ control.value.label }}
+            </ng-container>
+            <ng-template #dataSetMissing>
+              <span class="gray-darker">
+                {{ 'tenant-form.field.dataSet.missing' | translate }}
+              </span>
+            </ng-template>
+          </div>
+        </ng-template>
+      </div>
+    </ng-container>
+
+    <!-- need to show spinner when loading -->
+    <div class="tenant-dependent-controls">
+      <div
+        *ngIf="formGroup.get('label') as control"
+        class="form-group"
+        [ngClass]="{
+          'has-error': showErrors(control, form.submitted)
+        }"
+      >
+        <label for="label">
+          {{ 'tenant-form.field.name.label' | translate }}
+          <app-info
+            popoverContent="{{ 'tenant-form.field.name.info' | translate }}"
+          ></app-info>
+        </label>
+        <ng-container *ngIf="writable; else readonlyName">
+          <input
+            *ngIf="writable"
+            type="text"
+            class="form-control"
+            id="label"
+            name="label"
+            formControlName="label"
+          />
+          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+            <ng-container *ngIf="control.errors.required">
+              {{ 'tenant-form.field.name.error.required' | translate }}
+            </ng-container>
+          </span>
+        </ng-container>
+        <ng-template #readonlyName>
+          <div>{{ value.label }}</div>
+        </ng-template>
+      </div>
+
+      <div class="form-group">
+        <label for="description">{{
+          'tenant-form.field.description.label' | translate
+        }}</label>
+        <ng-container *ngIf="writable; else readonlyDescription">
+          <textarea
+            class="form-control"
+            id="description"
+            name="description"
+            formControlName="description"
+          ></textarea>
+        </ng-container>
+        <ng-template #readonlyDescription>
+          <p>{{ value.description }}</p>
+        </ng-template>
+      </div>
+
+      <div class="toggles">
+        <app-toggle-label
+          [open]="configurationsOpen$ | async"
+          (openChange)="configurationsOpen$.next($event)"
+          openLabel="{{ 'tenant-form.field.configurations.label' | translate }}"
+          closedLabel="{{
+            'tenant-form.field.configurations.label' | translate
+          }}"
+        ></app-toggle-label>
+
+        <div class="form-group" [hidden]="!(configurationsOpen$ | async)">
+          <!-- TODO extract -->
+          <div class="configuration-controls">
+            <ng-container [formGroup]="configurationControlsFormGroup">
+              <input
+                id="configurationSearch"
+                name="configurationSearch"
+                formControlName="search"
+                type="text"
+                class="form-control"
+                placeholder="{{
+                  'tenant-form.field.configurations.control.search.placeholder'
+                    | translate
+                }}"
+              />
+
+              <label>
+                <input
+                  id="configurationModified"
+                  name="configurationModified"
+                  formControlName="modified"
+                  type="checkbox"
+                />
+                {{
+                  'tenant-form.field.configurations.control.modified.label'
+                    | translate
+                }}
+              </label>
+
+              <label>
+                <input
+                  id="configurationRequired"
+                  name="configurationRequired"
+                  formControlName="required"
+                  type="checkbox"
+                />
+                {{
+                  'tenant-form.field.configurations.control.required.label'
+                    | translate
+                }}
+              </label>
+            </ng-container>
+          </div>
+
+          <ng-container *ngIf="formGroup.controls.configurations as control">
+            <div
+              class="text-danger"
+              *ngIf="showErrors(control, form.submitted)"
+            >
+              <p *ngIf="control.errors.onePasswordPerUser">
+                {{
+                  'tenant-form.field.configurations.error.onePasswordPerUser'
+                    | translate: control.errors.onePasswordPerUser
+                }}
+              </p>
+              <p *ngIf="control.errors.oneDatabasePerDataSource">
+                {{
+                  'tenant-form.field.configurations.error.oneDatabasePerDataSource'
+                    | translate: control.errors.oneDatabasePerDataSource
+                }}
+              </p>
+              <p *ngIf="control.errors.uniqueDatabasePerInstance">
+                {{
+                  'tenant-form.field.configurations.error.uniqueDatabasePerInstance'
+                    | translate: control.errors.uniqueDatabasePerInstance
+                }}
+              </p>
+            </div>
+          </ng-container>
+
+          <property-override-tree-table
+            formGroupName="configurations"
+            [tree]="configurations$ | async"
+            [defaults]="configurationDefaults"
+          ></property-override-tree-table>
+        </div>
+
+        <app-toggle-label
+          [open]="localizationOpen"
+          (openChange)="localizationOpen = $event"
+          openLabel="{{ 'tenant-form.field.localizations.label' | translate }}"
+          closedLabel="{{
+            'tenant-form.field.localizations.label' | translate
+          }}"
+        ></app-toggle-label>
+
+        <div class="form-group" [hidden]="!localizationOpen">
+          <div class="configuration-controls">
+            <ng-container [formGroup]="localizationControlsFormGroup">
+              <input
+                formnovalidate
+                id="localizationSearch"
+                name="localizationSearch"
+                formControlName="search"
+                type="text"
+                class="form-control"
+                placeholder="{{
+                  'tenant-form.field.localizations.control.search.placeholder'
+                    | translate
+                }}"
+              />
+              <label>
+                <input
+                  id="localizationModified"
+                  name="localizationModified"
+                  formControlName="modified"
+                  type="checkbox"
+                />
+                {{
+                  'tenant-form.field.localizations.control.modified.label'
+                    | translate
+                }}
+              </label>
+            </ng-container>
+          </div>
+          <property-override-table
+            formGroupName="localizations"
+            [rows]="localizations$ | async"
+            [defaults]="localizationDefaults"
+            [readonly]="!writable"
+          ></property-override-table>
+        </div>
+      </div>
+
+      <div class="mask" [hidden]="!(loadingTenant$ | async)">
+        <spinner></spinner>
+      </div>
+    </div>
+
+    <div class="mask" [hidden]="state == null">
+      <spinner>{{ 'common.action.' + state | translate }}</spinner>
+    </div>
+  </div>
+</form>

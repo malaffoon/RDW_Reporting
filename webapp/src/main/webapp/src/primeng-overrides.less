@@ -13,6 +13,14 @@ body {
   button {
     font-size: @font-size-base;
   }
+
+  .dropdown-header {
+    color: @gray-dark;
+  }
+
+  .ui-table-scrollable-header.ui-widget-header {
+    border: none;
+  }
 }
 
 // Tables
@@ -20,7 +28,8 @@ body {
   overflow: visible;
 }
 
-body .ui-table {
+body .ui-table,
+body .ui-treetable {
   font-family: @font-family-serif;
   font-size: @font-size-small;
   table {
@@ -32,6 +41,8 @@ body .ui-table {
     // head, foot, and data
     .ui-table-thead,
     .ui-table-tfoot,
+    .ui-treetable-thead,
+    .ui-treetable-tbody,
     .ui-table-tbody,
     .ui-table-data {
       > tr {
@@ -60,10 +71,10 @@ body .ui-table {
               height: auto;
               .small;
               .chevron-circle-right:before {
-                content: "\f054";
+                content: '\f054';
               }
               .chevron-circle-down:before {
-                content: "\f078";
+                content: '\f078';
               }
             }
           }
@@ -90,6 +101,7 @@ body .ui-table {
     }
     // head, and foot
     .ui-table-thead,
+    .ui-treetable-thead,
     .ui-table-tfoot {
       > tr {
         > th,
@@ -106,7 +118,8 @@ body .ui-table {
       }
     }
     // head
-    .ui-table-thead {
+    .ui-table-thead,
+    .ui-treetable-thead {
       > tr {
         > th {
           border-right: 1px solid rgba(100, 102, 106, 0.17);
@@ -127,6 +140,7 @@ body .ui-table {
     }
     // body
     .ui-table-tbody,
+    .ui-treetable-tbody,
     .ui-table-data {
       > tr {
         > td {
@@ -223,7 +237,8 @@ body .ui-table {
   }
 }
 
-p-table {
+p-table,
+p-treeTable {
   table {
     .table;
     .table-striped;
@@ -233,6 +248,40 @@ p-table {
     border: 1px solid @gray-light;
     > thead > tr > th {
       font-weight: normal;
+    }
+  }
+}
+
+body {
+  // multiselect
+  .ui-multiselect {
+    // mimic form-control styles
+    width: 100%;
+    border: 1px solid #d5d5d5;
+    border-radius: 5px;
+    color: #73777d;
+    .ui-multiselect-trigger {
+      display: none;
+    }
+  }
+
+  .ui-multiselect-panel .ui-multiselect-items-wrapper {
+    padding: 0;
+  }
+  // specific to prime-ng ui components
+  .ui-multiselect-panel {
+    padding: 0;
+    .ui-multiselect-item {
+      position: relative;
+      margin: 0;
+      padding: 10px 20px;
+      border-radius: 0;
+      .ui-chkbox {
+        display: none;
+      }
+      &.ui-state-highlight {
+        //background-color: @blue;
+      }
     }
   }
 }

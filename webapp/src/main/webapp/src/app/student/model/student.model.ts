@@ -1,5 +1,4 @@
 export class Student {
-
   public id: number;
   public ssid: string;
   public firstName: string;
@@ -7,5 +6,5 @@ export class Student {
   public genderCode: string;
   public ethnicityCodes: string[];
   public languageCode: string;
-
+  public militaryConnectedCode: string;
 }

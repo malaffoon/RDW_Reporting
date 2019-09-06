@@ -1,19 +1,18 @@
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms";
-import { SharedModule } from "primeng/primeng";
-import { PopoverModule } from "ngx-bootstrap/popover";
-import { Angulartics2Module } from "angulartics2";
-import { GroupImportComponent } from "./group-import.component";
-import { GroupImportService } from "./group-import.service";
-import { FileUploadModule } from "ng2-file-upload";
-import { ImportHistoryComponent } from "./history/import-history.component";
-import { ImportHistoryResolve } from "./history/import-history.resolve";
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'primeng/primeng';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { Angulartics2Module } from 'angulartics2';
+import { GroupImportComponent } from './group-import.component';
+import { GroupImportService } from './group-import.service';
+import { FileUploadModule } from 'ng2-file-upload';
+import { ImportHistoryComponent } from './history/import-history.component';
+import { ImportHistoryResolve } from './history/import-history.resolve';
 import { ImportTableComponent } from './import-table/import-table.component';
-import { GroupImportDeactivateGuard } from "./group-import.deactivate";
-import { CommonModule } from "../../../shared/common.module";
-import { TableModule } from "primeng/table";
+import { GroupImportDeactivateGuard } from './group-import.deactivate';
+import { ReportingCommonModule } from '../../../shared/reporting-common.module';
+import { TableModule } from 'primeng/table';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -22,19 +21,20 @@ import { TableModule } from "primeng/table";
     ImportTableComponent
   ],
   imports: [
-    Angulartics2Module.forRoot(),
-    BrowserAnimationsModule,
-    BrowserModule,
+    Angulartics2Module,
     CommonModule,
+    ReportingCommonModule,
     FileUploadModule,
     FormsModule,
     PopoverModule,
     SharedModule,
     TableModule
   ],
-  exports: [ GroupImportComponent ],
-  providers: [ GroupImportService, ImportHistoryResolve, GroupImportDeactivateGuard ]
+  exports: [GroupImportComponent],
+  providers: [
+    GroupImportService,
+    ImportHistoryResolve,
+    GroupImportDeactivateGuard
+  ]
 })
-
-export class GroupImportModule {
-}
+export class GroupImportModule {}

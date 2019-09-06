@@ -1,0 +1,3 @@
+enable 'csv'
+transformRows {}
+outputCsv

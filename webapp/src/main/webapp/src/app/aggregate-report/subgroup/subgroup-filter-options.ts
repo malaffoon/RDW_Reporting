@@ -1,5 +1,3 @@
-import { SubgroupFilters } from './subgroup-filters';
+import { SubgroupFilters } from '../../shared/model/subgroup-filters';
 
-export interface SubgroupFilterOptions extends SubgroupFilters {
-
-}
+export interface SubgroupFilterOptions extends SubgroupFilters {}

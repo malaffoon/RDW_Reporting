@@ -1,16 +1,21 @@
-import { Component, OnInit, Input, ViewChild } from "@angular/core";
-import { AssessmentItem } from "../model/assessment-item.model";
-import { TabsetComponent, TabDirective } from "ngx-bootstrap";
-import { Exam } from "../model/exam.model";
-import { Angulartics2 } from "angulartics2";
-import { StudentResponsesAssessmentItem } from "../../student/responses/student-responses-item.model";
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewChild,
+  AfterViewInit
+} from '@angular/core';
+import { AssessmentItem } from '../model/assessment-item.model';
+import { TabsetComponent, TabDirective } from 'ngx-bootstrap';
+import { Exam } from '../model/exam';
+import { Angulartics2 } from 'angulartics2';
+import { StudentResponsesAssessmentItem } from '../model/student-responses-item.model';
 
 @Component({
   selector: 'item-tab',
   templateUrl: './item-tab.component.html'
 })
-export class ItemTabComponent implements OnInit {
-
+export class ItemTabComponent implements AfterViewInit {
   @Input()
   subject: string;
 
@@ -58,7 +63,7 @@ export class ItemTabComponent implements OnInit {
   includeResponseInStudentScores: boolean = false;
 
   @Input()
-  includeWritingTraitScores: boolean = false;
+  writingTraits: string[] = [];
 
   @Input()
   set position(value: number) {
@@ -67,7 +72,7 @@ export class ItemTabComponent implements OnInit {
 
   get position(): number {
     if (this._position > 0) return this._position;
-    return (this.item.position > 0) ? this.item.position : -1;
+    return this.item.position > 0 ? this.item.position : -1;
   }
 
   @ViewChild('itemTabs')
@@ -90,31 +95,34 @@ export class ItemTabComponent implements OnInit {
 
   private _position: number = -1;
 
-  constructor(private angulartics2: Angulartics2) { }
+  constructor(private angulartics2: Angulartics2) {}
 
-  ngOnInit(): void {
-
-    //Unfortunate hack to "select" the initial tab
-    //The timeout is required to give the TabComponent time to process
-    //its template-defined TabDirectives.
-    setTimeout((function() {
-      let tab: TabDirective = this.itemTabs.tabs[0];
+  ngAfterViewInit(): void {
+    // Unfortunate hack to "select" the initial tab
+    const { tabs = [] } = this.itemTabs;
+    if (tabs.length > 0) {
+      const [tab] = tabs;
       tab.select.emit(tab);
-    }).bind(this), 0);
+    }
   }
 
   selectTab(tabName: string) {
     if (tabName == 'Rubric Exemplar') {
       this.loadExemplar = true;
-    }
-    else if (tabName == 'Item Viewer') {
+    } else if (tabName == 'Item Viewer') {
       this.loadItemViewer = true;
-    }
-    else if (tabName == 'Item Information') {
+    } else if (tabName == 'Item Information') {
       this.loadInfo = true;
     }
 
     this.trackAnalyticsEvent('ItemTabSelection', tabName);
+  }
+
+  hasWritingType(item: AssessmentItem): boolean {
+    return (
+      item.performanceTaskWritingType != null ||
+      item.scores.some(({ writingTraitScores }) => writingTraitScores != null)
+    );
   }
 
   private trackAnalyticsEvent(action: string, details: string) {

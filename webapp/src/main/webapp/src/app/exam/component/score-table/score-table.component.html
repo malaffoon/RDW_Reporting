@@ -1,0 +1,120 @@
+<table>
+  <thead>
+    <tr *ngIf="table.scoreType !== 'Overall'">
+      <th></th>
+      <th *ngFor="let statistic of table.scoreStatistics">
+        <div class="heading">
+          <score-label
+            [subjectCode]="table.subjectCode"
+            [scoreCode]="statistic.code"
+            [scoreType]="table.scoreType"
+          ></score-label>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <div class="row-heading">
+          <div>
+            {{ 'score-table.average-scale-score' | translate }}
+          </div>
+          <div
+            innerHtml="{{
+              'score-table.result-count'
+                | translate: { resultCount: table.resultCount }
+            }}"
+          ></div>
+        </div>
+      </th>
+      <th *ngFor="let statistic of table.scoreStatistics">
+        <div class="average-scale-score-container">
+          <ng-container
+            *ngIf="scoresReported(statistic); else noScoresReported"
+          >
+            <scale-score
+              [score]="statistic.averageScaleScore"
+              [standardError]="statistic.standardErrorOfMean"
+              [infoEnabled]="true"
+            ></scale-score>
+          </ng-container>
+          <ng-template #noScoresReported>
+            {{ 'common.no-scores-reported' | translate }}
+          </ng-template>
+        </div>
+      </th>
+    </tr>
+    <tr *ngIf="table.scoreType === 'Overall'">
+      <th></th>
+      <th *ngFor="let statistic of table.scoreStatistics">
+        <span class="row-heading distribution-heading">
+          {{ 'average-scale-score.overall-score-distribution' | translate }}
+        </span>
+      </th>
+    </tr>
+  </thead>
+  <tbody
+    *ngIf="
+      table.scoreStatistics[0].performanceLevelScores
+        .slice()
+        .reverse() as scores
+    "
+  >
+    <tr
+      *ngFor="
+        let performanceLevelScore of scores;
+        let performanceLevelIndex = index
+      "
+    >
+      <td>
+        <div class="row-heading level-heading">
+          <ng-container
+            [ngTemplateOutlet]="
+              levelHeadingTemplate || defaultLevelHeadingTemplate
+            "
+            [ngTemplateOutletContext]="{
+              performanceLevelScore: performanceLevelScore
+            }"
+          ></ng-container>
+        </div>
+      </td>
+      <td *ngFor="let statistic of table.scoreStatistics">
+        <ng-container
+          *ngIf="
+            statistic.performanceLevelScores[
+              statistic.performanceLevelScores.length -
+                (performanceLevelIndex + 1)
+            ] as score
+          "
+        >
+          <ng-container
+            *ngIf="scoresReported(statistic); else noScoresReportedGraph"
+          >
+            <aggregate-score-graph
+              [percent]="score.percent"
+              [count]="score.count"
+              [color]="performanceLevelScore.colorCode | translate"
+              [backgroundColor]="'gray-lighter'"
+              [displayCount]="displayCount"
+            ></aggregate-score-graph>
+          </ng-container>
+          <ng-template #noScoresReportedGraph>
+            <aggregate-score-graph
+              [percent]="0"
+              [count]="0"
+              [color]="performanceLevelScore.colorCode | translate"
+              [backgroundColor]="'gray-lighter'"
+              [displayCount]="displayCount"
+            ></aggregate-score-graph>
+          </ng-template>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<ng-template
+  #defaultLevelHeadingTemplate
+  let-performanceLevelScore="performanceLevelScore"
+>
+  {{ performanceLevelScore.nameCode | translate }}
+</ng-template>

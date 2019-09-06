@@ -1,0 +1,13 @@
+<app-divider-link [justify]="justify">
+  <a href="javascript:void(0)" (click)="openChange.emit(!open)">
+    {{ open ? openLabel : closedLabel }}
+    <i
+      aria-hidden="true"
+      class="fa"
+      [ngClass]="{
+        'fa-chevron-up': !open,
+        'fa-chevron-down': open
+      }"
+    ></i>
+  </a>
+</app-divider-link>

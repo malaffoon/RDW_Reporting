@@ -68,13 +68,14 @@
                                 <div th:if="${exam.scaleScore != null}" class="scale-score-graph individual"
                                      th:with="scaleScoreView=${support.getScaleScoreView(exam, assessment)}">
                                     <div class="bar-container">
-                                        <span class="scale-score"
-                                              th:attr="data-left=${scaleScoreView.position}"><span
-                                                class="score label"
+                                        <span class="scale-score" th:attr="data-left=${scaleScoreView.position}">
+                                            <span class="score label"
                                                 th:classappend="#{'subject.' + ${report.subject} + '.asmt-type.iab.level.' + ${exam.scaleScore.level} + '.color'}"
-                                                th:text="${exam.scaleScore.value}"></span> <span class="error-band">&plusmn;
-                                            <span th:text="${support.round(exam.scaleScore.standardError)}"
-                                                  th:remove="tag"></span></span></span>
+                                                th:text="${exam.scaleScore.value}"></span>
+                                            <span th:if="${exam.scaleScore.standardError != null}" class="error-band">&plusmn;
+                                                <span th:text="${support.round(exam.scaleScore.standardError)}" th:remove="tag"></span>
+                                            </span>
+                                        </span>
                                         <div class="bar"
                                              th:classappend="#{'subject.' + ${report.subject} + '.asmt-type.iab.level.1.color'}"
                                              th:attr="data-width=${scaleScoreView.levels[0].width}">
@@ -114,28 +115,36 @@
                 <div class="well gray-lightest assessment-instances" data-width="40">
                     <div class="well-body">
                         <ul class="previous-results">
-                            <li th:with="assessment=${entry.key}" th:each="exam : ${entry.value}"><span
-                                    th:if="${examStat.index} > 0"><span class="previous-result"><span class="date"
-                                                                                                      th:text="${#instants.formatDate(exam.dateTime)}"></span> <span
-                                    th:if="${exam.scaleScore != null}" class="scale-score"><span
-                                    th:text="${exam.scaleScore.value}" th:remove="tag"></span> <span class="error-band">&plusmn;
-                                <span th:text="${support.round(exam.scaleScore.standardError)}"
-                                      th:remove="tag"></span></span></span> <span
-                                    class="performance-level"
-                                    th:text="${exam.scaleScore != null} ? #{'subject.' + ${report.subject} + '.asmt-type.iab.level.' + ${exam.scaleScore.level} + '.name'} : #{report.not-scored}"></span></span></span>
+                            <li th:with="assessment=${entry.key}" th:each="exam : ${entry.value}">
+                                <span th:if="${examStat.index} > 0">
+                                    <span class="previous-result">
+                                        <span class="date" th:text="${#instants.formatDate(exam.dateTime)}"></span>
+                                        <span th:if="${exam.scaleScore != null}" class="scale-score">
+                                            <span th:text="${exam.scaleScore.value}" th:remove="tag"></span>
+                                            <span th:if="${exam.scaleScore.standardError != null}" class="error-band">&plusmn;
+                                                <span th:text="${support.round(exam.scaleScore.standardError)}" th:remove="tag"></span>
+                                            </span>
+                                        </span>
+                                        <span class="performance-level" th:text="${exam.scaleScore != null} ? #{'subject.' + ${report.subject} + '.asmt-type.iab.level.' + ${exam.scaleScore.level} + '.name'} : #{report.not-scored}"></span>
+                                    </span>
+                                </span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <!-- Writing trait scores-->
-                <div class="col-lg-12" th:if="${entry.value[0].writingTraitScores}"
-                     th:with="scored=true,assessment=${entry.key}">
-                    <div th:each="exam : ${entry.value}">
-                        <div class="row"
-                             th:if="${exam.sessionId == entry.value[0].sessionId && exam.writingTraitScores != null}">
-                            <h2 class="pb-sm pl-sm" th:if="${scored}"
-                                th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></h2>
+                <div class="col-lg-12"
+                     th:if="${entry.value[0].writingTraitScores}"
+                     th:with="exam=${entry.value[0]}">
+                    <div>
+                        <div class="row">
+                            <div>
+                                <h2 class="pb-sm pl-sm" th:if="${exam.performanceWritingType != null}"
+                                    th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></h2>
+                                <h2 class="pb-sm pl-sm" th:if="${exam.performanceWritingType == null}"
+                                    th:text="#{'report.writing.trait.purpose-not-specified'}"></h2>
+                            </div>
 
                             <div class="col-md-4 pull-left" data-width="33">
                                 <h3 class="text-center" th:text="#{'report.writing.trait.Evidence'}"></h3>

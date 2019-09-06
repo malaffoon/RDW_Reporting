@@ -1,0 +1,254 @@
+<ng-container *ngIf="tree != null && tree.length === 0; else hasResults">
+  {{ 'tenant-configuration-form.no-results' | translate }}
+</ng-container>
+<ng-template #hasResults>
+  <ng-container [formGroup]="formGroup" nestableFormGroup #form="ngForm">
+    <p-treeTable
+      #table
+      [value]="tree"
+      dataKey="key"
+      styleClass="table table-striped table-hover"
+      [rowTrackBy]="rowTrackBy"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            {{ 'tenant-configuration-form.column.key.label' | translate }}
+          </th>
+          <th>
+            {{ 'tenant-configuration-form.column.value.label' | translate }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowNode let-i="rowIndex">
+        <ng-container *ngIf="rowNode.node as node">
+          <ng-container *ngIf="node.data as data">
+            <ng-container *ngIf="!node.leaf; else leafNode">
+              <tr
+                [ngClass]="{
+                  leaf: node.leaf
+                }"
+                [ttRow]="rowNode"
+                (click)="onRowClick(rowNode, $event)"
+              >
+                <td
+                  [title]="data.key"
+                  colspan="2"
+                  [ngClass]="{ 'group-node': data.depth === 0 }"
+                >
+                  <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                  <ng-container *ngIf="data.depth === 0; else notRootNode">
+                    {{
+                      'tenant-configuration-form.group.' + data.segment
+                        | translate
+                    }}
+                  </ng-container>
+                  <ng-template #notRootNode>
+                    {{ data.segment }}
+                  </ng-template>
+                </td>
+              </tr>
+            </ng-container>
+            <ng-template #leafNode>
+              <ng-container
+                *ngIf="!data.configuration.readonly; else readonlyNode"
+              >
+                <tr
+                  *ngIf="data.configuration as configuration"
+                  [ttRow]="rowNode"
+                  [ngClass]="{
+                    leaf: node.leaf,
+                    modified: modified(data),
+                    required: showErrors(
+                      formGroup.controls[configuration.name],
+                      form.submitted
+                    )
+                  }"
+                >
+                  <td [title]="configuration.name">
+                    <p-treeTableToggler
+                      [rowNode]="rowNode"
+                    ></p-treeTableToggler>
+                    {{ data.segment }}
+                  </td>
+                  <td>
+                    <div
+                      *ngIf="{
+                        hasErrors: showErrors(
+                          formGroup.controls[configuration.name],
+                          form.submitted
+                        )
+                      } as context"
+                      class="form-group"
+                      [ngClass]="{
+                        'has-error': context.hasErrors
+                      }"
+                    >
+                      <ng-container
+                        [ngSwitch]="configuration.dataType.inputType"
+                      >
+                        <ng-container *ngSwitchCase="'input'">
+                          <!-- switch on data type here -->
+                          <input
+                            [type]="
+                              data.configuration.dataType.masked &&
+                              !data.showSecure
+                                ? 'password'
+                                : 'text'
+                            "
+                            id="{{ configuration.name }}"
+                            name="{{ configuration.name }}"
+                            formControlName="{{ configuration.name }}"
+                            placeholder="{{ data.originalValue }}"
+                            class="form-control"
+                            [ngClass]="{
+                              'text-lowercase': hasConstraint(data, 'lowercase')
+                            }"
+                            [min]="hasConstraint(data, 'positive') ? 0 : null"
+                            [step]="hasConstraint(data, 'integer') ? 1 : null"
+                            data-lpignore="true"
+                          />
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'checkbox'">
+                          <label for="{{ configuration.name }}">
+                            <input
+                              type="checkbox"
+                              id="{{ configuration.name }}"
+                              name="{{ configuration.name }}"
+                              formControlName="{{ configuration.name }}"
+                            />
+                            <span>
+                              {{
+                                'tenant-configuration-form.boolean.' +
+                                  formGroup.value[configuration.name]
+                                  | translate
+                              }}
+                            </span>
+                          </label>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'select'">
+                          <select
+                            id="{{ configuration.name }}"
+                            name="{{ configuration.name }}"
+                            formControlName="{{ configuration.name }}"
+                            class="form-control"
+                            [compareWith]="compareWith"
+                          >
+                            <option
+                              *ngFor="let option of (getOptions(data) | async)"
+                              [ngValue]="option.value"
+                            >
+                              {{ option.label }}
+                            </option>
+                          </select>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'multiselect'">
+                          <!-- todo switch to typeahead based on amount of options -->
+                          <p-multiSelect
+                            tabindex="0"
+                            inputId="{{ configuration.name }}"
+                            name="{{ configuration.name }}"
+                            formControlName="{{ configuration.name }}"
+                            [options]="getOptions(data) | async"
+                            appendTo="body"
+                            defaultLabel="None"
+                            [showHeader]="false"
+                            [maxSelectedLabels]="5"
+                          ></p-multiSelect>
+                        </ng-container>
+                      </ng-container>
+
+                      <ng-template #errorsPopover>
+                        <div *ngFor="let errorName of getErrors(data)">
+                          <span class="maroon">
+                            {{
+                              'tenant-configuration-form.error.' + errorName
+                                | translate
+                                  : formGroup.controls[data.configuration.name]
+                                      .errors
+                            }}
+                          </span>
+                        </div>
+                      </ng-template>
+
+                      <div class="input-controls">
+                        <a
+                          *ngIf="showPasswordToggle(data)"
+                          href="javascript:void(0)"
+                          (click)="data.showSecure = !data.showSecure"
+                        >
+                          <i
+                            class="fa fa-md"
+                            [ngClass]="{
+                              'fa-eye-slash': data.showSecure,
+                              'fa-eye': !data.showSecure
+                            }"
+                          ></i>
+                        </a>
+                        <a
+                          *ngIf="modified(data)"
+                          href="javascript:void(0)"
+                          (click)="onResetButtonClick(data)"
+                          popover="{{
+                            'tenant-configuration-form.popover.reset'
+                              | translate
+                          }}"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-undo fa-md"></i>
+                        </a>
+                        <a
+                          *ngIf="
+                            data.configuration.required && !context.hasErrors
+                          "
+                          href="javascript:void(0)"
+                          popover="{{
+                            'tenant-configuration-form.popover.required'
+                              | translate
+                          }}"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-asterisk fa-md"></i>
+                        </a>
+                        <a
+                          *ngIf="context.hasErrors"
+                          href="javascript:void(0)"
+                          [popover]="errorsPopover"
+                          container="body"
+                          triggers="mouseenter:mouseleave"
+                        >
+                          <i class="fa fa-warning fa-md red"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+              <ng-template #readonlyNode>
+                <tr
+                  [ttRow]="rowNode"
+                  [ngClass]="{
+                    leaf: node.leaf,
+                    modified: modified(data)
+                  }"
+                >
+                  <td [title]="data.key">
+                    <p-treeTableToggler
+                      [rowNode]="rowNode"
+                    ></p-treeTableToggler>
+                    {{ data.segment }}
+                  </td>
+                  <td>
+                    <span>{{ readonlyValue(data) }}</span>
+                  </td>
+                </tr>
+              </ng-template>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+    </p-treeTable>
+  </ng-container>
+</ng-template>

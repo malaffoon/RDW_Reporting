@@ -18,9 +18,11 @@ sql:
         st.first_name,
         st.last_or_surname,
         st.gender_code,
+        e.economic_disadvantage,
         e.iep,
         e.lep,
         e.language_code,
+        e.military_connected_code,
         e.elas_code,
         e.section504,
         e.migrant_status
@@ -64,7 +66,7 @@ sql:
   exam:
     findAllByStudentId: >-
       SELECT
-        ${sql.snippet.claimColumns},
+        ${sql.snippet.claimAndAltScoreColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
        AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
@@ -85,55 +87,55 @@ sql:
       LIMIT 1
 
   examItem:
-      findAllForExam: >-
-        ${sql.reporting.snippet.selectFromExamItem}
-        WHERE e.id = :exam_id
-        AND a.type_id != 3
-        AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+    findAllForExam: >-
+      ${sql.reporting.snippet.selectFromExamItem}
+      WHERE e.id = :exam_id
+      AND a.type_id != 3
+      AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   group:
     assessment:
       findAll: >-
-          SELECT distinct
-            ${sql.reporting.snippet.assessmentColumns}
-          FROM asmt a
-            JOIN exam e ON e.asmt_id = a.id
-            JOIN school s ON e.school_id = s.id
-            JOIN subject su ON a.subject_id = su.id
-            JOIN student st ON e.student_id = st.id
-            JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
-            $[groupJoinPlaceholder]
-          WHERE e.school_year = :school_year
-            AND a.id = e.asmt_id
-            AND $[groupFilterPlaceholder]
-            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+        SELECT distinct
+          ${sql.reporting.snippet.assessmentColumns}
+        FROM asmt a
+          JOIN exam e ON e.asmt_id = a.id
+          JOIN school s ON e.school_id = s.id
+          JOIN subject su ON a.subject_id = su.id
+          JOIN student st ON e.student_id = st.id
+          JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
+          $[groupJoinPlaceholder]
+        WHERE e.school_year = :school_year
+          AND a.id = e.asmt_id
+          AND $[groupFilterPlaceholder]
+          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
       # NOTE that we're grouping by a.id and selecting the max(e.completed_at) timestamp
       # to improve final ordering performance
       findLatestExam: >-
-          SELECT
-            ${sql.reporting.snippet.assessmentColumns},
-            max(e.completed_at) as max_completed
-          FROM exam e
-            JOIN asmt a ON e.asmt_id=a.id
-            JOIN school s ON e.school_id=s.id
-            JOIN subject su ON a.subject_id = su.id
-            JOIN student st ON e.student_id = st.id
-            JOIN school isch ON st.inferred_school_id = isch.id
-            JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
-            $[groupJoinPlaceholder]
-          WHERE e.school_year = :school_year
-            AND $[groupFilterPlaceholder]
-            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
-          GROUP BY a.id
-          ORDER BY max_completed desc
-          LIMIT 1
+        SELECT
+          ${sql.reporting.snippet.assessmentColumns},
+          max(e.completed_at) as max_completed
+        FROM exam e
+          JOIN asmt a ON e.asmt_id=a.id
+          JOIN school s ON e.school_id=s.id
+          JOIN subject su ON a.subject_id = su.id
+          JOIN student st ON e.student_id = st.id
+          JOIN school isch ON st.inferred_school_id = isch.id
+          JOIN subject_asmt_type sat on su.id = sat.subject_id AND a.type_id = sat.asmt_type_id
+          $[groupJoinPlaceholder]
+        WHERE e.school_year = :school_year
+          AND $[groupFilterPlaceholder]
+          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+        GROUP BY a.id
+        ORDER BY max_completed desc
+        LIMIT 1
 
     exam:
       findAllForAssessment: >-
         SELECT
-          ${sql.snippet.claimColumns},
+          ${sql.snippet.claimAndAltScoreColumns},
           ${sql.snippet.exam}
           $[groupJoinPlaceholder]
         WHERE a.id = :assessment_id
@@ -166,13 +168,13 @@ sql:
       findAll: >-
         SELECT
           count(*) as tested,
-          a.name as asmt_name,
-          a.label as asmt_label,
-          su.code as asmt_subject_code,
-          a.type_id as asmt_type_id,
-          a.school_year as asmt_school_year,
-          g.code as asmt_grade_code,
-          e.asmt_id as asmt_id,
+          a.name,
+          a.label,
+          su.code as subject_code,
+          a.type_id,
+          a.school_year,
+          g.code as grade_code,
+          e.asmt_id as id,
           max(e.completed_at) as completed_at,
           round(avg(e.scale_score)) AS score,
           round(stddev_samp(e.scale_score)/sqrt(count(*))) as std_err,
@@ -223,13 +225,13 @@ sql:
         GROUP BY e.asmt_id;
 
     examItem:
-        findAllExamItemScoresForAssessment:
-          ${sql.reporting.snippet.selectFromExamItem}
-          $[groupJoinPlaceholder]
-          WHERE e.asmt_id = :assessment_id
-            AND e.school_year = :school_year
-            AND $[groupFilterPlaceholder]
-            AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
+      findAllExamItemScoresForAssessment:
+        ${sql.reporting.snippet.selectFromExamItem}
+        $[groupJoinPlaceholder]
+        WHERE e.asmt_id = :assessment_id
+          AND e.school_year = :school_year
+          AND $[groupFilterPlaceholder]
+          AND ${sql.reporting.snippet.studentExamPermissionWithEmbargo}
 
   schoolgrade:
     assessment:
@@ -276,7 +278,7 @@ sql:
     exam:
       findAllForAssessment: >-
         SELECT
-          ${sql.snippet.claimColumns},
+          ${sql.snippet.claimAndAltScoreColumns},
           ${sql.snippet.exam}
         WHERE a.id = :assessment_id
         AND a.grade_id = :grade_id
@@ -318,12 +320,7 @@ sql:
         a.grade_code,
         a.type_id,
         a.school_year,
-        a.claim1_score_code,
-        a.claim2_score_code,
-        a.claim3_score_code,
-        a.claim4_score_code,
-        a.claim5_score_code,
-        a.claim6_score_code,
+        ${sql.snippet.asmtScoreCodeColumns},
         a.min_score,
         a.max_score,
         a.cut_point_1,
@@ -333,7 +330,8 @@ sql:
         a.cut_point_5,
         EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item,
         su.code as subject_code,
-        sat.target_report
+        sat.target_report,
+        sat.printed_report
 
 
       selectFromExamItem: >-
@@ -358,7 +356,7 @@ sql:
         ${sql.snippet.studentExamPermissionWithoutEmbargo}
         AND
         (
-           e.school_year < ${reporting.school-year}
+           e.school_year < :system_school_year
            OR e.type_id <> 3
            OR s.embargo_enabled = 0
            OR 1 = :state_embargo_admin

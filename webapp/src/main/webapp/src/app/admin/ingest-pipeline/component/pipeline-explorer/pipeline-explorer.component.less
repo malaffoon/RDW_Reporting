@@ -1,0 +1,62 @@
+@selected-color: #e8e8e8;
+
+// bootstrap @state-danger-text
+@danger-hover-color: red;
+@danger-active-color: #a94442;
+
+.script-items-container {
+  li:first-child ::ng-deep .item {
+    border: none;
+  }
+}
+
+.test-items-container {
+  border-top: 1px solid @selected-color;
+
+  .test-items-heading {
+    display: flex;
+    align-items: center;
+    padding: 15px 15px 15px 30px;
+
+    > :first-child {
+      flex: 1;
+    }
+    a {
+      border-top: none;
+    }
+  }
+}
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.changed-icon {
+  color: @danger-hover-color;
+  font-size: 9px;
+  position: absolute;
+  top: 24px;
+  left: 12px;
+}
+
+.delete-control {
+  font-size: 20px;
+  color: #666;
+  margin: -8px -15px 0 0;
+  &:hover {
+    color: @danger-hover-color;
+  }
+  &:active {
+    color: @danger-active-color;
+  }
+}
+
+.has-error {
+  ::ng-deep {
+    .item-name {
+      color: red;
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { Option } from '../../shared/form/sb-checkbox-group.component';
 
 export interface SubgroupFilterFormOptions {
-
   economicDisadvantages: Option[];
   ethnicities: Option[];
   genders: Option[];
@@ -11,5 +10,5 @@ export interface SubgroupFilterFormOptions {
   migrantStatuses: Option[];
   section504s: Option[];
   languages: Option[];
-
+  militaryConnectedCodes: Option[];
 }

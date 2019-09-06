@@ -1,11 +1,10 @@
-import { OrganizationType } from "./organization-type.enum";
-import { createUuid } from "./organization-support";
+import { OrganizationType } from './organization-type.enum';
+import { createCompositeId } from './organization-support';
 
 /**
  * Represents an organization in the organizational hierarchy
  */
 export interface Organization {
-
   /**
    * Fully qualified organization ID
    */
@@ -45,32 +44,30 @@ export interface Organization {
   readonly districtId?: number;
 
   /**
+   * TODO extract this and uuid generation to utility method that way we don't need classes and can use interfaces
+   *
    * Determines if the organization has the same ID or is an ancestor of the given argument.
    *
    * @param x the organization to test
    * @returns <code>true</code> if the organization's ID is the same or it is an ancestor of the given organization
    */
   isOrIsAncestorOf(x: Organization): boolean;
-
 }
 
 abstract class AbstractOrganization implements Organization {
-
   id: number;
-  name: string;
+  name: string = '';
 
   get uuid(): string {
-    return createUuid(this.type, this.id);
+    return createCompositeId(this.type, this.id);
   }
 
   abstract get type(): OrganizationType;
 
   abstract isOrIsAncestorOf(x: Organization): boolean;
-
 }
 
 export class School extends AbstractOrganization implements Organization {
-
   schoolGroupId: number;
   districtId: number;
 
@@ -84,12 +81,10 @@ export class School extends AbstractOrganization implements Organization {
 
   isOrIsAncestorOf(x: Organization): boolean {
     return this.id === x.schoolId;
-  };
-
+  }
 }
 
 export class SchoolGroup extends AbstractOrganization implements Organization {
-
   districtId: number;
 
   get schoolGroupId(): number {
@@ -102,12 +97,10 @@ export class SchoolGroup extends AbstractOrganization implements Organization {
 
   isOrIsAncestorOf(x: Organization): boolean {
     return this.id === x.schoolGroupId;
-  };
-
+  }
 }
 
 export class District extends AbstractOrganization implements Organization {
-
   get districtId(): number {
     return this.id;
   }
@@ -118,6 +111,5 @@ export class District extends AbstractOrganization implements Organization {
 
   isOrIsAncestorOf(x: Organization): boolean {
     return this.id === x.districtId;
-  };
-
+  }
 }

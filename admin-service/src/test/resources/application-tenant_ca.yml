@@ -1,0 +1,22 @@
+#simulating the spring cloud config search path feature with "tenant_ca" profile for testing purposes
+tenantProperties:
+  tenants:
+    CA:
+      id: CA
+      key: CA
+      name: California
+      description: Some Descriptive Text For CA
+
+spring:
+  datasource:
+    tenants:
+      CA:
+        url-parts:
+          database: "tenant_ca"
+        username: "tenant_ca_user"
+        password: "tenant_ca_password"
+archive:
+  tenants:
+    CA:
+      uri-root: "s3://ca-archive"
+      path-prefix: "/ca"

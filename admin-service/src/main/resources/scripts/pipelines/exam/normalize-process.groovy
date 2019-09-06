@@ -1,0 +1,2 @@
+enable 'xml'
+outputXml

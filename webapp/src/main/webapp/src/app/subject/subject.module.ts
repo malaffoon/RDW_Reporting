@@ -5,9 +5,6 @@ import { SubjectService } from './subject.service';
   declarations: [],
   imports: [],
   exports: [],
-  providers: [
-    SubjectService
-  ]
+  providers: [SubjectService]
 })
-export class SubjectModule {
-}
+export class SubjectModule {}

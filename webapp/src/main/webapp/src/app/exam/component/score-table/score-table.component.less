@@ -1,0 +1,85 @@
+// compilation error: .colorElement is undefined
+//@import '../../../../../node_modules/@sbac/sbac-ui-kit/src/less/colors.less';
+@gray-light: #d5d5d5;
+@spacing-unit: 4px;
+
+// TODO consolidate styles - now in two places
+:host {
+  // compensate for table padding
+  display: block;
+  margin-right: @spacing-unit * -4;
+
+  ::ng-deep {
+    .scale-score {
+      text-align: left;
+      align-items: center;
+      .score {
+        font-size: 32px;
+      }
+      .error-band {
+        font-weight: normal;
+        opacity: 0.75;
+      }
+    }
+  }
+}
+
+table {
+  width: 100%;
+  > thead > tr > th,
+  > tbody > tr > td {
+    &:first-child {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right;
+    }
+    &:not(:first-child) {
+      border-left: 1px solid @gray-light;
+    }
+  }
+  > thead > tr > th {
+    padding: 0 (@spacing-unit * 4);
+  }
+  > thead > tr:nth-child(2) > th {
+    padding-bottom: @spacing-unit;
+  }
+  > tbody > tr > td {
+    padding: @spacing-unit (@spacing-unit * 4) @spacing-unit 0;
+  }
+  > tbody > tr:last-child > td {
+    padding-bottom: 0;
+  }
+}
+
+.sample-size {
+  margin-bottom: -5px;
+  > .value {
+    font-size: 2em;
+  }
+}
+
+.heading {
+  font-size: 18px;
+}
+
+.row-heading {
+  font-weight: normal;
+
+  ::ng-deep {
+    strong {
+      font-size: 22px;
+    }
+  }
+}
+
+.level-heading {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 5px;
+  align-items: center;
+  justify-content: right;
+}
+
+.distribution-heading {
+  padding-top: 3px;
+}

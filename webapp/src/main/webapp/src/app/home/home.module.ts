@@ -1,30 +1,22 @@
 import { NgModule } from '@angular/core';
-import { HomeComponent } from './home.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '../shared/common.module';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
 import { SchoolGradeModule } from '../school-grade/school-grade.module';
 import { GroupsModule } from '../groups/groups.module';
 import { StudentModule } from '../student/student.module';
 import { BsDropdownModule } from 'ngx-bootstrap';
-import { AdminToolsComponent } from './admin-tools.component';
+import { AdminToolsComponent } from './component/admin-tools/admin-tools.component';
+import { HomeComponent } from './page/home/home.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
-  declarations: [
-    HomeComponent,
-    AdminToolsComponent
-  ],
   imports: [
-    BrowserModule,
     CommonModule,
+    ReportingCommonModule,
     StudentModule,
     SchoolGradeModule,
     GroupsModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule
   ],
-  exports: [
-    HomeComponent
-  ]
+  declarations: [AdminToolsComponent, HomeComponent]
 })
-export class HomeModule {
-
-}
+export class HomeModule {}

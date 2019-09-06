@@ -1,23 +1,22 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{'admin-groups.title' | translate}}</h2>
-  </ng-template>
-  <ng-template #content>
-    <ul class="list-unstyled list-inline">
-      <li>
-        <a class="btn btn-primary btn-sm"
-           [routerLink]="['import']"><i class="fa fa-cloud-upload"></i> {{'group-import.link' | translate}}</a>
-      </li>
-      <li>
-        <a class="btn btn-default btn-sm"
-           [routerLink]="['history']"><i class="fa fa-history"></i> {{'import-history.title' | translate}}</a>
-      </li>
-    </ul>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'admin-groups.title' | translate }}</h1>
+  <ul class="list-unstyled list-inline" controls>
+    <li>
+      <a class="btn btn-primary btn-sm" [routerLink]="['import']"
+        ><i class="fa fa-cloud-upload"></i>
+        {{ 'group-import.link' | translate }}</a
+      >
+    </li>
+    <li>
+      <a class="btn btn-default btn-sm" [routerLink]="['history']"
+        ><i class="fa fa-history"></i>
+        {{ 'import-history.title' | translate }}</a
+      >
+    </li>
+  </ul>
 </page-heading>
 
 <ng-container *ngIf="filterOptions">
-
   <ng-container *ngIf="filterOptions.schools.length == 0; else hasSchools">
     <div class="alert alert-info">
       {{ 'admin-groups.no-schools' | translate }}
@@ -30,19 +29,26 @@
       <div class="row">
         <!-- School Select -->
         <div class="col-md-6">
-          <label for="select-school">{{'common.school-typeahead-label' | translate}}</label>
-          <p-dropdown id="select-school"
-                      [options]="schoolDropdownOptions"
-                      [(ngModel)]="query.school"
-                      (onChange)="updateRoute()"
-                      [filter]="true"
-                      filterBy="label"
-                      placeholder="{{'prompt.select' | translate}}"
-                      filterPlaceholder="{{'admin-groups.search-school' | translate}}">
+          <label for="select-school">{{
+            'common.school-typeahead-label' | translate
+          }}</label>
+          <p-dropdown
+            id="select-school"
+            [options]="schoolDropdownOptions"
+            [(ngModel)]="query.school"
+            (onChange)="updateRoute()"
+            [filter]="true"
+            filterBy="label"
+            placeholder="{{ 'prompt.select' | translate }}"
+            filterPlaceholder="{{ 'admin-groups.search-school' | translate }}"
+          >
             <ng-template let-school pTemplate="item">
               <div class="ui-helper-clearfix">
-                <div>{{school.name}}
-                  <div class="font-weight-light small">{{school.naturalId}}</div>
+                <div>
+                  {{ school.name }}
+                  <div class="font-weight-light small">
+                    {{ school.naturalId }}
+                  </div>
                 </div>
               </div>
             </ng-template>
@@ -50,26 +56,42 @@
         </div>
         <!-- School Year Select -->
         <div class="col-md-2">
-          <label for="select-schoolyear">{{'common.school-year-select-label' | translate}}</label>
-          <select id="select-schoolyear"
-                  [(ngModel)]="query.schoolYear"
-                  class="form-control"
-                  (change)="updateRoute()">
-            <option *ngFor="let schoolYear of filterOptions.schoolYears"
-                    [ngValue]="schoolYear">
-              {{schoolYear | schoolYear}}
+          <label for="select-schoolyear">{{
+            'common.school-year-select-label' | translate
+          }}</label>
+          <select
+            id="select-schoolyear"
+            [(ngModel)]="query.schoolYear"
+            class="form-control"
+            (change)="updateRoute()"
+          >
+            <option
+              *ngFor="let schoolYear of filterOptions.schoolYears"
+              [ngValue]="schoolYear"
+            >
+              {{ schoolYear | schoolYear }}
             </option>
           </select>
         </div>
         <!-- Subject Select -->
         <div class="col-md-2">
-          <label for="select-subject">{{'common.subject-select-label' | translate}}</label>
-          <select id="select-subject"
-                  [(ngModel)]="query.subject"
-                  class="form-control"
-                  (change)="updateRoute()">
-            <option *ngFor="let subject of filterOptions.subjects"
-                    [ngValue]="subject">{{(subject != null ? 'subject.' + subject + '.name' : 'common.collection-selection.all') | translate}}
+          <label for="select-subject">{{
+            'common.subject-select-label' | translate
+          }}</label>
+          <select
+            id="select-subject"
+            [(ngModel)]="query.subject"
+            class="form-control"
+            (change)="updateRoute()"
+          >
+            <option
+              *ngFor="let subject of filterOptions.subjects"
+              [ngValue]="subject"
+              >{{
+                (subject != null
+                  ? 'subject.' + subject + '.name'
+                  : 'common.collection-selection.all') | translate
+              }}
             </option>
           </select>
         </div>
@@ -79,52 +101,57 @@
     <!-- Results Table -->
     <div class="well">
       <div class="table-search-form-container">
-        <label for="search" class="sr-only">{{'admin-groups.filter' | translate}}</label>
-        <input [(ngModel)]="searchTerm"
-               class="search form-control"
-               id="search"
-               type="text"
-               placeholder="{{'admin-groups.filter' | translate}}"
-               autocomplete="off"
-               (ngModelChange)="onSearchChange()">
+        <label for="search" class="sr-only">{{
+          'admin-groups.filter' | translate
+        }}</label>
+        <input
+          [(ngModel)]="searchTerm"
+          class="search form-control"
+          id="search"
+          type="text"
+          placeholder="{{ 'admin-groups.filter' | translate }}"
+          autocomplete="off"
+          (ngModelChange)="onSearchChange()"
+        />
       </div>
       <div class="table-list-container">
-        <p-table [columns]="columns"
-                 [value]="filteredGroups"
-                 sortField="name"
-                 [autoLayout]="true">
-
-          <ng-template pTemplate="header"
-                       let-columns>
+        <p-table
+          [columns]="columns"
+          [value]="filteredGroups"
+          sortField="name"
+          [autoLayout]="true"
+        >
+          <ng-template pTemplate="header" let-columns>
             <tr>
-              <th *ngFor="let column of columns"
-                  [pSortableColumn]="column.field"
-                  [pSortableColumnDisabled]="!column.sortable"
-                  [ngSwitch]="column.id">
-
+              <th
+                *ngFor="let column of columns"
+                [pSortableColumn]="column.field"
+                [pSortableColumnDisabled]="!column.sortable"
+                [ngSwitch]="column.id"
+              >
                 <span *ngSwitchCase="'deleted'"></span>
 
                 <span *ngSwitchDefault>
-                  {{ ('admin-groups.columns.' + column.id) | translate}}
+                  {{ 'admin-groups.columns.' + column.id | translate }}
                 </span>
 
-                <p-sortIcon *ngIf="column.sortable"
-                            [field]="column.field"></p-sortIcon>
+                <p-sortIcon
+                  *ngIf="column.sortable"
+                  [field]="column.field"
+                ></p-sortIcon>
               </th>
             </tr>
           </ng-template>
 
-          <ng-template pTemplate="body"
-                       let-group
-                       let-columns="columns">
+          <ng-template pTemplate="body" let-group let-columns="columns">
             <tr>
-              <td *ngFor="let column of columns"
-                  [ngSwitch]="column.id">
-
-                <div *ngSwitchCase="'name'"
-                     class="label-max-width"
-                     title="{{group.name}}">
-                  {{group.name}}
+              <td *ngFor="let column of columns" [ngSwitch]="column.id">
+                <div
+                  *ngSwitchCase="'name'"
+                  class="label-max-width"
+                  title="{{ group.name }}"
+                >
+                  {{ group.name }}
                 </div>
 
                 <div *ngSwitchCase="'school-year'">
@@ -132,13 +159,24 @@
                 </div>
 
                 <div *ngSwitchCase="'subjects'">
-                  {{ (group.subject ? 'subject.' + group.subject + '.name' : 'common.collection-selection.all') | translate }}
+                  {{
+                    (group.subject
+                      ? 'subject.' + group.subject + '.name'
+                      : 'common.collection-selection.all') | translate
+                  }}
                 </div>
 
                 <div *ngSwitchCase="'deleted'">
-                  <a href="javascript:void(0)" (click)="openDeleteGroupModal(group)"
-                     title="{{ 'admin-groups.columns.delete-title' | translate: { groupName: group.name } }}">
-                    <i class="fa fa-minus-square-o"></i> {{ 'admin-groups.columns.delete' | translate }}
+                  <a
+                    href="javascript:void(0)"
+                    (click)="openDeleteGroupModal(group)"
+                    title="{{
+                      'admin-groups.columns.delete-title'
+                        | translate: { groupName: group.name }
+                    }}"
+                  >
+                    <i class="fa fa-minus-square-o"></i>
+                    {{ 'admin-groups.columns.delete' | translate }}
                   </a>
                 </div>
 
@@ -152,7 +190,7 @@
           <ng-template pTemplate="emptymessage" let-columns>
             <tr>
               <td [attr.colspan]="columns.length">
-                {{'admin-groups.no-results' | translate}}
+                {{ 'admin-groups.no-results' | translate }}
               </td>
             </tr>
           </ng-template>

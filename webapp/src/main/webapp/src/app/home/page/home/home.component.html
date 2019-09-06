@@ -1,0 +1,81 @@
+<div class="row">
+  <!-- Left Column Content Area -->
+  <div class="col-md-9">
+    <admin-tools></admin-tools>
+
+    <ng-container
+      *hasAnyPermission="[
+        'GROUP_PII_READ',
+        'INDIVIDUAL_PII_READ',
+        'GROUP_PII_READ'
+      ]"
+    >
+      <h1 class="h2">{{ 'home.title' | translate }}</h1>
+
+      <div *hasPermission="'GROUP_PII_READ'" class="well">
+        <student-search></student-search>
+      </div>
+
+      <div *hasPermission="'INDIVIDUAL_PII_READ'" class="well">
+        <school-grade></school-grade>
+      </div>
+
+      <ng-container
+        *hasAnyPermission="['GROUP_PII_READ', 'TEACHER_GROUP_READ']"
+      >
+        <group-tabs></group-tabs>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <!-- Right Column Content Area -->
+  <div class="col-md-3">
+    <!-- header offset -->
+    <h1 class="h2">&nbsp;</h1>
+
+    <!-- Welcome Content -->
+    <div
+      *ngIf="(applicationSettings$ | async) as applicationSettings"
+      class="welcome-container well"
+    >
+      <h2 class="mt-xs">{{ 'home.welcome.title' | translate }}</h2>
+      <div class="mb-md">
+        <p
+          [innerHTML]="
+            'home.welcome.user-guide-html' | translate: applicationSettings
+          "
+        ></p>
+        <a
+          href="{{ applicationSettings.userGuideUrl }}"
+          target="_blank"
+          class="btn btn-primary"
+        >
+          {{ 'common.navigation.user-guide' | translate }}
+        </a>
+      </div>
+      <div>
+        <p
+          [innerHTML]="
+            'home.welcome.interpretive-guide-html'
+              | translate: applicationSettings
+          "
+        ></p>
+        <a
+          href="{{ applicationSettings.interpretiveGuideUrl }}"
+          target="_blank"
+          class="btn btn-success"
+        >
+          {{ 'common.navigation.interpretive-guide' | translate }}
+        </a>
+      </div>
+    </div>
+    <!-- Summary News Dynamic Content -->
+    <div [innerHTML]="'html.system-news' | translate"></div>
+  </div>
+</div>
+
+<ng-template #noPermissions>
+  <div class="well">
+    <label [innerHTML]="'home.no-permissions' | translate"></label>
+  </div>
+</ng-template>

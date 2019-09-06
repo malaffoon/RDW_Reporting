@@ -3,90 +3,114 @@
 </ng-container>
 
 <ng-template #loaded>
-
   <page-heading>
-    <ng-template #heading>
-      <h5><i class="fa fa-search"></i> {{'user-group.student-search.find-students-prompt' | translate}}</h5>
-    </ng-template>
-    <ng-template #content>
-      <ul class="list-unstyled list-inline">
+    <h1 heading class="h5">
+      <i class="fa fa-search"></i>
+      {{ 'user-group.student-search.find-students-prompt' | translate }}
+    </h1>
+    <ul controls class="list-unstyled list-inline">
+      <ng-container *hasPermission="'TEACHER_GROUP_WRITE'">
         <li *ngIf="group.id != null">
-          <button type="button"
-                  class="btn btn-danger btn-sm"
-                  [disabled]="deleteButtonDisabled"
-                  (click)="deleteModal.show()">
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            [disabled]="deleteButtonDisabled"
+            (click)="deleteModal.show()"
+          >
             <i class="fa fa-trash"></i>
-            {{'common.action.delete' | translate}}
+            {{ 'common.action.delete' | translate }}
           </button>
         </li>
         <li>
-          <button type="submit"
-                  class="btn btn-primary btn-sm"
-                  [disabled]="saveButtonDisabled"
-                  (click)="onSaveButtonClick()">
+          <button
+            type="submit"
+            class="btn btn-primary btn-sm"
+            [disabled]="saveButtonDisabled"
+            (click)="onSaveButtonClick()"
+          >
             <i class="fa fa-save"></i>
-            {{'common.action.save' | translate}}
+            {{ 'common.action.save' | translate }}
           </button>
         </li>
-        <li>
-          <button type="button"
-                  class="btn btn-default btn-sm"
-                  (click)="onCancelButtonClick()">
-            {{'common.action.cancel' | translate}}
-          </button>
-        </li>
-      </ul>
-    </ng-template>
+      </ng-container>
+      <li>
+        <button
+          type="button"
+          class="btn btn-default btn-sm"
+          (click)="onCancelButtonClick()"
+        >
+          {{ 'common.action.cancel' | translate }}
+        </button>
+      </li>
+    </ul>
   </page-heading>
 
   <div class="row">
-
     <div class="col-md-8">
       <div class="well-group ignore-last-margin-bottom">
         <div class="well">
-          <student-search-form #studentSearchForm
-                               [schoolAndGroupTypeaheadOptions]="schoolAndGroupTypeaheadOptions"
-                               [(ngModel)]="studentForm"
-                               [advancedFilterCount]="advancedFilterCount"
-                               (schoolOrGroupChange)="onStudentFormSearchChange($event)"
-                               (nameOrSsidChange)="onStudentFormFilterChange($event)"
-                               (showAdvancedFiltersChange)="onShowAdvancedFiltersChange($event)"></student-search-form>
+          <student-search-form
+            #studentSearchForm
+            [schoolAndGroupTypeaheadOptions]="schoolAndGroupTypeaheadOptions"
+            [(ngModel)]="studentForm"
+            [advancedFilterCount]="advancedFilterCount"
+            (schoolOrGroupChange)="onStudentFormSearchChange()"
+            (nameOrSsidChange)="onStudentFormFilterChange()"
+            (showAdvancedFiltersChange)="onShowAdvancedFiltersChange($event)"
+          ></student-search-form>
         </div>
 
-        <div [hidden]="!showAdvancedFilters"
-             class="well gray-lighter">
-          <student-filters [options]="studentFilterOptions"
-                           [showEnglishLanguageAcquisitionStatusFilter]="applicationSettings.elasEnabled"
-                           [showLimitedEnglishProficiencyFilter]="applicationSettings.lepEnabled"
-                           (changed)="onAdvancedFilterChange($event)"></student-filters>
+        <div [hidden]="!showAdvancedFilters" class="well gray-lighter">
+          <student-filters
+            *ngIf="(studentFields | async) as fields"
+            [options]="studentFilterOptions"
+            [studentFields]="fields"
+            (changed)="onAdvancedFilterChange($event)"
+          ></student-filters>
         </div>
 
         <div class="well gray-lightest">
           <div class="flex-children">
             <div class="flex-child grow">
-              <label>{{'user-group.student-search.results-label' | translate}}</label>
+              <label>{{
+                'user-group.student-search.results-label' | translate
+              }}</label>
 
-              <i class="fa fa-spinner fa-pulse fa-fw" *ngIf="loadingStudents"></i>
+              <i
+                class="fa fa-spinner fa-pulse fa-fw"
+                *ngIf="loadingStudents"
+              ></i>
 
               <ng-container *ngIf="filteredStudents.length; else noResults">
-                <p class="small">{{'user-group.student-search.add-student-prompt' | translate}}</p>
+                <p class="small">
+                  {{
+                    'user-group.student-search.add-student-prompt' | translate
+                  }}
+                </p>
               </ng-container>
               <ng-template #noResults>
-                <p class="small">{{'user-group.student-search.no-results' | translate}}</p>
+                <p class="small">
+                  {{ 'user-group.student-search.no-results' | translate }}
+                </p>
               </ng-template>
             </div>
             <div *ngIf="filteredStudents.length" class="flex-child">
-              <a class="small link-button"
-                 (click)="addAllStudentsButtonClick()">
-                <i class="fa fa-plus mr-xs"></i> {{'user-group.student-search.add-all' | translate}}
+              <a
+                class="small link-button"
+                (click)="addAllStudentsButtonClick()"
+              >
+                <i class="fa fa-plus mr-xs"></i>
+                {{ 'user-group.student-search.add-all' | translate }}
               </a>
             </div>
           </div>
 
-          <actionable-list-group [items]="filteredStudents"
-                                 [itemTemplate]="studentFormStudentTemplate"
-                                 (itemClick)="onFormStudentClick($event)"
-                                 [disabled]="loadingStudents"></actionable-list-group>
+          <actionable-list-group
+            [items]="filteredStudents"
+            [itemTemplate]="studentFormStudentTemplate"
+            (itemClick)="onFormStudentClick($event)"
+            [disabled]="loadingStudents"
+          ></actionable-list-group>
         </div>
       </div>
     </div>
@@ -94,60 +118,71 @@
     <div class="col-md-4">
       <div class="well-group ignore-last-margin-bottom">
         <div class="well">
-          <user-group-form #groupForm
-                           [options]="formOptions"
-                           [group]="group"
-                           (nameChange)="onGroupNameChange()"
-                           (subjectsChange)="onGroupSubjectsChange()"
-                           (studentsChange)="onGroupStudentsChange()"></user-group-form>
+          <user-group-form
+            #groupForm
+            [options]="formOptions"
+            [group]="group"
+            (nameChange)="onGroupNameChange()"
+            (subjectsChange)="onGroupSubjectsChange()"
+            (studentsChange)="onGroupStudentsChange()"
+          ></user-group-form>
         </div>
       </div>
     </div>
-
   </div>
 </ng-template>
 
 <ng-template #studentFormStudentTemplate let-student>
-  <div>
-    <i class="fa fa-plus mr-xs"></i> {{student | studentName}}
-  </div>
+  <div><i class="fa fa-plus mr-xs"></i> {{ student | studentName }}</div>
 </ng-template>
 
-<div bsModal
-     #deleteModal="bs-modal"
-     class="modal fade"
-     tabindex="-1"
-     role="dialog">
+<div
+  bsModal
+  #deleteModal="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+>
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 id="dialog-static-name"
-            class="modal-title pull-left label-max-width">{{'user-group.delete-modal.header' | translate:group}}</h4>
-        <button type="button"
-                class="close pull-right"
-                aria-label="Close"
-                (click)="deleteModal.hide()">
+        <h4
+          id="dialog-static-name"
+          class="modal-title pull-left label-max-width"
+        >
+          {{ 'user-group.delete-modal.header' | translate: group }}
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          aria-label="Close"
+          (click)="deleteModal.hide()"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        {{'user-group.delete-modal.body' | translate:group}}
+        {{ 'user-group.delete-modal.body' | translate: group }}
       </div>
       <div class="modal-footer">
         <ul class="pull-right list-unstyled list-inline">
           <li>
-            <button type="button"
-                    class="btn btn-danger btn-sm"
-                    (click)="deleteModal.hide(); onDeleteButtonClick()">
+            <button
+              type="button"
+              class="btn btn-danger btn-sm"
+              (click)="deleteModal.hide(); onDeleteButtonClick()"
+            >
               <i class="fa fa-trash"></i>
-              {{'common.action.delete' | translate}}
+              {{ 'common.action.delete' | translate }}
             </button>
           </li>
           <li>
-            <button type="button"
-                    class="btn btn-default btn-sm"
-                    (click)="deleteModal.hide()">
-              {{'common.action.cancel' | translate}}
+            <button
+              type="button"
+              class="btn btn-default btn-sm"
+              (click)="deleteModal.hide()"
+            >
+              {{ 'common.action.cancel' | translate }}
             </button>
           </li>
         </ul>

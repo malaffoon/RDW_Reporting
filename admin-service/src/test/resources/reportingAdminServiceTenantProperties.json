@@ -1,0 +1,37 @@
+{
+  "scopedTarget.tenantProperties":{
+    "prefix":"tenant-properties",
+    "properties":{
+      "tenants":{
+        "CA":{
+          "id":"CA",
+          "key":"******",
+          "name":"California",
+          "description":null,
+          "sandbox":false,
+          "sandboxDataset":null,
+          "created":{
+
+          }
+        },
+        "TS":{
+          "id":"TS",
+          "key":"******",
+          "name":"Test Tenant",
+          "description":null,
+          "sandbox":false,
+          "sandboxDataset":null,
+          "created":{
+
+          }
+        }
+      },
+      "status":{
+        "tenantKeys":[
+          "CA",
+          "TS"
+        ]
+      }
+    }
+  }
+}

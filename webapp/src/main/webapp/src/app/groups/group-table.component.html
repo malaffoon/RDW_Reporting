@@ -1,19 +1,20 @@
-<p-table [columns]="columns"
-         [value]="groups"
-         [autoLayout]="true"
-         sortField="name"
-         dataKey="id"
-         styleClass="table table-striped table-hover">
-
-  <ng-template pTemplate="header"
-               let-columns>
+<p-table
+  [columns]="columns"
+  [value]="groups"
+  [autoLayout]="true"
+  sortField="name"
+  dataKey="id"
+  styleClass="table table-striped table-hover"
+>
+  <ng-template pTemplate="header" let-columns>
     <tr>
-      <th *ngFor="let column of columns"
-          [pSortableColumn]="column.field"
-          [ngSwitch]="column.id">
-
+      <th
+        *ngFor="let column of columns"
+        [pSortableColumn]="column.field"
+        [ngSwitch]="column.id"
+      >
         <div *ngSwitchDefault>
-          {{ ('groups.columns.' + column.id) | translate }}
+          {{ 'groups.columns.' + column.id | translate }}
         </div>
 
         <p-sortIcon [field]="column.field"></p-sortIcon>
@@ -21,27 +22,28 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body"
-               let-group
-               let-columns="columns">
+  <ng-template pTemplate="body" let-group let-columns="columns">
     <tr>
-      <td *ngFor="let column of columns"
-          [ngSwitch]="column.id">
-
-        <div *ngSwitchCase="'group'"
-             class="label-max-width">
-          <a [routerLink]="['/', 'group-exams', {groupId: group.id}]"
-             title="{{group.name}}">
-            {{group.name}}
+      <td *ngFor="let column of columns" [ngSwitch]="column.id">
+        <div *ngSwitchCase="'group'" class="label-max-width">
+          <a
+            [routerLink]="['/', 'group-exams', { groupId: group.id }]"
+            title="{{ group.name }}"
+          >
+            {{ group.name }}
           </a>
         </div>
 
         <ng-container *ngSwitchCase="'school'">
-          {{group.schoolName}}
+          {{ group.schoolName }}
         </ng-container>
 
         <ng-container *ngSwitchCase="'subject'">
-          {{ (group.subjectCode ? 'subject.' + group.subjectCode + '.name' : 'common.collection-selection.all') | translate }}
+          {{
+            (group.subjectCode
+              ? 'subject.' + group.subjectCode + '.name'
+              : 'common.collection-selection.all') | translate
+          }}
         </ng-container>
       </td>
     </tr>
@@ -50,7 +52,7 @@
   <ng-template pTemplate="emptymessage" let-columns>
     <tr>
       <td [attr.colspan]="columns.length">
-        {{'groups.empty-message' | translate}}
+        {{ 'groups.empty-message' | translate }}
       </td>
     </tr>
   </ng-template>

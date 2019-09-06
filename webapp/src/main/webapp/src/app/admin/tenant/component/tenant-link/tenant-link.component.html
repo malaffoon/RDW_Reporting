@@ -1,0 +1,105 @@
+<div
+  class="tenant-link status-{{ tenant.status.toLowerCase() }}"
+  *ngIf="{
+    active: tenant.status === 'ACTIVE',
+    failed: tenant.status.endsWith('FAILED'),
+    processing: tenant.status !== 'ACTIVE' && !tenant.status.endsWith('FAILED'),
+    creating: tenant.status.startsWith('CREATE'),
+    updating: tenant.status.startsWith('UPDATE'),
+    deleting: tenant.status.startsWith('DELETE')
+  } as status"
+  [ngClass]="{
+    disabled: status.processing,
+    'error alert-danger': status.failed
+  }"
+>
+  <div class="head">
+    <h2 class="h3">
+      {{ tenant.label }}
+      <span class="sandbox-key">({{ tenant.code }})</span>
+    </h2>
+    <ng-container *ngIf="status.processing; else notProcessing">
+      <span
+        class="processing-status"
+        [ngClass]="{
+          green: status.creating,
+          aqua: status.updating,
+          red: status.deleting
+        }"
+      >
+        <i class="fa fa-spinner fa-pulse"></i>
+        {{
+          'common.tenant-status.' + tenant.status
+            | translate
+              : {
+                  tenantType: 'tenant-type.' + tenant.type | translate
+                }
+        }}
+      </span>
+    </ng-container>
+    <ng-template #notProcessing>
+      <div class="controls">
+        <!-- Disabled until there is content on the metrics page -->
+        <!--        <button-->
+        <!--          type="button"-->
+        <!--          class="btn btn-success btn-outlined"-->
+        <!--          [routerLink]="[tenant.id, 'metrics']"-->
+        <!--        >-->
+        <!--          <i class="fa fa-bar-chart"></i> Stats-->
+        <!--        </button>-->
+
+        <button
+          *ngIf="status.active"
+          type="button"
+          class="btn btn-primary btn-outlined"
+          (click)="tenantClick.emit(tenant)"
+        >
+          <i class="fa fa-pencil"></i> Edit
+        </button>
+      </div>
+    </ng-template>
+  </div>
+  <div class="body">
+    <ng-container *ngIf="status.failed; else body">
+      <div class="error-message">
+        <div>
+          <p>
+            <i class="fa fa-warning"></i>
+            <span class="ml-xs">
+              {{ 'common.tenant-status.' + tenant.status | translate }}
+            </span>
+          </p>
+          <p>
+            {{ tenant.error?.message }}
+          </p>
+          <div>
+            {{ 'tenant-link.see-logs' | translate }}
+          </div>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="tenantStatusAccept.emit(tenant)"
+          >
+            {{ 'common.action.accept' | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template #body>
+      <p class="description">
+        {{ tenant.description }}
+      </p>
+      <strong class="data-set" *ngIf="tenant.dataSet != null">
+        {{ tenant.dataSet.label }}
+      </strong>
+      <div class="small text-muted" *ngIf="tenant.updatedOn != null">
+        {{
+          'tenant-link.updated-on'
+            | translate: { dateTime: tenant.updatedOn | date: 'medium' }
+        }}
+      </div>
+    </ng-template>
+  </div>
+</div>

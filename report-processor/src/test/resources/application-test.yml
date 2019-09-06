@@ -1,5 +1,5 @@
-spring:
-  datasource:
+datasources:
+  reporting_ro:
     url-schema: reporting_test
 
 reporting:
@@ -7,3 +7,4 @@ reporting:
   state:
     code: CA
     name: California
+  transfer-access-enabled: false

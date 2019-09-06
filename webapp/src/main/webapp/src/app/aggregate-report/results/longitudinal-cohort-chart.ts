@@ -1,11 +1,10 @@
 import { Organization } from '../../shared/organization/organization';
-import { Subgroup } from '../subgroup/subgroup';
+import { Subgroup } from '../../shared/model/subgroup';
 
 /**
  * Logical modal for the longitudinal cohort chart
  */
 export interface LongitudinalCohortChart {
-
   /**
    * Assessment performance levels over a span of year/grades
    */
@@ -15,7 +14,6 @@ export interface LongitudinalCohortChart {
    * Organization performance over a span of year/Grades
    */
   readonly organizationPerformances: OrganizationPerformance[];
-
 }
 
 /**
@@ -59,7 +57,7 @@ export interface NumberRange {
 export interface YearGradeScaleScore {
   readonly yearGrade: YearGrade;
   readonly scaleScore: number;
-  readonly standardError: number;
+  readonly standardError?: number;
 }
 
 /**

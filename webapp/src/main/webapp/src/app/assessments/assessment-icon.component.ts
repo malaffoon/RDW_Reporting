@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Assessment } from './model/assessment.model';
-import { Utils } from "../shared/support/support";
+import { Assessment } from './model/assessment';
+import { Utils } from '../shared/support/support';
 
 export const IcaAssessmentIconsBySubject = {
-  'Math': 'Math/ICA',
-  'ELA': 'ELA/ICA'
+  Math: 'Math/ICA',
+  ELA: 'ELA/ICA'
 };
 
 export const SummativeAssessmentIconsBySubject = {
-  'Math': 'Math/Summative',
-  'ELA': 'ELA/Summative'
+  Math: 'Math/Summative',
+  ELA: 'ELA/Summative'
 };
 
 export const AssessmentIconsByAssessmentName = {
@@ -18,34 +18,40 @@ export const AssessmentIconsByAssessmentName = {
   'SBAC-IAB-FIXED-G3M-NBT-MATH-3': 'Math/3-5/Number and Operations in Base 10',
   'SBAC-IAB-FIXED-G3M-NF-MATH-3': 'Math/3-5/Number Operations-Fractions',
   'SBAC-IAB-FIXED-G3M-OA-MATH-3': 'Math/3-5/Operations and Algebraic Thinking',
-  'SBAC-IAB-FIXED-G3M-Perf-OrderForm-MATH-3': 'Math/3-5/Mathematics Performance Task',
+  'SBAC-IAB-FIXED-G3M-Perf-OrderForm-MATH-3':
+    'Math/3-5/Mathematics Performance Task',
 
   'SBAC-IAB-FIXED-G4M-G-MATH-4': 'Math/3-5/Geometry',
   'SBAC-IAB-FIXED-G4M-MD-MATH-4': 'Math/3-5/Measurement and Data',
   'SBAC-IAB-FIXED-G4M-NBT-MATH-4': 'Math/3-5/Number and Operations in Base 10',
   'SBAC-IAB-FIXED-G4M-NF-MATH-4': 'Math/3-5/Number Operations-Fractions',
   'SBAC-IAB-FIXED-G4M-OA-MATH-4': 'Math/3-5/Operations and Algebraic Thinking',
-  'SBAC-IAB-FIXED-G4M-Perf-AnimalJumping-MATH-4': 'Math/3-5/Mathematics Performance Task',
+  'SBAC-IAB-FIXED-G4M-Perf-AnimalJumping-MATH-4':
+    'Math/3-5/Mathematics Performance Task',
 
   'SBAC-IAB-FIXED-G5M-G-MATH-5': 'Math/3-5/Geometry',
   'SBAC-IAB-FIXED-G5M-MD-MATH-5': 'Math/3-5/Measurement and Data',
   'SBAC-IAB-FIXED-G5M-NBT-MATH-5': 'Math/3-5/Number and Operations in Base 10',
   'SBAC-IAB-FIXED-G5M-NF-MATH-5': 'Math/3-5/Number Operations-Fractions',
   'SBAC-IAB-FIXED-G5M-OA-MATH-5': 'Math/3-5/Operations and Algebraic Thinking',
-  'SBAC-IAB-FIXED-G5M-Perf-TurtleHabitat-MATH-5': 'Math/3-5/Mathematics Performance Task',
+  'SBAC-IAB-FIXED-G5M-Perf-TurtleHabitat-MATH-5':
+    'Math/3-5/Mathematics Performance Task',
 
   'SBAC-IAB-FIXED-G6M-EE': 'Math/6-7/Expressions-and-Equations',
   'SBAC-IAB-FIXED-G6M-G-Calc-MATH-6': 'Math/6-7/Geometry',
   'SBAC-IAB-FIXED-G6M-NS': 'Math/6-7/The-Number-System',
-  'SBAC-IAB-FIXED-G6M-Perf-CellPhonePlan-MATH-6': 'Math/6-7/Mathematics Performance Task',
+  'SBAC-IAB-FIXED-G6M-Perf-CellPhonePlan-MATH-6':
+    'Math/6-7/Mathematics Performance Task',
   'SBAC-IAB-FIXED-G6M-RP': 'Math/6-7/Ratio-and-Proportional-Relationships',
   'SBAC-IAB-FIXED-G6M-SP': 'Math/6-7/Statistics and Probability',
 
   'SBAC-IAB-FIXED-G7M-EE': 'Math/6-7/Expressions-and-Equations',
   'SBAC-IAB-FIXED-G7M-G': 'Math/6-7/Geometry',
   'SBAC-IAB-FIXED-G7M-NS': 'Math/6-7/The-Number-System',
-  'SBAC-IAB-FIXED-G7M-Perf-CampingTasks-MATH-7': 'Math/6-7/Mathematics Performance Task',
-  'SBAC-IAB-FIXED-G7M-RP-Calc-MATH-7': 'Math/6-7/Ratio-and-Proportional-Relationships',
+  'SBAC-IAB-FIXED-G7M-Perf-CampingTasks-MATH-7':
+    'Math/6-7/Mathematics Performance Task',
+  'SBAC-IAB-FIXED-G7M-RP-Calc-MATH-7':
+    'Math/6-7/Ratio-and-Proportional-Relationships',
   'SBAC-IAB-FIXED-G7M-SP-Calc-MATH-7': 'Math/6-7/Statistics and Probability',
 
   'SBAC-IAB-FIXED-G8M-EE': 'Math/8/Expressions-and-Equations',
@@ -60,11 +66,14 @@ export const AssessmentIconsByAssessmentName = {
   'SBAC-IAB-FIXED-G11M-AlgQuad': 'Math/HS/Algebra and Functions II',
   'SBAC-IAB-FIXED-G11M-AlgQuadFun': 'Math/HS/Algebra and Functions II',
   'SBAC-IAB-FIXED-G11M-GCO-MATH-11': 'Math/HS/Geometry Congruence',
-  'SBAC-IAB-FIXED-G11M-GeoRightTriRatios-Calc-MATH-11': 'Math/HS/Geometry and Righ Triangle Trigonometry',
-  'SBAC-IAB-FIXED-G11M-GMD-MATH-11': 'Math/HS/Geometry Measurement and Modeling',
+  'SBAC-IAB-FIXED-G11M-GeoRightTriRatios-Calc-MATH-11':
+    'Math/HS/Geometry and Righ Triangle Trigonometry',
+  'SBAC-IAB-FIXED-G11M-GMD-MATH-11':
+    'Math/HS/Geometry Measurement and Modeling',
   'SBAC-IAB-FIXED-G11M-IF': 'Math/HS/Interpreting Functions',
   'SBAC-IAB-FIXED-G11M-NQ': 'Math/HS/Number and Quantity',
-  'SBAC-IAB-FIXED-G11M-Perf-TeenDrivingRest-MATH-11': 'Math/HS/Performance Task',
+  'SBAC-IAB-FIXED-G11M-Perf-TeenDrivingRest-MATH-11':
+    'Math/HS/Performance Task',
   'SBAC-IAB-FIXED-G11M-SP-Calc-MATH-11': 'Math/HS/Statistics and Probability',
   'SBAC-IAB-FIXED-G11M-SSE': 'Math/HS/Seeing Structure in Expressions',
 
@@ -154,22 +163,23 @@ export const AssessmentIconsByAssessmentName = {
   'SBAC-IRP-MATH-7-IAB-PT': 'Math/6-7/Mathematics Performance Task',
 
   'SBAC-IRP-ELA-11-IAB-PT': 'ELA/Performance Task',
-  'SBAC-IRP-MATH-11-IAB-PT': 'Math/HS/Performance Task',
+  'SBAC-IRP-MATH-11-IAB-PT': 'Math/HS/Performance Task'
 };
 
 @Component({
   selector: 'assessment-icon',
   template: `
-    <sb-icon *ngIf="icon"
-             [icon]="'assessment-icon/' + icon"
-             [styles]="styles"></sb-icon>
+    <sb-icon
+      *ngIf="icon"
+      [icon]="'assessment-icon/' + icon"
+      [styles]="styles"
+    ></sb-icon>
   `,
   host: {
     class: 'assessment-icon'
   }
 })
 export class AssessmentIconComponent {
-
   @Input()
   styles: any;
 
@@ -184,23 +194,20 @@ export class AssessmentIconComponent {
 
   @Input()
   set assessment(value: Assessment) {
-
     switch (value.type) {
       case 'ica':
-        this._icon = IcaAssessmentIconsBySubject[ value.subject ];
+        this._icon = IcaAssessmentIconsBySubject[value.subject];
         break;
       case 'sum':
-        this._icon = SummativeAssessmentIconsBySubject[ value.subject ];
+        this._icon = SummativeAssessmentIconsBySubject[value.subject];
         break;
       default:
-        this._icon = AssessmentIconsByAssessmentName[ value.name ];
+        this._icon = AssessmentIconsByAssessmentName[value.name];
         break;
     }
 
     if (Utils.isNullOrUndefined(this._icon)) {
       this.missingIcon.emit(true);
     }
-
   }
-
 }

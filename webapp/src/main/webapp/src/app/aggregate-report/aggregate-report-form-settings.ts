@@ -1,13 +1,13 @@
 import { District, School } from '../shared/organization/organization';
-import { SubgroupFilters } from './subgroup/subgroup-filters';
-import {Claim, Subject} from './aggregate-report-options.service';
+import { ReportQueryType } from '../report/report';
+import { Claim, Subject } from './aggregate-report-options';
+import { SubgroupFilters } from '../shared/model/subgroup-filters';
 
 /**
  * Client side representation of a report request.
  * This object must be mapped into a format that the server supports
  */
 export interface AggregateReportFormSettings {
-
   /**
    * Assessment type of the report
    */
@@ -32,6 +32,11 @@ export interface AggregateReportFormSettings {
    * The achievement level graph display type
    */
   performanceLevelDisplayType: string;
+
+  /**
+   * Whether or not to show empty results or not
+   */
+  showEmpty: boolean;
 
   /**
    * Subject result filter
@@ -96,7 +101,7 @@ export interface AggregateReportFormSettings {
   /**
    * Defines the report type (standard or longitudinal)
    */
-  reportType: AggregateReportType;
+  reportType: ReportQueryType;
 
   /**
    * The advanced filters applied to basic reports
@@ -112,7 +117,6 @@ export interface AggregateReportFormSettings {
    * Standard report assessment settings
    */
   generalPopulation: {
-
     /**
      * Assessment grades to be covered on the report
      */
@@ -122,14 +126,12 @@ export interface AggregateReportFormSettings {
      * The school years to be covered on the report
      */
     schoolYears: number[];
-
   };
 
   /**
    * Claim report assessment settings
    */
   claimReport: {
-
     /**
      * Assessment grades to be covered on the report
      */
@@ -144,14 +146,12 @@ export interface AggregateReportFormSettings {
      * The claim codes
      */
     claimCodesBySubject: Claim[];
-
   };
 
   /**
    * Longitudinal report settings
    */
   longitudinalCohort: {
-
     /**
      * Assessment grades to be covered on the report
      */
@@ -161,14 +161,12 @@ export interface AggregateReportFormSettings {
      * The school years to be covered on the report
      */
     toSchoolYear: number;
-
   };
 
   /**
    * Target report settings
    */
   targetReport: {
-
     /**
      * The school year for the report's assessment
      */
@@ -183,12 +181,5 @@ export interface AggregateReportFormSettings {
      * The assessment grade for the report's assessment
      */
     assessmentGrade: string;
-  }
-}
-
-export enum AggregateReportType {
-  GeneralPopulation = 'GeneralPopulation',
-  LongitudinalCohort = 'LongitudinalCohort',
-  Claim = 'Claim',
-  Target = 'Target'
+  };
 }

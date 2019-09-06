@@ -1,22 +1,22 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { SchoolGradeComponent } from "./school-grade.component";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { CommonModule } from "../shared/common.module";
-import { SchoolService } from "./school.service";
-import { DropdownModule } from "primeng/components/dropdown/dropdown";
-import { SharedModule } from "primeng/components/common/shared";
-import { BrowserModule } from "@angular/platform-browser";
-import { AssessmentsModule } from "../assessments/assessments.module";
-import { RouterModule } from "@angular/router";
-import { APP_BASE_HREF } from "@angular/common";
-import { TypeaheadModule } from "ngx-bootstrap";
-import { UserModule } from "../user/user.module";
-import { MockDataService } from "../../test/mock.data.service";
-import { DataService } from "../shared/data/data.service";
-import { CachingDataService } from "../shared/data/caching-data.service";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { SchoolGradeComponent } from './school-grade.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReportingCommonModule } from '../shared/reporting-common.module';
+import { SchoolService } from './school.service';
+import { DropdownModule } from 'primeng/components/dropdown/dropdown';
+import { SharedModule } from 'primeng/components/common/shared';
+import { BrowserModule } from '@angular/platform-browser';
+import { AssessmentsModule } from '../assessments/assessments.module';
+import { RouterModule } from '@angular/router';
+import { APP_BASE_HREF } from '@angular/common';
+import { TypeaheadModule } from 'ngx-bootstrap';
+import { MockDataService } from '../../test/mock.data.service';
+import { DataService } from '../shared/data/data.service';
+import { CachingDataService } from '../shared/data/caching-data.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
-import { OrganizationService } from "../shared/organization/organization.service";
+import { OrganizationService } from '../shared/organization/organization.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SchoolGradeComponent', () => {
   let component: SchoolGradeComponent;
@@ -30,7 +30,9 @@ describe('SchoolGradeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        CommonModule,
+        ReportingCommonModule,
+        TranslateModule.forRoot(),
+        TypeaheadModule.forRoot(),
         BrowserModule,
         FormsModule,
         ReactiveFormsModule,
@@ -38,10 +40,9 @@ describe('SchoolGradeComponent', () => {
         RouterModule.forRoot([]),
         DropdownModule,
         TypeaheadModule,
-        SharedModule,
-        UserModule
+        SharedModule
       ],
-      declarations: [ SchoolGradeComponent ],
+      declarations: [SchoolGradeComponent],
       providers: [
         { provide: OrganizationService, useValue: mockOrganizationService },
         { provide: APP_BASE_HREF, useValue: '/' },
@@ -49,7 +50,7 @@ describe('SchoolGradeComponent', () => {
         { provide: DataService, useClass: MockDataService },
         { provide: CachingDataService, useClass: MockDataService }
       ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
 

@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { ImportResult } from "./import-result.model";
-import { DataService } from "../../../shared/data/data.service";
-import { Utils } from "../../../shared/support/support";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ImportResult } from './import-result.model';
+import { DataService } from '../../../shared/data/data.service';
+import { Utils } from '../../../shared/support/support';
 import { map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../../shared/service-route';
 
@@ -13,15 +13,15 @@ const ServiceRoute = AdminServiceRoute;
  */
 @Injectable()
 export class GroupImportService {
-
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   findStudentGroupBatches(): Observable<ImportResult[]> {
     return this.dataService
       .get(`${ServiceRoute}/studentGroupBatches`)
       .pipe(
-        map(apiStudentGroupBatch => this.mapWarehouseImportsFromApi(apiStudentGroupBatch))
+        map(apiStudentGroupBatch =>
+          this.mapWarehouseImportsFromApi(apiStudentGroupBatch)
+        )
       );
   }
 
@@ -45,5 +45,4 @@ export class GroupImportService {
       .filter(serverResult => !Utils.isNullOrUndefined(serverResult))
       .map(serverResult => this.mapImportResultFromApi(serverResult));
   }
-
 }

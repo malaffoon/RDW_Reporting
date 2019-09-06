@@ -1,22 +1,85 @@
-<page-heading>
-  <ng-template #heading>
-    <h2>{{'reports.heading' | translate}}</h2>
-  </ng-template>
-</page-heading>
-
-<div class="well wide-content-container" *ngIf="resolution.isOk()">
-  <ng-container *ngIf="reports.length; else noReports">
-    <p>{{ 'reports.instructions' | translate }}</p>
-    <report-table [reports]="reports"></report-table>
+<ng-container [ngSwitch]="loadingStatus">
+  <ng-container *ngSwitchCase="'Loading'">
+    <spinner></spinner>
   </ng-container>
-  <ng-template #noReports>
-    <p [innerHtml]="'reports.no-reports-html' | translate"></p>
+  <ng-container *ngSwitchCase="'Loaded'">
+    <tabset #tabset>
+      <tab heading="{{ 'reports.heading' | translate }}">
+        <div
+          class="well wide-content-container"
+          *ngIf="(userReports | async) as reports"
+        >
+          <ng-container *ngIf="reports.length; else noReports">
+            <p>{{ 'reports.instructions' | translate }}</p>
+            <user-report-table
+              [userReports]="reports"
+              [nameTemplate]="userReportName"
+            ></user-report-table>
+          </ng-container>
+          <ng-template #noReports>
+            <p [innerHtml]="'reports.no-reports-html' | translate"></p>
+          </ng-template>
+        </div>
+      </tab>
+      <tab heading="{{ 'reports.tab.user-queries.heading' | translate }}">
+        <div
+          class="well wide-content-container"
+          *ngIf="(userQueries | async) as queries"
+        >
+          <ng-container *ngIf="queries.length; else noUserQueries">
+            <p>{{ 'reports.tab.user-queries.instructions' | translate }}</p>
+            <user-query-table
+              [userQueries]="queries"
+              [nameTemplate]="userQueryName"
+            ></user-query-table>
+          </ng-container>
+          <ng-template #noUserQueries>
+            <p
+              [innerHtml]="
+                'reports.tab.user-queries.no-user-queries-instructions'
+                  | translate
+              "
+            ></p>
+          </ng-template>
+        </div>
+      </tab>
+    </tabset>
+  </ng-container>
+  <ng-container *ngSwitchCase="'Failed'">
+    <div class="well">
+      <p>{{ 'reports.get-reports-error' | translate }}</p>
+      <button class="btn btn-primary" (click)="reload()">
+        <i class="fa fa-refresh"></i>
+        {{ 'reports.reload' | translate }}
+      </button>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #userReportName let-userReport="report">
+  <ng-container *ngIf="userReport.options.length; else noOptions">
+    <app-menu
+      label="{{ userReport.query.name }}"
+      [options]="userReport.options"
+    ></app-menu>
+  </ng-container>
+  <ng-template #noOptions>
+    <div title="{{ userReport.query.name }}" class="label-max-width">
+      {{ userReport.query.name }}
+    </div>
   </ng-template>
-</div>
+</ng-template>
 
-<div class="well" *ngIf="resolution.isError()">
-  <p>{{'reports.get-reports-error' | translate}}</p>
-  <button class="btn btn-primary" (click)="reload()"><i class="fa fa-refresh"></i> {{'reports.reload' | translate}}</button>
-</div>
-
-
+<ng-template #userQueryName let-userQuery="userQuery">
+  <ng-container *ngIf="userQuery.options.length; else noOptions">
+    <app-menu
+      label="{{ userQuery.query.name }}"
+      [options]="userQuery.options"
+    ></app-menu>
+  </ng-container>
+  <ng-template #noOptions>
+    <div title="{{ userQuery.query.name }}" class="label-max-width">
+      {{ userQuery.query.name }}
+    </div>
+  </ng-template>
+</ng-template>

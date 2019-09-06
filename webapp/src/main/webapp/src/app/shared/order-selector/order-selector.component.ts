@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 /**
  * This component is responsible for displaying a UX to allow the user
@@ -9,7 +9,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
   templateUrl: 'order-selector.component.html'
 })
 export class OrderSelectorComponent {
-
   @Input()
   public items: OrderableItem[];
 
@@ -28,7 +27,11 @@ export class OrderSelectorComponent {
    * Move the selected item to the left.
    */
   public moveLeft(): void {
-    this.items.splice(this.selectedIdx - 1, 0, this.items.splice(this.selectedIdx, 1)[0]);
+    this.items.splice(
+      this.selectedIdx - 1,
+      0,
+      this.items.splice(this.selectedIdx, 1)[0]
+    );
     this.selectedIdx--;
     this.itemsChange.emit(this.items);
   }
@@ -37,7 +40,11 @@ export class OrderSelectorComponent {
    * Move the selected item to the right.
    */
   public moveRight(): void {
-    this.items.splice(this.selectedIdx + 1, 0, this.items.splice(this.selectedIdx, 1)[0]);
+    this.items.splice(
+      this.selectedIdx + 1,
+      0,
+      this.items.splice(this.selectedIdx, 1)[0]
+    );
     this.selectedIdx++;
     this.itemsChange.emit(this.items);
   }

@@ -1,10 +1,10 @@
 export interface Student {
-
   readonly id: number;
   readonly ssid: string;
   readonly firstName: string;
   readonly lastName: string;
   readonly gender: string;
+  readonly economicDisadvantage: string;
   readonly ethnicities: string[];
   readonly englishLanguageAcquisitionStatus: string;
   readonly individualEducationPlan: string;
@@ -12,4 +12,5 @@ export interface Student {
   readonly section504: string;
   readonly migrantStatus: string;
   readonly languages: string;
+  readonly militaryConnectedCodes: string;
 }

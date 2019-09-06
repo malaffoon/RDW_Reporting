@@ -1,10 +1,10 @@
-import { Observable } from "rxjs";
-import { Injectable } from "@angular/core";
-import { Embargo } from "./embargo";
-import { EmbargoScope } from "./embargo-scope.enum";
-import { OrganizationType } from "./organization-type.enum";
-import { DataService } from "../../shared/data/data.service";
-import { ResponseContentType } from "@angular/http";
+import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Embargo } from './embargo';
+import { EmbargoScope } from './embargo-scope.enum';
+import { OrganizationType } from './organization-type.enum';
+import { DataService } from '../../shared/data/data.service';
+import { ResponseContentType } from '@angular/http';
 import { map } from 'rxjs/operators';
 import { AdminServiceRoute } from '../../shared/service-route';
 
@@ -13,30 +13,37 @@ const ResourceContext = `${AdminServiceRoute}/embargoes`;
 /**
  * Service responsible for managing organization embargo settings
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EmbargoService {
-
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   /**
    * Gets all organization embargo settings the user has access to view or edit
    *
    * @returns {Observable<Map<OrganizationType, Embargo[]>>}
    */
-  getEmbargoesByOrganizationType(): Observable<Map<OrganizationType, Embargo[]>> {
-    return this.dataService.get(`${ResourceContext}`)
-      .pipe(
-        map((sourceEmbargoes: any[]) => {
-          return sourceEmbargoes.reduce((embargoesByOrganizationType, sourceEmbargo) => {
+  getEmbargoesByOrganizationType(): Observable<
+    Map<OrganizationType, Embargo[]>
+  > {
+    return this.dataService.get(`${ResourceContext}`).pipe(
+      map((sourceEmbargoes: any[]) => {
+        return sourceEmbargoes.reduce(
+          (embargoesByOrganizationType, sourceEmbargo) => {
             const embargo = EmbargoService.toEmbargo(sourceEmbargo),
               type = embargo.organization.type;
 
-            embargoesByOrganizationType.set(type, (embargoesByOrganizationType.get(type) || []).concat(embargo));
+            embargoesByOrganizationType.set(
+              type,
+              (embargoesByOrganizationType.get(type) || []).concat(embargo)
+            );
             return embargoesByOrganizationType;
-          }, new Map());
-        })
-      );
+          },
+          new Map()
+        );
+      })
+    );
   }
 
   /**
@@ -47,9 +54,15 @@ export class EmbargoService {
    * @param {boolean} value the new value of the embargo setting
    * @returns {Observable<Object>}
    */
-  update(embargo: Embargo, scope: EmbargoScope, value: boolean): Observable<Object> {
+  update(
+    embargo: Embargo,
+    scope: EmbargoScope,
+    value: boolean
+  ): Observable<Object> {
     return this.dataService.put(
-      `${ResourceContext}/${embargo.organization.type}/${embargo.organization.id ? embargo.organization.id : -1}/${scope}`,
+      `${ResourceContext}/${embargo.organization.type}/${
+        embargo.organization.id ? embargo.organization.id : -1
+      }/${scope}`,
       String(value),
       { responseType: ResponseContentType.Text }
     );
@@ -75,5 +88,4 @@ export class EmbargoService {
       aggregateEnabled: source.aggregateEnabled
     };
   }
-
 }

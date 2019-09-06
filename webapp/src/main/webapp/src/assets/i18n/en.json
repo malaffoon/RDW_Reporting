@@ -53,14 +53,12 @@
     },
     "heading": "Custom Aggregate Report",
     "preview": "This table does not contain actual data and is for preview purposes only.",
-    "subheading": "Select the attributes to include in the report. Then click \"Generate Report.\"",
+    "subheading": "Select the attributes to include in the report. Then click \"Create Report.\"",
     "field": {
-      "report-type-label": "Report Type",
-      "report-type-info": "TODO",
       "claim-codes-label": "Claims",
       "assessment-grade-range-label": "Assessment Grades",
       "to-school-year-label": "Most Recent Academic Year",
-      "to-school-year-info": "TODO",
+      "to-school-year-info": "The year for the highest assessment grade selected",
       "organization-label": "Search a School or District",
       "organization-invalid-error": "Please select a school, district or include state results.",
       "assessment-grade-label": "Assessment Grade",
@@ -70,11 +68,9 @@
       "assessment-grades-exceed-available-school-years-error": "Your selected grades exceeds the available school years. There are no results prior to {{lowestAvailableSchoolYear}}. Adjust the school year or reduce the number of grades. The most recent academic year is the last year of the longitudinal report.",
       "assessment-grades-less-than-minimum-error": "Please select more than one assessment grade.",
       "assessment-type-label": "Assessment Type",
-      "elas-label": "English Language Acquisition Status",
-      "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
       "language-placeholder": "Enter language",
       "interim-administration-condition-label": "Manner of Administration",
-      "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
+      "interim-administration-condition-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Nonstandardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
       "school-year-label": "Academic Year",
       "school-years-label": "Academic Years",
       "school-year-empty-error": "Please select a school year.",
@@ -83,22 +79,6 @@
       "subjects-none": "No subjects available",
       "summative-administration-condition-label": "Validity",
       "summative-administration-condition-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.",
-      "gender-label": "Gender",
-      "gender-info": "Student's reported gender",
-      "language-label": "Primary Language",
-      "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
-      "ethnicity-label": "Race / Ethnicity",
-      "ethnicity-info": "Student race and ethnicity",
-      "migrant-status-label": "Migrant Status",
-      "migrant-status-info": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons.",
-      "iep-label": "IEP",
-      "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP). These plans are for students with disabilities who require specialized instruction.",
-      "504-label": "504",
-      "504-info": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction.",
-      "limited-english-proficiency-label": "Limited English Proficiency",
-      "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
-      "economic-disadvantage-label": "Economic Disadvantage",
-      "economic-disadvantage-info": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage.",
       "comparative-subgroup-label": "Subgroups",
       "report-name-label": "Report Name",
       "report-name-file-name-error": "The name cannot contain these special characters: <>:;,?\"*|\\/",
@@ -130,7 +110,7 @@
       "report-type-heading": "Report Type",
       "review-heading": "Report Review",
       "preview-heading": "Report Preview",
-      "preview-heading-subtext": "Select the Generate Report button to view the actual report.",
+      "preview-heading-subtext": "Select the Create Report button to view the actual report.",
       "custom-subgroup": {
         "heading": "Custom Subgroups",
         "description": "Create multiple custom subgroups by selecting a combination of attributes below and clicking \"Create Subgroup.\" Each custom subgroup will represent a row in your report. The Report Preview section below shows how it will look.",
@@ -138,7 +118,7 @@
         "list-label": "Custom Subgroups"
       }
     },
-    "submit": "Generate Report",
+    "submit": "Create Report",
     "tab": {
       "subgroup-and-filter": "Subgroups and Advanced Filters",
       "custom-subgroup": "Customize Subgroups"
@@ -225,6 +205,7 @@
   },
   "assessment-results": {
     "distractor-analysis-instructions": "The shaded responses below indicate the correct answer for each item.",
+    "hide-results": "Hide Results",
     "no-distractor-analysis": "Key / Distractor Analysis is not available for assessments administered prior to 2017-18 school year.",
     "no-results-by-item": "Results By Item is not available for assessments administered prior to 2017-18 school year.",
     "no-writing-trait-scores": "Writing trait scores are not available for assessments administered prior to 2017-18 school year.",
@@ -232,6 +213,7 @@
     "select-view": "Select View",
     "session-unknown": "Not provided",
     "sessions-title": "Sessions",
+    "show-results": "Show Results",
     "transfer-student-instructions": "The highlighted row(s) indicate test results from a previous school.",
     "view": {
       "ByItem": "Results By Item",
@@ -257,25 +239,29 @@
     "result": "Result",
     "results": "Results",
     "results-label": "Number of Test Results",
-    "scale-score": "Average Scale Score and Error Band",
+    "scale-score": "Average Scale Score<br/> and Error Band",
     "scale-score-info": "Average scale score for the selected group of students and an error band based on the Standard Error of the Mean (SEM) associated with that score. Test scores are estimates of student achievement and come with a certain amount of measurement error. See the Interpretive Guide for additional information about scale scores and measurement error.",
-    "student-score-distribution": "Student Score Distribution",
-    "student-claim-distribution": "Student Claim Score Distribution",
+    "overall-score-distribution": "Student Score Distribution",
+    "other-score-distribution": "Student {{scoreName}} Score Distribution",
     "title": "Results Summary"
   },
   "common": {
     "action": {
+      "accept": "OK",
       "cancel": "Cancel",
       "close": "Close",
       "collapse": "Collapse",
       "collapse-results": "Collapse Results",
       "create": "Create",
+      "creating": "Creating",
       "delete": "Delete",
+      "deleting": "Deleting",
       "expand": "Expand",
       "expand-results": "Expand Results",
       "go-home": "Go Home",
       "hide": "Hide",
       "save": "Save",
+      "saving": "Saving",
       "search": "Search",
       "select": "Select",
       "show": "Show",
@@ -297,11 +283,11 @@
         "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
       },
-      "GeneralPopulation": {
+      "CustomAggregate": {
         "description": "Compare performance by selected school years.",
         "label": "Yearly Report"
       },
-      "LongitudinalCohort": {
+      "Longitudinal": {
         "description": "Track performance on summative assessments over time.",
         "disabled": "Longitudinal Reports are only available for summative assessments.",
         "label": "Longitudinal Report"
@@ -312,10 +298,6 @@
       }
     },
     "assessment-grade": {
-      "10": "HS",
-      "11": "HS",
-      "12": "HS",
-      "13": "13",
       "01": "1",
       "02": "2",
       "03": "3",
@@ -324,7 +306,11 @@
       "06": "6",
       "07": "7",
       "08": "8",
-      "09": "HS",
+      "09": "9",
+      "10": "10",
+      "11": "11",
+      "12": "12",
+      "13": "13",
       "IT": "IT",
       "KG": "KG",
       "PK": "PK",
@@ -334,10 +320,6 @@
       "UG": "UG"
     },
     "assessment-grade-label": {
-      "10": "High School",
-      "11": "High School",
-      "12": "High School",
-      "13": "Grade 13",
       "01": "Grade 1",
       "02": "Grade 2",
       "03": "Grade 3",
@@ -346,7 +328,11 @@
       "06": "Grade 6",
       "07": "Grade 7",
       "08": "Grade 8",
-      "09": "High School",
+      "09": "Grade 9",
+      "10": "Grade 10",
+      "11": "Grade 11",
+      "12": "Grade 12",
+      "13": "Grade 13",
       "IT": "Infant/Toddler",
       "KG": "Kindergarten",
       "PK": "Prekindergarten",
@@ -356,10 +342,6 @@
       "UG": "Ungraded"
     },
     "assessment-grade-short-label": {
-      "10": "HS",
-      "11": "HS",
-      "12": "HS",
-      "13": "G13",
       "01": "G1",
       "02": "G2",
       "03": "G3",
@@ -368,7 +350,11 @@
       "06": "G6",
       "07": "G7",
       "08": "G8",
-      "09": "HS",
+      "09": "G9",
+      "10": "G10",
+      "11": "G11",
+      "12": "G12",
+      "13": "G13",
       "IT": "IT",
       "KG": "KG",
       "PK": "PK",
@@ -401,8 +387,7 @@
     },
     "buttons": {
       "all": "All",
-      "display-claim": "Claim Scores",
-      "display-overall": "Overall Scores",
+      "display-overall": "Overall",
       "printable-student-reports": "Printable Reports"
     },
     "collection-selection": {
@@ -427,10 +412,11 @@
       "Ethnicity": "Race / Ethnicity",
       "Gender": "Gender",
       "IEP": "IEP",
-      "LEP": "Limited English Proficiency",
+      "LEP": "English Learner",
       "ELAS": "English Language Acquisition Status",
       "Language": "Primary Language",
       "MigrantStatus": "Migrant Status",
+      "MilitaryConnectedCode": "Military Student Identifier",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Student Enrolled Grade"
@@ -439,11 +425,17 @@
       "EconomicDisadvantage": "Economic Disadvantage",
       "Ethnicity": "Ethnicity",
       "Gender": "Gender",
+      "IndividualEducationPlan": "IEP",
       "IEP": "IEP",
-      "LEP": "LEP",
+      "LimitedEnglishProficiency": "English Learner",
+      "LEP": "English Learner",
+      "EnglishLanguageAcquisitionStatus": "ELAS",
       "ELAS": "ELAS",
+      "PrimaryLanguage": "Language",
       "Language": "Language",
       "MigrantStatus": "Migrant Status",
+      "MilitaryStudentIdentifier": "Military",
+      "MilitaryConnectedCode": "Military",
       "Overall": "Overall",
       "Section504": "504",
       "StudentEnrolledGrade": "Enrolled Grade"
@@ -517,34 +509,18 @@
     "filters": {
       "status": {
         "administration": "Manner of Administration (Interim)",
-        "administration-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Non Standardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
+        "administration-info": "For interim assessments, a Standardized administration follows the same protocols and security procedures as a summative test administration. For a Nonstandardized administration, the teacher may use the assessment during instruction and interact with students as they complete the assessment.",
         "label": "Status",
         "summative": "Valid/Invalid (Summative)",
         "summative-info": "For summative assessments, a test is noted as invalid if an appeal is submitted  to invalidate the test due to a test irregularity or breach.  "
       },
       "student": {
-        "504-plan": "504 Plan",
-        "504-plan-info": "Indicates that a student has an approved 504 plan.  These plans are for students with disabilities who may need accommodations but do not require specialized instruction.",
-        "elas": "English Language Acquisition Status",
-        "elas-info": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
-        "ethnicity": "Race/Ethnicity",
-        "ethnicity-info": "Student race and ethnicity",
-        "gender": "Gender",
-        "gender-info": "Student's reported gender",
-        "language": "Primary Language",
-        "language-info": "The primary language is determined from information submitted on the Home Language Survey.",
-        "iep": "IEP",
-        "iep-info": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
-        "label": "Student",
-        "limited-english-proficiency": "Limited English Proficiency",
-        "limited-english-proficiency-info": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
-        "migrant-status": "Migrant Status",
-        "migrant-status-info": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons."
+        "label": "Student"
       },
       "test": {
         "label": "Test",
         "off-grade-assessment": "Off-Grade Assessments",
-        "off-grade-assessment-info": "Schools may administer interim assessments for any grade.  This filter indicates that a student took an assessment for a grade other than their assigned grade.",
+        "off-grade-assessment-info": "Schools may administer interim assessments for any grade.  This filter indicates that a student took an assessment for a grade other than the student's assigned grade.",
         "transfer-assessment": "New Students",
         "transfer-assessment-info": "Indicates whether to show or hide assessments administered outside of the User's standard institutions."
       }
@@ -598,6 +574,192 @@
     "languages": {
       "undefined": "Not Stated"
     },
+    "language": {
+      "aa": "Afar",
+      "ab": "Abkhaz",
+      "ae": "Avestan",
+      "af": "Afrikaans",
+      "ak": "Akan",
+      "am": "Amharic",
+      "an": "Aragonese",
+      "ar": "Arabic",
+      "as": "Assamese",
+      "av": "Avaric",
+      "ay": "Aymara",
+      "az": "Azerbaijani",
+      "ba": "Bashkir",
+      "be": "Belarusian",
+      "bg": "Bulgarian",
+      "bh": "Bihari",
+      "bi": "Bislama",
+      "bm": "Bambara",
+      "bn": "Bengali, Bangla",
+      "bo": "Tibetan Standard, Tibetan, Central",
+      "br": "Breton",
+      "bs": "Bosnian",
+      "ca": "Catalan",
+      "ce": "Chechen",
+      "ch": "Chamorro",
+      "co": "Corsican",
+      "cr": "Cree",
+      "cs": "Czech",
+      "cu": "Old Church Slavonic, Church Slavonic, Old Bulgarian",
+      "cv": "Chuvash",
+      "cy": "Welsh",
+      "da": "Danish",
+      "de": "German",
+      "dv": "Divehi, Dhivehi, Maldivian",
+      "dz": "Dzongkha",
+      "ee": "Ewe",
+      "el": "Greek (modern)",
+      "en": "English",
+      "eo": "Esperanto",
+      "es": "Spanish",
+      "et": "Estonian",
+      "eu": "Basque",
+      "fa": "Persian (Farsi)",
+      "ff": "Fula, Fulah, Pulaar, Pular",
+      "fi": "Finnish",
+      "fj": "Fijian",
+      "fo": "Faroese",
+      "fr": "French",
+      "fy": "Western Frisian",
+      "ga": "Irish",
+      "gd": "Scottish Gaelic, Gaelic",
+      "gl": "Galician",
+      "gn": "Guaraní",
+      "gu": "Gujarati",
+      "gv": "Manx",
+      "ha": "Hausa",
+      "he": "Hebrew (modern)",
+      "hi": "Hindi",
+      "ho": "Hiri Motu",
+      "hr": "Croatian",
+      "ht": "Haitian, Haitian Creole",
+      "hu": "Hungarian",
+      "hy": "Armenian",
+      "hz": "Herero",
+      "ia": "Interlingua",
+      "id": "Indonesian",
+      "ie": "Interlingue",
+      "ig": "Igbo",
+      "ii": "Nuosu",
+      "ik": "Inupiaq",
+      "io": "Ido",
+      "is": "Icelandic",
+      "it": "Italian",
+      "iu": "Inuktitut",
+      "ja": "Japanese",
+      "jv": "Javanese",
+      "ka": "Georgian",
+      "kg": "Kongo",
+      "ki": "Kikuyu, Gikuyu",
+      "kj": "Kwanyama, Kuanyama",
+      "kk": "Kazakh",
+      "kl": "Kalaallisut, Greenlandic",
+      "km": "Khmer",
+      "kn": "Kannada",
+      "ko": "Korean",
+      "kr": "Kanuri",
+      "ks": "Kashmiri",
+      "ku": "Kurdish",
+      "kv": "Komi",
+      "kw": "Cornish",
+      "ky": "Kyrgyz",
+      "la": "Latin",
+      "lb": "Luxembourgish, Letzeburgesch",
+      "lg": "Ganda",
+      "li": "Limburgish, Limburgan, Limburger",
+      "ln": "Lingala",
+      "lo": "Lao",
+      "lt": "Lithuanian",
+      "lu": "Luba-Katanga",
+      "lv": "Latvian",
+      "mg": "Malagasy",
+      "mh": "Marshallese",
+      "mi": "Māori",
+      "mk": "Macedonian",
+      "ml": "Malayalam",
+      "mn": "Mongolian",
+      "mr": "Marathi (Marāṭhī)",
+      "ms": "Malay",
+      "mt": "Maltese",
+      "my": "Burmese",
+      "na": "Nauruan",
+      "nb": "Norwegian Bokmål",
+      "nd": "Northern Ndebele",
+      "ne": "Nepali",
+      "ng": "Ndonga",
+      "nl": "Dutch",
+      "nn": "Norwegian Nynorsk",
+      "no": "Norwegian",
+      "nr": "Southern Ndebele",
+      "nv": "Navajo, Navaho",
+      "ny": "Chichewa, Chewa, Nyanja",
+      "oc": "Occitan",
+      "oj": "Ojibwe, Ojibwa",
+      "om": "Oromo",
+      "or": "Oriya",
+      "os": "Ossetian, Ossetic",
+      "pa": "(Eastern) Punjabi",
+      "pi": "Pāli",
+      "pl": "Polish",
+      "ps": "Pashto, Pushto",
+      "pt": "Portuguese",
+      "qu": "Quechua",
+      "rm": "Romansh",
+      "rn": "Kirundi",
+      "ro": "Romanian",
+      "ru": "Russian",
+      "rw": "Kinyarwanda",
+      "sa": "Sanskrit (Saṁskṛta)",
+      "sc": "Sardinian",
+      "sd": "Sindhi",
+      "se": "Northern Sami",
+      "sg": "Sango",
+      "si": "Sinhalese, Sinhala",
+      "sk": "Slovak",
+      "sl": "Slovene",
+      "sm": "Samoan",
+      "sn": "Shona",
+      "so": "Somali",
+      "sq": "Albanian",
+      "sr": "Serbian",
+      "ss": "Swati",
+      "st": "Southern Sotho",
+      "su": "Sundanese",
+      "sv": "Swedish",
+      "sw": "Swahili",
+      "ta": "Tamil",
+      "te": "Telugu",
+      "tg": "Tajik",
+      "th": "Thai",
+      "ti": "Tigrinya",
+      "tk": "Turkmen",
+      "tl": "Tagalog",
+      "tn": "Tswana",
+      "to": "Tonga (Tonga Islands)",
+      "tr": "Turkish",
+      "ts": "Tsonga",
+      "tt": "Tatar",
+      "tw": "Twi",
+      "ty": "Tahitian",
+      "ug": "Uyghur",
+      "uk": "Ukrainian",
+      "ur": "Urdu",
+      "uz": "Uzbek",
+      "ve": "Venda",
+      "vi": "Vietnamese",
+      "vo": "Volapük",
+      "wa": "Walloon",
+      "wo": "Wolof",
+      "xh": "Xhosa",
+      "yi": "Yiddish",
+      "yo": "Yoruba",
+      "za": "Zhuang, Chuang",
+      "zh": "Chinese",
+      "zu": "Zulu"
+    },
     "menus": {
       "resources": "Instructional Resources",
       "responses": "{{name}}'s Responses",
@@ -614,8 +776,15 @@
       "no-responses-for-exam": "There are no responses available for this exam.",
       "no-responses-for-summative-exams": "Summative assessment responses are not made available by this system.",
       "null-student": "This student is unavailable.  Contact your building administrator if you think you should have access to this student.",
-      "submission-failed": "Error creating report. See <a href=\"/reports\">status</a>.",
+      "submission-failed": "Error creating report. Visit <a href=\"/reports\">My Reports</a> for details.",
       "unknown-error": "An unknown error has occurred. You can try the same action again or click the button below to go to the home page.  If this problem persists, please contact your building administrator."
+    },
+    "military-connected-code": {
+      "ActiveDuty": "Active Duty",
+      "NotMilitaryConnected": "Not Military Connected",
+      "NationalGuardOrReserve": "National Guard Or Reserve",
+      "Yes": "Yes",
+      "No": "No"
     },
     "missing": "-",
     "navigation": {
@@ -623,6 +792,7 @@
       "user-guide": "User Guide"
     },
     "no-results": "No records found",
+    "no-scores-reported": "No Scores Reported",
     "organization": {
       "type": {
         "District": "District",
@@ -636,7 +806,7 @@
       "Grouped": "Grouped",
       "Separate": "All"
     },
-    "performance-level-display-type-input-label": "Show achievement levels",
+    "performance-level-display-type-input-label": "Achievement levels",
     "person-name": "{{lastName}}, {{firstName}}",
     "polar": {
       "1": "Yes",
@@ -657,6 +827,10 @@
         "no-instruct-found": "Resources not yet available"
       },
       "assessment-exam-columns": {
+        "alternateScaleScoreAndStandardError": "{{name}}<br/> Scale Score / Error Band",
+        "alternateScaleScoreLevel": "{{name}}<br/> Level",
+        "alternateScaleScore": "{{name}} Scale Score",
+        "alternateScaleScoreStandardError": "{{name}} Standard Error",
         "date": "Date",
         "grade": "Enrolled Grade",
         "iab": {
@@ -690,6 +864,7 @@
         "max-points": "Max Points",
         "number": "Item #",
         "purpose": "Writing Purpose",
+        "purpose-not-specified": "Not Specified",
         "purpose-info": "Students write extended responses that that have one of the following purposes: narrative, opinion, informational, explanatory, or argumentative. Writing purpose varies by grade of assessment. For more information, see the Interpretive Guide.",
         "standard": "Standard",
         "x-points": "{{id}}"
@@ -698,11 +873,37 @@
     },
     "school-typeahead-label": "School",
     "school-year-select-label": "School Year",
+    "show-empty-input-label": "{{value}} empty rows",
+    "show-empty-input-label-preview": "Empty rows",
     "strict-boolean": {
       "false": "No",
       "no": "No",
       "true": "Yes",
       "yes": "Yes"
+    },
+    "student-field": {
+      "EconomicDisadvantage": "Economic Disadvantage",
+      "EnglishLanguageAcquisitionStatus": "English Language Acquisition Status",
+      "Ethnicity": "Race / Ethnicity",
+      "Gender": "Gender",
+      "IndividualEducationPlan": "IEP",
+      "LimitedEnglishProficiency": "English Learner",
+      "MigrantStatus": "Migrant Status",
+      "MilitaryStudentIdentifier": "Military Student Identifier",
+      "PrimaryLanguage": "Primary Language",
+      "Section504": "504 Plan"
+    },
+    "student-field-info": {
+      "EconomicDisadvantage": "Indicates that a student qualifies for free or reduced lunch or meets other state criteria for economic disadvantage.",
+      "EnglishLanguageAcquisitionStatus": "A student’s ELAS is determined based on the results of the Home Language Survey and the state’s ELP assessment, if applicable.",
+      "Ethnicity": "Student race and ethnicity",
+      "Gender": "Student's reported gender",
+      "IndividualEducationPlan": "Indicates that a student has an approved Individual Education Plan (IEP).  These plans are for students with disabilities who require specialized instruction.",
+      "LimitedEnglishProficiency": "Students who use a language other than English as their primary language and who have been assessed as not possessing the English language skills necessary to succeed in the regular instructional program.",
+      "MigrantStatus": "A child is considered \"migratory\" if the parent or guardian is a migratory worker in the agricultural, dairy, lumber, or fishing industries and the child's family has moved during the past three years. A young adult may also qualify if he or she has moved on his or her own for the same reasons.",
+      "MilitaryStudentIdentifier": "An indication that the student's parent or guardian is U.S. active duty military, in the National Guard, or in the Reserves.",
+      "PrimaryLanguage": "The primary language is determined from information submitted on the Home Language Survey.",
+      "Section504": "Indicates that a student has an approved 504 plan. These plans are for students with disabilities who may need accommodations but do not require specialized instruction."
     },
     "student-response-columns": {
       "correctness": "Correctness",
@@ -711,6 +912,28 @@
       "student-points": "Student Points"
     },
     "subject-select-label": "Subject",
+    "tenant-status": {
+      "CREATE_STARTED": "Creating {{tenantType}}",
+      "CREATE_SETTING_UP_DATABASES": "Creating {{tenantType}}: Creating Database Resources",
+      "CREATE_PERSISTING_CONFIGURATION": "Creating {{tenantType}}: Saving Configurations",
+      "CREATE_PUBLISHING_CONFIGURATION_CHANGES": "Creating {{tenantType}}: Publishing Configuration Changes",
+      "CREATE_RUNNING_MIGRATIONS": "Creating {{tenantType}}: Running Database Migrations",
+      "CREATE_CLEARING_CACHES": "Creating {{tenantType}}: Clearing Caches",
+      "CREATE_FAILED": "Creation Failed",
+      "DELETE_STARTED": "Deleting {{tenantType}}",
+      "DELETE_PERSISTING_CONFIGURATION": "Deleting {{tenantType}}: Saving Configurations",
+      "DELETE_PUBLISHING_CONFIGURATION_CHANGES": "Deleting {{tenantType}}: Publishing Configuration Changes",
+      "DELETE_CLEARING_DATABASE_RESOURCES": "Deleting {{tenantType}}: Deleting Database Resources",
+      "DELETE_CLEARING_S3_RESOURCES": "Deleting {{tenantType}}: Deleting Archive Resources",
+      "DELETE_CLEAR_CACHES": "Deleting {{tenantType}}: Clearing Caches",
+      "DELETE_FAILED": "Deletion Failed",
+      "UPDATE_STARTED": "Updating {{tenantType}}",
+      "UPDATE_PERSISTING_CONFIGURATION": "Updating {{tenantType}}: Saving Configurations",
+      "UPDATE_PUBLISHING_CONFIGURATION_CHANGES": "Updating {{tenantType}}: Publishing Configuration Changes",
+      "UPDATE_CLEAR_CACHES": "Updating {{tenantType}}: Clearing Caches",
+      "UPDATE_FAILED": "Update Failed",
+      "ACTIVE": "Active"
+    },
     "unknown": "Unknown",
     "unscored": "No Score Recorded",
     "value-display-type": {
@@ -721,7 +944,7 @@
       "Number": "{{value}}",
       "Percent": "{{value}}%"
     },
-    "value-display-type-input-label": "Show value as",
+    "value-display-type-input-label": "Display value as",
     "writing-trait": {
       "conventions": "Conventions",
       "evidence": "Evidence / Elaboration",
@@ -735,7 +958,7 @@
       "home-sr": "Home",
       "window-title": "Smarter Balanced | Reporting System"
     },
-    "footer": "© 2018 The Regents of the University of California",
+    "footer": "© 2019 The Regents of the University of California",
     "languages": {
       "en": "English",
       "es": "Español",
@@ -747,14 +970,20 @@
         "title": "Reporting System Dashboard"
       },
       "logout": "Logout",
-      "title": "Reporting System",
+      "title": {
+        "sandbox": "Reporting System Sandbox",
+        "tenant": "Reporting System"
+      },
       "toggle-sr": "Toggle navigation",
-      "user-dropdown": "Welcome {{firstName}} {{lastName}}"
+      "user-dropdown": "{{firstName}} {{lastName}}"
     },
     "session-expired": {
-      "message": "Click Ok to re-authenticate.",
-      "ok": "Ok",
-      "title": "Authentication Expired"
+      "title": "Session Expired",
+      "message": {
+        "reload": "Your session has timed out. Please click OK to login again",
+        "refresh": "Your session has timed out. Please click OK to continue working."
+      },
+      "accept": "OK"
     }
   },
   "create-instructional-resource-modal": {
@@ -778,6 +1007,7 @@
     "assessment-session-id": "TestSessionId",
     "assessment-type": "AssessmentType",
     "claim": "Claim",
+    "EconomicDisadvantage": "EconomicDisadvantage",
     "elas": "EnglishLanguageAcquisitionStatus",
     "enrolled-grade": "GradeLevelWhenAssessed",
     "error-band-max": "Error Band Max",
@@ -785,8 +1015,9 @@
     "gender": "Sex",
     "language": "Language",
     "language-code": "LanguageCode",
+    "military-connected-code": "MilitaryConnectedStudentIndicator",
     "iep": "IDEAIndicator",
-    "limited-english": "LEPStatus",
+    "limited-english": "EnglishLearner",
     "migrant-status": "MigrantStatus",
     "scale-score": "ScaleScore",
     "school": "SchoolName",
@@ -798,12 +1029,18 @@
     "submit-date-time": "SubmitDateTime",
     "target": "Target"
   },
+  "delete-modal": {
+    "title": "Delete \"{{value}}\"",
+    "body": "Are you sure you want to delete \"{{value}}\"?",
+    "body-generic": "Are you sure you want to delete this?"
+  },
   "delete-group-modal": {
     "button-cancel": "No, keep this group.",
     "button-save": "Yes, delete this group",
     "content-html": "<p>When a group is deleted, it is no longer available to any users.  This action cannot be undone.</p><p>Are you sure you would like to continue?</p>",
     "error": "Unable to delete this group.",
-    "title": "Delete {{name}}?"
+    "title": "Delete {{name}}?",
+    "sandbox-body": "Group deletion is disabled when working in the Sandbox"
   },
   "delete-instructional-resource-modal": {
     "error": "Unable to delete instructional resource.",
@@ -897,7 +1134,7 @@
   },
   "file-format": {
     "header": "CSV File Format",
-    "rule-body-html": "<ol> <li class=\"mt-md\"> The CSV file must include the headers found in the template file provided below. </li><li class=\"mt-md\"> Every row must include a valid <code>school_natural_id</code>, <code>school_year</code>, and <code>group_name</code>. </li><li class=\"mt-md\"> Groups for a particular school must be listed together and must not be separated by lists of groups for other schools. </li><li class=\"mt-md\"> Groups must be listed together and not separated by rows of other groups. </li><li class=\"mt-md\"> A group's subject must be listed as <code>Math</code>, <code>ELA</code> or <code>All</code>. </li><li class=\"mt-md\"> There is a limit of <code>200</code> students that may be assigned to a single group. </li><li class=\"mt-md\"> A user must have the <code>GROUP_ADMIN</code> role for a school in order to upload groups. </li></ol>",
+    "rule-body-html": "<ol> <li class=\"mt-md\"> The CSV file must include the headers found in the template file provided below. </li><li class=\"mt-md\"> Every row must include a valid <code>school_natural_id</code>, <code>school_year</code>, and <code>group_name</code>. </li><li class=\"mt-md\"> Groups for a particular school must be listed together and must not be separated by lists of groups for other schools. </li><li class=\"mt-md\"> Groups must be listed together and not separated by rows of other groups. </li><li class=\"mt-md\"> A group's subject must be listed as <code>ALL</code> or a valid subject code, e.g. <code>MATH</code>, <code>ELA</code>. </li><li class=\"mt-md\"> There is a limit of <code>200</code> students that may be assigned to a single group. </li><li class=\"mt-md\"> A user must have the <code>GROUP_ADMIN</code> role for a school in order to upload groups. </li></ol>",
     "rule-header": "How to write the CSV",
     "template-button": "Template",
     "template-file": "groups"
@@ -951,9 +1188,13 @@
         "button": "Embargo",
         "description": "Manage embargoes of summative results."
       },
+      "ingest-pipelines": {
+        "button": "Ingest Pipelines",
+        "description": "Manage ingest pipeline transformation scripts"
+      },
       "instructional-resources": {
         "button": "Instructional Resources",
-        "description": "Upload instructional resources in the system."
+        "description": "Upload links to instructional resources in the system."
       },
       "organizational-export": {
         "button": "District / School Exports",
@@ -962,6 +1203,14 @@
       "student-groups": {
         "button": "Student Groups",
         "description": "Create and manage student groups for teachers."
+      },
+      "sandboxes": {
+        "button": "Sandboxes",
+        "description": "Manage Reporting System Sandboxes"
+      },
+      "tenants": {
+        "button": "Tenants",
+        "description": "Manage Reporting System Tenants"
       },
       "titles": {
         "administrator-tools": "Administrator Tools"
@@ -975,8 +1224,7 @@
     "skip-link": "Skip to main content",
     "title": "Access Assessment Results",
     "welcome": {
-      "interpretive-guide-html": "<a href=\"{{interpretiveGuideUrl}}\" target=\"_blank\">The Interim Assessments Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
-      "interpretive-guide-subtitle": "Interim Assessments",
+      "interpretive-guide-html": "<a href=\"{{interpretiveGuideUrl}}\" target=\"_blank\">The Interpretive Guide</a> is designed to help educators, parents, and other stakeholders interpret interim assessments reports for the Smarter Balanced Reporting System.",
       "title": "Welcome!",
       "user-guide-html": "<a href=\"{{userGuideUrl}}\" target=\"_blank\">The User Guide</a> describes features of the Smarter Balanced Reporting System and instructions for using each feature."
     }
@@ -1026,7 +1274,7 @@
     "difficulty": "Item Difficulty: ",
     "docs": "Supporting Documentation: ",
     "dok-label": "Depth of Knowledge: ",
-    "guide": "Interim Assessments Interpretive Guide",
+    "guide": "Interpretive Guide",
     "math": "Mathematical Practice Standard: ",
     "math-practice": {
       "description": {
@@ -1096,9 +1344,10 @@
         }
       },
       "report-name": "Export File Name",
+      "save-query-button-label": "Save Query",
       "submit": {
         "failure": "Error creating export. Please try again.",
-        "label": "Export Results",
+        "label": "Create Report",
         "success-html": "Creating export."
       }
     },
@@ -1121,7 +1370,10 @@
     "download-report": "Download Report Data",
     "embargoed": "Reports with embargoed results may only be viewed online, they may not be downloaded.",
     "view-query": "View Report Query",
-    "view-report": "View Report"
+    "view-report": "View Report",
+    "save-query": "Save Report Query",
+    "delete": "Delete Report",
+    "delete-warning": "Are you sure you want to delete report \"{{name}}\"?"
   },
   "report-download": {
     "form": {
@@ -1136,25 +1388,280 @@
         "vi": "Vietnamese"
       },
       "order": "Sort Order",
-      "submit": "Create"
+      "submit": "Create Report"
     },
     "orders": {
-      "0": "Student Name",
-      "1": "Student SSID"
+      "StudentName": "Student Name",
+      "StudentSSID": "Student SSID"
     },
-    "submitted-message": "Creating report. See <a href=\"/reports\">status</a>."
+    "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
+  },
+  "tenant": {
+    "initialization-error": {
+      "create": {
+        "SANDBOX": "Failed to load the new sandbox form. Please contact a system administrator if this issue continues.",
+        "TENANT": "Failed to load the new tenant form. Please contact a system administrator if this issue continues."
+      },
+      "update": {
+        "SANDBOX": "Failed to load sandbox {{tenantKey}}. Please contact a system administrator if this issue continues.",
+        "TENANT": "Failed to load tenant {{tenantKey}}. Please contact a system administrator if this issue continues."
+      }
+    },
+    "create": {
+      "error": {
+        "SANDBOX": "An error occurred when creating the sandbox",
+        "TENANT": "An error occurred when creating the tenant"
+      }
+    },
+    "update": {
+      "error": {
+        "SANDBOX": "An error occurred when updating the sandbox",
+        "TENANT": "An error occurred when updating the tenant"
+      }
+    },
+    "delete": {
+      "error": {
+        "SANDBOX": "An error occurred when deleting the sandbox",
+        "TENANT": "An error occurred when deleting the tenant"
+      },
+      "modal": {
+        "head": "Delete <strong>{{label}} ({{code}})</strong>?",
+        "body": {
+          "SANDBOX": "Are you sure you want to delete sandbox <strong>{{label}} ({{code}})</strong>?",
+          "TENANT": "<strong>WARNING!!! This is a tenant, not a sandbox!</strong><br>Are you really sure you want to delete tenant <strong>{{label}} ({{code}})</strong>?"
+        }
+      }
+    }
+  },
+  "tenant-type": {
+    "TENANT": "Tenant",
+    "SANDBOX": "Sandbox"
+  },
+  "tenants": {
+    "heading": {
+      "SANDBOX": "Sandboxes",
+      "TENANT": "Tenants"
+    },
+    "create": {
+      "SANDBOX": "Create Sandbox",
+      "TENANT": "Create Tenant"
+    },
+    "empty": {
+      "SANDBOX": "There are currently no sandboxes configured. You can create a new sandbox by clicking the \"Create Sandbox\" button. If the application was recently restarted please wait a few minutes and refresh the page to view the system sandboxes.",
+      "TENANT": "There are currently no tenants configured. You can create a new tenant by clicking the \"Create Tenant\" button. If the application was recently restarted please wait a few minutes and refresh the page to view the system tenants."
+    }
+  },
+  "tenant-form": {
+    "field": {
+      "key": {
+        "label": "Key",
+        "info": "This is the internal identifier for the tenant, used in the configuration to uniquely identify the tenant. For consistency, it may be the same as the ID.",
+        "error": {
+          "required": "Please enter a tenant key",
+          "unavailable": "A tenant with the same key already exists",
+          "pattern": "The tenant key that was entered is not valid. Only alphanumeric characters and underscores ('_') are allowed"
+        }
+      },
+      "id": {
+        "label": "ID",
+        "info": "This is the external identifier for the tenant. It must match the ID in the tenancy chain. Typically, this is a state code.",
+        "error": {
+          "required": "Please enter a tenant ID",
+          "unavailable": "A tenant with the same ID already exists",
+          "pattern": "The tenant id that was entered is not valid. Only alphanumeric characters, underscores ('_'), and hyphens ('-') are allowed"
+        }
+      },
+      "name": {
+        "label": "Name",
+        "info": "The name that will be displayed in the UI for this tenant or sandbox",
+        "error": {
+          "required": "Please provide a name"
+        }
+      },
+      "description": {
+        "label": "Description"
+      },
+      "tenant": {
+        "label": "Tenant",
+        "info": "The tenant to base the sandbox on. The selected tenant's configurations and localizations will be copied over to this sandbox.",
+        "error": {
+          "required": "Please select a tenant to base the sandbox off of"
+        },
+        "missing": "No longer available"
+      },
+      "dataSet": {
+        "label": "Data Set",
+        "info": "The sample data that the sandbox will be initialized with",
+        "error": {
+          "required": "Please select a data set to initialize the sandbox with"
+        },
+        "missing": "No longer available"
+      },
+      "configurations": {
+        "label": "Configurations",
+        "error": {
+          "onePasswordPerUser": "Please provide only one password for each unique datasource username.",
+          "uniqueDatabasePerInstance": "Please provide unique database and schemaSearchPath for each unique datasource.",
+          "oneDatabasePerDataSource": "Please provide only one database or schemaSearchPath for each unique datasource."
+        },
+        "control": {
+          "search": {
+            "placeholder": "Search properties by key or value"
+          },
+          "modified": {
+            "label": "Modified"
+          },
+          "required": {
+            "label": "Required"
+          }
+        }
+      },
+      "localizations": {
+        "label": "Localizations",
+        "control": {
+          "search": {
+            "placeholder": "Search properties by key or value"
+          },
+          "modified": {
+            "label": "Modified"
+          }
+        }
+      }
+    }
+  },
+  "tenant-configuration-form": {
+    "column": {
+      "key": {
+        "label": "Property"
+      },
+      "value": {
+        "label": "Value"
+      }
+    },
+    "group": {
+      "reporting": "Reporting",
+      "datasources": "Data Sources",
+      "task": "Task",
+      "archive": "Archive",
+      "aggregate": "Aggregate",
+      "validation": "Ingest Validation",
+      "artClient": "Task Update Organizations ART Client",
+      "importServiceClient": "Task Update Organizations Import Client",
+      "sendReconciliationReport": "Task Reconciliation Report"
+    },
+    "popover": {
+      "required": "This field is required",
+      "reset": "Click this button to reset the value back to its original default value"
+    },
+    "error": {
+      "archiveUri": "Archive URI must start with s3:// or file://",
+      "databasePassword": "The password must be between 8 to 64 characters in length, and must contain at least one uppercase letter, one lower case letter, and one number.",
+      "required": "This field is required",
+      "requiredOAuth2Field": "Please enter both oauth2 username and password or leave both blank",
+      "reservedWord": "{{reservedWord}} is a reserved word and cannot be used",
+      "s3scheme": "Archive URI must start with s3://",
+      "uri": "Please enter a valid URL",
+      "urlFragment": "Please enter a valid URL fragment"
+    },
+    "no-results": "There are no configuration properties matching your search",
+    "boolean": {
+      "undefined": "False",
+      "null": "False",
+      "false": "False",
+      "true": "True"
+    }
+  },
+  "tenant-link": {
+    "updated-on": "Last updated {{dateTime}}",
+    "see-logs": "See application logs for more details."
+  },
+  "tenant-localization-form": {
+    "column": {
+      "key": {
+        "label": "Property"
+      },
+      "value": {
+        "label": "Value"
+      }
+    },
+    "no-results": "There are no localization properties matching your search"
+  },
+  "tenant-metrics": {
+    "heading": "{{label}} ({{code}}) Metrics",
+    "breadcrumb": "Metrics"
+  },
+  "sandbox-login": {
+    "title": "Reporting System Sandbox",
+    "labels": {
+      "sandbox": "Sandbox",
+      "role": "Enter as"
+    },
+    "login": "Enter Sandbox",
+    "error": "An error occurred while attempting to log into the reporting sandbox",
+    "sandbox": "{{label}}",
+    "sandbox-label": "{{label}} ({{key}})",
+    "sandbox-role-label": {
+      "DistrictAdministrator": "District Admin: {{organizationName}}",
+      "SchoolAdministrator": "School Admin: {{organizationName}}",
+      "Teacher": "Teacher: {{organizationName}}"
+    },
+    "sandbox-role-username": {
+      "DistrictAdministrator": "District Admin",
+      "SchoolAdministrator": "School Admin",
+      "Teacher": "Teacher"
+    },
+    "sandbox-info": "A Sandbox is an environment that allows users to explore the features of the reporting system using generated data",
+    "sandbox-role-info": "Select a user role based on the reporting system functionality you would like to explore."
+  },
+  "user-query-table": {
+    "column": {
+      "assessmentTypes": {
+        "heading": "Assessment Type"
+      },
+      "updated": {
+        "heading": "Last Updated"
+      },
+      "name": {
+        "heading": "Name"
+      },
+      "type": {
+        "heading": "Report Type"
+      },
+      "schoolYears": {
+        "heading": "School Year"
+      },
+      "subjects": {
+        "heading": "Subject"
+      }
+    }
+  },
+  "user-report-table": {
+    "column": {
+      "assessmentTypes": {
+        "heading": "Assessment Type"
+      },
+      "created": {
+        "heading": "Date"
+      },
+      "name": {
+        "heading": "Name"
+      },
+      "type": {
+        "heading": "Report Type"
+      },
+      "schoolYears": {
+        "heading": "School Year"
+      },
+      "status": {
+        "heading": "Status"
+      },
+      "subjects": {
+        "heading": "Subject"
+      }
+    }
   },
   "reports": {
     "all": "All",
-    "column": {
-      "assessment-type-header": "Assessment Type",
-      "created-header": "Date",
-      "label-header": "Name",
-      "report-type-header": "Report Type",
-      "school-year-header": "School Year",
-      "status-header": "Status",
-      "subject-header": "Subject"
-    },
     "get-reports-error": "There was an unexpected error while getting your reports. Please click the button below to reload the page and try again.",
     "heading": "My Reports",
     "instructions": "When the status of the report is \"Completed,\" click on the report name to view the report or the report query, or to download the report data.",
@@ -1162,12 +1669,11 @@
     "no-reports-html": "<p>To create a report, first select a group or school from the <a href=\"/\">Home page</a>. Next click the \"Student Reports\" button to get started.",
     "reload": "Reload",
     "report-type": {
-      "AggregateReportRequest": "Aggregate Report",
-      "AggregateReportRequest CustomAggregate": "Aggregate Report: Yearly",
-      "AggregateReportRequest Claim": "Aggregate Report: Claims",
-      "AggregateReportRequest Longitudinal": "Aggregate Report: Longitudinal",
-      "AggregateReportRequest Target": "Aggregate Report: Target",
-      "ExamExport": "District / School Export",
+      "CustomAggregate": "Aggregate Report: Yearly",
+      "Claim": "Aggregate Report: Claims",
+      "DistrictSchoolExport": "District / School Export",
+      "Longitudinal": "Aggregate Report: Longitudinal",
+      "Target": "Aggregate Report: Target",
       "Group": "Group Report",
       "SchoolGrade": "School / Grade Report",
       "Student": "Student Report"
@@ -1179,6 +1685,13 @@
       "NO_RESULTS": "No Results",
       "PENDING": "Pending",
       "RUNNING": "Running"
+    },
+    "tab": {
+      "user-queries": {
+        "heading": "Saved Queries",
+        "instructions": "You can view, edit or run a query again by clicking on its name",
+        "no-user-queries-instructions": "Click on a report and select \"Save Report Query\" to save a query"
+      }
     }
   },
   "results-by-student": {
@@ -1314,5 +1827,150 @@
   },
   "writing-trait-scores": {
     "aggregate-header": "Points Distribution"
+  },
+  "user-query": {
+    "action": {
+      "create": {
+        "label": "Save Query",
+        "success": "Query saved",
+        "error": "Failed to save query"
+      },
+      "update": {
+        "label": "Save Query",
+        "success": "Query saved. Visit <a href=\"/reports\">My Reports</a> to view, update or run the query.",
+        "error": "Failed to save query"
+      },
+      "delete": {
+        "warning": "Are you sure you want to delete query \"{{name}}\"?"
+      }
+    }
+  },
+  "user-query-menu-option": {
+    "view": "View Query",
+    "copy": "Copy Query",
+    "delete": "Delete Query"
+  },
+  "ingest-pipeline": {
+    "assessment": {
+      "name": "Test Packages",
+      "description": "Test packages define the details for assessments. They are CSV files in Tabulator format. They are submitted by Smarter Balanced administrators, typically at the beginning of a new school year."
+    },
+    "exam": {
+      "name": "Exams",
+      "description": "Exams are the test results for students. They are XML documents in <a target=\"_blank\" href=\"http://www.smarterapp.org/documents/TestResultsTransmissionFormat.pdf\">TRT format</a>. They are typically submitted by a testing service."
+    },
+    "group": {
+      "name": "Groups",
+      "description": "Groups define teacher rosters. They are <a href=\"/admin-groups/import/fileformat\">CSV documents</a>. They are typically submitted by schools or districts. Unlike other imports group files may also be uploaded from the web UI."
+    }
+  },
+  "pipeline": {
+    "no-script": "A script is required to test and publish a pipeline",
+    "no-tests": "One or more tests are required to test and publish a pipeline",
+    "compilation-failed": "Please correct script compilation errors before testing or publishing.",
+    "invalid-tests": "One or more tests are invalid. Please enter all required test fields.",
+    "unsaved-changes": "Please save all changes before running tests",
+    "publish-unsaved-changes": "Please save all changes before publishing",
+    "published": "This script is the same as the published script",
+    "activate-modal": {
+      "head": "Activate Published Pipeline",
+      "body": "Would you like to activate the pipeline you just published?",
+      "accept": "Activate"
+    }
+  },
+  "pipelines": {
+    "heading": "Ingest Pipelines"
+  },
+  "pipeline-compilation-state": {
+    "Compiling": "Compiling",
+    "Failed": "Compilation Failed"
+  },
+  "pipeline-editor": {
+    "save-script": "Save Draft",
+    "run-tests": "Run Tests",
+    "save-test": "Save",
+    "run-test": "Run Test",
+    "publish-script": "Publish",
+    "publishing-history": "Publishing History"
+  },
+  "pipeline-explorer": {
+    "script": "Pipeline Script",
+    "new-test": "New Test"
+  },
+  "pipeline-item": {
+    "updated-by": "Last update by {{updatedBy}}",
+    "published-by": "Published by {{publishedBy}}"
+  },
+  "pipeline-save-state": {
+    "Saving": "Saving",
+    "Saved": "Save"
+  },
+  "pipeline-test-form": {
+    "field": {
+      "name": {
+        "label": "Test Description"
+      },
+      "input": {
+        "label": "Test Input",
+        "error": {
+          "required": "*",
+          "maxLength": "(Please reduce length to {{requiredLength}} characters or less)"
+        }
+      },
+      "output": {
+        "label": "Expected Output",
+        "error": {
+          "required": "*",
+          "maxLength": "(Please reduce length to {{requiredLength}} characters or less)"
+        }
+      }
+    }
+  },
+  "pipeline-test-result": {
+    "expected-output": "Expected Output",
+    "actual-output": "Actual Output"
+  },
+  "pipeline-test-results": {
+    "heading": "{{pipelineName}} Test Results"
+  },
+  "pipeline-test-state": {
+    "Compiling": "Compiling",
+    "Testing": "Testing",
+    "Validating": "Validating"
+  },
+  "pipeline-publish-state": {
+    "Compiling": "Compiling",
+    "Testing": "Testing",
+    "Validating": "Validating",
+    "Publishing": "Publishing",
+    "Published": "Published"
+  },
+  "pipeline-publishing-history": {
+    "breadcrumb": "Publishing History",
+    "heading": "{{pipelineName}} Publishing History"
+  },
+  "pipeline-published-scripts": {
+    "no-scripts": "No user scripts have been published",
+    "active-pipeline": "Active",
+    "version": "Version {{version}}",
+    "activate": "Activate",
+    "deactivate": "Deactivate"
+  },
+  "code-editor": {
+    "keyboard-trap-prompt": "Press escape to navigate out of the editor"
+  },
+  "score-table": {
+    "average-scale-score": "Average Scale Score",
+    "result-count": "for <strong>{{resultCount}}</strong> results"
+  },
+  "activate-pipeline-modal": {
+    "head": "Activate {{pipelineName}} pipeline version {{pipelineVersion}}",
+    "body": "Are you sure you want to activate {{pipelineName}} pipeline version {{pipelineVersion}}?",
+    "accept": "Activate"
+  },
+  "deactivate-pipeline-modal": {
+    "head": "Deactivate pipeline",
+    "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
+    "accept": "Deactivate"
   }
 }

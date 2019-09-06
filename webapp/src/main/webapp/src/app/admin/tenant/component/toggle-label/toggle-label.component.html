@@ -1,0 +1,11 @@
+<a href="javascript:void(0)" (click)="openChange.emit(!open)">
+  <i
+    aria-hidden="true"
+    class="fa"
+    [ngClass]="{
+      'fa-chevron-right': !open,
+      'fa-chevron-down': open
+    }"
+  ></i>
+  {{ open ? openLabel : closedLabel }}
+</a>

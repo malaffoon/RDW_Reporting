@@ -1,0 +1,87 @@
+<form *ngIf="(_formGroup | async) as formGroup" [formGroup]="formGroup">
+  <div *ngIf="formGroup.get('name') as control" class="form-group">
+    <label for="name">
+      {{ 'pipeline-test-form.field.name.label' | translate }}
+    </label>
+    <ng-container *ngIf="readonly; else nameInput">
+      {{ control.value }}
+    </ng-container>
+    <ng-template #nameInput>
+      <input
+        id="name"
+        type="text"
+        class="form-control"
+        [formControl]="control"
+      />
+    </ng-template>
+  </div>
+
+  <div class="test-grid">
+    <div
+      *ngIf="formGroup.get('input') as control"
+      class="form-group"
+      [ngClass]="{
+        'has-error': control.errors && (control.touched || control.dirty)
+      }"
+    >
+      <label>
+        {{ 'pipeline-test-form.field.input.label' | translate }}
+        <span *ngIf="control.errors && (control.touched || control.dirty)">
+          <ng-container *ngIf="control.errors.required">
+            {{ 'pipeline-test-form.field.input.error.required' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.errors.maxlength">
+            {{
+              'pipeline-test-form.field.input.error.maxLength'
+                | translate
+                  : {
+                      requiredLength:
+                        control.errors.maxlength.requiredLength | number
+                    }
+            }}
+          </ng-container>
+        </span>
+      </label>
+      <code-editor
+        #input
+        [readonly]="readonly"
+        [lines]="31"
+        [language]="_inputType | async"
+        [formControl]="control"
+      ></code-editor>
+    </div>
+    <div
+      *ngIf="formGroup.get('output') as control"
+      class="form-group"
+      [ngClass]="{
+        'has-error': control.errors && (control.touched || control.dirty)
+      }"
+    >
+      <label>
+        {{ 'pipeline-test-form.field.output.label' | translate }}
+        <span *ngIf="control.errors && (control.touched || control.dirty)">
+          <ng-container *ngIf="control.errors.required">
+            {{ 'pipeline-test-form.field.output.error.required' | translate }}
+          </ng-container>
+          <ng-container *ngIf="control.errors.maxlength">
+            {{
+              'pipeline-test-form.field.output.error.maxLength'
+                | translate
+                  : {
+                      requiredLength:
+                        control.errors.maxlength.requiredLength | number
+                    }
+            }}
+          </ng-container>
+        </span>
+      </label>
+      <code-editor
+        #output
+        [readonly]="readonly"
+        [lines]="31"
+        [language]="_inputType | async"
+        [formControl]="control"
+      ></code-editor>
+    </div>
+  </div>
+</form>

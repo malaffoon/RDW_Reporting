@@ -1,22 +1,21 @@
-import { Utils } from "../support/support";
-import { ReportingEmbargoService } from "./reporting-embargo.service";
-import { AggregateEmbargoService } from "./aggregate-embargo.service";
+import { ReportingEmbargoService } from './reporting-embargo.service';
+import { AggregateEmbargoService } from './aggregate-embargo.service';
+import { UserService } from '../security/service/user.service';
+import { forkJoin, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export class EmbargoAlert {
+  show$: Observable<boolean>;
 
-  private _showAlert: boolean;
-
-  constructor(private service: ReportingEmbargoService | AggregateEmbargoService) {
+  constructor(
+    private service: ReportingEmbargoService | AggregateEmbargoService,
+    private userSevice: UserService
+  ) {
+    this.show$ = forkJoin(
+      service.isEmbargoed(),
+      userSevice
+        .getUser()
+        .pipe(map(({ permissions }) => permissions.includes('EMBARGO_READ')))
+    ).pipe(map(([embargoed, hasEmbargoRead]) => embargoed && hasEmbargoRead));
   }
-
-  get showAlert(): boolean {
-    return this._showAlert;
-  }
-
-  ngOnInit(): void {
-    if (Utils.isNullOrUndefined(this._showAlert)) {
-      this.service.isEmbargoed().subscribe(embargoed => this._showAlert = embargoed);
-    }
-  }
-
 }

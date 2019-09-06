@@ -1,0 +1,12 @@
+logging:
+  level:
+    # emit statistics for the underlying context cache
+    org.opentestsystem.rdw.admin: debug
+
+tenant-configuration-persistence:
+  local-repository-uri: file:///tmp/rdw_config_local_test
+  remote-repository-uri: file:///tmp/rdw_config_remote_test
+  git-username: test
+  git-password: test
+  author: "Zaphod Beeblebrox"
+  author-email: "zaphodb@example.com"

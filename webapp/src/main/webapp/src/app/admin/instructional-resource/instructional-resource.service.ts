@@ -12,9 +12,7 @@ const ResourceContext = `${AdminServiceRoute}/instructional-resources`;
  */
 @Injectable()
 export class InstructionalResourceService {
-
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   /**
    * Find all instructional resources that the user has permissions to interact with.
@@ -22,9 +20,9 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource[]>} The user's instructional resources
    */
   findAll(): Observable<InstructionalResource[]> {
-    return this.dataService.get(`${ResourceContext}`).pipe(
-      map(InstructionalResourceService.mapResourcesFromApi)
-    );
+    return this.dataService
+      .get(`${ResourceContext}`)
+      .pipe(map(InstructionalResourceService.mapResourcesFromApi));
   }
 
   /**
@@ -34,9 +32,9 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource>} The created instructional resource
    */
   create(resource: InstructionalResource): Observable<InstructionalResource> {
-    return this.dataService.post(`${ResourceContext}`, resource).pipe(
-      map(InstructionalResourceService.mapResourceFromApi)
-    );
+    return this.dataService
+      .post(`${ResourceContext}`, resource)
+      .pipe(map(InstructionalResourceService.mapResourceFromApi));
   }
 
   /**
@@ -46,9 +44,12 @@ export class InstructionalResourceService {
    * @returns {Observable<InstructionalResource>} The updated instructional resource
    */
   update(resource: InstructionalResource): Observable<InstructionalResource> {
-    return this.dataService.put(`${ResourceContext}`, InstructionalResourceService.toServerFormat(resource)).pipe(
-      map(InstructionalResourceService.mapResourceFromApi)
-    );
+    return this.dataService
+      .put(
+        `${ResourceContext}`,
+        InstructionalResourceService.toServerFormat(resource)
+      )
+      .pipe(map(InstructionalResourceService.mapResourceFromApi));
   }
 
   /**
@@ -58,15 +59,23 @@ export class InstructionalResourceService {
    * @returns {Observable<any>} Empty if the action was successful
    */
   delete(resource: InstructionalResource): Observable<any> {
-    return this.dataService.delete(`${ResourceContext}`, { params: <any>InstructionalResourceService.toServerFormat(resource) });
+    return this.dataService.delete(`${ResourceContext}`, {
+      params: <any>InstructionalResourceService.toServerFormat(resource)
+    });
   }
 
   private static mapResourcesFromApi(serverResources) {
-    return serverResources.map(serverResource => InstructionalResourceService.mapResourceFromApi(serverResource));
+    return serverResources.map(serverResource =>
+      InstructionalResourceService.mapResourceFromApi(serverResource)
+    );
   }
 
-  private static toServerFormat(resource: InstructionalResource): InstructionalResource {
-    resource.assessmentType = AssessmentType[resource.assessmentType] ? AssessmentType[resource.assessmentType] : resource.assessmentType;
+  private static toServerFormat(
+    resource: InstructionalResource
+  ): InstructionalResource {
+    resource.assessmentType = AssessmentType[resource.assessmentType]
+      ? AssessmentType[resource.assessmentType]
+      : resource.assessmentType;
     return resource;
   }
 

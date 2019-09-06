@@ -1,0 +1,34 @@
+@space-unit: 15px;
+
+:host {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: @space-unit;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+
+  .scripts-container {
+    max-height: 560px;
+    overflow-y: scroll;
+
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+  }
+}
+
+.published-tag {
+  display: inline-block;
+  position: absolute;
+  top: @space-unit;
+  right: @space-unit;
+}
+
+.close {
+  line-height: 1rem;
+}

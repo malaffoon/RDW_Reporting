@@ -5,12 +5,10 @@ createDockerfile {
 }
 
 dependencies {
-    optional 'org.springframework.boot:spring-boot-configuration-processor'
-
     compile 'com.amazon.redshift:redshift-jdbc42-no-awssdk:1.2.8.1005'
 
     // fixes java 8 time marshaling
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.7'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
     compile 'org.apache.commons:commons-csv:+'
     compile 'org.opentestsystem.rdw.common:rdw-common-archive'
@@ -19,10 +17,12 @@ dependencies {
     compile 'org.opentestsystem.rdw.common:rdw-common-model'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.cloud:spring-cloud-starter-aws'
+    compile 'org.springframework.cloud:spring-cloud-starter-bus-amqp'    
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.cloud:spring-cloud-starter-config'
     compile 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+    compile 'org.springframework.integration:spring-integration-security'
 
     // this is for retrying connection to config server
     compile 'org.springframework.boot:spring-boot-starter-aop'
@@ -58,12 +58,12 @@ cleanReportingOlapTest migrateReportingOlapTest
 // To run these tests locally, you must either manually adjust the application-redshift.yml file
 // (but don't check in your changes!) or set environment variables. If you are using the default
 // CI data resources with personal schemas you should set:
-//   SPRING_OLAP_DATASOURCE_USERNAME
-//   SPRING_OLAP_DATASOURCE_PASSWORD
+//   DATASOURCES_OLAP_RO_USERNAME
+//   DATASOURCES_OLAP_RO_PASSWORD
 // If you are running from the command-line you can use local bash export to do it in one command, e.g.:
 /*
-(export SPRING_OLAP_DATASOURCE_USERNAME=bob; \
- export SPRING_OLAP_DATASOURCE_PASSWORD=password; \
+(export DATASOURCES_OLAP_RO_USERNAME=bob; \
+ export DATASOURCES_OLAP_RO_PASSWORD=password; \
  gradle rst)
 */
 task RST(type: Test) {

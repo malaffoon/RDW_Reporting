@@ -1,5 +1,6 @@
 <div class="loader">
   <div class="inner">
-    <i class="fa fa-spinner fa-pulse fa-fw" [ngClass]="iconStyles"></i><span *ngIf="text" class="text">{{text}}</span>
+    <i class="fa fa-spinner fa-pulse fa-fw" [ngClass]="iconStyles"></i
+    ><span class="text">{{ text }}<ng-content></ng-content></span>
   </div>
 </div>

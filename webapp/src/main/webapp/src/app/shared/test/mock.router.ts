@@ -1,10 +1,9 @@
 import Spy = jasmine.Spy;
-import { of,  empty } from 'rxjs';
+import { of, empty } from 'rxjs';
 
 export class MockRouter {
-
-  public navigateByUrl: Spy = jasmine.createSpy("navigateByUrl");
-  public navigate: Spy = jasmine.createSpy("navigate");
+  public navigateByUrl: Spy = jasmine.createSpy('navigateByUrl');
+  public navigate: Spy = jasmine.createSpy('navigate');
   public events = empty();
 
   constructor() {

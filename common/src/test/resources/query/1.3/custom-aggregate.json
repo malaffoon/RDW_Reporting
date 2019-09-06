@@ -1,0 +1,51 @@
+{
+  "schoolYear": 0,
+  "name": "Custom Aggregate Report",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "query": {
+    "assessmentTypeCode": "ica",
+    "assessmentGradeCodes": [
+      "08"
+    ],
+    "includeState": false,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": false,
+    "includeAllDistrictsOfSchools": true,
+    "districtIds": [
+      1
+    ],
+    "completenessCodes": [
+      "Complete"
+    ],
+    "administrativeConditionCodes": [
+      "SD"
+    ],
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "organization",
+      "assessmentGrade",
+      "schoolYear",
+      "dimension"
+    ],
+    "dimensionTypes": [
+      "Language"
+    ],
+    "studentFilters": {
+      "languageCodes": [
+        "rus",
+        "kor"
+      ]
+    },
+    "schoolYears": [
+      2018
+    ],
+    "subjectCodes": [
+      "Math"
+    ],
+    "reportType": "CustomAggregate",
+    "filteredSubgroupQuery": false
+  },
+  "reportType": "AggregateReportRequest"
+}

@@ -1,24 +1,42 @@
-import { Injectable } from "@angular/core";
-import { ExamFilterOptionsMapper } from "./exam-filter-options.mapper";
-import { CachingDataService } from "../../../shared/data/caching-data.service";
-import { ExamFilterOptions } from "../../model/exam-filter-options.model";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { ExamFilterOptions } from '../../model/exam-filter-options.model';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ReportingServiceRoute } from '../../../shared/service-route';
+import { ExamSearchFilterService } from '../../../exam/service/exam-search-filter.service';
+import { Filter } from '../../../exam/model/filter';
 
-const ServiceRoute = ReportingServiceRoute;
+function findFilterValues(filters: Filter[], filterId: string): any[] {
+  const filter = filters.find(({ id }) => id === filterId);
+  return filter != null ? filter.values.slice() : [];
+}
 
 @Injectable()
 export class ExamFilterOptionsService {
+  constructor(private service: ExamSearchFilterService) {}
 
-  constructor(private service: CachingDataService,
-              private mapper: ExamFilterOptionsMapper) {
-  }
-
+  // localize mapping to advanced filters?
   getExamFilterOptions(): Observable<ExamFilterOptions> {
-    return this.service.get(`${ServiceRoute}/examFilterOptions`)
-      .pipe(
-        map(serverOptions => this.mapper.mapFromApi(serverOptions))
-      );
+    return this.service.getExamSearchFilters().pipe(
+      map(filters => {
+        const { schoolYears, subjects, studentFilters } = filters;
+        // This mapping is a quick-adaptation approach to filling the functionality gap
+        const options = new ExamFilterOptions();
+        options.schoolYears = schoolYears.slice();
+        options.ethnicities = findFilterValues(studentFilters, 'Ethnicity');
+        options.genders = findFilterValues(studentFilters, 'Gender');
+        options.elasCodes = findFilterValues(
+          studentFilters,
+          'EnglishLanguageAcquisitionStatus'
+        );
+        options.subjects = subjects.slice();
+        options.languages = findFilterValues(studentFilters, 'PrimaryLanguage');
+        options.militaryConnectedCodes = findFilterValues(
+          studentFilters,
+          'MilitaryStudentIdentifier'
+        );
+        options.studentFilters = studentFilters;
+        return options;
+      })
+    );
   }
 }

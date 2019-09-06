@@ -1,15 +1,100 @@
-import * as _ from 'lodash';
+import { isEmpty, isEqual, isArray, omitBy, isObject } from 'lodash';
+
+export function isBlank(value: string): boolean {
+  return value.trim().length === 0;
+}
+
+export function isNullOrBlank(value: any): boolean {
+  return value == null || (typeof value === 'string' && isBlank(value));
+}
+
+/**
+ * Expands support from string and Array to type Object as well
+ *
+ * @param value The value to test
+ */
+export function isNullOrEmpty(value: any): boolean {
+  return value == null || isEmpty(value);
+}
+
+export function emptyToNull(value: any): any {
+  if (value === '') {
+    return null;
+  }
+  return value;
+}
+
+/**
+ * Removes all fields with null values from the containing object.
+ * Example {a: undefined, b: null, c: false, d: 0, e: ''} -> {d: 0, e: ''}
+ *
+ * @param object The object to prune
+ */
+function removeNullAndFalseProperties(object: Object): Partial<Object> {
+  return omitBy(object, (value, key) => value == null || <any>value === false);
+}
+
+/**
+ * Tests for field by field equality recursively.
+ * This method treats undefined, null and false the same as a field being absent.
+ * This means that isEqual({a: undefined, b: null, c: false, d: 0, e: ''}, {d: 0, e: ''}) is true
+ *
+ * @param a
+ * @param b
+ */
+export function deepEqualsIgnoringNullAndFalse(a: Object, b: Object): boolean {
+  return isEqual(
+    removeNullAndFalseProperties(a),
+    removeNullAndFalseProperties(b)
+  );
+}
+
+/**
+ * Strips out HTML tags from the given string
+ *
+ * This is used to clean up message text that is normally displayed as HTML on the page
+ * but needs to also be displayed in a CSV report or something that doesn't support HTML
+ *
+ * @param value The string to remove the HTML from
+ */
+export function removeHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, '');
+}
+
+/**
+ * True if both dates have the same year, month and day
+ *
+ * @param a The first date
+ * @param b The second date
+ */
+export function equalDate(a: Date, b: Date): boolean {
+  return (
+    a === b ||
+    (a != null &&
+      b != null &&
+      a.getDay() === b.getDay() &&
+      a.getMonth() === b.getMonth() &&
+      a.getFullYear() === b.getFullYear())
+  );
+}
+
+export function uuid(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
 export class Utils {
-
   static equalSets(a: any[], b: any[]): boolean {
-    return a === b
-      || (
-        a != null
-        && b != null
-        && a.length === b.length
-        && _.isEqual(a.concat().sort(), b.concat().sort())
-      );
+    return (
+      a === b ||
+      (a != null &&
+        b != null &&
+        a.length === b.length &&
+        isEqual(a.concat().sort(), b.concat().sort()))
+    );
   }
 
   static getPropertyValue(propertyPath: string, object: any): any {
@@ -17,16 +102,13 @@ export class Utils {
     let property = object || this;
 
     for (let i = 0; i < parts.length; i++) {
-      property = property[ parts[ i ] ];
+      property = property[parts[i]];
     }
     return property;
   }
 
   static newGuid(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+    return uuid();
   }
 
   static polarEnumToBoolean(value: any): boolean {
@@ -45,6 +127,8 @@ export class Utils {
 
   /**
    * Checks to see if the string or array is <code>null</code>, <code>undefined</code> or empty.
+   *
+   * @deprecated
    *
    * @param {string | any[]} value
    * @returns {boolean}
@@ -83,7 +167,7 @@ export class Utils {
     const classes = {};
     if (!Utils.isNullOrEmpty(objectsOrStrings)) {
       objectsOrStrings.forEach(objectOrString => {
-        Object.assign(classes, Utils.toNgClassObject(objectOrString))
+        Object.assign(classes, Utils.toNgClassObject(objectOrString));
       });
     }
     return classes;
@@ -100,7 +184,7 @@ export class Utils {
     switch (typeof value) {
       case 'string':
         return value.split(/\s+/g).reduce((object, key) => {
-          object[ key ] = true;
+          object[key] = true;
           return object;
         }, {});
       case 'object':
@@ -141,7 +225,8 @@ export class Utils {
    * @returns {{x: number, y: number}} the element's absolute page offset
    */
   static getAbsoluteOffset(element: any): any {
-    let x = 0, y = 0;
+    let x = 0,
+      y = 0;
     do {
       x += element.offsetLeft || 0;
       y += element.offsetTop || 0;
@@ -173,10 +258,13 @@ export class Utils {
       return false;
     }
     const bounds = element.getBoundingClientRect();
-    return bounds.bottom > 0
-      && bounds.right > 0
-      && bounds.left < (window.innerWidth || document.documentElement.clientWidth)
-      && bounds.top < (window.innerHeight || document.documentElement.clientHeight);
+    return (
+      bounds.bottom > 0 &&
+      bounds.right > 0 &&
+      bounds.left <
+        (window.innerWidth || document.documentElement.clientWidth) &&
+      bounds.top < (window.innerHeight || document.documentElement.clientHeight)
+    );
   }
 
   /**
@@ -219,9 +307,7 @@ export class Utils {
    * @returns {boolean} true if the provided arrays are both defined and of equal length
    */
   static hasEqualLength(a: any[], b: any[]) {
-    return a != null
-      && b != null
-      && a.length === b.length;
+    return a != null && b != null && a.length === b.length;
   }
 
   /**
@@ -249,7 +335,6 @@ export class Utils {
   static camelCaseToDash(str: string): string {
     return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase();
   }
-
 }
 
 /**
@@ -262,8 +347,8 @@ export class Utils {
  */
 export function serializeURLParameters(parameters: any): string {
   return Object.entries(parameters)
-    .sort(([ a ], [ b ]) => a.localeCompare(b))
-    .map(([ key, value ]) => key + '=' + value) // TODO add explicit support for array values
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => key + '=' + value) // TODO add explicit support for array values
     .join('&');
 }
 
@@ -273,4 +358,215 @@ export function range(start: number, end: number): number[] {
     values.push(i);
   }
   return values;
+}
+
+// https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
+
+export interface FlattenCustomizer {
+  (result: any, value: any, property: string): boolean;
+}
+
+export interface UnflattenCustomizer {
+  (value: any, property: string): any;
+}
+
+const nullFlattenCustomizer = () => false;
+const nullUnflattenCustomizer = value => value;
+
+function flattenRecurse(
+  result: any,
+  object: any,
+  property: string,
+  customizer: FlattenCustomizer
+) {
+  if (customizer(result, object, property)) {
+    // customizer handled it
+  } else if (!isObject(object)) {
+    // is primitive
+    result[property] = object;
+  } else if (Array.isArray(object)) {
+    const length = object.length;
+    if (length === 0) {
+      result[property] = [];
+    } else {
+      for (let i = 0; i < length; i++) {
+        flattenRecurse(
+          result,
+          object[i],
+          property ? property + '.' + i : '' + i,
+          customizer
+        );
+      }
+    }
+  } else {
+    let isEmpty = true;
+    for (let key in object) {
+      isEmpty = false;
+      flattenRecurse(
+        result,
+        object[key],
+        property ? property + '.' + key : key,
+        customizer
+      );
+    }
+    if (isEmpty) {
+      result[property] = {};
+    }
+  }
+}
+
+export function flatten(
+  object: any,
+  customizer: FlattenCustomizer = nullFlattenCustomizer
+): any {
+  const result = {};
+  flattenRecurse(result, object, '', customizer);
+  return result;
+}
+
+export function unflatten(
+  object: any,
+  customizer: UnflattenCustomizer = nullUnflattenCustomizer
+): any {
+  if (!isObject(object) || Array.isArray(object)) {
+    return object;
+  }
+  let result = {},
+    currentObject,
+    property,
+    i,
+    last,
+    temporaryProperty;
+  for (let key in object) {
+    (currentObject = result), (property = ''), (last = 0);
+    do {
+      i = key.indexOf('.', last);
+      temporaryProperty = key.substring(last, i !== -1 ? i : undefined);
+      currentObject =
+        currentObject[property] ||
+        (currentObject[property] = !isNaN(parseInt(temporaryProperty))
+          ? []
+          : {});
+      property = temporaryProperty;
+      last = i + 1;
+    } while (i >= 0);
+    currentObject[property] = customizer(object[key], key);
+  }
+  return result[''];
+}
+
+export function composeFlattenCustomizers(
+  ...customizers: FlattenCustomizer[]
+): FlattenCustomizer {
+  return function(result, object, property) {
+    return customizers.some(customizer => customizer(result, object, property));
+  };
+}
+
+export function composeUnflattenCustomizers(
+  ...customizers: UnflattenCustomizer[]
+): UnflattenCustomizer {
+  return function(value, property) {
+    for (let i = 0; i < customizers.length; i++) {
+      value = customizers[i](value, property);
+    }
+    return value;
+  };
+}
+
+export interface ValueDifference {
+  left: any;
+  right: any;
+}
+
+export interface Difference {
+  left: { [key: string]: any };
+  middle: { [key: string]: ValueDifference };
+  right: { [key: string]: any };
+}
+
+/**
+ * Produces the difference between two flat objects
+ *
+ * @param a The first or "left" object
+ * @param b The second or "right" object
+ */
+export function difference(a: any, b: any): Difference {
+  const difference = {
+    left: {},
+    middle: {},
+    right: {}
+  };
+  for (let propertyA in a) {
+    if (!a.hasOwnProperty(propertyA)) {
+      continue;
+    }
+    const valueA = a[propertyA];
+    if (b.hasOwnProperty(propertyA)) {
+      const valueB = b[propertyA];
+      if (valueA !== valueB) {
+        difference.middle[propertyA] = {
+          left: valueA,
+          right: valueB
+        };
+      }
+    } else {
+      difference.left[propertyA] = valueA;
+    }
+  }
+  for (let propertyB in b) {
+    if (!b.hasOwnProperty(propertyB)) {
+      continue;
+    }
+    if (!a.hasOwnProperty(propertyB)) {
+      difference.right[propertyB] = b[propertyB];
+    }
+  }
+  return difference;
+}
+
+function oneSidedDifference(a: any, b: any, side: 'left' | 'right'): any {
+  const diff = difference(a, b);
+  return Object.entries(diff.middle).reduce(
+    (rightDifference, [key, { [side]: value }]) => {
+      rightDifference[key] = value;
+      return rightDifference;
+    },
+    { ...diff[side] }
+  );
+}
+
+/**
+ * Produces only the differences of the right with the left
+ *
+ * @param a The left
+ * @param b The right
+ */
+export function rightDifference(a: any, b: any): any {
+  return oneSidedDifference(a, b, 'right');
+}
+
+/**
+ * Returns the provided object but with only entries that have values other than null or undefined
+ *
+ * @param value The object to prune of null or undefined valued entries
+ */
+export function valued(value: any): any {
+  return Object.entries(value).reduce((valued, [key, value]) => {
+    if (
+      // null or undefined
+      value != null &&
+      // empty strings
+      !(typeof value === 'string' && value.length === 0) &&
+      // empty maps/objects
+      !(
+        typeof value === 'object' &&
+        !isArray(value) &&
+        Object.keys(value).length === 0
+      )
+    ) {
+      valued[key] = value;
+    }
+    return valued;
+  }, {});
 }

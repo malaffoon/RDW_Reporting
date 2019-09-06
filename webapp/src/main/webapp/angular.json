@@ -30,6 +30,7 @@
               }
             ],
             "styles": [
+              "node_modules/ace-diff/dist/ace-diff.min.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/primeng.min.css",
@@ -40,7 +41,57 @@
             "scripts": [
               "src/scripts/iris/jquery.js",
               "src/scripts/iris/util_xdm.js",
-              "src/scripts/iris/client.js"
+              "src/scripts/iris/client.js",
+              {
+                "input": "node_modules/ace-builds/src-min/ace.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/ext-error_marker.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/ext-language_tools.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-diff/dist/ace-diff.min.js",
+                "bundleName": "ace-editor",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/mode-groovy.js",
+                "bundleName": "mode-groovy",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/mode-xml.js",
+                "bundleName": "mode-xml",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/worker-xml.js",
+                "bundleName": "worker-xml",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/mode-text.js",
+                "bundleName": "mode-text",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/theme-xcode.js",
+                "bundleName": "theme-xcode",
+                "lazy": true
+              },
+              {
+                "input": "node_modules/ace-builds/src-min/theme-dracula.js",
+                "bundleName": "theme-dracula",
+                "lazy": true
+              }
             ]
           },
           "configurations": {
@@ -91,40 +142,14 @@
               "src/scripts/iris/jquery.js",
               "src/scripts/iris/util_xdm.js",
               "src/scripts/iris/client.js"
-            ],
-            "styles": [
-              "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/primeicons/primeicons.css",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeng/resources/themes/bootstrap/theme.css",
-              "node_modules/@sbac/sbac-ui-kit/dist/css/sbac-ui-kit.min.css",
-              "src/styles.less"
-            ],
-            "assets": [
-              "src/assets",
-              {
-                "glob": "*",
-                "input": "node_modules/@sbac/sbac-ui-kit/dist/images",
-                "output": "/assets/image"
-              },
-              {
-                "glob": "*",
-                "input": "node_modules/@sbac/sbac-ui-kit/dist/images/icon",
-                "output": "/"
-              }
             ]
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["src/tsconfig.app.json", "src/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
@@ -144,12 +169,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["e2e/tsconfig.e2e.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }

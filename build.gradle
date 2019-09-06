@@ -6,13 +6,11 @@ buildscript {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
         classpath("com.bmuschko:gradle-docker-plugin:3.6.2")
         classpath("io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE")
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.18.RELEASE")
-        classpath('org.springframework.build.gradle:propdeps-plugin:0.0.7')
     }
 }
 
@@ -23,18 +21,15 @@ plugins {
 apply plugin: 'io.spring.dependency-management'
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.3.0-106"
-String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "1.3.0-409"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "1.4.0-190"
+String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "2.0.0-1"
 String dockerPrefix = "smarterbalanced"
 
 allprojects {
     group = 'org.opentestsystem.rdw.reporting'
-    version = '1.3.1-SNAPSHOT'
+    version = '2.0.0-SNAPSHOT'
 
     apply plugin: 'idea'
-    apply plugin: 'propdeps'
-    apply plugin: 'propdeps-maven'
-    apply plugin: 'propdeps-idea'
     apply plugin: "com.jfrog.artifactory"
 
     if (project.hasProperty("buildNumber")) {
@@ -60,13 +55,16 @@ subprojects {
     dependencyManagement {
 
         dependencies {
-            dependency "org.opentestsystem.rdw.common:rdw-common-messaging:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-archive:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-group:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-messaging:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-model:${rdwCommonVersion}"
-            dependency "org.opentestsystem.rdw.common:rdw-common-utils:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-multi-tenant:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-script:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-security:${rdwCommonVersion}"
             dependency "org.opentestsystem.rdw.common:rdw-common-status:${rdwCommonVersion}"
-            dependency "org.opentestsystem.rdw.common:rdw-common-archive:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.common:rdw-common-utils:${rdwCommonVersion}"
+            dependency "org.opentestsystem.rdw.schema:rdw-schema:${rdwSchemaVersion}"
 
             // commonly used libraries
             dependency 'com.google.guava:guava:27.0.1-jre'
@@ -76,14 +74,36 @@ subprojects {
             dependency 'org.apache.pdfbox:pdfbox:2.0.7'
             dependency 'org.slf4j:slf4j-api:1.7.25'
             dependency 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
+            dependency "org.flywaydb:flyway-core:5.2.4"
+
+            // jackson
+            dependency 'com.fasterxml.jackson.core:jackson-annotations:2.9.9'
+            dependency 'com.fasterxml.jackson.core:jackson-core:2.9.9'
+            dependency 'com.fasterxml.jackson.core:jackson-databind:2.9.9.1'
+            dependency 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.9'
+            dependency 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.9'
+            dependency 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.9'
 
             // spring extensions aren't included in the the bom
             dependency 'org.springframework.security.extensions:spring-security-saml2-core:1.0.3.RELEASE'
+            
+            // security for messaging
+            dependency 'org.springframework.security:spring-security-core:4.2.10.RELEASE'
+            dependency 'org.springframework.integration:spring-integration-security:4.3.18.RELEASE'
+
+            // security for art client
+            dependency 'org.springframework.security.oauth:spring-security-oauth2:2.0.16.RELEASE'
 
             // commonly used test libraries
             dependency 'junit:junit:4.12'
             dependency 'org.assertj:assertj-core:3.11.1'
             dependency 'org.mockito:mockito-core:2.23.4'
+
+            // used for pipeline user test running
+            dependency 'org.xmlunit:xmlunit-core:2.6.2'
+
+            //for multitenant admin
+            dependency 'org.eclipse.jgit:org.eclipse.jgit:5.3.1.201904271842-r'
         }
         imports {
             // https://github.com/spring-projects/spring-cloud/wiki/Spring-Cloud-Edgware-Release-Notes
@@ -92,6 +112,9 @@ subprojects {
     }
 
     dependencies {
+        // handy for creating metadata with @ConfigurationProperties
+        compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+
         compile "org.slf4j:slf4j-api"
 
         testCompile 'junit:junit'

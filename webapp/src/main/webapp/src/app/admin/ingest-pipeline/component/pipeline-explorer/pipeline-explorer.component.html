@@ -1,0 +1,71 @@
+<div class="script-items-container">
+  <ul>
+    <li *ngFor="let item of _scriptItems">
+      <div #itemElement>
+        <pipeline-item
+          name="{{ 'pipeline-explorer.script' | translate }}"
+          [active]="selectedItem === item"
+          (click)="onItemClick(item, itemElement)"
+        >
+          <i icon *ngIf="item.changed" class="fa fa-circle changed-icon"></i>
+          <div caption *ngIf="item.value.updatedBy">
+            {{ 'pipeline-item.updated-by' | translate: item.value }}
+          </div>
+        </pipeline-item>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="test-items-container">
+  <div class="test-items-heading">
+    <h4>Tests</h4>
+    <button
+      class="btn btn-success btn-outlined btn-xs"
+      (click)="createTestButtonClick.emit()"
+    >
+      {{ 'pipeline-explorer.new-test' | translate }}
+    </button>
+  </div>
+  <ul class="test-items">
+    <li *ngFor="let item of _testItems; let index = index">
+      <div #itemElement>
+        <pipeline-item
+          [description]="item.value.name"
+          [active]="selectedItem === item"
+          (click)="onItemClick(item, itemElement)"
+          [ngClass]="{
+            'has-error':
+              item.value.input != null &&
+              !isValidPipelineTest(item.value, inputType)
+          }"
+        >
+          <i *ngIf="item.changed" icon class="fa fa-circle changed-icon"></i>
+
+          <div name *ngIf="item.value.createdOn">
+            {{ item.value.createdOn | date }}
+            <span class="ml-sm" *ngIf="showTime(item)">
+              <i class="fa fa-clock-o small"></i>
+              {{ item.value.createdOn | date: 'shortTime' }}
+            </span>
+          </div>
+
+          <div caption *ngIf="item.value.updatedBy">
+            {{ 'pipeline-item.updated-by' | translate: item.value }}
+          </div>
+
+          <a
+            controls
+            class="delete-control"
+            (click)="
+              deleteTestButtonClick.emit(item);
+              $event.stopImmediatePropagation()
+            "
+          >
+            <i class="fa fa-trash-o"></i>
+          </a>
+        </pipeline-item>
+      </div>
+    </li>
+  </ul>
+</div>

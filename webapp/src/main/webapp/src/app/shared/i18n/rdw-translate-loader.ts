@@ -1,41 +1,54 @@
-import { TranslateHttpLoader } from "@ngx-translate/http-loader";
-import * as _ from "lodash";
-import { Injectable } from "@angular/core";
-import { TranslateLoader } from "@ngx-translate/core";
-import { Observable ,  forkJoin ,  of } from "rxjs";
-import { EmbeddedLanguages } from "./language-settings";
-import { HttpClient } from "@angular/common/http";
-import { catchError, map } from 'rxjs/operators';
-import { SubjectService } from "../../subject/subject.service";
-import { Utils } from "../support/support";
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { get, merge, set } from 'lodash';
+import { Injectable, Optional } from '@angular/core';
+import { TranslateLoader } from '@ngx-translate/core';
+import { forkJoin, Observable, of } from 'rxjs';
+import { EmbeddedLanguages } from './language-settings';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { SubjectService } from '../../subject/subject.service';
+import { UserService } from '../security/service/user.service';
 
 const EmptyObservable = of({});
-const AssessmentTypes: string[] = ["iab", "ica", "sum"];
+const AssessmentTypes: string[] = ['iab', 'ica', 'sum'];
+const defaultUserService = <UserService>{
+  getUser: () => of({ anonymous: true })
+};
 
 @Injectable()
 export class RdwTranslateLoader implements TranslateLoader {
+  private clientTranslationsLoader: TranslateLoader;
+  private serverTranslationsLoader: TranslateLoader;
 
-  private clientTranslationsLoader;
-  private serverTranslationsLoader;
-
-  constructor(http: HttpClient,
-              private subjectService: SubjectService) {
-    this.clientTranslationsLoader = new TranslateHttpLoader(http, '/assets/i18n/', '.json');
-    this.serverTranslationsLoader = new TranslateHttpLoader(http, '/api/translations/', '');
+  constructor(
+    http: HttpClient,
+    private subjectService: SubjectService,
+    @Optional()
+    private userService: UserService = defaultUserService
+  ) {
+    this.clientTranslationsLoader = new TranslateHttpLoader(
+      http,
+      '/assets/i18n/',
+      '.json'
+    );
+    this.serverTranslationsLoader = new TranslateHttpLoader(
+      http,
+      '/api/translations/',
+      ''
+    );
   }
 
   getTranslation(languageCode: string): Observable<any> {
-    return forkJoin(
-      this.getClientTranslations(languageCode),
-      this.getServerTranslations(languageCode),
-      this.subjectService.getSubjectCodes()
-    ).pipe(
-      map(([ clientTranslations, serverTranslations, subjects ]) => {
-        const asmtTranslations = this.createSubjectTranslations(subjects, serverTranslations);
-        return _.merge(clientTranslations, asmtTranslations, serverTranslations);
-      })
-    );
-  };
+    return this.userService
+      .getUser()
+      .pipe(
+        mergeMap(user =>
+          user.anonymous || user.tenantName == null
+            ? this.getClientTranslations(languageCode)
+            : this.getUserTranslations(languageCode)
+        )
+      );
+  }
 
   private getClientTranslations(languageCode: string): Observable<any> {
     return EmbeddedLanguages.indexOf(languageCode) != -1
@@ -44,13 +57,16 @@ export class RdwTranslateLoader implements TranslateLoader {
   }
 
   private getServerTranslations(languageCode: string): Observable<any> {
-    return this.serverTranslationsLoader.getTranslation(languageCode)
-      .pipe(
-        catchError(() => EmptyObservable)
-      );
+    return this.serverTranslationsLoader
+      .getTranslation(languageCode)
+      .pipe(catchError(() => EmptyObservable));
   }
 
   /**
+   * TODO write this such that there are no side-effects
+   * This method takes the server translations and creates a
+   * short-name entry for the given subjects and existing subject assessment labels
+   *
    * Create combined assessment type labels based upon the subject-scoped
    * assessment type labels for all subjects.  These labels should be used when referencing
    * an assessment type outside the scope of a subject.
@@ -60,21 +76,49 @@ export class RdwTranslateLoader implements TranslateLoader {
    * @param serverTranslations  The backend-provided translations
    * @returns {any} A translation payload containing combined assessment type labels
    */
-  private createSubjectTranslations(subjects: string[], serverTranslations: any): any {
+  private createSubjectTranslations(
+    subjects: string[],
+    serverTranslations: any
+  ): any {
     const subjectTranslations: any = {};
     for (let assessmentType of AssessmentTypes) {
       const labels: string[] = [];
       for (let subject of subjects) {
-        const label = _.get(serverTranslations, `subject.${subject}.asmt-type.${assessmentType}.name`);
-        if (Utils.isNullOrUndefined(label) || labels.indexOf(label) >= 0) continue;
+        const label = get(
+          serverTranslations,
+          `subject.${subject}.asmt-type.${assessmentType}.name`
+        );
+        if (label == null || labels.indexOf(label) >= 0) continue;
 
         labels.push(label);
       }
 
-      _.set(subjectTranslations, `common.assessment-type.${assessmentType}.short-name`, labels.join("/"));
+      set(
+        subjectTranslations,
+        `common.assessment-type.${assessmentType}.short-name`,
+        labels.join('/')
+      );
     }
 
     return subjectTranslations;
   }
 
+  private getUserTranslations(languageCode: string) {
+    return forkJoin(
+      this.getClientTranslations(languageCode),
+      this.getServerTranslations(languageCode).pipe(catchError(() => of({}))),
+      this.subjectService.getSubjectCodes().pipe(catchError(() => of([])))
+    ).pipe(
+      map(([clientTranslations, serverTranslations, subjects]) =>
+        merge(
+          clientTranslations,
+          // the side effects of this method are overwriting defaults in the clients en.json...
+          subjects.length > 0
+            ? this.createSubjectTranslations(subjects, serverTranslations)
+            : {},
+          serverTranslations
+        )
+      )
+    );
+  }
 }

@@ -16,12 +16,12 @@ sqlbuilder:
               e.school_year,
               e.asmt_id,
               ecs.subject_claim_score_id,
-              scs.code as claim_code
+              ss.code as claim_code
 
           from: >-
               exam_claim_score ecs
               JOIN exam e on e.id = ecs.exam_id
-              JOIN subject_claim_score scs ON scs.id = ecs.subject_claim_score_id
+              JOIN subject_score ss ON ss.id = ecs.subject_claim_score_id
               JOIN asmt a ON a.id = e.asmt_id
 
           where: >-
@@ -29,13 +29,13 @@ sqlbuilder:
               a.grade_id IN (:asmt_grade_ids) AND
               a.subject_id in (:subject_ids) AND
               a.type_id = :asmt_type_id AND
-              scs.code in (:subject_claim_score_codes)
+              ss.code in (:subject_claim_score_codes)
 
           groupBy: >-
               e.school_year,
               e.asmt_id,
               ecs.subject_claim_score_id,
-              scs.code
+              ss.code
 
       # ------------ organization parts -------------------------------------------------------------
         addons:
@@ -105,7 +105,7 @@ sqlbuilder:
             districtEmbargo:
               clauses:
                 where: >-
-                    e.school_year < ${reporting.school-year}
+                    e.school_year < :system_school_year
                     OR sch.embargo_enabled = 0
                     OR 1 = :state_embargo_admin
                     OR sch.district_id IN (:district_embargo_admin_ids)
@@ -113,7 +113,7 @@ sqlbuilder:
             stateEmbargo:
               clauses:
                 where: >-
-                     e.school_year < ${reporting.school-year}
+                     e.school_year < :system_school_year
                      OR EXISTS (SELECT 1 FROM state_embargo WHERE aggregate = 0)
                      OR 1 = :state_embargo_admin
 
@@ -182,6 +182,20 @@ sqlbuilder:
                 groupBy: >-
                      e.language_id,
                      lng.code
+
+            MilitaryConnectedCode:
+              clauses:
+                select: >-
+                  'MilitaryConnectedCode' AS dimension,
+                  e.military_connected_id AS dimension_id,
+                  mc.code AS dimension_code
+                join: >-
+                  JOIN military_connected mc ON mc.id = e.military_connected_id
+                where: >-
+                  ( true = :all_military_connected OR e.military_connected_id in (:military_connected_ids) )
+                groupBy: >-
+                  e.military_connected_id,
+                  mc.code
 
             IEP:
               clauses:
@@ -278,6 +292,11 @@ sqlbuilder:
               clauses:
                 where: >-
                   e.language_id in (:language_ids)
+
+            MilitaryConnectedCode_filter:
+              clauses:
+                where: >-
+                  e.military_connected_id in (:military_connected_ids)
 
             Ethnicity_filter:
                clauses:

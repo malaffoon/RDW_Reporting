@@ -1,0 +1,19 @@
+logging:
+  level:
+    # emit statistics for the underlying context cache
+    org.opentestsystem.rdw.admin: debug
+
+datasources:
+  reporting_ro:
+    url-schema: reporting_test
+  warehouse_rw:
+    url-schema: warehouse_test
+
+artifacts:
+  root: "classpath:"
+
+reporting:
+  school-year: 2018
+  state:
+    code: CA
+    name: California

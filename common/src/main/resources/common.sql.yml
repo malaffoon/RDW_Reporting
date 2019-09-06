@@ -2,9 +2,10 @@ sql:
   claim:
     findAll: >-
       SELECT scs.id, scs.code, s.code as subject_code, at.code as asmt_type_code
-      FROM subject_claim_score scs
+      FROM subject_score scs
         JOIN subject s ON scs.subject_id = s.id
         JOIN asmt_type at ON at.id = scs.asmt_type_id
+      WHERE scs.score_type_id=3
       ORDER BY scs.display_order
 
   translation:
@@ -134,10 +135,19 @@ sql:
         sat.performance_level_count,
         sat.performance_level_standard_cutoff,
         sat.claim_score_performance_level_count,
-        sat.target_report
+        sat.alt_score_performance_level_count,
+        sat.target_report,
+        sat.printed_report
       FROM subject_asmt_type sat
         JOIN asmt_type at ON at.id = sat.asmt_type_id
         JOIN subject s ON s.id = sat.subject_id
+
+    findAllScorables: >-
+      SELECT scs.id, scs.score_type_id, scs.code, s.code as subject_code, at.code as asmt_type_code
+      FROM subject_score scs
+        JOIN subject s ON scs.subject_id = s.id
+        JOIN asmt_type at ON at.id = scs.asmt_type_id
+      ORDER BY scs.display_order
 
   snippet:
     basicPermission: >-
@@ -175,7 +185,7 @@ sql:
           )
         )
 
-    examClaimColumns: >-
+    examScoreColumns: >-
         e.claim1_category,
         e.claim1_scale_score,
         e.claim1_scale_score_std_err,
@@ -193,25 +203,43 @@ sql:
         e.claim5_scale_score_std_err,
         e.claim6_category,
         e.claim6_scale_score,
-        e.claim6_scale_score_std_err
+        e.claim6_scale_score_std_err,
+        e.alt1_scale_score,
+        e.alt1_scale_score_std_err,
+        e.alt1_performance_level,
+        e.alt2_scale_score,
+        e.alt2_scale_score_std_err,
+        e.alt2_performance_level,
+        e.alt3_scale_score,
+        e.alt3_scale_score_std_err,
+        e.alt3_performance_level,
+        e.alt4_scale_score,
+        e.alt4_scale_score_std_err,
+        e.alt4_performance_level,
+        e.alt5_scale_score,
+        e.alt5_scale_score_std_err,
+        e.alt5_performance_level,
+        e.alt6_scale_score,
+        e.alt6_scale_score_std_err,
+        e.alt6_performance_level
 
-    asmtClaimColumns: >-
+    asmtScoreCodeColumns: >-
         a.claim1_score_code,
         a.claim2_score_code,
         a.claim3_score_code,
         a.claim4_score_code,
         a.claim5_score_code,
         a.claim6_score_code,
-        a.claim1_score_code as asmt_claim1_score_code,
-        a.claim2_score_code as asmt_claim2_score_code,
-        a.claim3_score_code as asmt_claim3_score_code,
-        a.claim4_score_code as asmt_claim4_score_code,
-        a.claim5_score_code as asmt_claim5_score_code,
-        a.claim6_score_code as asmt_claim6_score_code
+        a.alt1_score_code,
+        a.alt2_score_code,
+        a.alt3_score_code,
+        a.alt4_score_code,
+        a.alt5_score_code,
+        a.alt6_score_code
 
-    claimColumns: >-
-       ${sql.snippet.examClaimColumns},
-       ${sql.snippet.asmtClaimColumns}
+    claimAndAltScoreColumns: >-
+       ${sql.snippet.examScoreColumns},
+       ${sql.snippet.asmtScoreCodeColumns}
 
     examColumns: >-
         e.id,
@@ -223,9 +251,11 @@ sql:
         e.school_year,
         e.grade_code,
         e.available_accommodation_codes,
+        e.economic_disadvantage,
         e.iep,
         e.lep,
         e.language_code,
+        e.military_connected_code,
         e.elas_code,
         e.section504,
         e.migrant_status,
@@ -263,20 +293,9 @@ sql:
           join student st on st.id = e.student_id
           join asmt a on e.asmt_id = a.id
           join subject su on a.subject_id=su.id
+          join subject_asmt_type sat on a.subject_id=sat.subject_id and a.type_id=sat.asmt_type_id
           join school s on e.school_id = s.id
           join school isch on st.inferred_school_id = isch.id
-
-    writingTraits: >-
-      ei.id as ei_id,
-      ei.exam_id as ei_exam_id,
-      ei.item_id as ei_item_id,
-      ei.score as ei_score,
-      ei.position as ei_position,
-      ei.response as ei_response,
-      ei.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
-      ei.trait_organization_purpose_score as ei_trait_organization_purpose_score,
-      ei.trait_conventions_score as ei_trait_conventions_score,
-      i.performance_task_writing_type
 
     # There are multiple group related queries that need to join to either admin created groups or teacher groups.
     # To avoid duplicate queries we use 'placeholder' that at run time get replaced by these snippets.

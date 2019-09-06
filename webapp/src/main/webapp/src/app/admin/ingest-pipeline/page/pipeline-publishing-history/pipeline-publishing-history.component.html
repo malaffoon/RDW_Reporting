@@ -1,0 +1,20 @@
+<ng-container
+  *ngIf="
+    (pipeline | async) != null &&
+      (pipelines | async) != null &&
+      selectedPipeline;
+    else loading
+  "
+>
+  <pipeline-published-scripts
+    [pipeline]="pipeline | async"
+    [pipelines]="pipelines | async"
+    [selectedPipeline]="selectedPipeline"
+    (pipelineSelect)="onPipelineSelect($event)"
+    (pipelineActivate)="onPipelineActivate($event)"
+    (pipelineDeactivate)="onPipelineDeactivate($event)"
+  ></pipeline-published-scripts>
+</ng-container>
+<ng-template #loading>
+  <spinner></spinner>
+</ng-template>

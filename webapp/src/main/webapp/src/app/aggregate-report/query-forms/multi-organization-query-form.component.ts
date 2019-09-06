@@ -1,32 +1,41 @@
-import { BaseAggregateQueryFormComponent } from "./base-aggregate-query-form.component";
-import { District, Organization, OrganizationType, School } from "../../shared/organization/organization";
-import { OrganizationTypeahead } from "../../shared/organization/organization-typeahead";
-import { ViewChild } from "@angular/core";
-import { Observable } from "rxjs";
-import { NotificationService } from "../../shared/notification/notification.service";
-import { AggregateReportOptionsMapper } from "../aggregate-report-options.mapper";
-import { AggregateReportService } from "../aggregate-report.service";
-import { AggregateReportRequestMapper } from "../aggregate-report-request.mapper";
-import { ActivatedRoute, Router } from "@angular/router";
-import { AggregateReportTableDataService } from "../aggregate-report-table-data.service";
-import { AggregateReportOrganizationService } from "../aggregate-report-organization.service";
-import { map, mergeMap } from "rxjs/operators";
-import { FormControl } from "@angular/forms";
-import { AggregateReportColumnOrderItemProvider } from "../aggregate-report-column-order-item.provider";
-import { SubgroupFilters, SubgroupFilterSupport } from "../subgroup/subgroup-filters";
-import { SubgroupMapper } from "../subgroup/subgroup.mapper";
-import { SubgroupItem } from "../subgroup/subgroup-item";
-import { SupportedRowCount } from "../results/aggregate-report-table.component";
+import { BaseAggregateQueryFormComponent } from './base-aggregate-query-form.component';
+import {
+  District,
+  Organization,
+  OrganizationType,
+  School
+} from '../../shared/organization/organization';
+import { OrganizationTypeahead } from '../../shared/organization/organization-typeahead';
+import { ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
+import { NotificationService } from '../../shared/notification/notification.service';
+import { AggregateReportOptionsMapper } from '../aggregate-report-options.mapper';
+import { AggregateReportService } from '../aggregate-report.service';
+import { AggregateReportRequestMapper } from '../aggregate-report-request.mapper';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AggregateReportTableDataService } from '../aggregate-report-table-data.service';
+import { AggregateReportOrganizationService } from '../aggregate-report-organization.service';
+import { map, mergeMap } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
+import { AggregateReportColumnOrderItemProvider } from '../aggregate-report-column-order-item.provider';
+import { SubgroupMapper } from '../subgroup/subgroup.mapper';
+import { SupportedRowCount } from '../results/aggregate-report-table.component';
 import { SubjectService } from '../../subject/subject.service';
+import { UserQueryService } from '../../report/user-query.service';
+import {
+  SubgroupFilters,
+  SubgroupFilterSupport
+} from '../../shared/model/subgroup-filters';
+import { SubgroupItem } from '../../shared/model/subgroup-item';
 
-const OrganizationComparator = (a: Organization, b: Organization) => a.name.localeCompare(b.name);
+const OrganizationComparator = (a: Organization, b: Organization) =>
+  a.name.localeCompare(b.name);
 
 /**
  * Base query component implementation for the multi-organization aggregate report types:
  * GeneralPopulation, LongitudinalCohort, and Claim.
  */
 export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQueryFormComponent {
-
   /**
    * The organization typeahead
    */
@@ -63,49 +72,84 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
    */
   subgroupItems: SubgroupItem[] = [];
 
-  constructor(protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
-              protected notificationService: NotificationService,
-              protected optionMapper: AggregateReportOptionsMapper,
-              protected organizationService: AggregateReportOrganizationService,
-              protected reportService: AggregateReportService,
-              protected subjectService: SubjectService,
-              protected requestMapper: AggregateReportRequestMapper,
-              protected route: ActivatedRoute,
-              protected router: Router,
-              protected subgroupMapper: SubgroupMapper,
-              protected tableDataService: AggregateReportTableDataService) {
-    super(columnOrderableItemProvider, notificationService, optionMapper, reportService, subjectService, requestMapper, route, router, tableDataService);
+  constructor(
+    protected columnOrderableItemProvider: AggregateReportColumnOrderItemProvider,
+    protected notificationService: NotificationService,
+    protected optionMapper: AggregateReportOptionsMapper,
+    protected organizationService: AggregateReportOrganizationService,
+    protected reportService: AggregateReportService,
+    protected userQueryService: UserQueryService,
+    protected subjectService: SubjectService,
+    protected requestMapper: AggregateReportRequestMapper,
+    protected route: ActivatedRoute,
+    protected router: Router,
+    protected subgroupMapper: SubgroupMapper,
+    protected tableDataService: AggregateReportTableDataService
+  ) {
+    super(
+      columnOrderableItemProvider,
+      notificationService,
+      optionMapper,
+      reportService,
+      userQueryService,
+      subjectService,
+      requestMapper,
+      route,
+      router,
+      tableDataService
+    );
+  }
 
-    this.customSubgroup = SubgroupFilterSupport.copy(this.aggregateReportOptions.studentFilters);
-    this.subgroupItems = this.settings.subgroups
-      .map(subgroup => this.subgroupMapper.createItemsFromFilters(subgroup, this.aggregateReportOptions.dimensionTypes));
+  initialize(): void {
+    this.customSubgroup = SubgroupFilterSupport.copy(
+      this.aggregateReportOptions.studentFilters
+    );
+    this.subgroupItems = this.settings.subgroups.map(subgroup =>
+      this.subgroupMapper.createItemsFromFilters(
+        subgroup,
+        this.aggregateReportOptions.dimensionTypes
+      )
+    );
 
-    this.organizations = this.organizations.concat(this.settings.districts, this.settings.schools);
+    this.organizations = this.organizations.concat(
+      this.settings.districts,
+      this.settings.schools
+    );
 
-    const defaultOrganization: Organization = this.aggregateReportOptions.defaultOrganization;
+    const defaultOrganization: Organization = this.aggregateReportOptions
+      .defaultOrganization;
     if (this.organizations.length === 0 && defaultOrganization) {
-      this.hasDefaultSchoolOrganization = defaultOrganization.type === OrganizationType.School;
+      this.hasDefaultSchoolOrganization =
+        defaultOrganization.type === OrganizationType.School;
       this.addOrganizationToSettings(defaultOrganization);
     }
 
     this.organizationTypeaheadOptions = Observable.create(observer => {
       observer.next(this.organizationTypeahead.value);
     }).pipe(
-      mergeMap((search: string) => this.organizationService.getOrganizationsMatchingName(search)),
-      map((organizations: Organization[]) => organizations.filter(
-        organization => this.organizations.findIndex(x => organization.equals(x)) === -1
-      ))
+      mergeMap((search: string) =>
+        this.organizationService.getOrganizationsMatchingName(search)
+      ),
+      map((organizations: Organization[]) =>
+        organizations.filter(
+          organization =>
+            this.organizations.findIndex(x => organization.equals(x)) === -1
+        )
+      )
     );
   }
 
-  protected abstract capableOfRowEstimation(): boolean;
+  abstract capableOfRowEstimation(): boolean;
 
   get estimatedRowCountIsLarge(): boolean {
     return this.estimatedRowCount > SupportedRowCount;
   }
 
   get includeStateResults(): boolean {
-    return this.settings.includeStateResults && !this.getAssessmentDefinition().interim;
+    return (
+      this.settings.includeStateResults &&
+      !this.getAssessmentDefinition().interim
+    );
   }
 
   set includeStateResults(value: boolean) {
@@ -117,19 +161,33 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
   }
 
   get createCustomSubgroupButtonDisabled(): boolean {
-    return SubgroupFilterSupport.equals(this.customSubgroup, this.aggregateReportOptions.studentFilters)
-      || this.settings.subgroups.some(subgroup => SubgroupFilterSupport.equals(
-        subgroup,
-        SubgroupFilterSupport.leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters)
-      ));
+    return (
+      SubgroupFilterSupport.equals(
+        this.customSubgroup,
+        this.aggregateReportOptions.studentFilters
+      ) ||
+      this.settings.subgroups.some(subgroup =>
+        SubgroupFilterSupport.equals(
+          subgroup,
+          SubgroupFilterSupport.leftDifference(
+            this.customSubgroup,
+            this.aggregateReportOptions.studentFilters
+          )
+        )
+      )
+    );
   }
 
   onCreateCustomSubgroupButtonClick(): void {
-    const created = SubgroupFilterSupport
-      .leftDifference(this.customSubgroup, this.aggregateReportOptions.studentFilters);
+    const created = SubgroupFilterSupport.leftDifference(
+      this.customSubgroup,
+      this.aggregateReportOptions.studentFilters
+    );
 
-    const createdItem = this.subgroupMapper
-      .createItemsFromFilters(created, this.aggregateReportOptions.dimensionTypes);
+    const createdItem = this.subgroupMapper.createItemsFromFilters(
+      created,
+      this.aggregateReportOptions.dimensionTypes
+    );
 
     this.settings.subgroups = this.settings.subgroups.concat(created);
     this.subgroupItems = this.subgroupItems.concat(createdItem);
@@ -138,10 +196,12 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
   }
 
   onCustomSubgroupItemRemoveButtonClick(item: SubgroupItem): void {
-    this.settings.subgroups = this.settings.subgroups
-      .filter(subgroup => subgroup !== item.source);
-    this.subgroupItems = this.subgroupItems
-      .filter(subgroup => subgroup !== item);
+    this.settings.subgroups = this.settings.subgroups.filter(
+      subgroup => subgroup !== item.source
+    );
+    this.subgroupItems = this.subgroupItems.filter(
+      subgroup => subgroup !== item
+    );
     this.onSettingsChange();
   }
 
@@ -180,8 +240,9 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
   onReviewSectionInView(): void {
     // compute and render estimated row count
     if (this.getFormGroup().valid && this.capableOfRowEstimation()) {
-      this.reportService.getEstimatedRowCount(this.createReportRequest().query)
-        .subscribe(count => this.estimatedRowCount = count);
+      this.reportService
+        .getEstimatedRowCount(this.createReportRequest())
+        .subscribe(count => (this.estimatedRowCount = count));
     }
 
     super.onReviewSectionInView();
@@ -242,13 +303,17 @@ export abstract class MultiOrganizationQueryFormComponent extends BaseAggregateQ
   }
 
   protected removeOrganizationFromSettings(organization: Organization): void {
-    this.organizations = this.organizations.filter(value => !organization.equals(value));
+    this.organizations = this.organizations.filter(
+      value => !organization.equals(value)
+    );
     if (organization.type === OrganizationType.District) {
-      this.settings.districts = this.settings.districts
-        .filter(district => !organization.equals(district));
+      this.settings.districts = this.settings.districts.filter(
+        district => !organization.equals(district)
+      );
     } else if (organization.type === OrganizationType.School) {
-      this.settings.schools = this.settings.schools
-        .filter(school => !organization.equals(school));
+      this.settings.schools = this.settings.schools.filter(
+        school => !organization.equals(school)
+      );
     }
     this.markOrganizationsControlTouched();
   }

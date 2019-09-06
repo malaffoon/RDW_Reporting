@@ -9,9 +9,12 @@ import { FilterBy } from '../../assessments/model/filter-by.model';
   templateUrl: './student-results-filter.component.html'
 })
 export class StudentResultsFilterComponent {
-
   @Input()
-  filterState: StudentResultsFilterState = { schoolYears: [], subjects: [], assessmentTypes: [] };
+  filterState: StudentResultsFilterState = {
+    schoolYears: [],
+    subjects: [],
+    assessmentTypes: []
+  };
 
   @Input()
   filterOptions: ExamFilterOptions = new ExamFilterOptions();
@@ -28,8 +31,7 @@ export class StudentResultsFilterComponent {
 
   private _showAdvancedFilters: boolean;
 
-  constructor(private angulartics2: Angulartics2) {
-  }
+  constructor(private angulartics2: Angulartics2) {}
 
   set showAdvancedFilters(value: boolean) {
     this._showAdvancedFilters = value;
@@ -58,9 +60,9 @@ export class StudentResultsFilterComponent {
 
   public removeFilter(property: string) {
     if (property === 'offGradeAssessment') {
-      this.advancedFilters[ property ] = false;
+      this.advancedFilters[property] = false;
     } else {
-      this.advancedFilters[ property ] = -1;
+      this.advancedFilters[property] = -1;
     }
   }
 
@@ -70,5 +72,4 @@ export class StudentResultsFilterComponent {
       document.getElementById('results-adv-filters').scrollIntoView();
     }, 0);
   }
-
 }

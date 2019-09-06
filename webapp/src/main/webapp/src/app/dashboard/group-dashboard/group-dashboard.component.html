@@ -1,22 +1,22 @@
 <page-heading>
-  <ng-template #heading>
-    <h2>{{'group-dashboard.heading' | translate}}</h2>
-  </ng-template>
-  <ng-template #content>
-    <ul class="list-unstyled list-inline"
-        *ngIf="group">
-      <li *hasPermission="'INDIVIDUAL_PII_READ'">
-        <a routerLink="/custom-export"
-           class="btn btn-sm btn-default"><i class="fa fa-table"></i> {{'organization-export.title' | translate}}</a>
-      </li>
-      <li>
-        <button class="btn btn-default btn-sm"
-                (click)="reportDownloader.modal.show()">
-          <i class="fa fa-cloud-download" aria-hidden="true"></i> {{'common.buttons.printable-student-reports' | translate}}
-        </button>
-      </li>
-    </ul>
-  </ng-template>
+  <h1 class="h2" heading>{{ 'group-dashboard.heading' | translate }}</h1>
+  <ul controls class="list-unstyled list-inline" *ngIf="group">
+    <li *hasPermission="'INDIVIDUAL_PII_READ'">
+      <a routerLink="/custom-export" class="btn btn-sm btn-default"
+        ><i class="fa fa-table"></i>
+        {{ 'organization-export.title' | translate }}</a
+      >
+    </li>
+    <li>
+      <button
+        class="btn btn-default btn-sm"
+        (click)="onPrintableReportButtonClick()"
+      >
+        <i class="fa fa-cloud-download" aria-hidden="true"></i>
+        {{ 'common.buttons.printable-student-reports' | translate }}
+      </button>
+    </li>
+  </ul>
 </page-heading>
 
 <ng-container *ngIf="!groups; else loaded">
@@ -25,46 +25,60 @@
 
 <ng-template #loaded>
   <ng-container *ngIf="group; else groupNotFound">
-
     <div class="row top-sticky iab-dashboard-filters pb-xs">
       <div class="col-md-3">
         <div class="form-group">
-          <label for="select-group">{{'group-results.select-group' | translate}}</label>
-          <select id="select-group"
-                  class="form-control"
-                  [compareWith]="groupEquals"
-                  [(ngModel)]="group"
-                  (change)="onGroupChange()">
-            <option *ngFor="let group of groups"
-                    [ngValue]="group">{{group.name}}
+          <label for="select-group">{{
+            'group-results.select-group' | translate
+          }}</label>
+          <select
+            id="select-group"
+            class="form-control"
+            [compareWith]="groupEquals"
+            [(ngModel)]="group"
+            (change)="onGroupChange()"
+          >
+            <option *ngFor="let group of groups" [ngValue]="group"
+              >{{ group.name }}
             </option>
           </select>
         </div>
       </div>
       <div class="col-md-2">
         <div class="form-group">
-          <label for="school-year">{{'common.school-year-select-label' | translate}}</label>
-          <select id="school-year"
-                  class="form-control"
-                  [(ngModel)]="schoolYear"
-                  (change)="onSchoolYearChange()">
-            <option *ngFor="let year of filterOptions.schoolYears"
-                    [ngValue]="year">{{year | schoolYear}}
+          <label for="school-year">{{
+            'common.school-year-select-label' | translate
+          }}</label>
+          <select
+            id="school-year"
+            class="form-control"
+            [(ngModel)]="schoolYear"
+            (change)="onSchoolYearChange()"
+          >
+            <option
+              *ngFor="let year of filterOptions.schoolYears"
+              [ngValue]="year"
+              >{{ year | schoolYear }}
             </option>
           </select>
         </div>
       </div>
       <div class="col-md-2">
         <div class="form-group">
-          <label for="select-subject">{{'common.subject-select-label' | translate}}</label>
-          <select id="select-subject"
-                  [(ngModel)]="subject"
-                  class="form-control"
-                  (change)="onSubjectChange()">
-            <option selected
-                    [ngValue]="undefined">{{'common.collection-selection.all' | translate}}</option>
-            <option *ngFor="let subject of subjects"
-                    [ngValue]="subject">{{'subject.' + subject + '.name' | translate}}
+          <label for="select-subject">{{
+            'common.subject-select-label' | translate
+          }}</label>
+          <select
+            id="select-subject"
+            [(ngModel)]="subject"
+            class="form-control"
+            (change)="onSubjectChange()"
+          >
+            <option selected [ngValue]="undefined">{{
+              'common.collection-selection.all' | translate
+            }}</option>
+            <option *ngFor="let subject of subjects" [ngValue]="subject"
+              >{{ 'subject.' + subject + '.name' | translate }}
             </option>
           </select>
         </div>
@@ -73,56 +87,49 @@
         <div class="form-group">
           <div class="pull-right">
             <label>&nbsp;</label>
-            <a class="btn btn-primary form-control"
-               href="javascript:void(0)"
-               [ngClass]="{'disabled': !viewAssessmentsButtonEnabled}"
-               (click)="viewAssessments()">{{'assessment-card.view-assessments' | translate }}
+            <a
+              class="btn btn-primary form-control"
+              href="javascript:void(0)"
+              [ngClass]="{ disabled: !viewAssessmentsButtonEnabled }"
+              (click)="viewAssessments()"
+              >{{ 'assessment-card.view-assessments' | translate }}
               <i class="ml-xs fa fa-angle-right"></i>
             </a>
           </div>
         </div>
       </div>
     </div>
-
   </ng-container>
 </ng-template>
 
 <ng-template #groupNotFound>
   <div class="alert alert-info">
-    {{'group-results.null-group' | translate }}
+    {{ 'group-results.null-group' | translate }}
   </div>
 </ng-template>
 
 <!-- Loading and No Results Error -->
-<ng-container *ngIf="loadingMeasuredAssessments; else measuredAssessmentsLoaded">
+<ng-container
+  *ngIf="loadingMeasuredAssessments; else measuredAssessmentsLoaded"
+>
   <spinner></spinner>
 </ng-container>
 <ng-template #measuredAssessmentsLoaded>
-  <ng-container *ngIf="measuredAssessments.length === 0; else hasMeasuredAssessments">
-
+  <ng-container
+    *ngIf="measuredAssessments.length === 0; else hasMeasuredAssessments"
+  >
     <div class="alert alert-info">
-      {{'group-dashboard.no-results-found' | translate}}
+      {{ 'group-dashboard.no-results-found' | translate }}
     </div>
-
   </ng-container>
   <ng-template #hasMeasuredAssessments>
-
     <div class="row mt-sm" *ngFor="let row of rows">
-      <div *ngFor="let card of row"
-           class="col-md-4 mb-md">
-        <group-assessment-card (selectedAssessment)="onCardSelection($event)"
-                               [card]="card"></group-assessment-card>
+      <div *ngFor="let card of row" class="col-md-4 mb-md">
+        <group-assessment-card
+          (selectedAssessment)="onCardSelection($event)"
+          [card]="card"
+        ></group-assessment-card>
       </div>
     </div>
-
   </ng-template>
 </ng-template>
-
-
-<span group-report-download
-      #reportDownloader
-      [title]="'common.reports.form.title.multiple' | translate:group"
-      [group]="group"
-      [schoolYears]="filterOptions.schoolYears"
-      [schoolYear]="schoolYear"
-      (onShow)="initializeDownloader(reportDownloader)"></span>

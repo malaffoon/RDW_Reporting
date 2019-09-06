@@ -1,13 +1,16 @@
-<div class="notifications mt-md mr-lg">
-  <div class="notification clearfix" *ngFor="let notification of notifications">
-    <alert class="pull-right"
-           [type]="notification.type"
-           [dismissible]="notification.dismissible"
-           [dismissOnTimeout]="notification.dismissOnTimeout"
-           (onClose)="onDismissed(notification)">
-      <span *ngIf="!notification.html">{{notification.id | translate: notification.args}}</span>
-      <span *ngIf="notification.html" [innerHtml]="notification.id | translate: notification.args"></span>
-    </alert>
-  </div>
-</div>
-
+<alert
+  aria-live="polite"
+  [type]="notification.type"
+  [dismissible]="notification.dismissible"
+  [dismissOnTimeout]="notification.dismissOnTimeout"
+  (onClose)="onClose.emit($event)"
+>
+  <ng-container *ngIf="notification.html; else noHtml">
+    <span
+      innerHtml="{{ notification.id | translate: notification.args }}"
+    ></span>
+  </ng-container>
+  <ng-template #noHtml>
+    <span>{{ notification.id | translate: notification.args }}</span>
+  </ng-template>
+</alert>

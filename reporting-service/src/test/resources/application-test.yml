@@ -13,13 +13,14 @@ reporting:
   state:
     code: CA
     name: California
+  transfer-access-enabled: false
 
 app:
   test-mode: true
 
-spring:
-  datasource:
+datasources:
+  reporting_ro:
     url-schema: reporting_test
 
-  writable_datasource:
+  reporting_rw:
     url-schema: reporting_test

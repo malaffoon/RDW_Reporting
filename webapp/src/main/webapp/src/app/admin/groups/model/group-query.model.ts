@@ -1,4 +1,4 @@
-import { School } from "./school.model";
+import { School } from './school.model';
 
 export class GroupQuery {
   school: School;
@@ -12,7 +12,7 @@ export class GroupQuery {
 
   private _availableSubjects: string[];
 
-  constructor(availableSubjects: string[]){
+  constructor(availableSubjects: string[]) {
     this._availableSubjects = availableSubjects;
   }
 }

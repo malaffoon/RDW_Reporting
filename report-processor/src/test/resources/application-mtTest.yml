@@ -1,3 +1,6 @@
-spring:
-  datasource:
+datasources:
+  reporting_ro:
     url-schema: reporting_test
+
+mtTest:
+  expectedTests: 2

@@ -1,7 +1,7 @@
-import { Component, EventEmitter } from "@angular/core";
-import { InstructionalResource } from "./model/instructional-resource.model";
-import { BsModalRef } from "ngx-bootstrap";
-import { InstructionalResourceService } from "./instructional-resource.service";
+import { Component, EventEmitter } from '@angular/core';
+import { InstructionalResource } from './model/instructional-resource.model';
+import { BsModalRef } from 'ngx-bootstrap';
+import { InstructionalResourceService } from './instructional-resource.service';
 
 /**
  * This modal component displays an instructional resource delete confirmation.
@@ -11,14 +11,14 @@ import { InstructionalResourceService } from "./instructional-resource.service";
   templateUrl: './delete-instructional-resource.modal.html'
 })
 export class DeleteInstructionalResourceModal {
-
   resource: InstructionalResource = new InstructionalResource();
   unableToDelete: boolean = false;
   deleted: EventEmitter<InstructionalResource> = new EventEmitter();
 
-  constructor(private modal: BsModalRef,
-              private resourceService: InstructionalResourceService) {
-  }
+  constructor(
+    private modal: BsModalRef,
+    private resourceService: InstructionalResourceService
+  ) {}
 
   cancel() {
     this.modal.hide();
@@ -35,7 +35,7 @@ export class DeleteInstructionalResourceModal {
 
         this.modal.hide();
         this.deleted.emit(this.resource);
-      });
+      }
+    );
   }
-
 }

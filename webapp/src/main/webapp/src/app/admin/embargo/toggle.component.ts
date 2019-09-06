@@ -1,7 +1,12 @@
-import { Component, EventEmitter, forwardRef, Input, Output } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import { Utils } from "../../shared/support/support";
-
+import {
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  Output
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Utils } from '../../shared/support/support';
 
 const NOOP: () => void = () => {};
 const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
@@ -15,20 +20,23 @@ const CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR = {
  * moving sb-toggle to common-ngx will come later
  */
 @Component({
-  providers: [ CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR ],
+  providers: [CUSTOM_INPUT_CONTROL_VALUE_ACCESSOR],
   selector: 'toggle',
   template: `
     <div class="btn-group btn-group-xs toggle-group">
-      <button *ngFor="let option of options"
-         class="btn btn-primary"
-         [(ngModel)]="value"
-         [btnRadio]="option.value"
-         [ngClass]="{disabled: disabled}">{{option.text}}</button>
+      <button
+        *ngFor="let option of options"
+        class="btn btn-primary"
+        [(ngModel)]="value"
+        [btnRadio]="option.value"
+        [ngClass]="{ disabled: disabled }"
+      >
+        {{ option.text }}
+      </button>
     </div>
   `
 })
 export class Toggle implements ControlValueAccessor {
-
   @Input()
   disabled: boolean = false;
 
@@ -52,10 +60,13 @@ export class Toggle implements ControlValueAccessor {
     if (options.length != 2) {
       this.throwError('expected two options but got ' + options.length);
     }
-    this._options = options.map(option => <Option>{
-      value: option.value,
-      text: option.text ? option.text : option.value
-    });
+    this._options = options.map(
+      option =>
+        <Option>{
+          value: option.value,
+          text: option.text ? option.text : option.value
+        }
+    );
     if (Utils.isUndefined(this._options[0].value)) {
       this._options[0].value = true;
     }
@@ -99,7 +110,7 @@ export class Toggle implements ControlValueAccessor {
    * @inheritDoc
    */
   registerOnChange(callback: any): void {
-    this._onChangeCallback = (callback !== null ? callback : NOOP);
+    this._onChangeCallback = callback !== null ? callback : NOOP;
   }
 
   /**
@@ -107,9 +118,8 @@ export class Toggle implements ControlValueAccessor {
    * @inheritDoc
    */
   registerOnTouched(callback: any): void {
-    this._onTouchedCallback = (callback !== null ? callback : NOOP);
+    this._onTouchedCallback = callback !== null ? callback : NOOP;
   }
-
 }
 
 export interface Option {

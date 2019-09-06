@@ -1,18 +1,17 @@
-import { BrowserModule } from "@angular/platform-browser";
-import { RdwCoreModule } from "../core/rdw-core.module";
-import { NgModule } from "@angular/core";
-import { AuthenticationService } from "./authentication.service";
-import { Http } from "@angular/http";
-import { RouterModule } from "@angular/router";
-import { AuthenticatedHttpService } from "./authenticated-http.service";
-import { TranslateModule } from "@ngx-translate/core";
-import { SessionExpiredComponent } from "./session-expired.component";
-import { APP_BASE_HREF } from "@angular/common";
-import { AuthorizationService } from "./authorization.service";
-import { AuthorizationDirective } from "./authorization.directive";
-import { PermissionService } from "./permission.service";
-import { AccessDeniedRoute, RoutingAuthorizationCanActivate } from "./routing-authorization.can-activate";
-import { AuthorizationCanActivate } from "./authorization.can-activate";
+import { RdwCoreModule } from '../core/rdw-core.module';
+import { NgModule } from '@angular/core';
+import { Http } from '@angular/http';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { APP_BASE_HREF, CommonModule } from '@angular/common';
+import { AccessDeniedComponent } from './component/access-denied/access-denied.component';
+import { SessionExpiredComponent } from './component/session-expired/session-expired.component';
+import { AuthorizationDirective } from './directive/authorization.directive';
+import { AuthenticatedHttpService } from './service/authenticated-http.service';
+import { SecuritySettingService } from './service/security-settings.service';
+import { DefaultSecuritySettingsService } from './service/default-security-settings.service';
+import { NotAuthenticatedHttpInterceptor } from './service/not-authenticated.http-interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 /**
  * Common security module.
@@ -24,31 +23,35 @@ import { AuthorizationCanActivate } from "./authorization.can-activate";
  * Example: { provide: AccessDeniedRoute, useValue: 'my-access-denied-route' }
  */
 @NgModule({
+  imports: [
+    CommonModule,
+    RdwCoreModule,
+    // These can be overridden in the consuming apps
+    RouterModule,
+    TranslateModule
+  ],
   declarations: [
+    AccessDeniedComponent,
     SessionExpiredComponent,
     AuthorizationDirective
   ],
-  imports: [
-    BrowserModule,
-    RdwCoreModule,
-    // These can be overridden in the consuming apps
-    RouterModule.forRoot([]),
-    TranslateModule.forRoot()
-  ],
   exports: [
+    AccessDeniedComponent,
     SessionExpiredComponent,
     AuthorizationDirective
   ],
   providers: [
-    { provide: Http, useClass: AuthenticatedHttpService },
     { provide: APP_BASE_HREF, useValue: '/' },
-    { provide: AccessDeniedRoute, useValue: 'access-denied' },
-    AuthenticationService,
-    AuthorizationService,
-    AuthorizationCanActivate,
-    RoutingAuthorizationCanActivate,
-    PermissionService
+    { provide: Http, useClass: AuthenticatedHttpService },
+    {
+      provide: SecuritySettingService,
+      useClass: DefaultSecuritySettingsService
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: NotAuthenticatedHttpInterceptor,
+      multi: true
+    }
   ]
 })
-export class RdwSecurityModule {
-}
+export class RdwSecurityModule {}

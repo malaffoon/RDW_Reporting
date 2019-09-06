@@ -1,0 +1,23 @@
+#simulating the spring cloud config search path feature with "tenant_az" profile for testing purposes
+tenantProperties:
+  tenants:
+    NVX:
+      id: AZ
+      key: NVX
+      name: Arizona
+      description: Some Descriptive Text For AZ
+
+spring:
+  datasource:
+    tenants:
+      NVX:
+        url-parts:
+          database: "tenant_az"
+        username: "tenant_az_user"
+        password: "tenant_az_password"
+
+archive:
+  tenants:
+    NVX:
+      uri-root: "file://tmp"
+      path-prefix: "/az"

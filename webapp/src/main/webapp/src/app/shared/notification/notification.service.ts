@@ -1,48 +1,72 @@
-import { Injectable, EventEmitter } from "@angular/core";
-import { Notification } from "./notification.model";
+import { Injectable } from '@angular/core';
+import { Notification } from './notification';
+import { NotificationsStore } from './notifications.store';
+
+const NotificationDefaults: Partial<Notification> = {
+  type: 'info',
+  args: {},
+  dismissOnTimeout: 10000,
+  dismissible: true
+};
 
 /**
  * This service is responsible for displaying notification alerts to the user.
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class NotificationService {
-
-  private _onNotification: EventEmitter<Notification> = new EventEmitter();
-
-  constructor() {
-  }
-
-  get onNotification(): EventEmitter<Notification> {
-    return this._onNotification;
-  }
+  constructor(private store: NotificationsStore) {}
 
   /**
    * Dispatch a notification message for immediate display.
    *
    * @param notification A notification message
    */
-  public showNotification(notification: Notification): void {
-    this.onNotification.emit(notification);
+  showNotification(notification: Notification): void {
+    const { state: notifications } = this.store;
+
+    const notificationWithDefaults = {
+      ...NotificationDefaults,
+      ...notification
+    };
+
+    const lastNotification: Notification =
+      notifications[notifications.length - 1];
+
+    const nextState =
+      lastNotification == null || lastNotification.id !== notification.id
+        ? [...notifications, notificationWithDefaults]
+        : [...notifications.slice(0, -1), notificationWithDefaults];
+
+    this.store.setState(nextState);
   }
 
-  public success(options: any): void {
-    this.showNotification(this.createNotification('success', options));
+  success(notification: Notification): void {
+    this.showNotification({
+      ...notification,
+      type: 'success'
+    });
   }
 
-  public info(options: any): void {
-    this.showNotification(this.createNotification('info', options));
+  info(notification: Notification): void {
+    this.showNotification({
+      ...notification,
+      type: 'info'
+    });
   }
 
-  public warn(options: any): void {
-    this.showNotification(this.createNotification('warning', options));
+  warn(notification: Notification): void {
+    this.showNotification({
+      ...notification,
+      type: 'warning'
+    });
   }
 
-  public error(options: any): void {
-    this.showNotification(this.createNotification('danger', options));
+  error(notification: Notification): void {
+    this.showNotification({
+      ...notification,
+      type: 'danger'
+    });
   }
-
-  private createNotification(type: string, options: any): Notification {
-    return new Notification(Object.assign(options, {type: type}));
-  }
-
 }

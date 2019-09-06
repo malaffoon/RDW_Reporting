@@ -1,0 +1,1763 @@
+{
+  "endpoints-org.springframework.boot.actuate.endpoint.EndpointProperties": {
+    "prefix": "endpoints",
+    "properties": {
+      "enabled": true,
+      "sensitive": null
+    }
+  },
+  "parent": {
+    "spring.cloud.config.retry-org.springframework.cloud.config.client.RetryProperties": {
+      "prefix": "spring.cloud.config.retry",
+      "properties": {
+        "maxAttempts": 6,
+        "initialInterval": 2000,
+        "maxInterval": 3000,
+        "multiplier": 1.1
+      }
+    },
+    "configClientProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "headers": {},
+        "profile": "awsqa",
+        "label": "develop,master",
+        "uri": "http://configuration-service",
+        "enabled": true,
+        "failFast": true,
+        "token": null,
+        "authorization": null,
+        "password": null,
+        "discovery": {
+          "enabled": false,
+          "serviceId": "configserver"
+        },
+        "name": "rdw-ingest-migrate-reporting",
+        "username": "user"
+      }
+    },
+    "spring.cloud.config-org.springframework.cloud.bootstrap.config.PropertySourceBootstrapProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "overrideSystemProperties": true,
+        "overrideNone": false,
+        "allowOverride": true
+      }
+    },
+    "encrypt-org.springframework.cloud.bootstrap.encrypt.KeyProperties": {
+      "prefix": "encrypt",
+      "properties": {
+        "failOnError": true,
+        "key": null,
+        "keyStore": {
+          "location": null,
+          "password": null,
+          "alias": null,
+          "secret": null
+        }
+      }
+    }
+  },
+  "management.info-org.springframework.boot.actuate.autoconfigure.InfoContributorProperties": {
+    "prefix": "management.info",
+    "properties": {
+      "git": {
+        "mode": "SIMPLE"
+      }
+    }
+  },
+  "metricsEndpoint": {
+    "prefix": "endpoints.metrics",
+    "properties": {
+      "id": "metrics",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "inetUtilsProperties": {
+    "prefix": "spring.cloud.inetutils",
+    "properties": {
+      "ignoredInterfaces": [],
+      "preferredNetworks": [],
+      "defaultIpAddress": "127.0.0.1",
+      "timeoutSeconds": 1,
+      "defaultHostname": "localhost",
+      "useOnlySiteLocalInterfaces": false
+    }
+  },
+  "featuresEndpoint": {
+    "prefix": "endpoints.features",
+    "properties": {
+      "id": "features",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "environmentEndpoint": {
+    "prefix": "endpoints.env",
+    "properties": {
+      "id": "env",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "migrateMvcEndpoint": {
+    "prefix": "endpoints.migrate",
+    "properties": {
+      "path": "/migrate"
+    }
+  },
+  "migrateStagingToReportingSqlConfiguration": {
+    "prefix": "sql.migrate",
+    "properties": {
+      "entities": {
+        "subject_asmt_type": {
+          "sql": {
+            "insert": "INSERT INTO subject_asmt_type (asmt_type_id, subject_id, performance_level_count, performance_level_standard_cutoff, claim_score_performance_level_count, alt_score_performance_level_count, target_report, printed_report)\n  SELECT\n    ssat.asmt_type_id,\n    ssat.subject_id,\n    ssas1.performance_level_count,\n    ssas1.performance_level_standard_cutoff,\n    ssas2.performance_level_count AS alt_score_performance_level_count,\n    ssas3.performance_level_count AS claim_score_performance_level_count,\n    ssat.target_report,\n    ssat.printed_report\n  FROM staging_subject_asmt_type ssat\n    LEFT JOIN subject_asmt_type rsat ON (rsat.subject_id = ssat.subject_id AND rsat.asmt_type_id = ssat.asmt_type_id)\n    LEFT JOIN staging_subject_asmt_scoring ssas1 ON ssas1.subject_id = ssat.subject_id AND ssas1.asmt_type_id = ssat.asmt_type_id AND ssas1.score_type_id=1\n    LEFT JOIN staging_subject_asmt_scoring ssas2 ON ssas2.subject_id = ssat.subject_id AND ssas2.asmt_type_id = ssat.asmt_type_id AND ssas2.score_type_id=2\n    LEFT JOIN staging_subject_asmt_scoring ssas3 ON ssas3.subject_id = ssat.subject_id AND ssas3.asmt_type_id = ssat.asmt_type_id AND ssas3.score_type_id=3\n  WHERE rsat.subject_id IS NULL;",
+            "deleteAsPartOfParentUpdate": "DELETE rsat FROM subject_asmt_type rsat\n  JOIN staging_subject ss ON ss.id = rsat.subject_id\n  WHERE NOT EXISTS (SELECT 1 FROM staging_subject_asmt_type ssat WHERE ssat.asmt_type_id = rsat.asmt_type_id and ssat.subject_id = rsat.subject_id);",
+            "update": "UPDATE subject_asmt_type rsat\n  JOIN staging_subject_asmt_type ssat ON (rsat.subject_id = ssat.subject_id AND rsat.asmt_type_id = ssat.asmt_type_id)\n  LEFT JOIN staging_subject_asmt_scoring ssas1 ON ssas1.subject_id = ssat.subject_id AND ssas1.asmt_type_id = ssat.asmt_type_id AND ssas1.score_type_id=1\n  LEFT JOIN staging_subject_asmt_scoring ssas2 ON ssas2.subject_id = ssat.subject_id AND ssas2.asmt_type_id = ssat.asmt_type_id AND ssas2.score_type_id=2\n  LEFT JOIN staging_subject_asmt_scoring ssas3 ON ssas3.subject_id = ssat.subject_id AND ssas3.asmt_type_id = ssat.asmt_type_id AND ssas3.score_type_id=3\nSET\n  rsat.performance_level_count = ssas1.performance_level_count,\n  rsat.performance_level_standard_cutoff = ssas1.performance_level_standard_cutoff,\n  rsat.alt_score_performance_level_count = ssas2.performance_level_count,\n  rsat.claim_score_performance_level_count = ssas3.performance_level_count,\n  rsat.target_report = ssat.target_report,\n  rsat.printed_report = ssat.printed_report"
+          }
+        },
+        "school_group": {
+          "sql": {
+            "update": "UPDATE school_group rsg\n  JOIN staging_school_group ssg ON ssg.id = rsg.id\n  SET rsg.name = ssg.name, rsg.external_id = ssg.external_id;",
+            "delete": "DELETE rsg FROM school_group rsg\n  WHERE\n      rsg.id in (SELECT ss.school_group_id from staging_school ss WHERE ss.deleted = 1)\n      AND NOT EXISTS(SELECT rs.id from school rs WHERE rs.school_group_id = rsg.id);",
+            "insert": "INSERT INTO school_group(id, natural_id, name, external_id)\n  SELECT ssg.id, ssg.natural_id, ssg.name, ssg.external_id\n    FROM staging_school_group ssg\n      LEFT JOIN school_group rsg ON rsg.id = ssg.id\n    WHERE rsg.id IS NULL;"
+          }
+        },
+        "user_student_group": {
+          "sql": {
+            "insert": "INSERT INTO user_student_group (student_group_id, user_login)\n  SELECT\n    susg.student_group_id,\n    susg.user_login\n  FROM staging_user_student_group susg\n    LEFT JOIN user_student_group rusg ON (rusg.student_group_id = susg.student_group_id AND rusg.user_login = susg.user_login)\n  WHERE rusg.student_group_id IS NULL;",
+            "delete": "DELETE rusg from user_student_group rusg\n JOIN staging_student_group ssg ON ssg.id = rusg.student_group_id\nWHERE ssg.deleted = 1 or ssg.active = 0;",
+            "deleteAsPartOfParentUpdate": "DELETE rsug FROM user_student_group rsug\n   JOIN staging_student_group ssg ON ssg.id = rsug.student_group_id\nWHERE ssg.deleted = 0\n      AND ssg.active = 1\n      AND NOT EXISTS(\n        SELECT susg.student_group_id\n          FROM staging_user_student_group susg\n        WHERE\n          susg.student_group_id = rsug.student_group_id\n          AND susg.user_login = rsug.user_login\n      );"
+          }
+        },
+        "exam": {
+          "sql": {
+            "update": "UPDATE exam re\n  JOIN staging_exam se ON se.id = re.id\n  LEFT JOIN language rl ON rl.id = se.language_id\n  LEFT JOIN elas rel ON rel.id = se.elas_id\n  LEFT JOIN completeness rc ON rc.id = se.completeness_id\n  LEFT JOIN administration_condition rac ON rac.id = se.administration_condition_id\n  LEFT JOIN military_connected rmc ON rmc.id = se.military_connected_id\n  JOIN grade rg ON rg.id = se.grade_id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=1\n             ) AS claim1 ON claim1.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=2\n             ) AS claim2 ON claim2.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=3\n             ) AS claim3 ON claim3.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=4\n            ) AS claim4 ON claim4.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=5\n            ) AS claim5 ON claim5.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=6\n            ) AS claim6 ON claim6.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=1\n             ) AS alt1 ON alt1.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=2\n             ) AS alt2 ON alt2.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=3\n             ) AS alt3 ON alt3.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=4\n             ) AS alt4 ON alt4.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=5\n             ) AS alt5 ON alt5.exam_id = se.id\n  LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n               FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=6\n             ) AS alt6 ON alt6.exam_id = se.id\n  LEFT JOIN (SELECT seaa.exam_id as exam_id, GROUP_CONCAT(ra.code ORDER BY ra.id SEPARATOR '|') AS codes\n               FROM staging_exam_available_accommodation seaa\n                 JOIN accommodation ra ON ra.id = seaa.accommodation_id\n               GROUP BY seaa.exam_id\n          ) AS code ON code.exam_id = se.id\nSET\n  re.grade_id = se.grade_id,\n  re.grade_code = rg.code,\n  re.student_id = se.student_id,\n  re.school_id = se.school_id,\n  re.iep = se.iep,\n  re.lep = se.lep,\n  re.section504 = se.section504,\n  re.economic_disadvantage = se.economic_disadvantage,\n  re.migrant_status = se.migrant_status,\n  re.eng_prof_lvl = se.eng_prof_lvl,\n  re.t3_program_type = se.t3_program_type,\n  re.prim_disability_type = se.prim_disability_type,\n  re.type_id = se.type_id,\n  re.school_year = se.school_year,\n  re.asmt_id = se.asmt_id,\n  re.asmt_version = se.asmt_version,\n  re.opportunity = se.opportunity,\n  re.session_id = se.session_id,\n  re.performance_level = se.performance_level,\n  re.scale_score = se.scale_score,\n  re.scale_score_std_err = se.scale_score_std_err,\n  re.completed_at = se.completed_at,\n  re.elas_start_at = se.elas_start_at,\n  re.update_import_id = se.update_import_id,\n  re.claim1_scale_score = claim1.scale_score,\n  re.claim1_scale_score_std_err = claim1.scale_score_std_err,\n  re.claim1_category = claim1.performance_level,\n  re.claim2_scale_score  = claim2.scale_score,\n  re.claim2_scale_score_std_err = claim2.scale_score_std_err,\n  re.claim2_category = claim2.performance_level,\n  re.claim3_scale_score = claim3.scale_score,\n  re.claim3_scale_score_std_err = claim3.scale_score_std_err,\n  re.claim3_category = claim3.performance_level,\n  re.claim4_scale_score = claim4.scale_score,\n  re.claim4_scale_score_std_err = claim4.scale_score_std_err,\n  re.claim4_category = claim4.performance_level,\n  re.claim5_scale_score = claim5.scale_score,\n  re.claim5_scale_score_std_err = claim5.scale_score_std_err,\n  re.claim5_category = claim5.performance_level,\n  re.claim6_scale_score = claim6.scale_score,\n  re.claim6_scale_score_std_err = claim6.scale_score_std_err,\n  re.claim6_category = claim6.performance_level,\n  re.alt1_scale_score = alt1.scale_score,\n  re.alt1_scale_score_std_err = alt1.scale_score_std_err,\n  re.alt1_performance_level = alt1.performance_level,\n  re.alt2_scale_score = alt2.scale_score,\n  re.alt2_scale_score_std_err = alt2.scale_score_std_err,\n  re.alt2_performance_level = alt2.performance_level,\n  re.alt3_scale_score = alt3.scale_score,\n  re.alt3_scale_score_std_err = alt3.scale_score_std_err,\n  re.alt3_performance_level = alt3.performance_level,\n  re.alt4_scale_score = alt4.scale_score,\n  re.alt4_scale_score_std_err = alt4.scale_score_std_err,\n  re.alt4_performance_level = alt4.performance_level,\n  re.alt5_scale_score = alt5.scale_score,\n  re.alt5_scale_score_std_err = alt5.scale_score_std_err,\n  re.alt5_performance_level = alt5.performance_level,\n  re.alt6_scale_score = alt6.scale_score,\n  re.alt6_scale_score_std_err = alt6.scale_score_std_err,\n  re.alt6_performance_level = alt6.performance_level,\n  re.language_code = rl.code,\n  re.elas_code = rel.code,\n  re.completeness_code = rc.code,\n  re.administration_condition_code = rac.code,\n  re.military_connected_code = rmc.code,\n  re.available_accommodation_codes = code.codes,\n  re.updated = se.updated,\n  re.migrate_id = se.migrate_id\nWHERE se.deleted = 0;",
+            "delete": "DELETE re FROM exam re\n  JOIN staging_exam se on se.id = re.id\nWHERE se.deleted = 1;",
+            "insert": "INSERT INTO exam (id, grade_id, grade_code, student_id, school_id, iep, lep, section504,\n                  economic_disadvantage, migrant_status, eng_prof_lvl, t3_program_type,\n                  language_code, prim_disability_type, type_id, school_year, asmt_id, asmt_version,\n                  opportunity, elas_code, completeness_code,\n                  administration_condition_code, military_connected_code,\n                  session_id, performance_level, scale_score, scale_score_std_err,\n                  update_import_id, completed_at, elas_start_at,\n                  claim1_scale_score, claim1_scale_score_std_err, claim1_category,\n                  claim2_scale_score, claim2_scale_score_std_err, claim2_category,\n                  claim3_scale_score, claim3_scale_score_std_err, claim3_category,\n                  claim4_scale_score, claim4_scale_score_std_err, claim4_category,\n                  claim5_scale_score, claim5_scale_score_std_err, claim5_category,\n                  claim6_scale_score, claim6_scale_score_std_err, claim6_category,\n                  alt1_scale_score, alt1_scale_score_std_err, alt1_performance_level,\n                  alt2_scale_score, alt2_scale_score_std_err, alt2_performance_level,\n                  alt3_scale_score, alt3_scale_score_std_err, alt3_performance_level,\n                  alt4_scale_score, alt4_scale_score_std_err, alt4_performance_level,\n                  alt5_scale_score, alt5_scale_score_std_err, alt5_performance_level,\n                  alt6_scale_score, alt6_scale_score_std_err, alt6_performance_level,\n                  available_accommodation_codes, updated, migrate_id)\n  SELECT\n    se.id,\n    se.grade_id,\n    rg.code,\n    se.student_id,\n    se.school_id,\n    se.iep,\n    se.lep,\n    se.section504,\n    se.economic_disadvantage,\n    se.migrant_status,\n    se.eng_prof_lvl,\n    se.t3_program_type,\n    rl.code,\n    se.prim_disability_type,\n    se.type_id,\n    se.school_year,\n    se.asmt_id,\n    se.asmt_version,\n    se.opportunity,\n    rel.code,\n    rc.code,\n    rac.code,\n    rmc.code,\n    se.session_id,\n    se.performance_level,\n    se.scale_score,\n    se.scale_score_std_err,\n    se.update_import_id,\n    se.completed_at,\n    se.elas_start_at,\n    claim1.scale_score as claim1_scale_score,\n    claim1.scale_score_std_err as claim1_scale_score_std_err,\n    claim1.performance_level as claim1_category,\n    claim2.scale_score as claim2_scale_score,\n    claim2.scale_score_std_err as claim2_scale_score_std_err,\n    claim2.performance_level as claim2_category,\n    claim3.scale_score as claim3_scale_score,\n    claim3.scale_score_std_err as claim3_scale_score_std_err,\n    claim3.performance_level as claim3_category,\n    claim4.scale_score as claim4_scale_score,\n    claim4.scale_score_std_err as claim4_scale_score_std_err,\n    claim4.performance_level as claim4_category,\n    claim5.scale_score as claim5_scale_score,\n    claim5.scale_score_std_err as claim5_scale_score_std_err,\n    claim5.performance_level as claim5_category,\n    claim6.scale_score as claim6_scale_score,\n    claim6.scale_score_std_err as claim6_scale_score_std_err,\n    claim6.performance_level as claim6_category,\n    alt1.scale_score as alt1_scale_score,\n    alt1.scale_score_std_err as alt1_scale_score_std_err,\n    alt1.performance_level as alt1_performance_level,\n    alt2.scale_score as alt2_scale_score,\n    alt2.scale_score_std_err as alt2_scale_score_std_err,\n    alt2.performance_level as alt2_performance_level,\n    alt3.scale_score as alt3_scale_score,\n    alt3.scale_score_std_err as alt3_scale_score_std_err,\n    alt3.performance_level as alt3_performance_level,\n    alt4.scale_score as alt4_scale_score,\n    alt4.scale_score_std_err as alt4_scale_score_std_err,\n    alt4.performance_level as alt4_performance_level,\n    alt5.scale_score as alt5_scale_score,\n    alt5.scale_score_std_err as alt5_scale_score_std_err,\n    alt5.performance_level as alt5_performance_level,\n    alt6.scale_score as alt6_scale_score,\n    alt6.scale_score_std_err as alt6_scale_score_std_err,\n    alt6.performance_level as alt6_performance_level,\n    code.codes,\n    se.updated,\n    se.migrate_id\n  FROM staging_exam se\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=1\n               ) AS claim1 ON claim1.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=2\n               ) AS claim2 ON claim2.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=3\n               ) AS claim3 ON claim3.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=4\n              ) AS claim4 ON claim4.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=5\n              ) AS claim5 ON claim5.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=3 AND m.data_order=6\n              ) AS claim6 ON claim6.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=1\n               ) AS alt1 ON alt1.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=2\n               ) AS alt2 ON alt2.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=3\n               ) AS alt3 ON alt3.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=4\n               ) AS alt4 ON alt4.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=5\n               ) AS alt5 ON alt5.exam_id = se.id\n    LEFT JOIN (SELECT s.exam_id, s.scale_score, s.scale_score_std_err, s.performance_level\n                 FROM staging_exam_score s JOIN subject_score m ON m.id = s.subject_score_id AND m.score_type_id=2 AND m.data_order=6\n               ) AS alt6 ON alt6.exam_id = se.id\n    LEFT JOIN exam re ON re.id = se.id\n    LEFT JOIN language rl ON rl.id = se.language_id\n    LEFT JOIN elas rel ON rel.id = se.elas_id\n    LEFT JOIN administration_condition rac ON rac.id = se.administration_condition_id\n    LEFT JOIN military_connected rmc ON rmc.id = se.military_connected_id\n    LEFT JOIN completeness rc ON rc.id = se.completeness_id\n    JOIN grade rg ON rg.id = se.grade_id\n    LEFT JOIN\n      (SELECT seaa.exam_id as exam_id, GROUP_CONCAT(ra.code ORDER BY ra.id SEPARATOR '|') AS codes\n        FROM staging_exam_available_accommodation seaa\n          JOIN accommodation ra ON ra.id = seaa.accommodation_id\n        GROUP BY seaa.exam_id\n      ) AS code ON code.exam_id = se.id\n  WHERE re.id IS NULL AND se.deleted = 0;"
+          }
+        },
+        "district_group": {
+          "sql": {
+            "insert": "INSERT INTO district_group(id, natural_id, name, external_id)\n  SELECT sdg.id, sdg.natural_id, sdg.name, sdg.external_id\n    FROM staging_district_group sdg\n      LEFT JOIN district_group rdg ON rdg.id = sdg.id\n    WHERE rdg.id IS NULL;",
+            "delete": "DELETE rdg FROM district_group rdg\n  WHERE\n      rdg.id in (SELECT ss.district_group_id from staging_school ss WHERE ss.deleted = 1)\n      AND NOT EXISTS(SELECT rs.id from school rs WHERE rs.district_group_id = rdg.id);",
+            "update": "UPDATE district_group rdg\n  JOIN staging_district_group sdg ON sdg.id = rdg.id\n  SET rdg.name = sdg.name, rdg.external_id = sdg.external_id;"
+          }
+        },
+        "asmt_target": {
+          "sql": {
+            "delete": "DELETE rat FROM asmt_target rat\n  JOIN staging_asmt sa ON sa.id = rat.asmt_id\nWHERE sa.deleted = 1;",
+            "insert": "INSERT INTO asmt_target (asmt_id, target_id, include_in_report)\n  SELECT\n    sate.asmt_id,\n    sate.target_id,\n    0\n  FROM staging_asmt_target_exclusion sate\n    LEFT JOIN asmt_target rat ON rat.asmt_id = sate.asmt_id AND rat.target_id = sate.target_id\n  WHERE rat.asmt_id IS NULL;",
+            "insertIncluded": "INSERT INTO asmt_target (asmt_id, target_id, include_in_report)\n  SELECT\n    sat.asmt_id,\n    sat.target_id,\n    1\n  FROM staging_asmt_target sat\n    LEFT JOIN asmt_target rat ON rat.asmt_id = sat.asmt_id AND rat.target_id = sat.target_id\n  WHERE rat.asmt_id IS NULL\n    AND NOT EXISTS(SELECT 1 from staging_asmt_target_exclusion sate WHERE sate.asmt_id = sat.asmt_id AND sate.target_id = sat.target_id);",
+            "deleteAsPartOfParentUpdate": "DELETE rat FROM asmt_target rat\n  JOIN staging_asmt sa ON sa.id = rat.asmt_id\nWHERE sa.deleted = 0;"
+          }
+        },
+        "percentile": {
+          "sql": {
+            "update": "UPDATE percentile rp\n  JOIN staging_percentile sp ON sp.id = rp.id\nSET\n  rp.count = sp.count,\n  rp.mean = sp.mean,\n  rp.standard_deviation = sp.standard_deviation,\n  rp.min_score = sp.min_score,\n  rp.max_score = sp.max_score,\n  rp.update_import_id = sp.update_import_id,\n  rp.updated = sp.updated,\n  rp.migrate_id = sp.migrate_id\nWHERE sp.deleted = 0;",
+            "insert": "INSERT INTO percentile (id, asmt_id, start_date, end_date, count, mean, standard_deviation, min_score, max_score, update_import_id, updated, migrate_id)\n  SELECT\n    sp.id,\n    sp.asmt_id,\n    sp.start_date,\n    sp.end_date,\n    sp.count,\n    sp.mean,\n    sp.standard_deviation,\n    sp.min_score,\n    sp.max_score,\n    sp.update_import_id,\n    sp.updated,\n    sp.migrate_id\n  FROM staging_percentile sp\n    LEFT JOIN percentile rp ON rp.id = sp.id\n  WHERE rp.id IS NULL and sp.deleted = 0;",
+            "delete": "DELETE rp FROM percentile rp JOIN staging_percentile sp on sp.id = rp.id WHERE sp.deleted = 1;"
+          }
+        },
+        "percentile_score": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rps FROM percentile_score rps\n  JOIN staging_percentile sp ON sp.id = rps.percentile_id\nWHERE sp.deleted = 0",
+            "insert": "INSERT INTO percentile_score (percentile_id, percentile_rank, score, min_inclusive, max_exclusive)\n  SELECT\n    sps.percentile_id,\n    sps.percentile_rank,\n    sps.score,\n    sps.min_inclusive,\n    sps.max_exclusive\n  FROM staging_percentile_score sps;",
+            "delete": "DELETE rps FROM percentile_score rps\n  JOIN staging_percentile sp ON sp.id = rps.percentile_id\nWHERE sp.deleted = 1;"
+          }
+        },
+        "administration_condition": {
+          "sql": {
+            "insert": "INSERT INTO administration_condition (id, code)\n  SELECT\n    sac.id,\n    sac.code\n  FROM staging_administration_condition sac\n    LEFT JOIN administration_condition rac ON rac.id = sac.id\n  WHERE rac.id IS NULL;",
+            "delete": "DELETE rac FROM administration_condition rac\n  WHERE NOT EXISTS(SELECT sac.id FROM staging_administration_condition sac WHERE sac.id = rac.id);",
+            "update": "UPDATE administration_condition rac\n  JOIN staging_administration_condition sac ON sac.id = rac.id\nSET\n  rac.code = sac.code;"
+          }
+        },
+        "exam_item": {
+          "sql": {
+            "insert": "INSERT INTO exam_item (id, exam_id, item_id, score, score_status, position, response,\n                                 trait_evidence_elaboration_score, trait_evidence_elaboration_score_status,\n                                 trait_organization_purpose_score, trait_organization_purpose_score_status,\n                                 trait_conventions_score, trait_conventions_score_status)\n  SELECT\n    si.id,\n    si.exam_id,\n    si.item_id,\n    si.score,\n    si.score_status,\n    si.position,\n    si.response,\n    si.trait_evidence_elaboration_score,\n    si.trait_evidence_elaboration_score_status,\n    si.trait_organization_purpose_score,\n    si.trait_organization_purpose_score_status,\n    si.trait_conventions_score,\n    si.trait_conventions_score_status\n  FROM staging_exam_item si\n    LEFT JOIN exam_item ri ON ri.id = si.id\n  WHERE ri.id IS NULL;",
+            "update": "UPDATE exam_item ri\n  JOIN staging_exam_item si ON ri.id = si.id\nSET\n  ri.exam_id                             = si.exam_id,\n  ri.item_id                                 = si.item_id,\n  ri.score                                   = si.score,\n  ri.score_status                            = si.score_status,\n  ri.position                                = si.position,\n  ri.response                                = si.response,\n  ri.trait_evidence_elaboration_score        = si.trait_evidence_elaboration_score,\n  ri.trait_evidence_elaboration_score_status = si.trait_evidence_elaboration_score_status,\n  ri.trait_organization_purpose_score        = si.trait_organization_purpose_score,\n  ri.trait_organization_purpose_score_status = si.trait_organization_purpose_score_status,\n  ri.trait_conventions_score                 = si.trait_conventions_score,\n  ri.trait_conventions_score_status          = si.trait_conventions_score_status,\n  ri.trait_evidence_elaboration_score_status = si.trait_evidence_elaboration_score_status;",
+            "delete": "DELETE ri\n FROM exam_item ri JOIN staging_exam se ON se.id = ri.exam_id\nWHERE se.deleted = 1;",
+            "deleteAsPartOfParentUpdate": "DELETE ri FROM exam_item ri\n  JOIN staging_exam se ON se.id = ri.exam_id\nWHERE\n  se.deleted = 0 AND NOT EXISTS(SELECT sei.id FROM staging_exam_item sei WHERE sei.id = ri.id);"
+          }
+        },
+        "student_ethnicity": {
+          "sql": {
+            "insert": "INSERT INTO student_ethnicity (student_id, ethnicity_id, ethnicity_code)\n  SELECT\n    sue.student_id,\n    sue.ethnicity_id,\n    re.code\n  FROM staging_student_ethnicity sue\n    LEFT JOIN student_ethnicity rse\n      ON (rse.student_id = sue.student_id AND rse.ethnicity_id = sue.ethnicity_id)\n      JOIN ethnicity re on re.id = sue.ethnicity_id\n  WHERE rse.student_id IS NULL;",
+            "delete": "DELETE rse FROM student_ethnicity rse\n  JOIN staging_student ss on ss.id = rse.student_id\nWHERE ss.deleted = 1;",
+            "deleteAsPartOfParentUpdate": "DELETE rse FROM student_ethnicity rse\n  JOIN staging_student ss on ss.id = rse.student_id\nWHERE ss.deleted = 0\n  AND NOT EXISTS(\n    SELECT sse.student_id\n      FROM staging_student_ethnicity sse\n    WHERE sse.student_id = rse.student_id\n    AND sse.ethnicity_id = rse.ethnicity_id\n  );"
+          }
+        },
+        "gender": {
+          "sql": {
+            "update": "UPDATE gender rg\n  JOIN staging_gender sg ON sg.id = rg.id\nSET\n  rg.code = sg.code;",
+            "insert": "INSERT INTO gender (id, code)\n  SELECT\n    sg.id,\n    sg.code\n  FROM staging_gender sg\n    LEFT JOIN gender rg ON rg.id = sg.id\n  WHERE rg.id IS NULL;",
+            "delete": "DELETE rg FROM gender rg\n WHERE NOT EXISTS(SELECT sg.id FROM staging_gender sg WHERE sg.id = rg.id);"
+          }
+        },
+        "elas": {
+          "sql": {
+            "insert": "INSERT INTO elas (id, code)\n  SELECT\n    se.id,\n    se.code\n  FROM staging_elas se\n  LEFT JOIN elas re ON re.id = se.id\n  WHERE re.id IS NULL;",
+            "delete": "DELETE re FROM elas re\n WHERE NOT EXISTS(SELECT se.id FROM staging_elas se WHERE se.id = re.id);",
+            "update": "UPDATE elas re\n   JOIN staging_elas se ON se.id = re.id\nSET\n re.code = se.code;"
+          }
+        },
+        "exam_available_accommodation": {
+          "sql": {
+            "insert": "INSERT INTO exam_available_accommodation (exam_id, accommodation_id)\n  SELECT\n    s.exam_id,\n    s.accommodation_id\n  FROM staging_exam_available_accommodation s\n    LEFT JOIN exam_available_accommodation r\n      ON (r.exam_id = s.exam_id AND r.accommodation_id = s.accommodation_id)\n  WHERE r.exam_id IS NULL;",
+            "delete": "DELETE reaa FROM exam_available_accommodation reaa\n  JOIN staging_exam se ON se.id = reaa.exam_id\nWHERE se.deleted = 1;",
+            "deleteAsPartOfParentUpdate": "DELETE r FROM exam_available_accommodation r\n  WHERE\n      r.exam_id in (select se.id from staging_exam se where se.deleted = 0)\n      AND NOT EXISTS(\n        SELECT seac.exam_id\n          FROM staging_exam_available_accommodation seac\n        WHERE seac.exam_id = r.exam_id\n          AND seac.accommodation_id = r.accommodation_id);"
+          }
+        },
+        "student_group_membership": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rsgm FROM student_group_membership rsgm\n  JOIN staging_student_group ssg ON ssg.id = student_group_id\nWHERE ssg.deleted = 0\n      AND ssg.active = 1\n      AND NOT EXISTS(\n        SELECT ssgm.student_group_id FROM staging_student_group_membership ssgm\n            WHERE ssgm.student_group_id = rsgm.student_group_id AND ssgm.student_id = rsgm.student_id\n      );",
+            "insert": "INSERT INTO student_group_membership (student_group_id, student_id)\n  SELECT\n    ssgm.student_group_id,\n    ssgm.student_id\n  FROM staging_student_group_membership ssgm\n    LEFT JOIN student_group_membership rsgm ON (rsgm.student_group_id = ssgm.student_group_id AND rsgm.student_id = ssgm.student_id)\n  WHERE rsgm.student_group_id IS NULL;",
+            "delete": "DELETE rsgm from student_group_membership rsgm\n JOIN staging_student_group ssg on ssg.id = rsgm.student_group_id\nWHERE ssg.deleted = 1 or ssg.active = 0;"
+          }
+        },
+        "item": {
+          "sql": {
+            "delete": "DELETE ri FROM item ri\n  JOIN staging_asmt sa ON sa.id = ri.asmt_id\nWHERE sa.deleted = 1;",
+            "deleteAsPartOfParentUpdate": "DELETE ri FROM item ri\n  JOIN staging_asmt sa ON sa.id = ri.asmt_id\nWHERE sa.deleted = 0\n  AND  NOT EXISTS(SELECT si.id FROM staging_item si WHERE si.id = ri.id);",
+            "update": "UPDATE item ri\n  JOIN staging_item si ON ri.id = si.id\n  JOIN claim rc on rc.id = si.claim_id\n  LEFT JOIN math_practice rmp on rmp.practice = si.math_practice\nSET\n  ri.claim_id      = si.claim_id,\n  ri.claim_code    = rc.code,\n  ri.target_id     = si.target_id,\n  ri.common_core_standard_ids  = si.common_core_standard_ids,\n  ri.asmt_id       = si.asmt_id,\n  ri.math_practice = si.math_practice,\n  ri.math_practice_code = rmp.code,\n  ri.allow_calc    = si.allow_calc,\n  ri.position      = si.position,\n  ri.dok_id        = si.dok_id,\n  ri.difficulty_code  = si.difficulty_code,\n  ri.max_points    = si.max_points,\n  ri.field_test    = si.field_test,\n  ri.active        = si.active,\n  ri.type          = si.type,\n  ri.options_count = si.options_count,\n  ri.answer_key    = si.answer_key,\n  ri.performance_task_writing_type    = si.performance_task_writing_type",
+            "insert": "INSERT INTO item (id, claim_id, claim_code,  target_id, common_core_standard_ids, natural_id, asmt_id,\n    math_practice, math_practice_code, allow_calc, position, dok_id, difficulty_code, max_points, field_test, active, type,\n    options_count, answer_key, performance_task_writing_type)\n  SELECT\n    si.id,\n    si.claim_id,\n    rc.code,\n    si.target_id,\n    si.common_core_standard_ids,\n    si.natural_id,\n    si.asmt_id,\n    si.math_practice,\n    rmp.code as math_practice_code,\n    si.allow_calc,\n    si.position,\n    si.dok_id,\n    si.difficulty_code,\n    si.max_points,\n    si.field_test,\n    si.active,\n    si.type,\n    si.options_count,\n    si.answer_key,\n    si.performance_task_writing_type\n  FROM staging_item si\n    LEFT JOIN item ri ON ri.id = si.id\n     JOIN claim rc on rc.id = si.claim_id\n     LEFT JOIN math_practice rmp on rmp.practice = si.math_practice\n  WHERE ri.id IS NULL;"
+          }
+        },
+        "language": {
+          "sql": {
+            "delete": "DELETE rl FROM language rl\n  WHERE NOT EXISTS(SELECT sl.id FROM staging_language sl WHERE sl.id = rl.id);",
+            "insert": "INSERT INTO language (id, code, altcode, display_order, name)\n  SELECT sl.id, sl.code, sl.altcode, sl.display_order, sl.name\n  FROM staging_language sl LEFT JOIN language rl ON rl.id = sl.id\n  WHERE rl.id IS NULL;",
+            "update": "UPDATE language rl JOIN staging_language sl ON sl.id = rl.id SET\n  rl.code = sl.code,\n  rl.altcode = sl.altcode,\n  rl.display_order = sl.display_order,\n  rl.name = sl.name;"
+          }
+        },
+        "subject": {
+          "sql": {
+            "insert": "INSERT INTO subject (id, code, updated, update_import_id, migrate_id)\n  SELECT\n    ss.id,\n    ss.code,\n    ss.updated,\n    ss.update_import_id,\n    ss.migrate_id\n  FROM staging_subject ss\n    LEFT JOIN subject rs ON rs.id = ss.id\n   WHERE rs.id IS NULL;",
+            "update": "UPDATE subject rs\n  JOIN staging_subject ss ON ss.id = rs.id\nSET\n  rs.updated = ss.updated,\n  rs.update_import_id = ss.update_import_id,\n  rs.migrate_id = ss.migrate_id"
+          }
+        },
+        "accommodation_translation": {
+          "sql": {
+            "insert": "INSERT INTO accommodation_translation (label_code, language_code, label)\n  SELECT\n    st.label_code,\n    st.language_code,\n    st.label\n  FROM staging_accommodation_translation st\n    LEFT JOIN accommodation_translation rt\n      ON rt.label_code = st.label_code AND\n         rt.language_code = st.language_code\n  WHERE rt.label_code IS NULL;",
+            "delete": "DELETE rt FROM accommodation_translation rt\n   WHERE NOT EXISTS(\n     SELECT st.label_code, st.language_code\n       FROM staging_accommodation_translation st\n     WHERE\n       st.label_code = rt.label_code\n       AND st.language_code = rt.language_code);",
+            "update": "UPDATE accommodation_translation rt\n  JOIN staging_accommodation_translation st\n    ON st.label_code = rt.label_code AND\n      st.language_code = rt.language_code\nSET\n  rt.label = st.label;"
+          }
+        },
+        "asmt": {
+          "sql": {
+            "insert": "INSERT INTO asmt (id, natural_id, grade_id, grade_code, type_id, subject_id, school_year, name,\n                  label, version, update_import_id,\n                  cut_point_1, cut_point_2, cut_point_3, cut_point_4, cut_point_5, min_score, max_score,\n                  alt1_score_code, alt2_score_code, alt3_score_code, alt4_score_code, alt5_score_code, alt6_score_code,\n                  claim1_score_code, claim2_score_code, claim3_score_code, claim4_score_code, claim5_score_code, claim6_score_code,\n                  updated, migrate_id)\n  SELECT\n    sa.id,\n    sa.natural_id,\n    sa.grade_id,\n    rg.code,\n    sa.type_id,\n    sa.subject_id,\n    sa.school_year,\n    sa.name,\n    sa.label,\n    sa.version,\n    sa.update_import_id,\n    sas.cut_point_1,\n    sas.cut_point_2,\n    sas.cut_point_3,\n    sas.cut_point_4,\n    sas.cut_point_5,\n    sas.min_score,\n    sas.max_score,\n    ssa1.code,\n    ssa2.code,\n    ssa3.code,\n    ssa4.code,\n    ssa5.code,\n    ssa6.code,\n    ssc1.code,\n    ssc2.code,\n    ssc3.code,\n    ssc4.code,\n    ssc5.code,\n    ssc6.code,\n    sa.updated,\n    sa.migrate_id\n  FROM staging_asmt sa\n    LEFT JOIN asmt ra ON ra.id = sa.id\n    LEFT JOIN subject_score ssa1 ON sa.subject_id = ssa1.subject_id AND sa.type_id = ssa1.asmt_type_id AND ssa1.score_type_id = 2 AND ssa1.data_order = 1\n    LEFT JOIN subject_score ssa2 ON sa.subject_id = ssa2.subject_id AND sa.type_id = ssa2.asmt_type_id AND ssa2.score_type_id = 2 AND ssa2.data_order = 2\n    LEFT JOIN subject_score ssa3 ON sa.subject_id = ssa3.subject_id AND sa.type_id = ssa3.asmt_type_id AND ssa3.score_type_id = 2 AND ssa3.data_order = 3\n    LEFT JOIN subject_score ssa4 ON sa.subject_id = ssa4.subject_id AND sa.type_id = ssa4.asmt_type_id AND ssa4.score_type_id = 2 AND ssa4.data_order = 4\n    LEFT JOIN subject_score ssa5 ON sa.subject_id = ssa5.subject_id AND sa.type_id = ssa5.asmt_type_id AND ssa5.score_type_id = 2 AND ssa5.data_order = 5\n    LEFT JOIN subject_score ssa6 ON sa.subject_id = ssa6.subject_id AND sa.type_id = ssa6.asmt_type_id AND ssa6.score_type_id = 2 AND ssa6.data_order = 6\n    LEFT JOIN subject_score ssc1 ON sa.subject_id = ssc1.subject_id AND sa.type_id = ssc1.asmt_type_id AND ssc1.score_type_id = 3 AND ssc1.data_order = 1\n    LEFT JOIN subject_score ssc2 ON sa.subject_id = ssc2.subject_id AND sa.type_id = ssc2.asmt_type_id AND ssc2.score_type_id = 3 AND ssc2.data_order = 2\n    LEFT JOIN subject_score ssc3 ON sa.subject_id = ssc3.subject_id AND sa.type_id = ssc3.asmt_type_id AND ssc3.score_type_id = 3 AND ssc3.data_order = 3\n    LEFT JOIN subject_score ssc4 ON sa.subject_id = ssc4.subject_id AND sa.type_id = ssc4.asmt_type_id AND ssc4.score_type_id = 3 AND ssc4.data_order = 4\n    LEFT JOIN subject_score ssc5 ON sa.subject_id = ssc5.subject_id AND sa.type_id = ssc5.asmt_type_id AND ssc5.score_type_id = 3 AND ssc5.data_order = 5\n    LEFT JOIN subject_score ssc6 ON sa.subject_id = ssc6.subject_id AND sa.type_id = ssc6.asmt_type_id AND ssc6.score_type_id = 3 AND ssc6.data_order = 6\n    JOIN staging_asmt_score sas ON sa.id = sas.asmt_id AND sas.subject_score_id IS NULL\n    JOIN grade rg ON rg.id = sa.grade_id\n  WHERE ra.id IS NULL and sa.deleted = 0;",
+            "delete": "DELETE ra FROM asmt ra JOIN staging_asmt sa on sa.id = ra.id WHERE sa.deleted = 1;",
+            "update": "UPDATE asmt ra\n  JOIN staging_asmt sa ON sa.id = ra.id\n  LEFT JOIN subject_score ssa1 ON sa.subject_id = ssa1.subject_id AND sa.type_id = ssa1.asmt_type_id AND ssa1.score_type_id = 2 AND ssa1.data_order = 1\n  LEFT JOIN subject_score ssa2 ON sa.subject_id = ssa2.subject_id AND sa.type_id = ssa2.asmt_type_id AND ssa2.score_type_id = 2 AND ssa2.data_order = 2\n  LEFT JOIN subject_score ssa3 ON sa.subject_id = ssa3.subject_id AND sa.type_id = ssa3.asmt_type_id AND ssa3.score_type_id = 2 AND ssa3.data_order = 3\n  LEFT JOIN subject_score ssa4 ON sa.subject_id = ssa4.subject_id AND sa.type_id = ssa4.asmt_type_id AND ssa4.score_type_id = 2 AND ssa4.data_order = 4\n  LEFT JOIN subject_score ssa5 ON sa.subject_id = ssa5.subject_id AND sa.type_id = ssa5.asmt_type_id AND ssa5.score_type_id = 2 AND ssa5.data_order = 5\n  LEFT JOIN subject_score ssa6 ON sa.subject_id = ssa6.subject_id AND sa.type_id = ssa6.asmt_type_id AND ssa6.score_type_id = 2 AND ssa6.data_order = 6\n  LEFT JOIN subject_score ssc1 ON sa.subject_id = ssc1.subject_id AND sa.type_id = ssc1.asmt_type_id AND ssc1.score_type_id = 3 AND ssc1.data_order = 1\n  LEFT JOIN subject_score ssc2 ON sa.subject_id = ssc2.subject_id AND sa.type_id = ssc2.asmt_type_id AND ssc2.score_type_id = 3 AND ssc2.data_order = 2\n  LEFT JOIN subject_score ssc3 ON sa.subject_id = ssc3.subject_id AND sa.type_id = ssc3.asmt_type_id AND ssc3.score_type_id = 3 AND ssc3.data_order = 3\n  LEFT JOIN subject_score ssc4 ON sa.subject_id = ssc4.subject_id AND sa.type_id = ssc4.asmt_type_id AND ssc4.score_type_id = 3 AND ssc4.data_order = 4\n  LEFT JOIN subject_score ssc5 ON sa.subject_id = ssc5.subject_id AND sa.type_id = ssc5.asmt_type_id AND ssc5.score_type_id = 3 AND ssc5.data_order = 5\n  LEFT JOIN subject_score ssc6 ON sa.subject_id = ssc6.subject_id AND sa.type_id = ssc6.asmt_type_id AND ssc6.score_type_id = 3 AND ssc6.data_order = 6\n  JOIN staging_asmt_score sas ON ra.id = sas.asmt_id AND sas.subject_score_id IS NULL\n  JOIN grade rg ON rg.id = sa.grade_id\nSET\n  ra.grade_id    = sa.grade_id,\n  ra.grade_code  = rg.code,\n  ra.type_id     = sa.type_id,\n  ra.subject_id  = sa.subject_id,\n  ra.school_year = sa.school_year,\n  ra.name        = sa.name,\n  ra.label       = sa.label,\n  ra.version     = sa.version,\n  ra.update_import_id  = sa.update_import_id,\n  ra.cut_point_1 = sas.cut_point_1,\n  ra.cut_point_2 = sas.cut_point_2,\n  ra.cut_point_3 = sas.cut_point_3,\n  ra.cut_point_4 = sas.cut_point_4,\n  ra.cut_point_5 = sas.cut_point_5,\n  ra.min_score = sas.min_score,\n  ra.max_score = sas.max_score,\n  ra.alt1_score_code = ssa1.code,\n  ra.alt2_score_code = ssa2.code,\n  ra.alt3_score_code = ssa3.code,\n  ra.alt4_score_code = ssa4.code,\n  ra.alt5_score_code = ssa5.code,\n  ra.alt6_score_code = ssa6.code,\n  ra.claim1_score_code = ssc1.code,\n  ra.claim2_score_code = ssc2.code,\n  ra.claim3_score_code = ssc3.code,\n  ra.claim4_score_code = ssc4.code,\n  ra.claim5_score_code = ssc5.code,\n  ra.claim6_score_code = ssc6.code,\n  ra.updated = sa.updated,\n  ra.migrate_id = sa.migrate_id\nWHERE sa.deleted = 0;"
+          }
+        },
+        "subject_score": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rscs FROM subject_score rscs\n  JOIN staging_subject ss ON ss.id = rscs.subject_id\nWHERE NOT EXISTS (SELECT 1 FROM staging_subject_score sscc WHERE sscc.id = rscs.id);",
+            "update": "UPDATE subject_score rscs\n  JOIN staging_subject_score sscs ON rscs.id = sscs.id\nSET\n  rscs.data_order = sscs.data_order,\n  rscs.display_order = sscs.display_order",
+            "insert": "INSERT INTO subject_score (id, subject_id, asmt_type_id, score_type_id, code, display_order, data_order)\n  SELECT\n    sscs.id,\n    sscs.subject_id,\n    sscs.asmt_type_id,\n    sscs.score_type_id,\n    sscs.code,\n    sscs.display_order,\n    sscs.data_order\n  FROM staging_subject_score sscs\n    LEFT JOIN subject_score rscs ON rscs.id = sscs.id\n  WHERE rscs.id IS NULL;"
+          }
+        },
+        "item_other_target": {
+          "sql": {
+            "insert": "INSERT INTO item_other_target (item_id, target_id)\n  SELECT\n    siot.item_id,\n    siot.target_id\n  FROM staging_item_other_target siot\n    LEFT JOIN item_other_target riot\n      ON (riot.item_id = siot.item_id AND riot.target_id = siot.target_id)\n  WHERE riot.item_id IS NULL;",
+            "delete": "DELETE riot FROM item_other_target riot\n  JOIN item ri ON ri.id = riot.item_id\n  JOIN staging_asmt sa ON sa.id = ri.asmt_id\nWHERE sa.deleted = 1;",
+            "deleteAsPartOfParentUpdate": "DELETE riot FROM item_other_target riot\n  JOIN item ri ON ri.id = riot.item_id\n  JOIN staging_asmt sa ON sa.id = ri.asmt_id\nWHERE\n  sa.deleted = 0\n  AND NOT EXISTS(\n    SELECT siot.item_id\n      FROM staging_item_other_target siot\n    WHERE siot.item_id = riot.item_id\n    AND siot.target_id = riot.target_id\n  );"
+          }
+        },
+        "math_practice": {
+          "sql": {
+            "update": "UPDATE math_practice rmp\n  JOIN staging_math_practice smp ON smp.practice = rmp.practice\nSET\n  rmp.description = smp.description,\n  rmp.code = smp.code;",
+            "delete": "DELETE rmp FROM math_practice rmp\n    WHERE NOT EXISTS(SELECT smp.practice FROM staging_math_practice smp WHERE smp.practice = rmp.practice);",
+            "insert": "INSERT INTO math_practice (practice, description, code)\n  SELECT\n    smp.practice,\n    smp.description,\n    smp.code\n  FROM staging_math_practice smp\n    LEFT JOIN math_practice rmp ON rmp.practice = smp.practice\n  WHERE rmp.practice IS NULL;"
+          }
+        },
+        "military_connected": {
+          "sql": {
+            "insert": "INSERT INTO military_connected (id, code)\n  SELECT\n    smc.id,\n    smc.code\n  FROM staging_military_connected smc\n    LEFT JOIN military_connected rmc ON rmc.id = smc.id\n  WHERE rmc.id IS NULL;",
+            "delete": "DELETE rmc FROM military_connected rmc\n  WHERE NOT EXISTS(SELECT smc.id FROM staging_military_connected smc WHERE smc.id = rmc.id);",
+            "update": "UPDATE military_connected rmc\n  JOIN staging_military_connected smc ON smc.id = rmc.id\nSET\n  rmc.code = smc.code;"
+          }
+        },
+        "item_common_core_standard": {
+          "sql": {
+            "insert": "INSERT INTO item_common_core_standard (item_id, common_core_standard_id)\n  SELECT\n    siccs.item_id,\n    siccs.common_core_standard_id\n  FROM staging_item_common_core_standard siccs\n    LEFT JOIN item_common_core_standard riccs\n      ON (riccs.item_id = siccs.item_id AND riccs.common_core_standard_id = siccs.common_core_standard_id)\n  WHERE riccs.item_id IS NULL;",
+            "delete": "DELETE riccs FROM item_common_core_standard riccs\n  JOIN item ri ON ri.id = riccs.item_id\n  JOIN staging_asmt sa ON sa.id = ri.asmt_id WHERE sa.deleted = 1;",
+            "deleteAsPartOfParentUpdate": "DELETE riccs FROM item_common_core_standard riccs\n  JOIN item ri ON ri.id = riccs.item_id\n  JOIN staging_asmt sa ON sa.id = ri.asmt_id\nWHERE\n  sa.deleted = 0\n  AND NOT EXISTS(\n    SELECT sics.item_id\n      FROM staging_item_common_core_standard sics\n    WHERE sics.item_id = riccs.item_id\n      AND sics.common_core_standard_id = riccs.common_core_standard_id\n    );"
+          }
+        },
+        "subject_translation": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rst FROM subject_translation rst\n  JOIN staging_subject ss ON ss.id = rst.subject_id\nWHERE NOT EXISTS( SELECT 1 FROM staging_subject_translation sst WHERE rst.subject_id = sst.subject_id AND rst.label_code = sst.label_code);",
+            "update": "UPDATE subject_translation rst JOIN staging_subject_translation sst ON (rst.subject_id = sst.subject_id AND rst.label_code = sst.label_code)\n  SET\n    rst.label = sst.label",
+            "insert": "INSERT INTO subject_translation (subject_id, label_code, label)\n  SELECT\n    sst.subject_id,\n    sst.label_code,\n    sst.label\n    FROM staging_subject_translation sst\n    LEFT JOIN subject_translation rst\n      ON (rst.subject_id = sst.subject_id AND rst.label_code = sst.label_code)\n  WHERE rst.subject_id IS NULL;"
+          }
+        },
+        "student": {
+          "sql": {
+            "insert": "INSERT INTO student (id, ssid, last_or_surname, first_name, middle_name, alias_name, gender_id, gender_code,\n                               first_entry_into_us_school_at, lep_entry_at, lep_exit_at, birthday, inferred_school_id, update_import_id, updated, migrate_id)\n  SELECT\n    ss.id,\n    ss.ssid,\n    ss.last_or_surname,\n    ss.first_name,\n    ss.middle_name,\n    ss.alias_name,\n    ss.gender_id,\n    rg.code,\n    ss.first_entry_into_us_school_at,\n    ss.lep_entry_at,\n    ss.lep_exit_at,\n    ss.birthday,\n    ss.inferred_school_id,\n    ss.update_import_id,\n    ss.updated,\n    ss.migrate_id\n  FROM staging_student ss\n    LEFT JOIN student rs ON rs.id = ss.id\n    LEFT JOIN gender rg ON ss.gender_id = rg.id\n  WHERE rs.id IS NULL and ss.deleted = 0;",
+            "update": "UPDATE student rs\n  JOIN staging_student ss ON ss.id = rs.id\n  JOIN gender rg ON ss.gender_id = rg.id\nSET\n  rs.ssid = ss.ssid,\n  rs.last_or_surname = ss.last_or_surname,\n  rs.first_name = ss.first_name,\n  rs.middle_name = ss.middle_name,\n  rs.alias_name = ss.alias_name,\n  rs.gender_id = ss.gender_id,\n  rs.gender_code = rg.code,\n  rs.first_entry_into_us_school_at = ss.first_entry_into_us_school_at,\n  rs.lep_entry_at = ss.lep_entry_at,\n  rs.lep_exit_at = ss.lep_exit_at,\n  rs.birthday = ss.birthday,\n  rs.inferred_school_id = ss.inferred_school_id,\n  rs.update_import_id = ss.update_import_id,\n  rs.updated = ss.updated,\n  rs.migrate_id = ss.migrate_id\nWHERE ss.deleted = 0",
+            "delete": "DELETE rs FROM student rs\n  JOIN staging_student ss ON ss.id = rs.id\nWHERE ss.deleted = 1;"
+          }
+        },
+        "target": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rt FROM target rt JOIN claim rc ON rc.id = rt.claim_id JOIN staging_subject ss ON ss.id = rc.subject_id WHERE NOT EXISTS(SELECT 1 FROM staging_target st WHERE st.id = rt.id);",
+            "insert": "INSERT INTO target (id, natural_id, claim_id)\n  SELECT\n    st.id,\n    st.natural_id,\n    st.claim_id\n  FROM staging_target st\n    LEFT JOIN target rt ON rt.id = st.id\n  WHERE rt.id IS NULL;"
+          }
+        },
+        "district": {
+          "sql": {
+            "insert": "INSERT INTO district(id, natural_id, name, external_id)\n  SELECT sd.id, sd.natural_id, sd.name, sd.external_id\n    FROM staging_district sd\n      LEFT JOIN district rd ON rd.id = sd.id\n    WHERE rd.id IS NULL;",
+            "update": "UPDATE district rd\n  JOIN staging_district sd ON sd.id = rd.id\n  SET rd.name = sd.name,\n      rd.external_id = sd.external_id;",
+            "delete": "DELETE rd FROM district rd\n  WHERE\n      rd.id in (SELECT ss.district_id from staging_school ss WHERE ss.deleted = 1)\n      AND NOT EXISTS(SELECT rs.id from school rs WHERE rs.district_id = rd.id);"
+          }
+        },
+        "ethnicity": {
+          "sql": {
+            "update": "UPDATE ethnicity re\n  JOIN staging_ethnicity se ON se.id = re.id\nSET\n  re.code = se.code;",
+            "insert": "INSERT INTO ethnicity (id, code)\n  SELECT\n    se.id,\n    se.code\n  FROM staging_ethnicity se\n    LEFT JOIN ethnicity re ON re.id = se.id\n  WHERE re.id IS NULL;",
+            "delete": "DELETE re FROM ethnicity re\n  WHERE NOT EXISTS(SELECT se.id FROM staging_ethnicity se WHERE se.id = re.id);"
+          }
+        },
+        "school": {
+          "sql": {
+            "update": "UPDATE school rs\n  JOIN staging_school ss ON ss.id = rs.id\nSET rs.name = ss.name,\n  rs.external_id = ss.external_id,\n  rs.district_id = ss.district_id,\n  rs.district_group_id = ss.district_group_id,\n  rs.school_group_id = ss.school_group_id,\n  rs.update_import_id = ss.update_import_id,\n  rs.updated = ss.updated,\n  rs.migrate_id = ss.migrate_id\nWHERE ss.deleted = 0;",
+            "insert": "INSERT INTO school (id, natural_id, name, external_id, district_id, district_group_id, school_group_id, embargo_enabled, update_import_id, updated, migrate_id)\n SELECT\n   ss.id,\n   ss.natural_id,\n   ss.name,\n   ss.external_id,\n   ss.district_id,\n   ss.district_group_id,\n   ss.school_group_id,\n   0,\n   ss.update_import_id,\n   ss.updated,\n   ss.migrate_id\n FROM staging_school ss\n   LEFT JOIN school rs ON rs.id = ss.id\n WHERE rs.id IS NULL AND ss.deleted = 0;",
+            "delete": "DELETE rs FROM school rs\n  JOIN staging_school ss on ss.id = rs.id\nWHERE ss.deleted = 1;"
+          }
+        },
+        "school_embargo": {
+          "sql": {
+            "update": "UPDATE school rs\n  JOIN staging_district_embargo sde ON sde.district_id = rs.district_id AND rs.embargo_enabled <> sde.individual\nSET rs.embargo_enabled = sde.individual, rs.migrate_id = sde.migrate_id;"
+          }
+        },
+        "claim": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rc FROM claim rc JOIN staging_subject ss ON ss.id = rc.subject_id\n  WHERE NOT EXISTS(SELECT 1 FROM staging_claim WHERE id = rc.id);",
+            "insert": "INSERT INTO claim (id, subject_id, code)\n  SELECT\n    sc.id,\n    sc.subject_id,\n    sc.code\n  FROM staging_claim sc\n    LEFT JOIN claim rc ON rc.id = sc.id\n  WHERE rc.id IS NULL;"
+          }
+        },
+        "grade": {
+          "sql": {
+            "update": "UPDATE grade rg\n  JOIN staging_grade sg ON sg.id = rg.id\nSET\n  rg.sequence = sg.sequence,\n  rg.code = sg.code;",
+            "insert": "INSERT INTO grade ( id, code, sequence)\n  SELECT\n    sg.id,\n    sg.code,\n    sg.sequence\n  FROM staging_grade sg\n    LEFT JOIN grade rg ON rg.id = sg.id\n  WHERE rg.id IS NULL;",
+            "delete": "DELETE rg FROM grade rg\n  WHERE NOT EXISTS(SELECT sg.id FROM staging_grade sg WHERE sg.id = rg.id);"
+          }
+        },
+        "school_year": {
+          "sql": {
+            "update": "SELECT 1;",
+            "insert": "INSERT INTO school_year (year)\n  SELECT\n    sy.year\n  FROM staging_school_year sy\n    LEFT JOIN school_year ry ON ry.year = sy.year\n  WHERE ry.year IS NULL;",
+            "delete": "DELETE ry FROM school_year ry\n WHERE NOT EXISTS(SELECT sy.year FROM staging_school_year sy WHERE sy.year = ry.year);"
+          }
+        },
+        "common_core_standard": {
+          "sql": {
+            "insert": "INSERT INTO common_core_standard (id, subject_id, natural_id)\n   SELECT\n     sccs.id,\n     sccs.subject_id,\n     sccs.natural_id\n   FROM staging_common_core_standard sccs\n     LEFT JOIN common_core_standard rccs ON rccs.id = sccs.id\n   WHERE rccs.id IS NULL;",
+            "deleteAsPartOfParentUpdate": "DELETE rccs FROM common_core_standard rccs JOIN staging_subject ss ON ss.id = rccs.subject_id WHERE NOT EXISTS(SELECT 1 FROM staging_common_core_standard sccs WHERE sccs.id = rccs.id);"
+          }
+        },
+        "accommodation": {
+          "sql": {
+            "update": "UPDATE accommodation ra\n  JOIN staging_accommodation sa ON sa.id = ra.id\nSET\n  ra.code = sa.code;",
+            "insert": "INSERT INTO accommodation (id, code)\n  SELECT\n    sa.id,\n    sa.code\n  FROM staging_accommodation sa\n    LEFT JOIN accommodation ra ON ra.id = sa.id\n  WHERE ra.id IS NULL;",
+            "delete": "DELETE ra FROM accommodation ra\n WHERE NOT EXISTS(SELECT sa.id FROM staging_accommodation sa WHERE sa.id = ra.id);"
+          }
+        },
+        "exam_target_score": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rets FROM exam_target_score rets\n  JOIN staging_exam se ON se.id = rets.exam_id\nWHERE\n  se.deleted = 0 AND NOT EXISTS(SELECT sei.id FROM staging_exam_target_score sei WHERE sei.id = rets.id);",
+            "insert": "INSERT INTO exam_target_score (id, exam_id, target_id, student_relative_residual_score, standard_met_relative_residual_score)\n  SELECT\n    sets.id,\n    sets.exam_id,\n    sets.target_id,\n    sets.student_relative_residual_score,\n    sets.standard_met_relative_residual_score\n  FROM staging_exam_target_score sets\n    LEFT JOIN exam_target_score rets ON rets.id = sets.id\n  WHERE rets.id IS NULL;",
+            "update": "UPDATE exam_target_score rets\n  JOIN staging_exam_target_score sets ON rets.id = sets.id\nSET\n  rets.exam_id                                 = sets.exam_id,\n  rets.target_id                               = sets.target_id,\n  rets.student_relative_residual_score         = sets.student_relative_residual_score,\n  rets.standard_met_relative_residual_score    = sets.standard_met_relative_residual_score;",
+            "delete": "DELETE rets\n FROM exam_target_score rets JOIN staging_exam se ON se.id = rets.exam_id\nWHERE se.deleted = 1;"
+          }
+        },
+        "completeness": {
+          "sql": {
+            "update": "UPDATE completeness rc\n   JOIN staging_completeness sc ON sc.id = rc.id\nSET\n rc.code = sc.code;",
+            "insert": "INSERT INTO completeness (id, code)\n  SELECT\n    sc.id,\n    sc.code\n  FROM staging_completeness sc\n  LEFT JOIN completeness rc ON rc.id = sc.id\n  WHERE rc.id IS NULL;",
+            "delete": "DELETE rc FROM completeness rc\n WHERE NOT EXISTS(SELECT sc.id FROM staging_completeness sc WHERE sc.id = rc.id);"
+          }
+        },
+        "student_group": {
+          "sql": {
+            "update": "UPDATE student_group rsg\n  JOIN staging_student_group ssg ON ssg.id = rsg.id\nSET\n  rsg.name = ssg.name,\n  rsg.school_id = ssg.school_id,\n  rsg.school_year = ssg.school_year,\n  rsg.subject_id = ssg.subject_id,\n  rsg.creator = ssg.creator,\n  rsg.created = ssg.created,\n  rsg.update_import_id = ssg.update_import_id,\n  rsg.updated = ssg.updated,\n  rsg.migrate_id = ssg.migrate_id\nWHERE ssg.deleted = 0 AND ssg.active = 1;",
+            "insert": "INSERT INTO student_group (id, name, school_id, school_year, subject_id, creator, created, update_import_id, updated, migrate_id)\n  SELECT\n    ssg.id,\n    ssg.name,\n    ssg.school_id,\n    ssg.school_year,\n    ssg.subject_id,\n    ssg.creator,\n    ssg.created,\n    ssg.update_import_id,\n    ssg.updated,\n    ssg.migrate_id\n  FROM staging_student_group ssg\n    LEFT JOIN student_group rsg ON rsg.id = ssg.id\n  WHERE rsg.id IS NULL AND ssg.deleted = 0 AND ssg.active = 1;",
+            "delete": "DELETE rsg FROM student_group rsg\n JOIN staging_student_group ssg ON ssg.id = rsg.id\nWHERE ssg.deleted = 1 or ssg.active = 0;"
+          }
+        },
+        "depth_of_knowledge": {
+          "sql": {
+            "deleteAsPartOfParentUpdate": "DELETE rdok FROM depth_of_knowledge rdok\n   JOIN staging_subject ss ON ss.id = rdok.subject_id\n WHERE NOT EXISTS(SELECT 1 FROM staging_depth_of_knowledge sdok WHERE sdok.id = rdok.id);;",
+            "insert": "INSERT INTO depth_of_knowledge (id, level, subject_id, reference)\n  SELECT\n    sdok.id,\n    sdok.level,\n    sdok.subject_id,\n    sdok.reference\n  FROM staging_depth_of_knowledge sdok\n    LEFT JOIN depth_of_knowledge rdok ON rdok.id = sdok.id\n  WHERE rdok.id IS NULL;",
+            "update": "UPDATE depth_of_knowledge rdok\n  JOIN staging_depth_of_knowledge sdok ON sdok.id = rdok.id\nSET\n  rdok.reference = sdok.reference;"
+          }
+        }
+      },
+      "finalizeList": []
+    }
+  },
+  "configClientHealthProperties": {
+    "prefix": "health.config",
+    "properties": {
+      "timeToLive": 300000,
+      "enabled": false
+    }
+  },
+  "spring.cloud.service-registry.auto-registration-org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties": {
+    "prefix": "spring.cloud.service-registry.auto-registration",
+    "properties": {
+      "enabled": true,
+      "registerManagement": true,
+      "failFast": false
+    }
+  },
+  "healthMvcEndpoint": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "path": "/health"
+    }
+  },
+  "serverProperties": {
+    "prefix": "server",
+    "properties": {
+      "contextParameters": {},
+      "address": null,
+      "maxHttpPostSize": 0,
+      "undertow": {
+        "maxHttpPostSize": -1,
+        "bufferSize": null,
+        "buffersPerRegion": null,
+        "ioThreads": null,
+        "workerThreads": null,
+        "directBuffers": null,
+        "accesslog": {
+          "enabled": null,
+          "pattern": "common",
+          "prefix": "access_log.",
+          "suffix": "log",
+          "dir": "/logs",
+          "rotate": true
+        }
+      },
+      "tomcat": {
+        "accesslog": {
+          "enabled": false,
+          "pattern": "common",
+          "directory": "logs",
+          "prefix": "access_log",
+          "suffix": ".log",
+          "rotate": true,
+          "renameOnRotate": false,
+          "fileDateFormat": ".yyyy-MM-dd",
+          "requestAttributesEnabled": false,
+          "buffered": true
+        },
+        "internalProxies": "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1",
+        "protocolHeader": null,
+        "protocolHeaderHttpsValue": "https",
+        "portHeader": "X-Forwarded-Port",
+        "remoteIpHeader": null,
+        "basedir": null,
+        "backgroundProcessorDelay": 10,
+        "maxThreads": 2,
+        "minSpareThreads": 10,
+        "maxHttpPostSize": 2097152,
+        "redirectContextRoot": true,
+        "uriEncoding": "UTF-8",
+        "maxConnections": 2,
+        "acceptCount": 100,
+        "additionalTldSkipPatterns": []
+      },
+      "displayName": "application",
+      "session": {
+        "timeout": null,
+        "trackingModes": null,
+        "persistent": false,
+        "storeDir": null,
+        "cookie": {
+          "name": null,
+          "domain": null,
+          "path": null,
+          "comment": null,
+          "httpOnly": null,
+          "secure": null,
+          "maxAge": null
+        }
+      },
+      "contextPath": null,
+      "error": {
+        "path": "/error",
+        "includeStacktrace": "NEVER"
+      },
+      "ssl": null,
+      "serverHeader": null,
+      "useForwardHeaders": null,
+      "port": 8008,
+      "maxHttpHeaderSize": 131072,
+      "servletPath": "/",
+      "jspServlet": null,
+      "jetty": {
+        "maxHttpPostSize": 200000,
+        "acceptors": -1,
+        "selectors": -1
+      },
+      "connectionTimeout": null
+    }
+  },
+  "spring.metrics.export-org.springframework.boot.actuate.metrics.export.MetricExportProperties": {
+    "prefix": "spring.metrics.export",
+    "properties": {
+      "excludes": null,
+      "statsd": {
+        "host": null,
+        "port": 8125,
+        "prefix": null
+      },
+      "includes": null,
+      "triggers": {},
+      "enabled": true,
+      "redis": {
+        "prefix": "spring.metrics.rdw-ingest-migrate-reporting.3af41e96ffce31fd3cb0b904da3e8aa8",
+        "key": "******"
+      },
+      "aggregate": {
+        "prefix": "rdw-ingest-migrate-reporting.3af41e96ffce31fd3cb0b904da3e8aa8",
+        "keyPattern": "k.d"
+      }
+    }
+  },
+  "configurationPropertiesReportEndpoint": {
+    "prefix": "endpoints.configprops",
+    "properties": {
+      "id": "configprops",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.warehouseDataSourceElementsProperties": {
+    "prefix": "datasources.warehouse_rw",
+    "properties": {
+      "schemaSearchPath": null,
+      "urlParts": {
+        "protocol": "jdbc:mysql:",
+        "hosts": "rdw-aurora-qa-cluster.cluster-cugsexobhx8t.us-west-2.rds.amazonaws.com:3306",
+        "database": "warehouse",
+        "properties": "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=130000"
+      },
+      "tenants": {
+        "CA_S001": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse_ca_s001",
+            "properties": null
+          },
+          "username": "cas001",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "CA_S002": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse_ca_s002",
+            "properties": null
+          },
+          "username": "cas002",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "CA": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse",
+            "properties": null
+          },
+          "username": "sbac",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "TS": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "ts_warehouse",
+            "properties": null
+          },
+          "username": "sbac",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        }
+      },
+      "minIdle": 4,
+      "validationQuery": "SELECT 1",
+      "initialSize": 4,
+      "url": "jdbc:mysql://rdw-aurora-qa-cluster.cluster-cugsexobhx8t.us-west-2.rds.amazonaws.com:3306/warehouse?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=130000",
+      "logAbandoned": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 10,
+      "removeAbandoned": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "removeAbandonedTimeout": 60,
+      "username": "root",
+      "validationInterval": 10000,
+      "maxActive": 10
+    }
+  },
+  "loggersMvcEndpoint": {
+    "prefix": "endpoints.loggers",
+    "properties": {
+      "path": "/loggers"
+    }
+  },
+  "loggersEndpoint": {
+    "prefix": "endpoints.loggers",
+    "properties": {
+      "id": "loggers",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "migrateEndpoint": {
+    "prefix": "endpoints.migrate",
+    "properties": {
+      "id": "migrate",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.batch-org.springframework.boot.autoconfigure.batch.BatchProperties": {
+    "prefix": "spring.batch",
+    "properties": {
+      "schema": "classpath:org/springframework/batch/core/schema-@@platform@@.sql",
+      "job": {
+        "names": ""
+      },
+      "tablePrefix": null,
+      "initializer": {
+        "enabled": false
+      }
+    }
+  },
+  "endpoints.jmx-org.springframework.boot.actuate.autoconfigure.EndpointMBeanExportProperties": {
+    "prefix": "endpoints.jmx",
+    "properties": {
+      "uniqueNames": false,
+      "staticNames": {},
+      "enabled": true,
+      "domain": ""
+    }
+  },
+  "restartEndpointWithoutIntegration": {
+    "prefix": "endpoints.restart",
+    "properties": {
+      "id": "restart",
+      "sensitive": true,
+      "pauseEndpoint": {
+        "id": "pause",
+        "sensitive": true,
+        "enabled": true
+      },
+      "resumeEndpoint": {
+        "id": "resume",
+        "sensitive": true,
+        "enabled": true
+      },
+      "enabled": true,
+      "timeout": 0
+    }
+  },
+  "spring.http.encoding-org.springframework.boot.autoconfigure.web.HttpEncodingProperties": {
+    "prefix": "spring.http.encoding",
+    "properties": {
+      "charset": "UTF-8",
+      "force": false,
+      "mapping": null,
+      "forceRequest": false,
+      "forceResponse": false
+    }
+  },
+  "shutdownEndpoint": {
+    "prefix": "endpoints.shutdown",
+    "properties": {
+      "id": "shutdown",
+      "sensitive": true,
+      "enabled": false
+    }
+  },
+  "beansEndpoint": {
+    "prefix": "endpoints.beans",
+    "properties": {
+      "id": "beans",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "requestMappingEndpoint": {
+    "prefix": "endpoints.mappings",
+    "properties": {
+      "id": "mappings",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "refreshEndpoint": {
+    "prefix": "endpoints.refresh",
+    "properties": {
+      "id": "refresh",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.transaction-org.springframework.boot.autoconfigure.transaction.TransactionProperties": {
+    "prefix": "spring.transaction",
+    "properties": {
+      "rollbackOnCommitFailure": null,
+      "defaultTimeout": null
+    }
+  },
+  "statusEndpoint": {
+    "prefix": "endpoints.status",
+    "properties": {
+      "id": "status",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "migrateWarehouseToStagingSqlConfiguration": {
+    "prefix": "sql.warehouseToStage",
+    "properties": {
+      "truncateStageList": [
+        "TRUNCATE TABLE staging_grade",
+        "TRUNCATE TABLE staging_elas",
+        "TRUNCATE TABLE staging_military_connected",
+        "TRUNCATE TABLE staging_language",
+        "TRUNCATE TABLE staging_completeness",
+        "TRUNCATE TABLE staging_administration_condition",
+        "TRUNCATE TABLE staging_ethnicity",
+        "TRUNCATE TABLE staging_gender",
+        "TRUNCATE TABLE staging_accommodation",
+        "TRUNCATE TABLE staging_school_year",
+        "TRUNCATE TABLE staging_claim",
+        "TRUNCATE TABLE staging_target",
+        "TRUNCATE TABLE staging_common_core_standard",
+        "TRUNCATE TABLE staging_depth_of_knowledge",
+        "TRUNCATE TABLE staging_math_practice",
+        "TRUNCATE TABLE staging_accommodation_translation",
+        "TRUNCATE TABLE staging_school",
+        "TRUNCATE TABLE staging_district",
+        "TRUNCATE TABLE staging_district_embargo",
+        "TRUNCATE TABLE staging_district_group",
+        "TRUNCATE TABLE staging_school_group",
+        "TRUNCATE TABLE staging_student",
+        "TRUNCATE TABLE staging_student_ethnicity",
+        "TRUNCATE TABLE staging_student_group",
+        "TRUNCATE TABLE staging_student_group_membership",
+        "TRUNCATE TABLE staging_user_student_group",
+        "TRUNCATE TABLE staging_percentile_score",
+        "TRUNCATE TABLE staging_percentile",
+        "TRUNCATE TABLE staging_asmt",
+        "TRUNCATE TABLE staging_asmt_score",
+        "TRUNCATE TABLE staging_asmt_target",
+        "TRUNCATE TABLE staging_asmt_target_exclusion",
+        "TRUNCATE TABLE staging_item",
+        "TRUNCATE TABLE staging_item_common_core_standard",
+        "TRUNCATE TABLE staging_item_other_target",
+        "TRUNCATE TABLE staging_exam",
+        "TRUNCATE TABLE staging_exam_item",
+        "TRUNCATE TABLE staging_exam_available_accommodation",
+        "TRUNCATE TABLE staging_exam_score",
+        "TRUNCATE TABLE staging_exam_target_score",
+        "TRUNCATE TABLE staging_subject",
+        "TRUNCATE TABLE staging_subject_asmt_type",
+        "TRUNCATE TABLE staging_subject_asmt_scoring",
+        "TRUNCATE TABLE staging_subject_score",
+        "TRUNCATE TABLE staging_subject_translation"
+      ],
+      "entities": {
+        "asmt_target_exclusion_by_update_import_id": {
+          "sql": {
+            "warehouseRead": "SELECT\n  wats.asmt_id,\n  wats.target_id\nFROM asmt_target_exclusion wats\n  JOIN asmt wa ON wa.id = wats.asmt_id\n  JOIN target wt ON wt.id = wats.target_id\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE wa.type_id = 3 AND (ws.code <> 'Math' OR wc.code='1') AND\n  wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created AND wa.deleted = 0",
+            "stagingInsert": "INSERT IGNORE INTO staging_asmt_target_exclusion (asmt_id, target_id, migrate_id) VALUES\n  (:asmt_id, :target_id, :migrate_id)"
+          }
+        },
+        "asmt": {
+          "sql": {
+            "warehouseRead": "SELECT\n  wa.id,\n  wa.natural_id,\n  wa.grade_id,\n  wa.type_id,\n  wa.subject_id,\n  wa.school_year,\n  wa.name,\n  wa.label,\n  wa.version,\n  wa.update_import_id,\n  wa.deleted,\n  wa.updated\nFROM asmt wa WHERE  wa.created > :first_at AND wa.created <= :last_at",
+            "stagingInsert": "INSERT INTO staging_asmt (id, natural_id, grade_id, type_id, subject_id, school_year, name, label, version, update_import_id, deleted, updated, migrate_id) VALUES\n  (:id, :natural_id, :grade_id, :type_id, :subject_id, :school_year, :name, :label, :version, :update_import_id, :deleted, :updated, :migrate_id)"
+          }
+        },
+        "school_group": {
+          "sql": {
+            "warehouseRead": "SELECT wsg.id, wsg.natural_id, wsg.name, wsg.external_id\n  FROM school_group wsg\n  WHERE EXISTS(\n    SELECT ws.id FROM school ws\n      WHERE ws.created > :first_at AND ws.created <= :last_at\n          AND ws.deleted = 0\n          AND ws.school_group_id = wsg.id\n  )",
+            "stagingInsert": "INSERT INTO staging_school_group (id, natural_id, name, external_id, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :migrate_id)"
+          }
+        },
+        "accommodation": {
+          "sql": {
+            "warehouseRead": "SELECT wa.id, wa.code from accommodation wa",
+            "stagingInsert": "INSERT INTO staging_accommodation (id, code) VALUES\n  (:id, :code)"
+          }
+        },
+        "asmt_target_by_update_import_id": {
+          "sql": {
+            "warehouseRead": "SELECT DISTINCT\n  wa.id as asmt_id,\n  wi.target_id\nFROM item wi\n  JOIN asmt wa ON wa.id = wi.asmt_id\n  JOIN target wt ON wt.id = wi.target_id\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE wa.type_id = 3 AND (ws.code <> 'Math' OR wc.code='1') AND\n  wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created AND wa.deleted = 0",
+            "stagingInsert": "INSERT IGNORE INTO staging_asmt_target (asmt_id, target_id, migrate_id) VALUES\n  (:asmt_id, :target_id, :migrate_id)"
+          }
+        },
+        "student_ethnicity_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_student_ethnicity (ethnicity_id, student_id) VALUES\n  ( :ethnicity_id, :student_id )",
+            "warehouseRead": "SELECT\n  wse.ethnicity_id,\n  wse.student_id\nFROM student_ethnicity wse\n  JOIN student ws ON ws.id = wse.student_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created\n      AND ws.deleted = 0"
+          }
+        },
+        "exam_score": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_exam_score (id, exam_id, subject_score_id, scale_score, scale_score_std_err, performance_level) VALUES\n  (:id, :exam_id, :subject_score_id, :scale_score, :scale_score_std_err, :performance_level)",
+            "warehouseRead": "SELECT\n  wecs.id,\n  wecs.exam_id,\n  wecs.subject_score_id,\n  round(wecs.scale_score) AS scale_score,\n  wecs.scale_score_std_err,\n  wecs.performance_level\nFROM exam_score wecs\n  JOIN exam we ON wecs.exam_id = we.id\nWHERE we.created > :first_at AND we.created <= :last_at\n  AND we.deleted = 0"
+          }
+        },
+        "accommodation_translation": {
+          "sql": {
+            "warehouseRead": "SELECT CONCAT(a.code, '.', wat.school_year) AS label_code, wat.language_code, wat.label\n  FROM accommodation_translation wat JOIN accommodation a ON wat.accommodation_id=a.id",
+            "stagingInsert": "INSERT INTO staging_accommodation_translation (label_code, language_code, label) VALUES\n  (:label_code, :language_code, :label)"
+          }
+        },
+        "common_core_standard_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_common_core_standard (id, natural_id, subject_id) VALUES\n  (:id, :natural_id, :subject_id)",
+            "warehouseRead": "SELECT wccs.id, wccs.natural_id, wccs.subject_id\n  FROM common_core_standard wccs\n  JOIN subject ws ON ws.id = wccs.subject_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "asmt_score_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_asmt_score (asmt_id, subject_score_id, cut_point_1, cut_point_2, cut_point_3, cut_point_4, cut_point_5, min_score, max_score, migrate_id) VALUES\n  (:asmt_id, :subject_score_id, :cut_point_1, :cut_point_2, :cut_point_3, :cut_point_4, :cut_point_5, :min_score, :max_score, :migrate_id)",
+            "warehouseRead": "SELECT\n  was.asmt_id,\n  was.subject_score_id,\n  round(was.cut_point_1) AS cut_point_1,\n  round(was.cut_point_2) AS cut_point_2,\n  round(was.cut_point_3) AS cut_point_3,\n  round(was.cut_point_4) AS cut_point_4,\n  round(was.cut_point_5) AS cut_point_5,\n  round(was.min_score) AS min_score,\n  round(was.max_score) AS max_score\nFROM asmt_score  was\n  JOIN asmt wa ON wa.id = was.asmt_id\nWHERE wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created\n  AND wa.deleted = 0"
+          }
+        },
+        "student_group": {
+          "sql": {
+            "warehouseRead": "SELECT\n  wsg.id,\n  wsg.name,\n  wsg.school_id,\n  wsg.school_year,\n  wsg.subject_id,\n  wsg.active,\n  wsg.creator,\n  wsg.created,\n  wsg.update_import_id,\n  wsg.deleted,\n  wsg.updated\nFROM student_group wsg\n  JOIN import i ON i.id = wsg.update_import_id\nWHERE i.updated > :first_at AND i.updated <= :last_at",
+            "stagingInsert": "INSERT INTO staging_student_group (id, name, school_id, school_year, subject_id, active, creator, created, update_import_id, deleted, updated, migrate_id) VALUES\n  (:id, :name, :school_id, :school_year, :subject_id, :active, :creator, :created, :update_import_id, :deleted, :updated, :migrate_id)"
+          }
+        },
+        "ethnicity": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_ethnicity (id, code) VALUES\n  (:id, :code)",
+            "warehouseRead": "SELECT we.id, we.code from ethnicity we"
+          }
+        },
+        "elas": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_elas (id, code) VALUES\n  (:id, :code)",
+            "warehouseRead": "SELECT we.id, we.code from elas we"
+          }
+        },
+        "exam_target_score": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_exam_target_score (id, exam_id, target_id, student_relative_residual_score, standard_met_relative_residual_score) VALUES\n  (:id, :exam_id, :target_id, :student_relative_residual_score, :standard_met_relative_residual_score)",
+            "warehouseRead": "SELECT\n  wets.id,\n  wets.exam_id,\n  wets.target_id,\n  wets.student_relative_residual_score,\n  wets.standard_met_relative_residual_score\nFROM exam_target_score wets\n  JOIN exam we ON wets.exam_id = we.id\n  JOIN target wt ON wt.id = wets.target_id\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE we.type_id = 3 AND (ws.code <> 'Math' OR wc.code='1') AND\n  we.created > :first_at AND we.created <= :last_at AND we.deleted = 0"
+          }
+        },
+        "item_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_item (id, claim_id, target_id, natural_id, asmt_id, math_practice, allow_calc, position, dok_id, difficulty_code, max_points, common_core_standard_ids, field_test, active, type, options_count, answer_key, performance_task_writing_type, migrate_id) VALUES\n  (:id, :claim_id, :target_id, :natural_id, :asmt_id, :math_practice, :allow_calc, :position, :dok_id, :difficulty_code, :max_points, :common_core_standard_ids, :field_test, :active, :type, :options_count, :answer_key, :performance_task_writing_type, :migrate_id)",
+            "warehouseRead": "SELECT\n  wi.id,\n  wi.claim_id,\n  wi.target_id,\n  wi.natural_id,\n  wi.asmt_id,\n  wi.math_practice,\n  wi.allow_calc,\n  wi.position,\n  wi.dok_id,\n  wi.difficulty_code,\n  round(wi.max_points) AS max_points,\n  ccs.common_core_standard_ids,\n  wi.field_test,\n  wi.active,\n  wi.type,\n  wi.options_count,\n  CASE WHEN wa.type_id = 3 THEN NULL ELSE wi.answer_key END AS answer_key,\n  wi.performance_task_writing_type\nFROM item  wi\n  JOIN asmt wa ON wa.id = wi.asmt_id\n  LEFT JOIN\n    ( SELECT wiccs.item_id as item_id, GROUP_CONCAT(wccs.natural_id ORDER BY wccs.id SEPARATOR '|') as common_core_standard_ids\n        FROM item_common_core_standard wiccs\n          JOIN  common_core_standard wccs on wccs.id = wiccs.common_core_standard_id\n        GROUP BY wiccs.item_id\n    ) AS ccs on ccs.item_id = wi.id\n  WHERE wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created\n    AND wa.deleted = 0"
+          }
+        },
+        "item_other_target": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_item_other_target (item_id, target_id) VALUES\n  (:item_id, :target_id)",
+            "warehouseRead": "SELECT\n  wiot.item_id,\n  wiot.target_id\nFROM item_other_target wiot\n  JOIN item wi ON wi.id = wiot.item_id\n  JOIN asmt wa ON wa.id = wi.asmt_id\nWHERE  wa.created > :first_at AND wa.created <= :last_at\n  AND wa.deleted = 0"
+          }
+        },
+        "exam_target_score_by_update_import_id": {
+          "sql": {
+            "warehouseRead": "SELECT\n  wets.id,\n  wets.exam_id,\n  wets.target_id,\n  wets.student_relative_residual_score,\n  wets.standard_met_relative_residual_score\nFROM exam_target_score wets\n  JOIN exam we ON wets.exam_id = we.id\n  JOIN target wt ON wt.id = wets.target_id\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE we.type_id = 3 AND (ws.code <> 'Math' OR wc.code='1') AND\n  we.updated > :first_at AND we.updated <= :last_at AND we.updated <> we.created AND we.deleted = 0",
+            "stagingInsert": "INSERT IGNORE INTO staging_exam_target_score (id, exam_id, target_id, student_relative_residual_score, standard_met_relative_residual_score) VALUES\n  (:id, :exam_id, :target_id, :student_relative_residual_score, :standard_met_relative_residual_score)"
+          }
+        },
+        "student": {
+          "sql": {
+            "warehouseRead": "SELECT\n  ws.id,\n  ws.ssid,\n  ws.last_or_surname,\n  ws.first_name,\n  ws.middle_name,\n  ws.alias_name,\n  ws.gender_id,\n  ws.first_entry_into_us_school_at,\n  ws.lep_entry_at,\n  ws.lep_exit_at,\n  ws.birthday,\n  ws.inferred_school_id,\n  ws.update_import_id,\n  ws.deleted,\n  ws.updated\nFROM student ws WHERE ws.created > :first_at AND ws.created <= :last_at",
+            "stagingInsert": "INSERT INTO staging_student (id, ssid, last_or_surname, first_name, middle_name, alias_name, gender_id, first_entry_into_us_school_at,\n                 lep_entry_at, lep_exit_at, birthday, inferred_school_id, update_import_id, deleted, updated, migrate_id) VALUES\n  (:id, :ssid, :last_or_surname, :first_name, :middle_name, :alias_name, :gender_id, :first_entry_into_us_school_at,\n                :lep_entry_at, :lep_exit_at, :birthday, :inferred_school_id, :update_import_id, :deleted, :updated, :migrate_id)"
+          }
+        },
+        "administration_condition": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_administration_condition (id, code) VALUES\n  (:id, :code)",
+            "warehouseRead": "SELECT wac.id, wac.code from administration_condition wac"
+          }
+        },
+        "target": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_target (id, natural_id, claim_id) VALUES\n  (:id, :natural_id, :claim_id)",
+            "warehouseRead": "SELECT wt.id, wt.natural_id, wt.claim_id\n  FROM target wt\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "school_group_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_school_group (id, natural_id, name, external_id, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :migrate_id)",
+            "warehouseRead": "SELECT wsg.id, wsg.natural_id, wsg.name, wsg.external_id\n  FROM school_group wsg\n  WHERE EXISTS(\n    SELECT ws.id FROM school ws\n      WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created\n          AND ws.deleted = 0\n          AND ws.school_group_id = wsg.id\n        )"
+          }
+        },
+        "exam_available_accommodation": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_exam_available_accommodation (exam_id, accommodation_id) VALUES\n  (:exam_id, :accommodation_id)",
+            "warehouseRead": "SELECT\n  weaa.exam_id,\n  weaa.accommodation_id\nFROM exam_available_accommodation weaa\n  JOIN exam we ON weaa.exam_id = we.id\nWHERE we.created > :first_at AND we.created <= :last_at\n  AND we.deleted = 0"
+          }
+        },
+        "student_ethnicity": {
+          "sql": {
+            "warehouseRead": "SELECT\n  wse.ethnicity_id,\n  wse.student_id\nFROM student_ethnicity wse\n  JOIN student ws ON ws.id = wse.student_id\nWHERE ws.created > :first_at AND ws.created <= :last_at\n      AND ws.deleted = 0",
+            "stagingInsert": "INSERT INTO staging_student_ethnicity (ethnicity_id, student_id) VALUES\n  ( :ethnicity_id, :student_id )"
+          }
+        },
+        "user_student_group": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_user_student_group (student_group_id, user_login) VALUES\n  (:student_group_id, :user_login)",
+            "warehouseRead": "SELECT\n  wusg.student_group_id,\n  wusg.user_login\nFROM user_student_group wusg\n  JOIN student_group wsg ON wsg.id= wusg.student_group_id\n  JOIN import i ON i.id = wsg.update_import_id\nWHERE i.updated > :first_at AND i.updated <= :last_at\n  AND wsg.deleted = 0 and wsg.active != 0"
+          }
+        },
+        "common_core_standard": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_common_core_standard (id, natural_id, subject_id) VALUES\n  (:id, :natural_id, :subject_id)",
+            "warehouseRead": "SELECT wccs.id, wccs.natural_id, wccs.subject_id\n  FROM common_core_standard wccs\n  JOIN subject ws ON ws.id = wccs.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "item_common_core_standard": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_item_common_core_standard (common_core_standard_id, item_id) VALUES\n  (:common_core_standard_id, :item_id)",
+            "warehouseRead": "SELECT\n  wiccs.common_core_standard_id,\n  wiccs.item_id\nFROM item_common_core_standard wiccs\n  JOIN item wi ON wi.id = wiccs.item_id\n  JOIN asmt wa ON wa.id = wi.asmt_id\nWHERE wa.created > :first_at AND wa.created <= :last_at\n  AND wa.deleted = 0"
+          }
+        },
+        "item_other_target_by_update_import_id": {
+          "sql": {
+            "warehouseRead": "SELECT\n  wiot.item_id,\n  wiot.target_id\nFROM item_other_target wiot\n  JOIN item wi ON wi.id = wiot.item_id\n  JOIN asmt wa ON wa.id = wi.asmt_id\nWHERE wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created\n  AND wa.deleted = 0",
+            "stagingInsert": "INSERT IGNORE INTO staging_item_other_target (item_id, target_id) VALUES\n  (:item_id, :target_id)"
+          }
+        },
+        "depth_of_knowledge_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_depth_of_knowledge (id, level, subject_id, reference) VALUES\n  (:id, :level, :subject_id, :reference)",
+            "warehouseRead": "SELECT wdok.id, wdok.level, wdok.subject_id, wdok.reference\n  FROM depth_of_knowledge wdok\n  JOIN subject ws ON ws.id = wdok.subject_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "depth_of_knowledge": {
+          "sql": {
+            "warehouseRead": "SELECT wdok.id, wdok.level, wdok.subject_id, wdok.reference\n  FROM depth_of_knowledge wdok\n  JOIN subject ws ON ws.id = wdok.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at",
+            "stagingInsert": "INSERT INTO staging_depth_of_knowledge (id, level, subject_id, reference) VALUES\n  (:id, :level, :subject_id, :reference)"
+          }
+        },
+        "exam_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_exam (id, type_id, school_year, asmt_id, asmt_version, opportunity,completeness_id, administration_condition_id, military_connected_id,\n                                   session_id, performance_level, scale_score, scale_score_std_err, completed_at, deleted, update_import_id, updated,\n                                   grade_id, student_id, school_id, iep, lep, elas_id, elas_start_at, section504, economic_disadvantage, migrant_status,\n                                   eng_prof_lvl, t3_program_type, language_id, prim_disability_type, migrate_id) VALUES\n                                (:id, :type_id, :school_year, :asmt_id, :asmt_version, :opportunity, :completeness_id, :administration_condition_id, :military_connected_id,\n                                   :session_id, :performance_level, :scale_score, :scale_score_std_err, :completed_at, :deleted, :update_import_id, :updated,\n                                   :grade_id, :student_id, :school_id, :iep, :lep, :elas_id, :elas_start_at, :section504, :economic_disadvantage, :migrant_status,\n                                   :eng_prof_lvl, :t3_program_type, :language_id, :prim_disability_type, :migrate_id)",
+            "warehouseRead": "SELECT\n  we.id,\n  we.type_id,\n  we.school_year,\n  we.asmt_id,\n  we.asmt_version,\n  we.opportunity,\n  we.completeness_id,\n  we.administration_condition_id,\n  we.military_connected_id,\n  we.session_id,\n  we.performance_level,\n  round(we.scale_score) AS scale_score,\n  we.scale_score_std_err,\n  we.completed_at,\n  we.deleted,\n  we.update_import_id,\n  we.updated,\n  we.grade_id,\n  we.student_id,\n  we.school_id,\n  we.iep,\n  we.lep,\n  we.elas_id,\n  we.elas_start_at,\n  we.section504,\n  we.economic_disadvantage,\n  we.migrant_status,\n  we.eng_prof_lvl,\n  we.t3_program_type,\n  we.language_id,\n  we.prim_disability_type\nFROM exam we WHERE we.updated > :first_at AND we.updated <= :last_at AND we.updated <> we.created"
+          }
+        },
+        "subject_score_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_subject_score (id, subject_id, asmt_type_id, score_type_id, code, display_order, data_order) VALUES\n  (:id, :subject_id, :asmt_type_id, :score_type_id, :code, :display_order, :data_order)",
+            "warehouseRead": "SELECT wscs.id, wscs.subject_id, wscs.asmt_type_id, wscs.score_type_id, wscs.code, wscs.display_order, wscs.data_order FROM subject_score wscs\n  JOIN subject ws ON ws.id = wscs.subject_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "exam_item": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_exam_item (id, exam_id, item_id, score, score_status, position, response, trait_evidence_elaboration_score,\n                                trait_evidence_elaboration_score_status, trait_organization_purpose_score,\n                                trait_organization_purpose_score_status, trait_conventions_score,\n                                trait_conventions_score_status, migrate_id) VALUES\n                                (:id, :exam_id, :item_id, :score, :score_status, :position, :response, :trait_evidence_elaboration_score,\n                                   :trait_evidence_elaboration_score_status, :trait_organization_purpose_score,\n                                   :trait_organization_purpose_score_status, :trait_conventions_score,\n                                   :trait_conventions_score_status, :migrate_id)",
+            "warehouseRead": "SELECT\n  wei.id,\n  wei.exam_id,\n  wei.item_id,\n  round(wei.score) AS score,\n  wei.score_status,\n  wei.position,\n  CASE WHEN we.type_id = 3 THEN NULL ELSE wei.response END AS response,\n  round(wei.trait_evidence_elaboration_score) AS trait_evidence_elaboration_score,\n  wei.trait_evidence_elaboration_score_status,\n  round(wei.trait_organization_purpose_score) AS trait_organization_purpose_score,\n  wei.trait_organization_purpose_score_status,\n  round(wei.trait_conventions_score) AS trait_conventions_score,\n  wei.trait_conventions_score_status\nFROM exam_item wei\n  JOIN exam we ON wei.exam_id = we.id\nWHERE we.created > :first_at AND we.created <= :last_at\n AND we.deleted = 0"
+          }
+        },
+        "subject_score": {
+          "sql": {
+            "warehouseRead": "SELECT wscs.id, wscs.subject_id, wscs.asmt_type_id, wscs.score_type_id, wscs.code, wscs.display_order, wscs.data_order FROM subject_score wscs\n  JOIN subject ws ON ws.id = wscs.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at",
+            "stagingInsert": "INSERT INTO staging_subject_score (id, subject_id, asmt_type_id, score_type_id, code, display_order, data_order) VALUES\n  (:id, :subject_id, :asmt_type_id, :score_type_id, :code, :display_order, :data_order)"
+          }
+        },
+        "item": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_item (id, claim_id, target_id, natural_id, asmt_id, math_practice, allow_calc, position, dok_id, difficulty_code, max_points, common_core_standard_ids, field_test, active, type, options_count, answer_key, performance_task_writing_type, migrate_id) VALUES\n  (:id, :claim_id, :target_id, :natural_id, :asmt_id, :math_practice, :allow_calc, :position, :dok_id, :difficulty_code, :max_points, :common_core_standard_ids, :field_test, :active, :type, :options_count, :answer_key, :performance_task_writing_type, :migrate_id)",
+            "warehouseRead": "SELECT\n  wi.id,\n  wi.claim_id,\n  wi.target_id,\n  wi.natural_id,\n  wi.asmt_id,\n  wi.math_practice,\n  wi.allow_calc,\n  wi.position,\n  wi.dok_id,\n  wi.difficulty_code,\n  round(wi.max_points) AS max_points,\n  ccs.common_core_standard_ids,\n  wi.field_test,\n  wi.active,\n  wi.type,\n  wi.options_count,\n  CASE WHEN wa.type_id = 3 THEN NULL ELSE wi.answer_key END AS answer_key,\n  wi.performance_task_writing_type\nFROM item  wi\n  JOIN asmt wa ON wa.id = wi.asmt_id\n  LEFT JOIN\n    ( SELECT wiccs.item_id as item_id, GROUP_CONCAT(wccs.natural_id ORDER BY wccs.id SEPARATOR '|') as common_core_standard_ids\n        FROM item_common_core_standard wiccs\n          JOIN  common_core_standard wccs on wccs.id = wiccs.common_core_standard_id\n        GROUP BY wiccs.item_id\n    ) AS ccs on ccs.item_id = wi.id\n  WHERE wa.created > :first_at AND wa.created <= :last_at\n    AND wa.deleted = 0"
+          }
+        },
+        "subject_asmt_scoring": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_subject_asmt_scoring (subject_id, asmt_type_id, score_type_id, min_score, max_score, performance_level_count, performance_level_standard_cutoff) VALUES\n  (:subject_id, :asmt_type_id, :score_type_id, :min_score, :max_score, :performance_level_count, :performance_level_standard_cutoff)",
+            "warehouseRead": "SELECT wsas.subject_id, wsas.asmt_type_id, wsas.score_type_id, wsas.min_score, wsas.max_score, wsas.performance_level_count, wsas.performance_level_standard_cutoff FROM subject_asmt_scoring wsas\n  JOIN subject ws ON ws.id = wsas.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "asmt_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_asmt (id, natural_id, grade_id, type_id, subject_id, school_year, name, label, version, update_import_id, deleted, updated, migrate_id) VALUES\n  (:id, :natural_id, :grade_id, :type_id, :subject_id, :school_year, :name, :label, :version, :update_import_id, :deleted, :updated, :migrate_id)",
+            "warehouseRead": "SELECT\n  wa.id,\n  wa.natural_id,\n  wa.grade_id,\n  wa.type_id,\n  wa.subject_id,\n  wa.school_year,\n  wa.name,\n  wa.label,\n  wa.version,\n  wa.update_import_id,\n  wa.deleted,\n  wa.updated\nFROM asmt wa WHERE  wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created"
+          }
+        },
+        "district_group": {
+          "sql": {
+            "warehouseRead": "SELECT wdg.id, wdg.natural_id, wdg.name, wdg.external_id\n  FROM district_group wdg\n  WHERE EXISTS(\n    SELECT ws.id FROM school ws\n      WHERE ws.created > :first_at AND ws.created <= :last_at\n          AND ws.deleted = 0\n          AND ws.district_group_id = wdg.id\n  )",
+            "stagingInsert": "INSERT INTO staging_district_group (id, natural_id, name, external_id, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :migrate_id)"
+          }
+        },
+        "exam_available_accommodation_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_exam_available_accommodation (exam_id, accommodation_id) VALUES\n  (:exam_id, :accommodation_id)",
+            "warehouseRead": "SELECT\n  weaa.exam_id,\n  weaa.accommodation_id\nFROM exam_available_accommodation weaa\n  JOIN exam we ON weaa.exam_id = we.id\nWHERE we.updated > :first_at AND we.updated <= :last_at AND we.updated <> we.created\n  AND we.deleted = 0"
+          }
+        },
+        "claim": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_claim (id, subject_id, code) VALUES\n  (:id, :subject_id, :code)",
+            "warehouseRead": "SELECT wc.id, wc.subject_id, wc.code\n  FROM claim wc\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "grade": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_grade (id, code, sequence) VALUES\n  (:id, :code, :sequence)",
+            "warehouseRead": "SELECT wg.id, wg.code, wg.sequence from grade wg"
+          }
+        },
+        "subject_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_subject (id, code, updated, update_import_id, migrate_id)  VALUES\n  (:id, :code, :updated, :update_import_id, :migrate_id)",
+            "warehouseRead": "SELECT ws.id, ws.code, ws.updated, ws.update_import_id\n  FROM subject ws\n  WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "exam_score_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_exam_score (id, exam_id, subject_score_id, scale_score, scale_score_std_err, performance_level) VALUES\n  (:id, :exam_id, :subject_score_id, :scale_score, :scale_score_std_err, :performance_level)",
+            "warehouseRead": "SELECT\n  wecs.id,\n  wecs.exam_id,\n  wecs.subject_score_id,\n  round(wecs.scale_score) AS scale_score,\n  wecs.scale_score_std_err,\n  wecs.performance_level\nFROM exam_score wecs\n  JOIN exam we ON wecs.exam_id = we.id\nWHERE we.updated > :first_at AND we.updated <= :last_at AND we.updated <> we.created\n  AND we.deleted = 0"
+          }
+        },
+        "percentile_score_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_percentile_score (percentile_id, percentile_rank, score, min_inclusive, max_exclusive) VALUES\n  (:percentile_id, :percentile_rank, :score, :min_inclusive, :max_exclusive)",
+            "warehouseRead": "SELECT wps.percentile_id, wps.percentile_rank, wps.score, wps.min_inclusive, wps.max_exclusive\n  FROM percentile_score wps\n    JOIN percentile wp ON wp.id = wps.percentile_id\n  WHERE wp.updated > :first_at AND wp.updated <= :last_at AND wp.updated <> wp.created AND wp.deleted = 0"
+          }
+        },
+        "math_practice": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_math_practice (practice, description, code) VALUES\n  (:practice, :description, :code)",
+            "warehouseRead": "SELECT wmp.practice, wmp.description, wmp.code from math_practice wmp"
+          }
+        },
+        "subject_translation_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_subject_translation (subject_id, label_code, label) VALUES\n  ( :subject_id, :label_code, :label)",
+            "warehouseRead": "SELECT\n  wst.subject_id,\n  wst.label_code,\n  wst.label\nFROM subject_translation wst\n  JOIN subject ws ON ws.id = wst.subject_id\n WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "asmt_target": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_asmt_target (asmt_id, target_id, migrate_id) VALUES\n  (:asmt_id, :target_id, :migrate_id)",
+            "warehouseRead": "SELECT DISTINCT\n  wa.id as asmt_id,\n  wi.target_id\nFROM item wi\n  JOIN asmt wa ON wa.id = wi.asmt_id\n  JOIN target wt ON wt.id = wi.target_id\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE wa.type_id = 3 AND (ws.code <> 'Math' OR wc.code='1')AND\n  wa.created > :first_at AND wa.created <= :last_at AND wa.deleted = 0"
+          }
+        },
+        "military_connected": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_military_connected (id, code) VALUES\n  (:id, :code)",
+            "warehouseRead": "SELECT wmc.id, wmc.code from military_connected wmc"
+          }
+        },
+        "subject_asmt_type": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_subject_asmt_type (asmt_type_id, subject_id, target_report, printed_report) VALUES\n   (:asmt_type_id, :subject_id, :target_report, :printed_report)",
+            "warehouseRead": "SELECT wsat.asmt_type_id, wsat.subject_id, wsat.target_report, wsat.printed_report FROM subject_asmt_type wsat\n  JOIN subject ws ON ws.id = wsat.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "school_year": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_school_year (year) VALUES\n  (:year)",
+            "warehouseRead": "SELECT wy.year from school_year wy"
+          }
+        },
+        "percentile": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_percentile (id, asmt_id, start_date, end_date, count, mean, standard_deviation, min_score, max_score, deleted, update_import_id, updated, migrate_id) VALUES\n  (:id, :asmt_id, :start_date, :end_date, :count, :mean, :standard_deviation, :min_score, :max_score, :deleted, :update_import_id, :updated, :migrate_id)",
+            "warehouseRead": "SELECT wp.id, wp.asmt_id, wp.start_date, wp.end_date, wp.count, wp.mean, wp.standard_deviation, wp.min_score, wp.max_score, wp.deleted, wp.update_import_id, wp.updated\n  FROM percentile wp\n  WHERE wp.created > :first_at AND wp.created <= :last_at"
+          }
+        },
+        "subject": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_subject (id, code, updated, update_import_id, migrate_id) VALUES\n  (:id, :code, :updated, :update_import_id, :migrate_id)",
+            "warehouseRead": "SELECT ws.id, ws.code, ws.updated, ws.update_import_id\n  FROM subject ws\n  WHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "completeness": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_completeness (id, code) VALUES\n  (:id, :code)",
+            "warehouseRead": "SELECT wc.id, wc.code from completeness wc"
+          }
+        },
+        "asmt_target_exclusion": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_asmt_target_exclusion (asmt_id, target_id, migrate_id) VALUES\n  (:asmt_id, :target_id, :migrate_id)",
+            "warehouseRead": "SELECT\n  wats.asmt_id,\n  wats.target_id\nFROM asmt_target_exclusion wats\n  JOIN asmt wa ON wa.id = wats.asmt_id\n  JOIN target wt ON wt.id = wats.target_id\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE wa.type_id = 3 AND (ws.code <> 'Math' OR wc.code='1') AND\n  wa.created > :first_at AND wa.created <= :last_at AND wa.deleted = 0"
+          }
+        },
+        "district_group_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_district_group (id, natural_id, name, external_id, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :migrate_id)",
+            "warehouseRead": "SELECT wdg.id, wdg.natural_id, wdg.name, wdg.external_id\n  FROM district_group wdg\n  WHERE EXISTS(\n    SELECT ws.id FROM school ws\n      WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created\n          AND ws.deleted = 0\n          AND ws.district_group_id = wdg.id\n        )"
+          }
+        },
+        "item_common_core_standard_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_item_common_core_standard (common_core_standard_id, item_id) VALUES\n  (:common_core_standard_id, :item_id)",
+            "warehouseRead": "SELECT\n  wiccs.common_core_standard_id,\n  wiccs.item_id\nFROM item_common_core_standard wiccs\n  JOIN item wi ON wi.id = wiccs.item_id\n  JOIN asmt wa ON wa.id = wi.asmt_id\nWHERE wa.updated > :first_at AND wa.updated <= :last_at AND wa.updated <> wa.created\n  AND wa.deleted = 0"
+          }
+        },
+        "language": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_language (id, code, altcode, display_order, name) VALUES\n  (:id, :code, :altcode, :display_order, :name)",
+            "warehouseRead": "SELECT wl.id, wl.code, wl.altcode, wl.display_order, wl.name FROM language wl"
+          }
+        },
+        "percentile_score": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_percentile_score (percentile_id, percentile_rank, score, min_inclusive, max_exclusive) VALUES\n  (:percentile_id, :percentile_rank, :score, :min_inclusive, :max_exclusive)",
+            "warehouseRead": "SELECT wps.percentile_id, wps.percentile_rank, wps.score, wps.min_inclusive, wps.max_exclusive\n  FROM percentile_score wps\n    JOIN percentile wp ON wp.id = wps.percentile_id\n  WHERE wp.created > :first_at AND wp.created <= :last_at AND wp.deleted = 0"
+          }
+        },
+        "exam": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_exam (id, type_id, school_year, asmt_id, asmt_version, opportunity,completeness_id, administration_condition_id, military_connected_id,\n                                   session_id, performance_level, scale_score, scale_score_std_err, completed_at, deleted, update_import_id, updated,\n                                   grade_id, student_id, school_id, iep, lep, elas_id, elas_start_at, section504, economic_disadvantage, migrant_status,\n                                   eng_prof_lvl, t3_program_type, language_id, prim_disability_type, migrate_id) VALUES\n                         (:id, :type_id, :school_year, :asmt_id, :asmt_version, :opportunity, :completeness_id, :administration_condition_id, :military_connected_id,\n                                  :session_id, :performance_level, :scale_score, :scale_score_std_err, :completed_at, :deleted, :update_import_id, :updated,\n                                  :grade_id, :student_id, :school_id, :iep, :lep, :elas_id, :elas_start_at, :section504, :economic_disadvantage, :migrant_status,\n                                  :eng_prof_lvl, :t3_program_type, :language_id, :prim_disability_type, :migrate_id)",
+            "warehouseRead": "SELECT\n  we.id,\n  we.type_id,\n  we.school_year,\n  we.asmt_id,\n  we.asmt_version,\n  we.opportunity,\n  we.completeness_id,\n  we.administration_condition_id,\n  we.military_connected_id,\n  we.session_id,\n  we.performance_level,\n  round(we.scale_score) AS scale_score,\n  we.scale_score_std_err,\n  we.completed_at,\n  we.deleted,\n  we.update_import_id,\n  we.updated,\n  we.grade_id,\n  we.student_id,\n  we.school_id,\n  we.iep,\n  we.lep,\n  we.elas_id,\n  we.elas_start_at,\n  we.section504,\n  we.economic_disadvantage,\n  we.migrant_status,\n  we.eng_prof_lvl,\n  we.t3_program_type,\n  we.language_id,\n  we.prim_disability_type\nFROM exam we WHERE we.created > :first_at AND we.created <= :last_at"
+          }
+        },
+        "subject_asmt_scoring_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_subject_asmt_scoring (subject_id, asmt_type_id, score_type_id, min_score, max_score, performance_level_count, performance_level_standard_cutoff) VALUES\n  (:subject_id, :asmt_type_id, :score_type_id, :min_score, :max_score, :performance_level_count, :performance_level_standard_cutoff)",
+            "warehouseRead": "SELECT wsas.subject_id, wsas.asmt_type_id, wsas.score_type_id, wsas.min_score, wsas.max_score, wsas.performance_level_count, wsas.performance_level_standard_cutoff FROM subject_asmt_scoring wsas\n  JOIN subject ws ON ws.id = wsas.subject_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "exam_item_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_exam_item (id, exam_id, item_id, score, score_status, position, response, trait_evidence_elaboration_score,\n                                trait_evidence_elaboration_score_status, trait_organization_purpose_score,\n                                trait_organization_purpose_score_status, trait_conventions_score,\n                                trait_conventions_score_status, migrate_id) VALUES\n                                (:id, :exam_id, :item_id, :score, :score_status, :position, :response, :trait_evidence_elaboration_score,\n                                   :trait_evidence_elaboration_score_status, :trait_organization_purpose_score,\n                                   :trait_organization_purpose_score_status, :trait_conventions_score,\n                                   :trait_conventions_score_status, :migrate_id)",
+            "warehouseRead": "SELECT\n  wei.id,\n  wei.exam_id,\n  wei.item_id,\n  round(wei.score) AS score,\n  wei.score_status,\n  wei.position,\n  CASE WHEN we.type_id = 3 THEN NULL ELSE wei.response END AS response,\n  round(wei.trait_evidence_elaboration_score) AS trait_evidence_elaboration_score,\n  wei.trait_evidence_elaboration_score_status,\n  round(wei.trait_organization_purpose_score) AS trait_organization_purpose_score,\n  wei.trait_organization_purpose_score_status,\n  round(wei.trait_conventions_score) AS trait_conventions_score,\n  wei.trait_conventions_score_status\nFROM exam_item wei\n  JOIN exam we ON wei.exam_id = we.id\nWHERE we.updated > :first_at AND we.updated <= :last_at AND we.updated <> we.created\n AND we.deleted = 0"
+          }
+        },
+        "school_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_school (id, natural_id, name, external_id, update_import_id, deleted, district_id, district_group_id, school_group_id, updated, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :update_import_id, :deleted, :district_id, :district_group_id, :school_group_id, :updated, :migrate_id)",
+            "warehouseRead": "SELECT ws.id, ws.natural_id, ws.name, ws.external_id, ws.update_import_id, ws.deleted, ws.district_id, ws.district_group_id, ws.school_group_id, ws.updated\n  FROM school ws\n  WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "student_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_student (id, ssid, last_or_surname, first_name, middle_name, alias_name, gender_id, first_entry_into_us_school_at,\n                 lep_entry_at, lep_exit_at, birthday, inferred_school_id, update_import_id, deleted, updated, migrate_id) VALUES\n  (:id, :ssid, :last_or_surname, :first_name, :middle_name, :alias_name, :gender_id, :first_entry_into_us_school_at,\n                :lep_entry_at, :lep_exit_at, :birthday, :inferred_school_id, :update_import_id, :deleted, :updated, :migrate_id)",
+            "warehouseRead": "SELECT\n  ws.id,\n  ws.ssid,\n  ws.last_or_surname,\n  ws.first_name,\n  ws.middle_name,\n  ws.alias_name,\n  ws.gender_id,\n  ws.first_entry_into_us_school_at,\n  ws.lep_entry_at,\n  ws.lep_exit_at,\n  ws.birthday,\n  ws.inferred_school_id,\n  ws.update_import_id,\n  ws.deleted,\n  ws.updated\nFROM student ws WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "subject_asmt_type_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_subject_asmt_type (asmt_type_id, subject_id, target_report, printed_report) VALUES\n  ( :asmt_type_id, :subject_id, :target_report, :printed_report)",
+            "warehouseRead": "SELECT wsat.asmt_type_id, wsat.subject_id, wsat.target_report, wsat.printed_report FROM subject_asmt_type wsat\n  JOIN subject ws ON ws.id = wsat.subject_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "target_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_target (id, natural_id, claim_id) VALUES\n  (:id, :natural_id, :claim_id)",
+            "warehouseRead": "SELECT wt.id, wt.natural_id, wt.claim_id\n  FROM target wt\n  JOIN claim wc ON wc.id = wt.claim_id\n  JOIN subject ws ON ws.id = wc.subject_id\n WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "claim_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_claim (id, subject_id, code) VALUES\n  (:id, :subject_id, :code)",
+            "warehouseRead": "SELECT wc.id, wc.subject_id, wc.code\n  FROM claim wc\n  JOIN subject ws ON ws.id = wc.subject_id\nWHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created"
+          }
+        },
+        "district_embargo": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_district_embargo (district_id, individual, aggregate, migrate_id) VALUES (:district_id, :individual, :aggregate, :migrate_id)",
+            "warehouseRead": "SELECT d.id as district_id, IF(se.individual = 0 OR de.individual = 0 OR (se.individual IS NULL and de.individual IS NULL), 0, 1) AS individual, IF(se.aggregate = 0 OR de.aggregate = 0, 0, 1) AS aggregate FROM district d LEFT JOIN district_embargo de ON de.district_id = d.id AND de.school_year = 2019 LEFT JOIN state_embargo se ON se.school_year = 2019"
+          }
+        },
+        "school": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_school (id, natural_id, name, external_id, update_import_id, deleted, district_id, district_group_id, school_group_id, updated, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :update_import_id, :deleted, :district_id, :district_group_id, :school_group_id, :updated, :migrate_id)",
+            "warehouseRead": "SELECT ws.id, ws.natural_id, ws.name, ws.external_id, ws.update_import_id, ws.deleted, ws.district_id, ws.district_group_id, ws.school_group_id, ws.updated\n  FROM school ws\n  WHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "district": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_district (id, natural_id, name, external_id, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :migrate_id)",
+            "warehouseRead": "SELECT wd.id, wd.natural_id, wd.name, wd.external_id\n  FROM district wd\n  WHERE EXISTS(\n    SELECT ws.id FROM school ws\n      WHERE ws.created > :first_at AND ws.created <= :last_at\n          AND ws.deleted = 0\n          AND ws.district_id = wd.id\n  )"
+          }
+        },
+        "subject_translation": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_subject_translation (subject_id, label_code, label) VALUES\n  ( :subject_id, :label_code, :label)",
+            "warehouseRead": "SELECT\n  wst.subject_id,\n  wst.label_code,\n  wst.label\nFROM subject_translation wst\n  JOIN subject ws ON ws.id = wst.subject_id\nWHERE ws.created > :first_at AND ws.created <= :last_at"
+          }
+        },
+        "asmt_score": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_asmt_score (asmt_id, subject_score_id, cut_point_1, cut_point_2, cut_point_3, cut_point_4, cut_point_5, min_score, max_score, migrate_id) VALUES\n  (:asmt_id, :subject_score_id, :cut_point_1, :cut_point_2, :cut_point_3, :cut_point_4, :cut_point_5, :min_score, :max_score, :migrate_id)",
+            "warehouseRead": "SELECT\n  was.asmt_id,\n  was.subject_score_id,\n  round(was.cut_point_1) AS cut_point_1,\n  round(was.cut_point_2) AS cut_point_2,\n  round(was.cut_point_3) AS cut_point_3,\n  round(was.cut_point_4) AS cut_point_4,\n  round(was.cut_point_5) AS cut_point_5,\n  round(was.min_score) AS min_score,\n  round(was.max_score) AS max_score\nFROM asmt_score  was\n  JOIN asmt wa ON wa.id = was.asmt_id\nWHERE wa.created > :first_at AND wa.created <= :last_at\n  AND wa.deleted = 0"
+          }
+        },
+        "district_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_district (id, natural_id, name, external_id, migrate_id) VALUES\n  (:id, :natural_id, :name, :external_id, :migrate_id)",
+            "warehouseRead": "SELECT wd.id, wd.natural_id, wd.name, wd.external_id\n  FROM district wd\n  WHERE EXISTS(\n    SELECT ws.id FROM school ws\n      WHERE ws.updated > :first_at AND ws.updated <= :last_at AND ws.updated <> ws.created\n          AND ws.deleted = 0\n          AND ws.district_id = wd.id\n        )"
+          }
+        },
+        "percentile_by_update_import_id": {
+          "sql": {
+            "stagingInsert": "INSERT IGNORE INTO staging_percentile (id, asmt_id, start_date, end_date, count, mean, standard_deviation, min_score, max_score, deleted, update_import_id, updated, migrate_id) VALUES\n  (:id, :asmt_id, :start_date, :end_date, :count, :mean, :standard_deviation, :min_score, :max_score, :deleted, :update_import_id, :updated, :migrate_id)",
+            "warehouseRead": "SELECT wp.id, wp.asmt_id, wp.start_date, wp.end_date, wp.count, wp.mean, wp.standard_deviation, wp.min_score, wp.max_score, wp.deleted, wp.update_import_id, wp.updated\n  FROM percentile wp\n  WHERE wp.updated > :first_at AND wp.updated <= :last_at AND wp.updated <> wp.created"
+          }
+        },
+        "gender": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_gender (id, code) VALUES\n  (:id, :code)",
+            "warehouseRead": "SELECT wg.id, wg.code from gender wg"
+          }
+        },
+        "student_group_membership": {
+          "sql": {
+            "stagingInsert": "INSERT INTO staging_student_group_membership (student_group_id, student_id) VALUES\n  (:student_group_id, :student_id)",
+            "warehouseRead": "SELECT\n  wsgm.student_group_id,\n  wsgm.student_id\nFROM student_group_membership wsgm\n  JOIN student_group wsg ON wsg.id = wsgm.student_group_id\n  JOIN student ws ON ws.id = wsgm.student_id\n  JOIN import i ON i.id = wsg.update_import_id\nWHERE i.updated > :first_at AND i.updated <= :last_at\n  AND ws.created <= :last_at AND ws.deleted = 0\n  AND wsg.deleted = 0 AND wsg.active != 0"
+          }
+        }
+      }
+    }
+  },
+  "spring.jackson-org.springframework.boot.autoconfigure.jackson.JacksonProperties": {
+    "prefix": "spring.jackson",
+    "properties": {
+      "serialization": {
+        "WRITE_DATES_AS_TIMESTAMPS": false
+      },
+      "propertyNamingStrategy": null,
+      "defaultPropertyInclusion": "NON_NULL",
+      "parser": {},
+      "dateFormat": null,
+      "deserialization": {},
+      "generator": {},
+      "timeZone": null,
+      "mapper": {},
+      "locale": null,
+      "jodaDateTimeFormat": null
+    }
+  },
+  "heapdumpMvcEndpoint": {
+    "prefix": "endpoints.heapdump",
+    "properties": {
+      "path": "/heapdump",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "endpoints.cors-org.springframework.boot.actuate.autoconfigure.EndpointCorsProperties": {
+    "prefix": "endpoints.cors",
+    "properties": {
+      "allowedOrigins": [],
+      "maxAge": 1800,
+      "exposedHeaders": [],
+      "allowedHeaders": [],
+      "allowedMethods": [],
+      "allowCredentials": null
+    }
+  },
+  "environmentMvcEndpoint": {
+    "prefix": "endpoints.env",
+    "properties": {
+      "path": "/env"
+    }
+  },
+  "spring.http.multipart-org.springframework.boot.autoconfigure.web.MultipartProperties": {
+    "prefix": "spring.http.multipart",
+    "properties": {
+      "maxRequestSize": "10MB",
+      "fileSizeThreshold": "0",
+      "location": null,
+      "maxFileSize": "1MB",
+      "enabled": true,
+      "resolveLazily": false
+    }
+  },
+  "resumeEndpoint": {
+    "prefix": "endpoints.resume",
+    "properties": {
+      "id": "resume",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.info-org.springframework.boot.autoconfigure.info.ProjectInfoProperties": {
+    "prefix": "spring.info",
+    "properties": {
+      "build": {
+        "location": {}
+      },
+      "git": {
+        "location": {}
+      }
+    }
+  },
+  "spring.datasource-org.springframework.boot.autoconfigure.jdbc.DataSourceProperties": {
+    "prefix": "spring.datasource",
+    "properties": {
+      "schema": null,
+      "dataPassword": null,
+      "data": null,
+      "dataUsername": null,
+      "generateUniqueName": false,
+      "xa": {
+        "dataSourceClassName": null,
+        "properties": {}
+      },
+      "type": null,
+      "separator": ";",
+      "url": null,
+      "platform": "all",
+      "continueOnError": false,
+      "jndiName": null,
+      "sqlScriptEncoding": null,
+      "password": null,
+      "schemaPassword": null,
+      "name": "testdb",
+      "driverClassName": null,
+      "initialize": true,
+      "schemaUsername": null,
+      "username": null
+    }
+  },
+  "traceEndpoint": {
+    "prefix": "endpoints.trace",
+    "properties": {
+      "id": "trace",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "metricsMvcEndpoint": {
+    "prefix": "endpoints.metrics",
+    "properties": {
+      "path": "/metrics"
+    }
+  },
+  "infoEndpoint": {
+    "prefix": "endpoints.info",
+    "properties": {
+      "id": "info",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "auditEventMvcEndpoint": {
+    "prefix": "endpoints.auditevents",
+    "properties": {
+      "path": "/auditevents",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "management.trace-org.springframework.boot.actuate.trace.TraceProperties": {
+    "prefix": "management.trace",
+    "properties": {
+      "include": [
+        "COOKIES",
+        "RESPONSE_HEADERS",
+        "REQUEST_HEADERS",
+        "ERRORS",
+        "TIME_TAKEN"
+      ]
+    }
+  },
+  "spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties": {
+    "prefix": "spring.resources",
+    "properties": {
+      "cachePeriod": null,
+      "addMappings": true,
+      "chain": {
+        "cache": true,
+        "htmlApplicationCache": false,
+        "gzipped": false,
+        "strategy": {
+          "fixed": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ],
+            "version": null
+          },
+          "content": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ]
+          }
+        }
+      },
+      "staticLocations": [
+        "/",
+        "classpath:/META-INF/resources/",
+        "classpath:/resources/",
+        "classpath:/static/",
+        "classpath:/public/"
+      ]
+    }
+  },
+  "management.health.status-org.springframework.boot.actuate.autoconfigure.HealthIndicatorProperties": {
+    "prefix": "management.health.status",
+    "properties": {
+      "order": null
+    }
+  },
+  "healthEndpoint": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "timeToLive": 1000,
+      "id": "health",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "scopedTarget.tenantProperties": {
+    "prefix": "tenantProperties",
+    "properties": {
+      "tenants": {
+        "CA_S001": {
+          "id": "CA_S001",
+          "key": "******",
+          "name": "California Sandbox 001",
+          "description": null,
+          "sandbox": true,
+          "sandboxDataset": "demo-dataset",
+          "created": {}
+        },
+        "CA_S002": {
+          "id": "CA_S002",
+          "key": "******",
+          "name": "California Sandbox 002",
+          "description": null,
+          "sandbox": true,
+          "sandboxDataset": "sbac-dataset",
+          "created": {}
+        },
+        "CA": {
+          "id": "CA",
+          "key": "******",
+          "name": "California",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        },
+        "TS": {
+          "id": "TS",
+          "key": "******",
+          "name": "Test State Tenant",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        }
+      },
+      "status": {
+        "tenantKeys": [
+          "CA_S001",
+          "CA_S002",
+          "CA",
+          "TS"
+        ]
+      }
+    }
+  },
+  "configClientProperties": {
+    "prefix": "spring.cloud.config",
+    "properties": {
+      "headers": {},
+      "profile": "awsqa",
+      "label": "develop,master",
+      "uri": "http://configuration-service",
+      "enabled": true,
+      "failFast": true,
+      "token": null,
+      "authorization": null,
+      "password": null,
+      "discovery": {
+        "enabled": false,
+        "serviceId": "configserver"
+      },
+      "name": "rdw-ingest-migrate-reporting",
+      "username": "user"
+    }
+  },
+  "endpoints.metrics.filter-org.springframework.boot.actuate.autoconfigure.MetricFilterProperties": {
+    "prefix": "endpoints.metrics.filter",
+    "properties": {
+      "counterSubmissions": [
+        "MERGED"
+      ],
+      "gaugeSubmissions": [
+        "MERGED"
+      ]
+    }
+  },
+  "dumpEndpoint": {
+    "prefix": "endpoints.dump",
+    "properties": {
+      "id": "dump",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "autoConfigurationReportEndpoint": {
+    "prefix": "endpoints.autoconfig",
+    "properties": {
+      "id": "autoconfig",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "pauseEndpoint": {
+    "prefix": "endpoints.pause",
+    "properties": {
+      "id": "pause",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.reportingDataSourceElementsProperties": {
+    "prefix": "datasources.reporting_rw",
+    "properties": {
+      "schemaSearchPath": null,
+      "urlParts": {
+        "protocol": "jdbc:mysql:",
+        "hosts": "rdw-aurora-qa-cluster.cluster-cugsexobhx8t.us-west-2.rds.amazonaws.com:3306",
+        "database": "reporting",
+        "properties": "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=130000"
+      },
+      "tenants": {
+        "CA_S001": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "reporting_ca_s001",
+            "properties": null
+          },
+          "username": "cas001",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "CA_S002": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "reporting_ca_s002",
+            "properties": null
+          },
+          "username": "cas002",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "CA": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "reporting",
+            "properties": null
+          },
+          "username": "sbac",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "TS": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "ts_reporting",
+            "properties": null
+          },
+          "username": "sbac",
+          "password": "******",
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        }
+      },
+      "minIdle": 4,
+      "validationQuery": "SELECT 1",
+      "initialSize": 4,
+      "url": "jdbc:mysql://rdw-aurora-qa-cluster.cluster-cugsexobhx8t.us-west-2.rds.amazonaws.com:3306/warehouse?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=130000",
+      "logAbandoned": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 10,
+      "removeAbandoned": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "removeAbandonedTimeout": 60,
+      "username": "root",
+      "validationInterval": 10000,
+      "maxActive": 10
+    }
+  },
+  "managementServerProperties": {
+    "prefix": "management",
+    "properties": {
+      "security": {
+        "enabled": false,
+        "roles": [
+          "ACTUATOR"
+        ],
+        "sessions": "STATELESS"
+      },
+      "address": null,
+      "port": null,
+      "addApplicationContextHeader": true,
+      "contextPath": "",
+      "ssl": null
+    }
+  },
+  "endpoints.health-org.springframework.boot.actuate.autoconfigure.HealthMvcEndpointProperties": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "mapping": {}
+    }
+  },
+  "simpleDiscoveryProperties": {
+    "prefix": "spring.cloud.discovery.client.simple",
+    "properties": {
+      "instances": {},
+      "local": {
+        "uri": "http://migrate-reporting-deployment-f85c74f5d-fqp4f:0",
+        "metadata": {},
+        "serviceId": "rdw-ingest-migrate-reporting"
+      }
+    }
+  },
+  "spring.mvc-org.springframework.boot.autoconfigure.web.WebMvcProperties": {
+    "prefix": "spring.mvc",
+    "properties": {
+      "dateFormat": null,
+      "servlet": {
+        "loadOnStartup": -1
+      },
+      "staticPathPattern": "/**",
+      "dispatchOptionsRequest": true,
+      "dispatchTraceRequest": false,
+      "locale": null,
+      "ignoreDefaultModelOnRedirect": true,
+      "logResolvedException": false,
+      "async": {
+        "requestTimeout": null
+      },
+      "messageCodesResolverFormat": null,
+      "mediaTypes": {},
+      "view": {
+        "prefix": null,
+        "suffix": null
+      },
+      "localeResolver": "ACCEPT_HEADER",
+      "throwExceptionIfNoHandlerFound": false
+    }
+  },
+  "diskSpaceHealthIndicatorProperties": {
+    "prefix": "management.health.diskspace",
+    "properties": {
+      "path": "/.",
+      "threshold": 10485760
+    }
+  }
+}

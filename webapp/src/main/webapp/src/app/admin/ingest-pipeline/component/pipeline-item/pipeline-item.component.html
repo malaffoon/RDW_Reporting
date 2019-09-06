@@ -1,0 +1,32 @@
+<a
+  #element
+  href="javascript:void(0)"
+  class="item"
+  [ngClass]="{
+    active: _active
+  }"
+  (click)="itemClick.emit($event)"
+>
+  <div class="item-icon">
+    <ng-content select="[icon]"></ng-content>
+  </div>
+
+  <div class="item-heading">
+    <div class="item-name">
+      {{ name }}
+      <ng-content select="[name]"></ng-content>
+    </div>
+    <div class="item-controls">
+      <ng-content select="[controls]"></ng-content>
+    </div>
+  </div>
+  <p *ngIf="description" class="item-description">
+    <span innerHtml="{{ description }}"></span>
+    <ng-content select="[description]"></ng-content>
+  </p>
+  <div class="item-caption">
+    <ng-content select="[caption]"></ng-content>
+  </div>
+
+  <ng-content></ng-content>
+</a>

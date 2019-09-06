@@ -1,0 +1,11 @@
+logging:
+  level:
+    org.opentestsystem.rdw.admin: debug
+
+# Only here for local Dev for Sandbox creation, not real dataSets
+sandbox-properties:
+  sandboxDatasets:
+    - label: Demo Dataset
+      id: demo-dataset
+    - label: SBAC Dataset
+      id: sbac-dataset

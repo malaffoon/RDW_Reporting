@@ -1,0 +1,47 @@
+<ng-container *ngIf="pipeline == null; else loaded">
+  <spinner></spinner>
+</ng-container>
+<ng-template #loaded>
+  <ng-container *ngIf="testRuns; else noTestResults">
+    <!-- Test results -->
+    <pipeline-test-results
+      [pipeline]="pipeline"
+      [testRuns]="testRuns"
+      (closeButtonClick)="onCloseTestResultsButtonClick()"
+    ></pipeline-test-results>
+  </ng-container>
+  <ng-template #noTestResults>
+    <pipeline-editor
+      [readonly]="readonly"
+      [pipeline]="pipeline"
+      [messages]="messages | async"
+      [compilationState]="compilationState"
+      [compilationErrors]="compilationErrors | async"
+      [saving]="saving"
+      [saveButtonDisabledTooltip]="saveButtonDisabledTooltipCode | translate"
+      [testState]="testState"
+      [testButtonDisabled]="testButtonDisabled"
+      [testButtonDisabledTooltip]="testButtonDisabledTooltipCode | translate"
+      [hasPublishedScript]="hasPublishedPipelines"
+      [publishState]="publishState || (published ? 'Published' : null)"
+      [publishButtonDisabled]="publishButtonDisabled"
+      [publishButtonDisabledTooltip]="
+        publishButtonDisabledTooltipCode | translate
+      "
+      (scriptChange)="onScriptChange($event)"
+      (scriptUpdate)="onScriptUpdate($event)"
+      (scriptTest)="onScriptTest($event)"
+      (scriptPublish)="onScriptPublish($event)"
+      [testUpdating]="testUpdating"
+      (testChange)="onTestChange($event)"
+      (testRun)="onTestRun($event)"
+      (testUpdate)="onTestUpdate($event)"
+      (testCreate)="onTestCreate()"
+      (testDelete)="onTestDelete($event)"
+      [items]="items"
+      [selectedItem]="selectedItem"
+      [selectedItemLoading]="selectedItemLoading"
+      (itemSelected)="onItemSelected($event)"
+    ></pipeline-editor>
+  </ng-template>
+</ng-template>

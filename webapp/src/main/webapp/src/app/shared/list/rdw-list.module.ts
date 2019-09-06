@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { ListGroupComponent } from './list-group.component';
 import { EditableListGroupComponent } from './editable-list-group.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { ActionableListGroupComponent } from './actionable-list-group.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -10,15 +10,11 @@ import { ActionableListGroupComponent } from './actionable-list-group.component'
     EditableListGroupComponent,
     ListGroupComponent
   ],
-  imports: [
-    BrowserModule
-  ],
+  imports: [CommonModule],
   exports: [
     ActionableListGroupComponent,
     EditableListGroupComponent,
     ListGroupComponent
   ]
 })
-export class RdwListModule {
-
-}
+export class RdwListModule {}

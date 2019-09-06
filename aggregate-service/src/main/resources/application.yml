@@ -4,52 +4,64 @@ management:
   port: 8008
   security:
     enabled: false
+  # disable health check for tenant-specific features
+  health:
+    db:
+      enabled: false
+
+# configure actuator endpoints to unmask "key" properties so tenant keys won't be masked. However, we still
+# mask secret keys (i.e. props ending with secretKey, secret-key, or secret_key in lower, upper, or mixed case)
+endpoints:
+  env:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,secret[-_]?key
+  configprops:
+    keys-to-sanitize: password,secret,token,.*credentials.*,vcap_services,secret[-_]?key
 
 app:
   aggregate-reports:
-    assessment-types: ica,sum,iab
-    statewide-user-assessment-types: sum
-    state-aggregate-assessment-types: sum
     custom-aggregate-report-repository:
       organization-partition-size: 10
       jdbc-fetch-size: -1
     query-pool-size: 6
     api-enabled: false
 
-  archive:
-      root: file:///tmp/
-
   cache:
     repository:
       # every day at 2:00 am (GMT)
       refresh-cron: "0 0 2 * * *"
 
-cloud:
-  aws:
-    # there must be a default region when running locally
-    region:
-      auto: false
-      static: us-west-2
-    # disable CloudFormation stuff
-    stack:
-      auto: false
-    credentials:
-      instance-profile: false
+#Per tenant configuration options
+aggregate-reporting:
+  assessment-types: ica,sum,iab
+  statewide-user-assessment-types: sum
+  state-aggregate-assessment-types: sum
+
+archive:
+  uri-root: "file:///tmp/"
+  #path-prefix:
+  #s3-access-key:
+  #s3-secret-key:
+  s3-region-static: us-west-2
+  #s3-sse:
 
 jwt:
   secret: ${rdw.reporting.jwt.secret:secret}
 
 reporting:
-  # english-learners should be lep or elas
-  english-learners:
-    - elas
-  school-year: 2018
-  state:
-    code: CA
-    name: California
   target-report:
     insufficient-data-cutoff: 0.2
     min-number-of-students: 0
+  student-fields:
+    EconomicDisadvantage: Enabled
+    EnglishLanguageAcquisitionStatus: Disabled
+    Ethnicity: Enabled
+    Gender: Enabled
+    IndividualEducationPlan: Enabled
+    LimitedEnglishProficiency: Enabled
+    MigrantStatus: Enabled
+    MilitaryStudentIdentifier: Enabled
+    PrimaryLanguage: Enabled
+    Section504: Enabled
 
 server:
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
@@ -61,7 +73,7 @@ server:
 spring:
   cache:
     type: SIMPLE
-    cache-names: reportOptions, administrationConditions, assessments, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, claims, targets, ethnicities, genders, elases, languages, schoolYears, subjects, activeAssessments, embargo
+    cache-names: reportOptions, administrationConditions, assessments, assessmentGrades, assessmentTypes, booleans, strictBooleans, organizations, completenessCodes, claims, targets, ethnicities, genders, elases, languages, militaryConnectedCodes, schoolYears, subjects, activeAssessments, embargo
 
   cloud:
     stream:
@@ -78,21 +90,28 @@ spring:
           producer:
             requiredGroups: default
 
+        ConfigpropsUpdateOutput:
+          destination: ConfigpropsUpdateExchange
+
   jackson:
     default-property-inclusion: non_null
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
 
-  olap_datasource:
-    url: "\
-      jdbc:redshift://${spring.olap_datasource.url-server:localhost:5432}/${spring.olap_datasource.url-db:dev}\
-      ?ApplicationName=rdw-reporting-aggregate-service\
-      &loginTimeout=${spring.olap_datasource.connect-timeout:10}\
-      &socketTimeout=${spring.olap_datasource.socket-timeout:0}\
-      "
+datasources:
+  olap_ro:
+    url-parts:
+      protocol: "jdbc:redshift:"
+      hosts: "${datasources.olap_ro.url-server:localhost:5432}"
+      database: "${datasources.olap_ro.url-db:dev}"
+      properties: "ApplicationName=rdw-reporting-aggregate-service\
+                   &loginTimeout=${datasources.olap_ro.connect-timeout:10}\
+                   &socketTimeout=${datasources.olap_ro.socket-timeout:0}\
+                   "
+    url: "${datasources.olap_ro.url-parts.protocol}//${datasources.olap_ro.url-parts.hosts}/${datasources.olap_ro.url-parts.database}?${datasources.olap_ro.url-parts.properties}"
     username: root
     password:
     testWhileIdle: true
     validationQuery: SELECT 1
-    validationQueryTimeout: 30000
+    validationInterval: 35000
     driverClassName: com.amazon.redshift.jdbc42.Driver

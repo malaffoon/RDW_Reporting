@@ -1,0 +1,44 @@
+<ng-container *ngIf="(initialized$ | async); else loading">
+  <app-tenant-form
+    class="sandbox-config"
+    [value]="tenant$ | async"
+    [mode]="mode$ | async"
+    [tenants]="tenants$ | async"
+    [dataSets]="dataSets$ | async"
+    [configurationDefaults]="configurationDefaults$ | async"
+    [localizationDefaults]="localizationDefaults$ | async"
+    [tenantKeyAvailable]="tenantKeyAvailable"
+    [tenantIdAvailable]="tenantIdAvailable"
+    [writable]="writable$ | async"
+    [states]="states$ | async"
+    [configurationOpen]="(type$ | async) === 'TENANT'"
+    [requiredConfiguration]="
+      (type$ | async) === 'TENANT' && (mode$ | async) === 'create'
+    "
+    [state]="state$ | async"
+    (create)="onCreate($event)"
+    (update)="onUpdate($event)"
+    (delete)="onDelete($event)"
+  ></app-tenant-form>
+</ng-container>
+<ng-template #loading>
+  <ng-container
+    *ngIf="(initializationError$ | async) as error; else showSpinner"
+  >
+    <p class="alert alert-danger">
+      {{
+        'tenant.initialization-error.' +
+          (mode$ | async) +
+          '.' +
+          (type$ | async)
+          | translate
+            : {
+                tenantKey: (route.params | async).id
+              }
+      }}
+    </p>
+  </ng-container>
+  <ng-template #showSpinner>
+    <spinner></spinner>
+  </ng-template>
+</ng-template>

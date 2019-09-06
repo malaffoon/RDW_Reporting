@@ -1,11 +1,59 @@
 ## Change Log
 
-#### 1.3.1 - 2019-04-05
+#### 2.0.0 - 2019-08-27
+
+NOTE: this release was originally 1.4.0 but was re-labelled just before release. So there are artifacts labelled 1.4.0-RC# which are precursors to the 2.0.0-RELEASE.
+
+* Make all application multi-tenant aware. Please refer to detailed upgrade instructions for more details
+    * Changes the configuration properties ... a lot.
+* Add tenant administration UI.    
+* Ingest pipeline administration.
+* Remove stale report cleanup task.
+* Many changes to configuration locations in en.json:
+    * aggregate-report-form.field.* -> common.student-field.*
+    * common.filters.student.* -> common.student-field.*
+    * common.aggregate-report-type.*
+    * report-download.orders.*
+    * reports.report-type.*
+* Hundreds of minor functionality changes and bug fixes. Most are not listed but here are some:             
+    * Handle multiple tenancy chains in a single string
+    * Configurable logout URL
+    * Add option to disable tenant/sandbox admin UI
+    * Improve exam-target-score query (RP-721)
+    * Handle null vs. 0 std-err (RP-633) (RDW-105)
+    * Modify ISR to deal with null standard error (RP-596) (RDW-98)
+    * Fix group delete in non-sandbox (RP-603) (RDW-102)
+    * Disable group delete in sandbox
+    * Fix non-sandbox user session interfering with sandbox role repository (RP-609) (SBAC-875)
+    * Fix IAB aggregate report bug (RDW-101)
+    * Add lazy loading for less commonly used UI pages/components
+    * Fix target report issue when exams are missing scores (RP-586) (RDW-96)
+    * Accessibility changes (RP-479 and others)
+    * Make status column consistent (RP-570)
+    * Fix duplicate subgroup display (RP-561)
+    * Fix race condition in aggregate report loading
+    * Improve IAB card ordering (RP-435)
+    * Fix grouping for subject assessments with no standard cutoff
+    * Add verbiage for longitudinal school year info pop-up (RP-554)
+    * Fix left nav behavior on aggregate reporting page
+    * Fix subgroups in target report (RP-536)
+    * Fix sandbox user session refresh behavior (RP-547)
+
+#### 1.4.0-UAT 2019-04-12
+
+This is a special pre-release build for Smarter Balanced ELPAC UAT.
+
+* Add saved queries
+* Add toggle for empty aggregate report rows
+* Add ability to hide student filters for teachers or for all users
+    * The reporting.english-learners configuration is now replaced by reporting.student-filters
+    
+#### 1.3.1 - 2019-03-28
 
 * Extract both answer key parts for EBSR items (reporting-service).
 * Increase timeout for district export from 2m to 10m (report-processor).
 
-#### 1.3.0
+#### 1.3.0 - 2019-02-05
 
 * Fix issue with claim levels in the ISR (PDF report).
 * Change aggregate report table to scroll instead of paging.

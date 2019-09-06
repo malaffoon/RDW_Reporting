@@ -47,8 +47,7 @@
                           th:text="${report.exam.scaleScore.value}"></span>
                     <span class="level">
                         <strong th:text="#{'subject.' + ${report.subject} + '.asmt-type.sum.level.' + ${report.exam.scaleScore.level} + '.name'}"></strong>
-                        <span th:text="#{('report.sum.score-range')(${support.round(report.exam.scaleScore.value - report.exam.scaleScore.standardError)}, ${support.round(report.exam.scaleScore.value + report.exam.scaleScore.standardError)})}"
-                              th:remove="tag"></span>
+                        <span th:if="${report.exam.scaleScore.standardError != null}" th:text="#{('report.sum.score-range')(${support.round(report.exam.scaleScore.value - report.exam.scaleScore.standardError)}, ${support.round(report.exam.scaleScore.value + report.exam.scaleScore.standardError)})}" th:remove="tag"></span>
                     </span>
                     <p class="description mt-sm"
                        th:text="#{('subject.' + ${report.subject} + '.report-grade.' + ${report.assessment.gradeCode} + '.asmt-type.sum.overall.level.' + ${report.exam.scaleScore.level})(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></p>
@@ -60,9 +59,8 @@
                             <span class="num label"
                                   th:classappend="#{'subject.' + ${report.subject} + '.asmt-type.sum.level.' + ${report.exam.scaleScore.level} + '.color'}">
                                 <span th:text="${report.exam.scaleScore.value}" th:remove="tag"></span>
-                                <span class="error">±
-                                    <span th:text="${support.round(report.exam.scaleScore.standardError)}"
-                                          th:remove="tag"></span>*
+                                <span th:if="${report.exam.scaleScore.standardError != null}" class="error">±
+                                    <span th:text="${support.round(report.exam.scaleScore.standardError)}" th:remove="tag"></span>*
                                 </span>
                             </span>
                         </span>
@@ -115,7 +113,12 @@
 
                     <div class="writing-traits" th:if="${writingClaim}"
                          th:with="scored=true,assessment=${report.assessment},exam=${report.exam}">
-                        <span class="title" th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></span>
+                        <span class="title"
+                              th:if="${exam.performanceWritingType != null}"
+                              th:text="#{('report.writing.trait.purpose')(${exam.performanceWritingType})}"></span>
+                        <span class="title"
+                              th:if="${exam.performanceWritingType == null}"
+                              th:text="#{'report.writing.trait.purpose-not-specified'}"></span>
                         <div class="description" th:text="#{('report.writing.description')(${report.student.firstName != null ? report.student.firstName : report.student.ssid})}"></div>
                         <div class="trait">
                             <span class="title" th:text="#{'report.writing.trait.Evidence'}"></span>
@@ -181,7 +184,7 @@
                     
                 </div>
                 <div class="col-xs-4">
-                    <p>
+                    <p th:if="${report.exam.scaleScore.standardError != null}">
                         <strong>*</strong>
                         <strong th:text="#{report.scale-score.error-band}"></strong>
                         <br>

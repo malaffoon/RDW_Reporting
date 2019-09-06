@@ -1,0 +1,58 @@
+<div class="btn-group btn-block" [ngClass]="{ open: open }">
+  <button
+    type="button"
+    (click)="open = !open"
+    class="btn btn-info btn-xs btn-block text-left dropdown-toggle label-max-width"
+    [attr.title]="_label"
+    [ngClass]="{ 'icon-only': !_hasLabel }"
+    aria-haspopup="true"
+    aria-expanded="false"
+  >
+    <span class="sr-only">{{ 'popup-menu' | translate }}</span>
+    <i class="fa fa-ellipsis-v" [ngClass]="{ 'mr-xs': _hasLabel }"></i>
+    {{ _label }}
+  </button>
+  <ul *ngIf="open" class="dropdown-menu" role="menu">
+    <li *ngFor="let option of _options" role="menuitem">
+      <ng-container
+        *ngTemplateOutlet="menuOptionTemplate; context: { option: option }"
+      ></ng-container>
+    </li>
+  </ul>
+</div>
+<ng-template #menuOptionTemplate let-option="option">
+  <a
+    class="dropdown-item"
+    popover="{{ option.tooltip }}"
+    triggers="{{ option.tooltip === '' ? '' : 'mouseenter:mouseleave' }}"
+    placement="right"
+    container="body"
+    [attr.title]="option.label"
+    [ngClass]="{
+      disabled: option.disabled,
+      'dropdown-submenu': option.options != null
+    }"
+    href="javascript:void(0)"
+    (click)="option.disabled || onMenuOptionClick(option, $event)"
+  >
+    <i
+      *ngIf="childOptionsLoading(option)"
+      class="fa fa-spinner fa-pulse fa-fw"
+    ></i>
+    {{ option.label }}
+    <ul *ngIf="option.options != null" class="dropdown-menu">
+      <li
+        *ngFor="let childOption of getOrLoadChildOptions(option)"
+        role="menuitem"
+        [ngClass]="{ 'dropdown-submenu': childOption.options != null }"
+      >
+        <ng-container
+          *ngTemplateOutlet="
+            menuOptionTemplate;
+            context: { option: childOption }
+          "
+        ></ng-container>
+      </li>
+    </ul>
+  </a>
+</ng-template>

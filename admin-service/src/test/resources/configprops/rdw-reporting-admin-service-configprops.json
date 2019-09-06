@@ -1,0 +1,1471 @@
+{
+  "endpoints-org.springframework.boot.actuate.endpoint.EndpointProperties": {
+    "prefix": "endpoints",
+    "properties": {
+      "enabled": true,
+      "sensitive": null
+    }
+  },
+  "parent": {
+    "spring.cloud.config.retry-org.springframework.cloud.config.client.RetryProperties": {
+      "prefix": "spring.cloud.config.retry",
+      "properties": {
+        "maxAttempts": 6,
+        "initialInterval": 2000,
+        "maxInterval": 3000,
+        "multiplier": 1.1
+      }
+    },
+    "configClientProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "headers": {},
+        "profile": "local-docker",
+        "label": "rdw,develop,master",
+        "uri": "http://config-server:8888",
+        "enabled": true,
+        "failFast": true,
+        "token": null,
+        "authorization": null,
+        "password": null,
+        "discovery": {
+          "enabled": false,
+          "serviceId": "configserver"
+        },
+        "name": "rdw-reporting-admin-service",
+        "username": "user"
+      }
+    },
+    "spring.cloud.config-org.springframework.cloud.bootstrap.config.PropertySourceBootstrapProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "overrideSystemProperties": true,
+        "overrideNone": false,
+        "allowOverride": true
+      }
+    },
+    "encrypt-org.springframework.cloud.bootstrap.encrypt.KeyProperties": {
+      "prefix": "encrypt",
+      "properties": {
+        "failOnError": true,
+        "key": null,
+        "keyStore": {
+          "location": null,
+          "password": null,
+          "alias": null,
+          "secret": null
+        }
+      }
+    }
+  },
+  "metricsEndpoint": {
+    "prefix": "endpoints.metrics",
+    "properties": {
+      "id": "metrics",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "management.info-org.springframework.boot.actuate.autoconfigure.InfoContributorProperties": {
+    "prefix": "management.info",
+    "properties": {
+      "git": {
+        "mode": "SIMPLE"
+      }
+    }
+  },
+  "inetUtilsProperties": {
+    "prefix": "spring.cloud.inetutils",
+    "properties": {
+      "ignoredInterfaces": [],
+      "preferredNetworks": [],
+      "defaultIpAddress": "127.0.0.1",
+      "timeoutSeconds": 1,
+      "defaultHostname": "localhost",
+      "useOnlySiteLocalInterfaces": false
+    }
+  },
+  "spring.cache-org.springframework.boot.autoconfigure.cache.CacheProperties": {
+    "prefix": "spring.cache",
+    "properties": {
+      "ehcache": {
+        "config": null
+      },
+      "caffeine": {
+        "spec": null
+      },
+      "infinispan": {
+        "config": null
+      },
+      "cacheNames": [],
+      "couchbase": {
+        "expiration": 0
+      },
+      "hazelcast": {
+        "config": null
+      },
+      "jcache": {
+        "config": null,
+        "provider": null
+      },
+      "type": null,
+      "guava": {
+        "spec": null
+      }
+    }
+  },
+  "featuresEndpoint": {
+    "prefix": "endpoints.features",
+    "properties": {
+      "id": "features",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "spring.cloud.codec.kryo-org.springframework.cloud.stream.config.codec.kryo.KryoCodecProperties": {
+    "prefix": "spring.cloud.codec.kryo",
+    "properties": {}
+  },
+  "scopedTarget.tenantConfigurationLookupProperties": {
+    "prefix": "tenant-configuration-lookup",
+    "properties": {
+      "services": {
+        "admin-service": "http://localhost:8208",
+        "admin-service.url": "http://localhost:8008",
+        "aggregate-service": "http://localhost:8308",
+        "aggregate-service.url": "http://aggregate-service:8008",
+        "report-processor": "http://localhost:8086",
+        "report-processor.url": "http://report-processor-service:8008",
+        "reporting-service": "http://localhost:8108",
+        "reporting-service.url": "http://reporting-service:8008"
+      }
+    }
+  },
+  "environmentEndpoint": {
+    "prefix": "endpoints.env",
+    "properties": {
+      "id": "env",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.rabbitmq-org.springframework.boot.autoconfigure.amqp.RabbitProperties": {
+    "prefix": "spring.rabbitmq",
+    "properties": {
+      "template": {
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "initialInterval": 1000,
+          "multiplier": 1,
+          "maxInterval": 10000
+        },
+        "mandatory": null,
+        "receiveTimeout": null,
+        "replyTimeout": null
+      },
+      "addresses": null,
+      "cache": {
+        "channel": {
+          "size": null,
+          "checkoutTimeout": null
+        },
+        "connection": {
+          "mode": "CHANNEL",
+          "size": null
+        }
+      },
+      "listener": {
+        "simple": {
+          "autoStartup": true,
+          "acknowledgeMode": null,
+          "concurrency": null,
+          "maxConcurrency": null,
+          "prefetch": null,
+          "transactionSize": null,
+          "defaultRequeueRejected": null,
+          "idleEventInterval": null,
+          "retry": {
+            "enabled": false,
+            "maxAttempts": 3,
+            "initialInterval": 1000,
+            "multiplier": 1,
+            "maxInterval": 10000,
+            "stateless": true
+          }
+        },
+        "transactionSize": null,
+        "defaultRequeueRejected": null,
+        "idleEventInterval": null,
+        "concurrency": null,
+        "autoStartup": true,
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "initialInterval": 1000,
+          "multiplier": 1,
+          "maxInterval": 10000,
+          "stateless": true
+        },
+        "acknowledgeMode": null,
+        "maxConcurrency": null,
+        "prefetch": null
+      },
+      "publisherReturns": false,
+      "virtualHost": null,
+      "ssl": {
+        "enabled": false,
+        "keyStore": null,
+        "keyStorePassword": null,
+        "trustStore": null,
+        "trustStorePassword": null,
+        "algorithm": null,
+        "validateServerCertificate": true,
+        "verifyHostname": null
+      },
+      "password": null,
+      "port": 5672,
+      "publisherConfirms": false,
+      "host": "rabbitmq",
+      "requestedHeartbeat": null,
+      "connectionTimeout": null,
+      "username": null
+    }
+  },
+  "tenantConfigurationPersistenceProperties": {
+    "prefix": "tenant-configuration-persistence",
+    "properties": {
+      "gitUsername": "fairwaytech_rdw",
+      "authorEmail": "zaphodb@example.com",
+      "localRepositoryPath": "/tmp/rdw_config",
+      "gitPassword": "******",
+      "author": "Zaphod Beeblebrox",
+      "remoteRepositoryUri": "https://gitlab.com/fairwaytech/rdw_config.git"
+    }
+  },
+  "configClientHealthProperties": {
+    "prefix": "health.config",
+    "properties": {
+      "timeToLive": 300000,
+      "enabled": false
+    }
+  },
+  "spring.cloud.service-registry.auto-registration-org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties": {
+    "prefix": "spring.cloud.service-registry.auto-registration",
+    "properties": {
+      "enabled": true,
+      "registerManagement": true,
+      "failFast": false
+    }
+  },
+  "spring.cloud.stream-org.springframework.cloud.stream.config.BindingServiceProperties": {
+    "prefix": "spring.cloud.stream",
+    "properties": {
+      "bindings": {
+        "output": {
+          "destination": "GROUPS",
+          "group": "default"
+        },
+        "springCloudBusInput": {
+          "destination": "springCloudBus"
+        },
+        "springCloudBusOutput": {
+          "destination": "springCloudBus",
+          "contentType": "application/json"
+        },
+        "tenant-SandboxCreationRequest": {},
+        "tenant-SandboxCreationResponse": {},
+        "tenant-TenantCreationRequest": {},
+        "tenant-TenantCreationResponse": {}
+      }
+    }
+  },
+  "serverProperties": {
+    "prefix": "server",
+    "properties": {
+      "contextParameters": {},
+      "address": null,
+      "maxHttpPostSize": 0,
+      "undertow": {
+        "maxHttpPostSize": -1,
+        "bufferSize": null,
+        "buffersPerRegion": null,
+        "ioThreads": null,
+        "workerThreads": null,
+        "directBuffers": null,
+        "accesslog": {
+          "enabled": null,
+          "pattern": "common",
+          "prefix": "access_log.",
+          "suffix": "log",
+          "dir": "/logs",
+          "rotate": true
+        }
+      },
+      "tomcat": {
+        "accesslog": {
+          "enabled": false,
+          "pattern": "common",
+          "directory": "logs",
+          "prefix": "access_log",
+          "suffix": ".log",
+          "rotate": true,
+          "renameOnRotate": false,
+          "fileDateFormat": ".yyyy-MM-dd",
+          "requestAttributesEnabled": false,
+          "buffered": true
+        },
+        "internalProxies": "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1",
+        "protocolHeader": null,
+        "protocolHeaderHttpsValue": "https",
+        "portHeader": "X-Forwarded-Port",
+        "remoteIpHeader": null,
+        "basedir": null,
+        "backgroundProcessorDelay": 10,
+        "maxThreads": 4,
+        "minSpareThreads": 10,
+        "maxHttpPostSize": 2097152,
+        "redirectContextRoot": true,
+        "uriEncoding": "UTF-8",
+        "maxConnections": 0,
+        "acceptCount": 10,
+        "additionalTldSkipPatterns": []
+      },
+      "displayName": "application",
+      "session": {
+        "timeout": null,
+        "trackingModes": null,
+        "persistent": false,
+        "storeDir": null,
+        "cookie": {
+          "name": null,
+          "domain": null,
+          "path": null,
+          "comment": null,
+          "httpOnly": null,
+          "secure": null,
+          "maxAge": null
+        }
+      },
+      "contextPath": null,
+      "error": {
+        "path": "/error",
+        "includeStacktrace": "NEVER"
+      },
+      "ssl": null,
+      "serverHeader": null,
+      "useForwardHeaders": null,
+      "port": null,
+      "maxHttpHeaderSize": 131072,
+      "servletPath": "/",
+      "jspServlet": null,
+      "jetty": {
+        "maxHttpPostSize": 200000,
+        "acceptors": -1,
+        "selectors": -1
+      },
+      "connectionTimeout": null
+    }
+  },
+  "spring.metrics.export-org.springframework.boot.actuate.metrics.export.MetricExportProperties": {
+    "prefix": "spring.metrics.export",
+    "properties": {
+      "excludes": null,
+      "statsd": {
+        "host": null,
+        "port": 8125,
+        "prefix": null
+      },
+      "includes": null,
+      "triggers": {},
+      "enabled": true,
+      "redis": {
+        "prefix": "spring.metrics.rdw-reporting-admin-service.91490184fb4121437bc524b1e9fd8efe",
+        "key": "******"
+      },
+      "aggregate": {
+        "prefix": "rdw-reporting-admin-service.91490184fb4121437bc524b1e9fd8efe",
+        "keyPattern": "k.d"
+      }
+    }
+  },
+  "spring.integration.poller-org.springframework.cloud.stream.config.DefaultPollerProperties": {
+    "prefix": "spring.integration.poller",
+    "properties": {
+      "fixedDelay": 1000,
+      "maxMessagesPerPoll": 1
+    }
+  },
+  "configurationPropertiesReportEndpoint": {
+    "prefix": "endpoints.configprops",
+    "properties": {
+      "id": "configprops",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.warehouseDataSourceElementsProperties": {
+    "prefix": "datasources.warehouse_rw",
+    "properties": {
+      "schemaSearchPath": null,
+      "urlParts": {
+        "protocol": "jdbc:mysql:",
+        "hosts": "host.docker.internal:3306",
+        "database": "not_a_schema",
+        "properties": "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=70000"
+      },
+      "tenants": {
+        "CA": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "warehouse",
+            "properties": null
+          },
+          "username": null,
+          "password": null,
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "TS": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "ts_warehouse",
+            "properties": null
+          },
+          "username": null,
+          "password": null,
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        }
+      },
+      "minIdle": 4,
+      "validationQuery": "SELECT 1",
+      "initialSize": 4,
+      "url": "jdbc:mysql://host.docker.internal:3306/not_a_schema?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=70000",
+      "logAbandoned": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 10,
+      "removeAbandoned": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "removeAbandonedTimeout": 60,
+      "username": "root",
+      "validationInterval": 10000,
+      "maxActive": 10
+    }
+  },
+  "loggersEndpoint": {
+    "prefix": "endpoints.loggers",
+    "properties": {
+      "id": "loggers",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "endpoints.jmx-org.springframework.boot.actuate.autoconfigure.EndpointMBeanExportProperties": {
+    "prefix": "endpoints.jmx",
+    "properties": {
+      "uniqueNames": false,
+      "staticNames": {},
+      "enabled": true,
+      "domain": ""
+    }
+  },
+  "spring.http.encoding-org.springframework.boot.autoconfigure.web.HttpEncodingProperties": {
+    "prefix": "spring.http.encoding",
+    "properties": {
+      "charset": "UTF-8",
+      "force": false,
+      "mapping": null,
+      "forceRequest": false,
+      "forceResponse": false
+    }
+  },
+  "shutdownEndpoint": {
+    "prefix": "endpoints.shutdown",
+    "properties": {
+      "id": "shutdown",
+      "sensitive": true,
+      "enabled": false
+    }
+  },
+  "beansEndpoint": {
+    "prefix": "endpoints.beans",
+    "properties": {
+      "id": "beans",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "sandboxDatasets": {
+    "prefix": "sandbox-properties",
+    "properties": {
+      "sandboxDatasets": null
+    }
+  },
+  "adminReportingDataSource": {
+    "prefix": "spring.admin_reporting_datasource",
+    "properties": {
+      "connectionProperties": null,
+      "propagateInterruptState": false,
+      "validator": null,
+      "useDisposableConnectionFacade": true,
+      "defaultCatalog": null,
+      "jmxEnabled": true,
+      "ignoreExceptionOnPreLoad": false,
+      "logAbandoned": false,
+      "commitOnReturn": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 10,
+      "removeAbandoned": false,
+      "poolProperties": {
+        "dbProperties": {
+          "user": "root",
+          "password": "******"
+        },
+        "url": "jdbc:mysql://localhost:3306?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=100000",
+        "driverClassName": "com.mysql.jdbc.Driver",
+        "defaultAutoCommit": null,
+        "defaultReadOnly": null,
+        "defaultTransactionIsolation": -1,
+        "defaultCatalog": null,
+        "connectionProperties": null,
+        "initialSize": 4,
+        "maxActive": 10,
+        "maxIdle": 10,
+        "minIdle": 4,
+        "maxWait": 30000,
+        "validationQuery": "SELECT 1",
+        "validationInterval": 10000,
+        "validatorClassName": null,
+        "validator": null,
+        "testOnBorrow": false,
+        "testOnReturn": false,
+        "testWhileIdle": true,
+        "timeBetweenEvictionRunsMillis": 5000,
+        "numTestsPerEvictionRun": 0,
+        "minEvictableIdleTimeMillis": 60000,
+        "accessToUnderlyingConnectionAllowed": true,
+        "removeAbandoned": false,
+        "removeAbandonedTimeout": 60,
+        "logAbandoned": false,
+        "name": "Tomcat Connection Pool[1-118555812]",
+        "password": "******",
+        "username": "root",
+        "jmxEnabled": true,
+        "initSQL": null,
+        "testOnConnect": false,
+        "fairQueue": true,
+        "useEquals": true,
+        "abandonWhenPercentageFull": 0,
+        "maxAge": 0,
+        "useLock": false,
+        "suspectTimeout": 0,
+        "dataSource": null,
+        "dataSourceJNDI": null,
+        "alternateUsernameAllowed": false,
+        "commitOnReturn": false,
+        "rollbackOnReturn": false,
+        "useDisposableConnectionFacade": true,
+        "logValidationErrors": false,
+        "propagateInterruptState": false,
+        "ignoreExceptionOnPreLoad": false,
+        "useStatementFacade": true
+      },
+      "minIdle": 4,
+      "abandonWhenPercentageFull": 0,
+      "defaultReadOnly": null,
+      "pool": null,
+      "maxWait": 30000,
+      "logValidationErrors": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "name": "Tomcat Connection Pool[1-118555812]",
+      "useStatementFacade": true,
+      "dataSource": null,
+      "validationInterval": 10000,
+      "initSQL": null,
+      "dbProperties": {
+        "user": "root",
+        "password": "******"
+      },
+      "validationQuery": "SELECT 1",
+      "rollbackOnReturn": false,
+      "logWriter": null,
+      "dataSourceJNDI": null,
+      "alternateUsernameAllowed": false,
+      "validatorClassName": null,
+      "suspectTimeout": 0,
+      "useEquals": true,
+      "removeAbandonedTimeout": 60,
+      "defaultAutoCommit": null,
+      "loginTimeout": 30,
+      "testOnConnect": false,
+      "initialSize": 4,
+      "defaultTransactionIsolation": -1,
+      "numTestsPerEvictionRun": 0,
+      "url": "jdbc:mysql://localhost:3306?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=100000",
+      "testOnBorrow": false,
+      "fairQueue": true,
+      "accessToUnderlyingConnectionAllowed": true,
+      "minEvictableIdleTimeMillis": 60000,
+      "maxAge": 0,
+      "timeBetweenEvictionRunsMillis": 5000,
+      "testOnReturn": false,
+      "useLock": false,
+      "username": "root",
+      "maxActive": 10
+    }
+  },
+  "archivePropertiesRoot": {
+    "prefix": "archive",
+    "properties": {
+      "tenants": {
+        "TS": {
+          "uriRoot": null,
+          "pathPrefix": "TS",
+          "s3AccessKey": null,
+          "s3SecretKey": null,
+          "s3RegionStatic": null,
+          "s3Sse": null
+        }
+      },
+      "s3SecretKey": null,
+      "s3AccessKey": null,
+      "s3Sse": null,
+      "s3RegionStatic": "us-west-2",
+      "uriRoot": "file:///tmp/",
+      "pathPrefix": null
+    }
+  },
+  "requestMappingEndpoint": {
+    "prefix": "endpoints.mappings",
+    "properties": {
+      "id": "mappings",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.reportingSystemSettings": {
+    "prefix": "reporting",
+    "properties": {
+      "irisVendorId": null,
+      "tenants": {
+        "CA": {
+          "analyticsTrackingId": null,
+          "interpretiveGuideUrl": null,
+          "accessDeniedUrl": null,
+          "landingPageUrl": null,
+          "irisVendorId": null,
+          "minItemDataYear": null,
+          "percentileDisplayEnabled": null,
+          "reportLanguages": [],
+          "schoolYear": null,
+          "state": {
+            "name": "California",
+            "code": "CA"
+          },
+          "transferAccessEnabled": null,
+          "translationLocation": null,
+          "uiLanguages": [],
+          "userGuideUrl": null,
+          "targetReport": {
+            "insufficientDataCutoff": null,
+            "minNumberOfStudents": null
+          },
+          "studentFields": {
+            "MigrantStatus": "Enabled",
+            "EnglishLanguageAcquisitionStatus": "Enabled",
+            "PrimaryLanguage": "Enabled",
+            "Ethnicity": "Enabled",
+            "EconomicDisadvantage": "Disabled",
+            "Gender": "Disabled",
+            "Section504": "Disabled",
+            "IndividualEducationPlan": "Disabled",
+            "LimitedEnglishProficiency": "Disabled",
+            "MilitaryStudentIdentifier": "Disabled"
+          },
+          "effectiveReportLanguages": [
+            "en"
+          ]
+        },
+        "TS": {
+          "analyticsTrackingId": null,
+          "interpretiveGuideUrl": null,
+          "accessDeniedUrl": null,
+          "landingPageUrl": null,
+          "irisVendorId": null,
+          "minItemDataYear": null,
+          "percentileDisplayEnabled": null,
+          "reportLanguages": [],
+          "schoolYear": null,
+          "state": {
+            "name": "Test State",
+            "code": "TS"
+          },
+          "transferAccessEnabled": null,
+          "translationLocation": null,
+          "uiLanguages": [],
+          "userGuideUrl": null,
+          "targetReport": {
+            "insufficientDataCutoff": null,
+            "minNumberOfStudents": null
+          },
+          "studentFields": {
+            "MigrantStatus": "Enabled",
+            "EnglishLanguageAcquisitionStatus": "Disabled",
+            "PrimaryLanguage": "Enabled",
+            "Ethnicity": "Enabled",
+            "EconomicDisadvantage": "Admin",
+            "Gender": "Enabled",
+            "Section504": "Admin",
+            "IndividualEducationPlan": "Admin",
+            "LimitedEnglishProficiency": "Enabled",
+            "MilitaryStudentIdentifier": "Enabled"
+          },
+          "effectiveReportLanguages": [
+            "en"
+          ]
+        }
+      },
+      "transferAccessEnabled": true,
+      "reportLanguages": [],
+      "effectiveReportLanguages": [
+        "en"
+      ],
+      "interpretiveGuideUrl": null,
+      "accessDeniedUrl": null,
+      "uiLanguages": [],
+      "translationLocation": "binary-http://config-server:8888/*/*/master/i18n/",
+      "userGuideUrl": null,
+      "schoolYear": 2019,
+      "minItemDataYear": null,
+      "percentileDisplayEnabled": null,
+      "state": {
+        "name": "California",
+        "code": "CA"
+      },
+      "targetReport": {
+        "insufficientDataCutoff": null,
+        "minNumberOfStudents": null
+      },
+      "studentFields": {},
+      "analyticsTrackingId": null,
+      "landingPageUrl": null
+    }
+  },
+  "adminOlapDataSource": {
+    "prefix": "spring.admin_olap_datasource",
+    "properties": {
+      "connectionProperties": null,
+      "propagateInterruptState": false,
+      "validator": null,
+      "useDisposableConnectionFacade": true,
+      "defaultCatalog": null,
+      "jmxEnabled": true,
+      "ignoreExceptionOnPreLoad": false,
+      "logAbandoned": false,
+      "commitOnReturn": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 100,
+      "removeAbandoned": false,
+      "poolProperties": {
+        "dbProperties": {
+          "user": "root",
+          "password": "******"
+        },
+        "url": "jdbc:redshift://localhost:5432/dev?ApplicationName=rdw-reporting-aggregate-service&loginTimeout=10&socketTimeout=0",
+        "driverClassName": "com.amazon.redshift.jdbc42.Driver",
+        "defaultAutoCommit": null,
+        "defaultReadOnly": null,
+        "defaultTransactionIsolation": -1,
+        "defaultCatalog": null,
+        "connectionProperties": null,
+        "initialSize": 10,
+        "maxActive": 100,
+        "maxIdle": 100,
+        "minIdle": 10,
+        "maxWait": 30000,
+        "validationQuery": "SELECT 1",
+        "validationInterval": 30000,
+        "validatorClassName": null,
+        "validator": null,
+        "testOnBorrow": false,
+        "testOnReturn": false,
+        "testWhileIdle": true,
+        "timeBetweenEvictionRunsMillis": 5000,
+        "numTestsPerEvictionRun": 0,
+        "minEvictableIdleTimeMillis": 60000,
+        "accessToUnderlyingConnectionAllowed": true,
+        "removeAbandoned": false,
+        "removeAbandonedTimeout": 60,
+        "logAbandoned": false,
+        "name": "Tomcat Connection Pool[3-118555812]",
+        "password": "******",
+        "username": "root",
+        "jmxEnabled": true,
+        "initSQL": null,
+        "testOnConnect": false,
+        "fairQueue": true,
+        "useEquals": true,
+        "abandonWhenPercentageFull": 0,
+        "maxAge": 0,
+        "useLock": false,
+        "suspectTimeout": 0,
+        "dataSource": null,
+        "dataSourceJNDI": null,
+        "alternateUsernameAllowed": false,
+        "commitOnReturn": false,
+        "rollbackOnReturn": false,
+        "useDisposableConnectionFacade": true,
+        "logValidationErrors": false,
+        "propagateInterruptState": false,
+        "ignoreExceptionOnPreLoad": false,
+        "useStatementFacade": true
+      },
+      "minIdle": 10,
+      "abandonWhenPercentageFull": 0,
+      "defaultReadOnly": null,
+      "pool": null,
+      "maxWait": 30000,
+      "logValidationErrors": false,
+      "driverClassName": "com.amazon.redshift.jdbc42.Driver",
+      "name": "Tomcat Connection Pool[3-118555812]",
+      "useStatementFacade": true,
+      "dataSource": null,
+      "validationInterval": 30000,
+      "initSQL": null,
+      "dbProperties": {
+        "user": "root",
+        "password": "******"
+      },
+      "validationQuery": "SELECT 1",
+      "rollbackOnReturn": false,
+      "logWriter": null,
+      "dataSourceJNDI": null,
+      "alternateUsernameAllowed": false,
+      "validatorClassName": null,
+      "suspectTimeout": 0,
+      "useEquals": true,
+      "removeAbandonedTimeout": 60,
+      "defaultAutoCommit": null,
+      "loginTimeout": 30,
+      "testOnConnect": false,
+      "initialSize": 10,
+      "defaultTransactionIsolation": -1,
+      "numTestsPerEvictionRun": 0,
+      "url": "jdbc:redshift://localhost:5432/dev?ApplicationName=rdw-reporting-aggregate-service&loginTimeout=10&socketTimeout=0",
+      "testOnBorrow": false,
+      "fairQueue": true,
+      "accessToUnderlyingConnectionAllowed": true,
+      "minEvictableIdleTimeMillis": 60000,
+      "maxAge": 0,
+      "timeBetweenEvictionRunsMillis": 5000,
+      "testOnReturn": false,
+      "useLock": false,
+      "username": "root",
+      "maxActive": 100
+    }
+  },
+  "refreshEndpoint": {
+    "prefix": "endpoints.refresh",
+    "properties": {
+      "id": "refresh",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "jwtSettings": {
+    "prefix": "jwt",
+    "properties": {
+      "routePaths": null,
+      "secret": "******"
+    }
+  },
+  "spring.transaction-org.springframework.boot.autoconfigure.transaction.TransactionProperties": {
+    "prefix": "spring.transaction",
+    "properties": {
+      "rollbackOnCommitFailure": null,
+      "defaultTimeout": null
+    }
+  },
+  "statusEndpoint": {
+    "prefix": "endpoints.status",
+    "properties": {
+      "id": "status",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.jackson-org.springframework.boot.autoconfigure.jackson.JacksonProperties": {
+    "prefix": "spring.jackson",
+    "properties": {
+      "serialization": {
+        "WRITE_DATES_AS_TIMESTAMPS": false
+      },
+      "propertyNamingStrategy": null,
+      "defaultPropertyInclusion": "NON_NULL",
+      "parser": {},
+      "dateFormat": null,
+      "deserialization": {},
+      "generator": {},
+      "timeZone": null,
+      "mapper": {},
+      "locale": null,
+      "jodaDateTimeFormat": null
+    }
+  },
+  "busEndpoint": {
+    "prefix": "endpoints.bus",
+    "properties": {
+      "id": "bus",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.http.multipart-org.springframework.boot.autoconfigure.web.MultipartProperties": {
+    "prefix": "spring.http.multipart",
+    "properties": {
+      "maxRequestSize": "500MB",
+      "fileSizeThreshold": "0",
+      "location": null,
+      "maxFileSize": "500MB",
+      "enabled": true,
+      "resolveLazily": false
+    }
+  },
+  "spring.info-org.springframework.boot.autoconfigure.info.ProjectInfoProperties": {
+    "prefix": "spring.info",
+    "properties": {
+      "build": {
+        "location": {}
+      },
+      "git": {
+        "location": {}
+      }
+    }
+  },
+  "traceEndpoint": {
+    "prefix": "endpoints.trace",
+    "properties": {
+      "id": "trace",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "infoEndpoint": {
+    "prefix": "endpoints.info",
+    "properties": {
+      "id": "info",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "management.trace-org.springframework.boot.actuate.trace.TraceProperties": {
+    "prefix": "management.trace",
+    "properties": {
+      "include": [
+        "TIME_TAKEN",
+        "COOKIES",
+        "REQUEST_HEADERS",
+        "ERRORS",
+        "RESPONSE_HEADERS"
+      ]
+    }
+  },
+  "spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties": {
+    "prefix": "spring.resources",
+    "properties": {
+      "cachePeriod": null,
+      "addMappings": true,
+      "chain": {
+        "cache": true,
+        "htmlApplicationCache": false,
+        "gzipped": false,
+        "strategy": {
+          "fixed": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ],
+            "version": null
+          },
+          "content": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ]
+          }
+        }
+      },
+      "staticLocations": [
+        "/",
+        "classpath:/META-INF/resources/",
+        "classpath:/resources/",
+        "classpath:/static/",
+        "classpath:/public/"
+      ]
+    }
+  },
+  "adminWarehouseDataSource": {
+    "prefix": "spring.admin_warehouse_datasource",
+    "properties": {
+      "connectionProperties": null,
+      "propagateInterruptState": false,
+      "validator": null,
+      "useDisposableConnectionFacade": true,
+      "defaultCatalog": null,
+      "jmxEnabled": true,
+      "ignoreExceptionOnPreLoad": false,
+      "logAbandoned": false,
+      "commitOnReturn": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 10,
+      "removeAbandoned": false,
+      "poolProperties": {
+        "dbProperties": {
+          "user": "root",
+          "password": "******"
+        },
+        "url": "jdbc:mysql://localhost:3306?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=100000",
+        "driverClassName": "com.mysql.jdbc.Driver",
+        "defaultAutoCommit": null,
+        "defaultReadOnly": null,
+        "defaultTransactionIsolation": -1,
+        "defaultCatalog": null,
+        "connectionProperties": null,
+        "initialSize": 4,
+        "maxActive": 10,
+        "maxIdle": 10,
+        "minIdle": 4,
+        "maxWait": 30000,
+        "validationQuery": "SELECT 1",
+        "validationInterval": 10000,
+        "validatorClassName": null,
+        "validator": null,
+        "testOnBorrow": false,
+        "testOnReturn": false,
+        "testWhileIdle": true,
+        "timeBetweenEvictionRunsMillis": 5000,
+        "numTestsPerEvictionRun": 0,
+        "minEvictableIdleTimeMillis": 60000,
+        "accessToUnderlyingConnectionAllowed": true,
+        "removeAbandoned": false,
+        "removeAbandonedTimeout": 60,
+        "logAbandoned": false,
+        "name": "Tomcat Connection Pool[2-118555812]",
+        "password": "******",
+        "username": "root",
+        "jmxEnabled": true,
+        "initSQL": null,
+        "testOnConnect": false,
+        "fairQueue": true,
+        "useEquals": true,
+        "abandonWhenPercentageFull": 0,
+        "maxAge": 0,
+        "useLock": false,
+        "suspectTimeout": 0,
+        "dataSource": null,
+        "dataSourceJNDI": null,
+        "alternateUsernameAllowed": false,
+        "commitOnReturn": false,
+        "rollbackOnReturn": false,
+        "useDisposableConnectionFacade": true,
+        "logValidationErrors": false,
+        "propagateInterruptState": false,
+        "ignoreExceptionOnPreLoad": false,
+        "useStatementFacade": true
+      },
+      "minIdle": 4,
+      "abandonWhenPercentageFull": 0,
+      "defaultReadOnly": null,
+      "pool": null,
+      "maxWait": 30000,
+      "logValidationErrors": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "name": "Tomcat Connection Pool[2-118555812]",
+      "useStatementFacade": true,
+      "dataSource": null,
+      "validationInterval": 10000,
+      "initSQL": null,
+      "dbProperties": {
+        "user": "root",
+        "password": "******"
+      },
+      "validationQuery": "SELECT 1",
+      "rollbackOnReturn": false,
+      "logWriter": null,
+      "dataSourceJNDI": null,
+      "alternateUsernameAllowed": false,
+      "validatorClassName": null,
+      "suspectTimeout": 0,
+      "useEquals": true,
+      "removeAbandonedTimeout": 60,
+      "defaultAutoCommit": null,
+      "loginTimeout": 30,
+      "testOnConnect": false,
+      "initialSize": 4,
+      "defaultTransactionIsolation": -1,
+      "numTestsPerEvictionRun": 0,
+      "url": "jdbc:mysql://localhost:3306?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&connectTimeout=10000&socketTimeout=100000",
+      "testOnBorrow": false,
+      "fairQueue": true,
+      "accessToUnderlyingConnectionAllowed": true,
+      "minEvictableIdleTimeMillis": 60000,
+      "maxAge": 0,
+      "timeBetweenEvictionRunsMillis": 5000,
+      "testOnReturn": false,
+      "useLock": false,
+      "username": "root",
+      "maxActive": 10
+    }
+  },
+  "management.health.status-org.springframework.boot.actuate.autoconfigure.HealthIndicatorProperties": {
+    "prefix": "management.health.status",
+    "properties": {
+      "order": null
+    }
+  },
+  "healthEndpoint": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "timeToLive": 1000,
+      "id": "health",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "scopedTarget.tenantProperties": {
+    "prefix": "tenantProperties",
+    "properties": {
+      "tenants": {
+        "CA": {
+          "id": "CA",
+          "key": "******",
+          "name": "California",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        },
+        "TS": {
+          "id": "TS",
+          "key": "******",
+          "name": "Test Tenant",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        }
+      },
+      "status": {
+        "tenantKeys": [
+          "CA",
+          "TS"
+        ]
+      }
+    }
+  },
+  "spring.cloud.stream.integration-org.springframework.cloud.stream.config.SpringIntegrationProperties": {
+    "prefix": "spring.cloud.stream.integration",
+    "properties": {
+      "messageHandlerNotPropagatedHeaders": [
+        "contentType"
+      ]
+    }
+  },
+  "configClientProperties": {
+    "prefix": "spring.cloud.config",
+    "properties": {
+      "headers": {},
+      "profile": "local-docker",
+      "label": "rdw,develop,master",
+      "uri": "http://config-server:8888",
+      "enabled": true,
+      "failFast": true,
+      "token": null,
+      "authorization": null,
+      "password": null,
+      "discovery": {
+        "enabled": false,
+        "serviceId": "configserver"
+      },
+      "name": "rdw-reporting-admin-service",
+      "username": "user"
+    }
+  },
+  "endpoints.metrics.filter-org.springframework.boot.actuate.autoconfigure.MetricFilterProperties": {
+    "prefix": "endpoints.metrics.filter",
+    "properties": {
+      "counterSubmissions": [
+        "MERGED"
+      ],
+      "gaugeSubmissions": [
+        "MERGED"
+      ]
+    }
+  },
+  "securityProperties": {
+    "prefix": "security",
+    "properties": {
+      "headers": {
+        "xss": true,
+        "cache": true,
+        "frame": true,
+        "contentType": true,
+        "contentSecurityPolicy": null,
+        "contentSecurityPolicyMode": "DEFAULT",
+        "hsts": "ALL"
+      },
+      "ignored": [],
+      "sessions": "STATELESS",
+      "requireSsl": false,
+      "filterOrder": -100,
+      "enableCsrf": false,
+      "filterDispatcherTypes": null,
+      "basic": {
+        "enabled": true,
+        "realm": "Spring",
+        "path": [
+          "/**"
+        ],
+        "authorizeMode": "ROLE"
+      },
+      "user": {
+        "name": "user",
+        "password": "******",
+        "role": [
+          "USER",
+          "ACTUATOR"
+        ]
+      }
+    }
+  },
+  "dumpEndpoint": {
+    "prefix": "endpoints.dump",
+    "properties": {
+      "id": "dump",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "autoConfigurationReportEndpoint": {
+    "prefix": "endpoints.autoconfig",
+    "properties": {
+      "id": "autoconfig",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.groovy.template-org.springframework.boot.autoconfigure.groovy.template.GroovyTemplateProperties": {
+    "prefix": "spring.groovy.template",
+    "properties": {
+      "charset": "UTF-8",
+      "exposeSpringMacroHelpers": true,
+      "cache": false,
+      "exposeSessionAttributes": false,
+      "viewNames": null,
+      "prefix": "",
+      "requestContextAttribute": "spring",
+      "suffix": ".tpl",
+      "enabled": true,
+      "resourceLoaderPath": "classpath:/templates/",
+      "checkTemplateLocation": true,
+      "allowSessionOverride": false,
+      "contentType": {
+        "parameters": {
+          "charset": "UTF-8"
+        }
+      },
+      "allowRequestOverride": false,
+      "exposeRequestAttributes": false
+    }
+  },
+  "scopedTarget.reportingDataSourceElementsProperties": {
+    "prefix": "datasources.reporting_ro",
+    "properties": {
+      "schemaSearchPath": null,
+      "urlParts": {
+        "protocol": "jdbc:mysql:",
+        "hosts": "host.docker.internal:3306",
+        "database": "not_a_schema",
+        "properties": "useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=40000"
+      },
+      "tenants": {
+        "CA": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "reporting",
+            "properties": null
+          },
+          "username": null,
+          "password": null,
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        },
+        "TS": {
+          "url": null,
+          "urlParts": {
+            "protocol": null,
+            "hosts": null,
+            "database": "ts_reporting",
+            "properties": null
+          },
+          "username": null,
+          "password": null,
+          "schemaSearchPath": null,
+          "testWhileIdle": null,
+          "validationQuery": null,
+          "validationInterval": null,
+          "driverClassName": null,
+          "initialSize": null,
+          "maxActive": null,
+          "minIdle": null,
+          "maxIdle": null,
+          "removeAbandoned": null,
+          "removeAbandonedTimeout": null,
+          "logAbandoned": null
+        }
+      },
+      "minIdle": 4,
+      "validationQuery": "SELECT 1",
+      "initialSize": 4,
+      "url": "jdbc:mysql://host.docker.internal:3306/not_a_schema?useSSL=false&useLegacyDatetimeCode=false&characterEncoding=utf8&rewriteBatchedStatements=true&connectTimeout=10000&socketTimeout=40000",
+      "logAbandoned": false,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": 10,
+      "removeAbandoned": false,
+      "driverClassName": "com.mysql.jdbc.Driver",
+      "removeAbandonedTimeout": 60,
+      "username": "root",
+      "validationInterval": 10000,
+      "maxActive": 10
+    }
+  },
+  "managementServerProperties": {
+    "prefix": "management",
+    "properties": {
+      "security": {
+        "enabled": false,
+        "roles": [
+          "ACTUATOR"
+        ],
+        "sessions": "STATELESS"
+      },
+      "address": null,
+      "port": 8008,
+      "addApplicationContextHeader": true,
+      "contextPath": "",
+      "ssl": null
+    }
+  },
+  "spring.cloud.bus-org.springframework.cloud.bus.BusProperties": {
+    "prefix": "spring.cloud.bus",
+    "properties": {
+      "trace": {
+        "enabled": false
+      },
+      "ack": {
+        "enabled": true,
+        "destinationService": null
+      },
+      "destination": "springCloudBus",
+      "refresh": {
+        "enabled": true
+      },
+      "env": {
+        "enabled": true
+      },
+      "enabled": true
+    }
+  },
+  "simpleDiscoveryProperties": {
+    "prefix": "spring.cloud.discovery.client.simple",
+    "properties": {
+      "instances": {},
+      "local": {
+        "uri": "http://f1b6a09a60fb:0",
+        "metadata": {},
+        "serviceId": "rdw-reporting-admin-service"
+      }
+    }
+  },
+  "groovyMarkupConfigurer": {
+    "prefix": "spring.groovy.template.configuration",
+    "properties": {
+      "error": "Cannot serialize 'spring.groovy.template.configuration'"
+    }
+  },
+  "spring.mvc-org.springframework.boot.autoconfigure.web.WebMvcProperties": {
+    "prefix": "spring.mvc",
+    "properties": {
+      "dateFormat": null,
+      "servlet": {
+        "loadOnStartup": -1
+      },
+      "staticPathPattern": "/**",
+      "dispatchOptionsRequest": true,
+      "dispatchTraceRequest": false,
+      "locale": null,
+      "ignoreDefaultModelOnRedirect": true,
+      "logResolvedException": false,
+      "async": {
+        "requestTimeout": null
+      },
+      "messageCodesResolverFormat": null,
+      "mediaTypes": {},
+      "view": {
+        "prefix": null,
+        "suffix": null
+      },
+      "localeResolver": "ACCEPT_HEADER",
+      "throwExceptionIfNoHandlerFound": false
+    }
+  },
+  "diskSpaceHealthIndicatorProperties": {
+    "prefix": "management.health.diskspace",
+    "properties": {
+      "path": "/.",
+      "threshold": 10485760
+    }
+  }
+}

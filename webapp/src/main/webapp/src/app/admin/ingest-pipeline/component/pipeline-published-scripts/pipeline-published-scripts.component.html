@@ -1,0 +1,82 @@
+<page-heading>
+  <h1 heading class="h2">
+    {{
+      'pipeline-publishing-history.heading'
+        | translate
+          : {
+              pipelineName:
+                'ingest-pipeline.' + pipeline.code + '.name' | translate
+            }
+    }}
+  </h1>
+  <ul controls class="list-inline list-unstyled">
+    <li *ngIf="selectedPipeline.version === pipeline.activeVersion">
+      <button
+        type="button"
+        class="btn btn-primary btn-outlined"
+        (click)="onDeactivateButtonClick(selectedPipeline)"
+      >
+        {{ 'pipeline-published-scripts.deactivate' | translate }}
+      </button>
+    </li>
+    <li *ngIf="selectedPipeline.version !== pipeline.activeVersion">
+      <button
+        type="button"
+        class="btn btn-primary btn-outlined"
+        (click)="onActivateButtonClick(selectedPipeline)"
+      >
+        {{ 'pipeline-published-scripts.activate' | translate }}
+      </button>
+    </li>
+    <li>
+      <button
+        type="button"
+        class="close fa-3x"
+        title="{{ 'common.action.close' | translate }}"
+        [routerLink]="['..']"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+  </ul>
+</page-heading>
+
+<ng-container *ngIf="pipelines != null && pipelines.length > 0; else noScripts">
+  <div class="body">
+    <div class="scripts-container">
+      <ul>
+        <li *ngFor="let published of pipelines">
+          <pipeline-item
+            name="{{
+              'pipeline-published-scripts.version' | translate: published
+            }}"
+            description="{{ published.publishedOn | date: 'medium' }}"
+            [active]="published.version === selectedPipeline.version"
+            (click)="pipelineSelect.emit(published)"
+          >
+            <div caption>
+              {{ 'pipeline-item.published-by' | translate: published }}
+            </div>
+            <div
+              *ngIf="pipeline.activeVersion == published.version"
+              class="label border-only blue published-tag"
+            >
+              {{ 'pipeline-published-scripts.active-pipeline' | translate }}
+            </div>
+          </pipeline-item>
+        </li>
+      </ul>
+    </div>
+    <code-editor
+      *ngIf="selectedPipeline"
+      language="groovy"
+      [ngModel]="selectedPipeline.scripts[0].body"
+      [readonly]="true"
+    ></code-editor>
+  </div>
+</ng-container>
+<ng-template #noScripts>
+  <div class="text-center">
+    {{ 'pipeline-published-scripts.no-scripts' | translate }}
+  </div>
+</ng-template>

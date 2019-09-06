@@ -1,0 +1,58 @@
+<form *ngIf="initialized" [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">
+      {{ _options.title }}
+    </h4>
+    <button
+      type="button"
+      class="close pull-right"
+      title="{{ 'common.action.close' | translate }}"
+      (click)="onCloseButtonClick()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form-fields [fields]="fields"></form-fields>
+  </div>
+  <div class="modal-footer">
+    <div class="controls">
+      <button
+        type="button"
+        class="btn btn-default btn"
+        (click)="onCancelButtonClick()"
+      >
+        {{ 'report-download.form.cancel' | translate }}
+      </button>
+      <ng-container *ngIf="initialQuery == null; else hasSavedQuery">
+        <!-- Intentionally disabled because this is not an anticipated use case yet
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="createQueryButtonDisabled"
+          (click)="onCreateQueryButtonClick()"
+        >
+          {{ 'user-query.action.create.label' | translate }}
+        </button>
+        -->
+      </ng-container>
+      <ng-template #hasSavedQuery>
+        <button
+          type="button"
+          class="btn btn-primary btn-outlined"
+          [disabled]="updateQueryButtonDisabled"
+          (click)="onUpdateQueryButtonClick()"
+        >
+          {{ 'user-query.action.update.label' | translate }}
+        </button>
+      </ng-template>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="createReportButtonDisabled"
+      >
+        {{ 'report-download.form.submit' | translate }}
+      </button>
+    </div>
+  </div>
+</form>

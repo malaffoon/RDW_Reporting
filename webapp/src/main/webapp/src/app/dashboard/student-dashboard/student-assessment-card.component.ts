@@ -1,40 +1,59 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core';
 import { StudentHistoryExamWrapper } from '../../student/model/student-history-exam-wrapper.model';
-import { ColorService } from '../../shared/color.service';
-import { GradeCode } from '../../shared/enum/grade-code.enum';
+import { gradeColor } from '../../shared/colors';
 
 @Component({
   selector: 'student-assessment-card',
-  templateUrl: './student-assessment-card.component.html'
+  templateUrl: './student-assessment-card.component.html',
+  styleUrls: ['./student-assessment-card.component.less'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StudentAssessmentCardComponent implements OnInit {
-
-  @Input()
-  latestExam: StudentHistoryExamWrapper;
-  @Input()
-  exams: StudentHistoryExamWrapper[];
+export class StudentAssessmentCardComponent {
   @Output()
   selectedAssessment: EventEmitter<any> = new EventEmitter();
 
-  level: number;
-  resultCount: number;
+  _latestExam: StudentHistoryExamWrapper;
+  _exams: StudentHistoryExamWrapper[];
+  _color: string;
+  _level: number;
+  _resultCount: number;
+
+  // TODO remove need for this with styling
   hasIcon: boolean = true;
 
-  constructor(public colorService: ColorService) {
+  @Input()
+  set latestExam(value: StudentHistoryExamWrapper) {
+    this._latestExam = value;
+    this._level = value.exam.level;
+    this._color = gradeColor(value.assessment.grade);
+    this.initialize();
   }
 
-  ngOnInit() {
-    this.level = this.latestExam.exam.level;
-    this.resultCount = this.exams.filter(exam =>
-      exam.assessment.label === this.latestExam.assessment.label).length;
+  @Input()
+  set exams(values: StudentHistoryExamWrapper[]) {
+    this._exams = values;
+    this.initialize();
   }
 
-  getGradeColor(): string {
-    return this.colorService.getColor(GradeCode.getIndex(this.latestExam.assessment.grade));
+  private initialize(): void {
+    if (this._latestExam != null && this._exams != null) {
+      // seems to be an odd behavior where the exams of the card change when selected
+      // so here we only compute this once
+      if (this._resultCount == null) {
+        this._resultCount = this._exams.filter(
+          exam => exam.assessment.label === this._latestExam.assessment.label
+        ).length;
+      }
+    }
   }
 
-  selectCard(): void {
-    this.selectedAssessment.emit(this.latestExam);
+  onClick(): void {
+    this.selectedAssessment.emit(this._latestExam);
   }
-
 }

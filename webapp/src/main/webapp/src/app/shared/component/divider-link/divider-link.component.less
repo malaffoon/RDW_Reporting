@@ -1,0 +1,21 @@
+// from sbac ui kit
+@gray-darkest: #2a2b2d;
+@gray-darker: #84888d;
+@gray-dark: #a7a7a7;
+
+:host {
+  ::ng-deep {
+    a {
+      color: @gray-dark;
+      text-decoration: none;
+      display: block;
+      padding: 10px;
+      &:hover {
+        color: @gray-darker;
+      }
+      &:active {
+        color: @gray-darkest;
+      }
+    }
+  }
+}

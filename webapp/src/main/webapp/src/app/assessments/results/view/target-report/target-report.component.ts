@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { StudentReportDownloadComponent } from '../../../../report/student-report-download.component';
 import { TranslateService } from '@ngx-translate/core';
-import { Assessment } from '../../../model/assessment.model';
+import { Assessment } from '../../../model/assessment';
 import { TargetScoreExam } from '../../../model/target-score-exam.model';
 import {
   AggregateTargetScoreRow,
@@ -10,10 +9,15 @@ import {
 } from '../../../model/aggregate-target-score-row.model';
 import { ExamFilterService } from '../../../filters/exam-filters/exam-filter.service';
 import { FilterBy } from '../../../model/filter-by.model';
-import { Subscription ,  forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { Target } from '../../../model/target.model';
 import { Ordering, ordering } from '@kourge/ordering';
-import { byNumber, Comparator, join, ranking } from '@kourge/ordering/comparator';
+import {
+  byNumber,
+  Comparator,
+  join,
+  ranking
+} from '@kourge/ordering/comparator';
 import { TargetService } from '../../../../shared/target/target.service';
 import { BaseColumn } from '../../../../shared/datatable/base-column.model';
 import { Table } from 'primeng/table';
@@ -21,26 +25,28 @@ import { DataTableService } from '../../../../shared/datatable/datatable-service
 import { ExamFilterOptionsService } from '../../../filters/exam-filters/exam-filter-options.service';
 import { ExamFilterOptions } from '../../../model/exam-filter-options.model';
 import { TargetStatisticsCalculator } from '../../target-statistics-calculator';
-import { Subgroup } from '../../../../aggregate-report/subgroup/subgroup';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
-import { byNumericString, getOrganizationalClaimOrdering } from '../../../../shared/ordering/orderings';
+import {
+  byNumericString,
+  getOrganizationalClaimOrdering
+} from '../../../../shared/ordering/orderings';
 import { ApplicationSettingsService } from '../../../../app-settings.service';
-import { ExportResults } from '../../assessment-results.component';
-import { ExportTargetReportRequest } from '../../../model/export-target-report-request.model';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { ExamStatistics } from '../../../model/exam-statistics.model';
-import { Exam } from '../../../model/exam.model';
+import { Exam } from '../../../model/exam';
 import { SortEvent } from 'primeng/api';
 import { AggregateReportItem } from '../../../../aggregate-report/results/aggregate-report-item';
 import { Utils } from '../../../../shared/support/support';
 import { SubjectDefinition } from '../../../../subject/subject';
+import { RequestType } from '../../../../shared/enum/request-type.enum';
+import { ExportResults } from '../export-results';
+import { Subgroup } from '../../../../shared/model/subgroup';
 
 @Component({
   selector: 'target-report',
   templateUrl: './target-report.component.html'
 })
 export class TargetReportComponent implements OnInit, ExportResults {
-
   @Input()
   subjectDefinition: SubjectDefinition;
 
@@ -68,7 +74,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   @Input()
   set exams(exams: Exam[]) {
     if (exams && exams.length > 0) {
-      this.schoolYear = exams[ 0 ].schoolYear;
+      this.schoolYear = exams[0].schoolYear;
     }
   }
 
@@ -79,6 +85,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
    */
   @Input()
   set filterBy(value: FilterBy) {
+    // TODO values should be filtered before getting here...
     this._filterBy = value;
 
     if (this._filterBySubscription) {
@@ -100,9 +107,6 @@ export class TargetReportComponent implements OnInit, ExportResults {
   @Input()
   assessmentExporter: AssessmentExporter;
 
-  @ViewChild('menuReportDownloader')
-  reportDownloader: StudentReportDownloadComponent;
-
   @ViewChild('dataTable')
   private dataTable: Table;
 
@@ -111,7 +115,7 @@ export class TargetReportComponent implements OnInit, ExportResults {
   allTargets: Target[] = [];
   loading: boolean = true;
   aggregateTargetScoreRows: AggregateTargetScoreRow[] = [];
-  identityColumns: string[] = [ 'claim', 'targetId', 'subgroup' ];
+  identityColumns: string[] = ['claim', 'targetId', 'subgroup'];
   treeColumns: number[] = [];
   subgroupOptions: ExamFilterOptions = new ExamFilterOptions();
   showSubgroupOptions: boolean = false;
@@ -124,20 +128,24 @@ export class TargetReportComponent implements OnInit, ExportResults {
   targetScoreExams: TargetScoreExam[];
 
   allSubgroups: any[] = [];
+  showResults: boolean = false;
 
   private _filterBy: FilterBy;
   private _filterBySubscription: Subscription;
-  private _orderingByIdentityField: { [ key: string ]: Ordering<AggregateTargetScoreRow> } = {};
+  private _orderingByIdentityField: {
+    [key: string]: Ordering<AggregateTargetScoreRow>;
+  } = {};
   private _previousSortEvent: SortEvent;
 
-  constructor(private examFilterService: ExamFilterService,
-              private translate: TranslateService,
-              private targetStatisticsCalculator: TargetStatisticsCalculator,
-              private targetService: TargetService,
-              private dataTableService: DataTableService,
-              private filterOptionService: ExamFilterOptionsService,
-              private applicationSettingsService: ApplicationSettingsService) {
-  }
+  constructor(
+    private examFilterService: ExamFilterService,
+    private translate: TranslateService,
+    private targetStatisticsCalculator: TargetStatisticsCalculator,
+    private targetService: TargetService,
+    private dataTableService: DataTableService,
+    private filterOptionService: ExamFilterOptionsService,
+    private applicationSettingsService: ApplicationSettingsService
+  ) {}
 
   ngOnInit(): void {
     this.columns = [
@@ -154,53 +162,76 @@ export class TargetReportComponent implements OnInit, ExportResults {
       new Column({ id: 'studentsTested' }),
       new Column({
         id: 'student-relative-residual-scores-level',
-        headerInfoTranslationCode: 'target-report.columns.student-relative-residual-scores-level-info'
+        headerInfoTranslationCode:
+          'target-report.columns.student-relative-residual-scores-level-info'
       }),
       new Column({
         id: 'standard-met-relative-residual-level',
-        headerInfoTranslationCode: 'target-report.columns.standard-met-relative-residual-level-info',
+        headerInfoTranslationCode:
+          'target-report.columns.standard-met-relative-residual-level-info',
         headerResolve: {
-          name: this.translate.instant(`subject.${this.assessment.subject}.asmt-type.${this.assessment.type}.level.${this.subjectDefinition.performanceLevelStandardCutoff}.name`),
-          id: this.subjectDefinition.performanceLevelStandardCutoff
+          name: this.translate.instant(
+            `subject.${this.assessment.subject}.asmt-type.${
+              this.assessment.type
+            }.level.${this.subjectDefinition.overallScore.standardCutoff}.name`
+          ),
+          id: this.subjectDefinition.overallScore.standardCutoff
         }
       })
     ];
-
-    if (!this.showResults) {
-      this.loading = false;
-      return;
-    }
 
     forkJoin(
       this.targetService.getTargetsForAssessment(this.assessment.id),
       this.assessmentProvider.getTargetScoreExams(this.assessment.id),
       this.filterOptionService.getExamFilterOptions(),
       this.applicationSettingsService.getSettings()
-    ).subscribe(([ allTargets, targetScoreExams, subgroupOptions, applicationSettings ]) => {
-      this.allSubgroups = this.createAllSubgroups(applicationSettings);
-      this.originalTargetScoreExams = this.targetScoreExams = targetScoreExams;
-      this.subgroupOptions = subgroupOptions;
-      this.allTargets = allTargets;
-
-      this.identityColumns.forEach(column => {
-        this._orderingByIdentityField[ column ] = this.createOrdering(column);
-      });
-
-      this.minimumStudentCount = applicationSettings.targetReport.minimumStudentCount;
-      this.targetStatisticsCalculator.insufficientDataCutoff = applicationSettings.targetReport.insufficientDataCutoff;
-
-      this.aggregateTargetScoreRows = this.targetStatisticsCalculator.aggregateOverallScores(
-        this.assessment.subject,
+    ).subscribe(
+      ([
         allTargets,
-        this.targetScoreExams);
+        targetScoreExams,
+        subgroupOptions,
+        applicationSettings
+      ]) => {
+        this.allSubgroups = subgroupOptions.studentFilters.map(
+          ({ id: code }) => ({ code })
+        );
+        this.originalTargetScoreExams = (targetScoreExams || []).slice();
+        this.targetScoreExams = (targetScoreExams || []).slice();
+        this.subgroupOptions = subgroupOptions; // TODO use studentFilters
+        this.allTargets = (allTargets || []).slice();
 
-      this.updateTargetScoreExamFilters();
-      this.loading = false;
-    });
+        this.identityColumns.forEach(column => {
+          this._orderingByIdentityField[column] = this.createOrdering(column);
+        });
+
+        this.minimumStudentCount =
+          typeof applicationSettings.targetReport.minimumStudentCount !==
+          'undefined'
+            ? applicationSettings.targetReport.minimumStudentCount
+            : 0;
+
+        this.showResults = this.studentsTested > this.minimumStudentCount;
+
+        this.targetStatisticsCalculator.insufficientDataCutoff =
+          applicationSettings.targetReport.insufficientDataCutoff;
+
+        this.aggregateTargetScoreRows = this.targetStatisticsCalculator.aggregateOverallScores(
+          this.assessment.subject,
+          allTargets,
+          this.targetScoreExams
+        );
+
+        this.updateTargetScoreExamFilters();
+        this.loading = false;
+      }
+    );
   }
 
   hasDataToExport(): boolean {
-    return this.aggregateTargetScoreRows && this.aggregateTargetScoreRows.length !== 0;
+    return (
+      this.aggregateTargetScoreRows &&
+      this.aggregateTargetScoreRows.length !== 0
+    );
   }
 
   get isMath(): boolean {
@@ -217,13 +248,17 @@ export class TargetReportComponent implements OnInit, ExportResults {
       return;
     }
 
-    const ordering: Comparator<AggregateTargetScoreRow>[] = this.getIdentityColumnsComparator();
+    const ordering: Comparator<
+      AggregateTargetScoreRow
+    >[] = this.getIdentityColumnsComparator();
 
     if (event.field) {
-      if (!this._previousSortEvent ||
+      if (
+        !this._previousSortEvent ||
         event === this._previousSortEvent ||
         event.order !== 1 ||
-        event.field !== this._previousSortEvent.field) {
+        event.field !== this._previousSortEvent.field
+      ) {
         // Standard column sort.  Sort on the selected column first, then default sorting.
         ordering.unshift(this.getComparator(event.field, event.order));
         this._previousSortEvent = event;
@@ -241,7 +276,9 @@ export class TargetReportComponent implements OnInit, ExportResults {
   private getComparator(field, order): Comparator<AggregateTargetScoreRow> {
     const ascending = order > 0;
     const columnOrdering = this.createOrdering(field);
-    return ascending ? columnOrdering.compare : columnOrdering.reverse().compare;
+    return ascending
+      ? columnOrdering.compare
+      : columnOrdering.reverse().compare;
   }
 
   /**
@@ -250,10 +287,12 @@ export class TargetReportComponent implements OnInit, ExportResults {
    *
    * @returns {Comparator<AggregateReportItem>[]} The ordered list of comparators
    */
-  private getIdentityColumnsComparator(): Comparator<AggregateTargetScoreRow>[] {
+  private getIdentityColumnsComparator(): Comparator<
+    AggregateTargetScoreRow
+  >[] {
     return this.columns
       .map((column: Column) => {
-        const ordering = this._orderingByIdentityField[ column.field ];
+        const ordering = this._orderingByIdentityField[column.field];
         return ordering ? ordering.compare : null;
       })
       .filter(value => !Utils.isNullOrUndefined(value));
@@ -262,42 +301,54 @@ export class TargetReportComponent implements OnInit, ExportResults {
   private createOrdering(field: string): Ordering<AggregateTargetScoreRow> {
     switch (field) {
       case 'claim':
-        const claimOrdering: Ordering<string> = getOrganizationalClaimOrdering(this.assessment.subject);
+        const claimOrdering: Ordering<string> = getOrganizationalClaimOrdering(
+          this.assessment.subject
+        );
         return claimOrdering.on<AggregateTargetScoreRow>(row => row.claim);
       case 'targetId':
         return ordering(byNumericString).on<AggregateTargetScoreRow>(row =>
-          this.translate.instant(`subject.${this.assessment.subject}.claim.${row.claim}.target.${row.targetNaturalId}.name`)
+          this.translate.instant(
+            `subject.${this.assessment.subject}.claim.${row.claim}.target.${
+              row.targetNaturalId
+            }.name`
+          )
         );
       case 'subgroup':
         const subgroupOrdering: Ordering<Subgroup> = this.getSubgroupOrdering();
-        return subgroupOrdering.on<AggregateTargetScoreRow>(row => row.subgroup);
+        return subgroupOrdering.on<AggregateTargetScoreRow>(
+          row => row.subgroup
+        );
       case 'studentsTested':
-        return ordering(byNumber).on<AggregateTargetScoreRow>(row => row.studentsTested);
+        return ordering(byNumber).on<AggregateTargetScoreRow>(
+          row => row.studentsTested
+        );
       case 'student-relative-residual-scores-level':
-        return ordering(byTargetReportingLevel).on<AggregateTargetScoreRow>(row => row.studentRelativeLevel);
+        return ordering(byTargetReportingLevel).on<AggregateTargetScoreRow>(
+          row => row.studentRelativeLevel
+        );
       case 'standard-met-relative-residual-level':
-        return ordering(byTargetReportingLevel).on<AggregateTargetScoreRow>(row => row.standardMetRelativeLevel);
+        return ordering(byTargetReportingLevel).on<AggregateTargetScoreRow>(
+          row => row.standardMetRelativeLevel
+        );
       default:
         throw Error(field + ' not accounted for in sorting');
     }
   }
 
-
   exportToCsv(): void {
-    const exportRequest = new ExportTargetReportRequest();
-    exportRequest.assessment = this.assessment;
-    exportRequest.targetScoreRows = this.aggregateTargetScoreRows;
-    exportRequest.group = this.displayedFor;
-    exportRequest.schoolYear = this.schoolYear;
-    exportRequest.averageScaleScore = Math.round(this.statistics.average);
-    exportRequest.standardError = Math.round(this.statistics.standardError);
-    exportRequest.subjectDefinition = this.subjectDefinition;
-
-    this.assessmentExporter.exportTargetScoresToCsv(exportRequest);
-  }
-
-  get showResults(): boolean {
-    return this.studentsTested > this.minimumStudentCount;
+    this.assessmentExporter.exportTargetScoresToCsv({
+      type: RequestType.TargetReport,
+      assessment: this.assessment,
+      targetScoreRows: this.aggregateTargetScoreRows,
+      group: this.displayedFor,
+      schoolYear: this.schoolYear,
+      averageScaleScore: Math.round(this.statistics.average),
+      standardError:
+        this.statistics.standardError != null
+          ? Math.round(this.statistics.standardError)
+          : null,
+      subjectDefinition: this.subjectDefinition
+    });
   }
 
   calculateTreeColumns() {
@@ -329,14 +380,22 @@ export class TargetReportComponent implements OnInit, ExportResults {
 
   addSubgroup(subgroupCode: string) {
     this.aggregateTargetScoreRows.push(
-      ...this.targetStatisticsCalculator.aggregateSubgroupScores(this.assessment.subject, this.allTargets, this.targetScoreExams, [ subgroupCode ], this.subgroupOptions)
+      ...this.targetStatisticsCalculator.aggregateSubgroupScores(
+        this.assessment.subject,
+        this.allTargets,
+        this.targetScoreExams,
+        [subgroupCode],
+        this.subgroupOptions
+      )
     );
 
     this.updateTargetScoreTable();
   }
 
   removeSubgroup(subgroupCode: string) {
-    this.aggregateTargetScoreRows = this.aggregateTargetScoreRows.filter(x => x.subgroup.dimensionGroups[ 0 ].type != subgroupCode);
+    this.aggregateTargetScoreRows = this.aggregateTargetScoreRows.filter(
+      x => x.subgroup.dimensionGroups[0].type != subgroupCode
+    );
     this.calculateTreeColumns();
   }
 
@@ -345,47 +404,72 @@ export class TargetReportComponent implements OnInit, ExportResults {
     this.aggregateTargetScoreRows = this.targetStatisticsCalculator.aggregateOverallScores(
       this.assessment.subject,
       this.allTargets,
-      this.targetScoreExams);
+      this.targetScoreExams
+    );
 
     // add selected subgroups
-    const subgroupCodes = this.allSubgroups.filter(x => x.selected).map(x => x.code);
+    const subgroupCodes = this.allSubgroups
+      .filter(x => x.selected)
+      .map(x => x.code);
 
     this.aggregateTargetScoreRows.push(
-      ...this.targetStatisticsCalculator.aggregateSubgroupScores(this.assessment.subject, this.allTargets, this.targetScoreExams, subgroupCodes, this.subgroupOptions)
+      ...this.targetStatisticsCalculator.aggregateSubgroupScores(
+        this.assessment.subject,
+        this.allTargets,
+        this.targetScoreExams,
+        subgroupCodes,
+        this.subgroupOptions
+      )
     );
   }
 
   private getSubgroupOrdering(): Ordering<Subgroup> {
-    const toDimension = (subgroup: Subgroup) => <any>{
-      type: subgroup.dimensionGroups[0].type,
-      value: subgroup.dimensionGroups[0].values[0] ? subgroup.dimensionGroups[0].values[0].code : null
-    };
-    const dimensionTypes: string[] = this.allSubgroups
-      .map(subgroup => subgroup.code);
-    dimensionTypes.unshift("Overall");
+    const toDimension = (subgroup: Subgroup) =>
+      <any>{
+        type: subgroup.dimensionGroups[0].type,
+        value: subgroup.dimensionGroups[0].values[0]
+          ? subgroup.dimensionGroups[0].values[0].code
+          : null
+      };
+    const dimensionTypes: string[] = this.allSubgroups.map(
+      subgroup => subgroup.code
+    );
+    dimensionTypes.unshift('Overall');
 
-    const typeComparator: Comparator<Subgroup> = ordering(ranking(dimensionTypes))
-      .on((subgroup: Subgroup) => toDimension(subgroup).type)
-      .compare;
+    const typeComparator: Comparator<Subgroup> = ordering(
+      ranking(dimensionTypes)
+    ).on((subgroup: Subgroup) => toDimension(subgroup).type).compare;
 
     const booleanOptions: any[] = [true, false, undefined];
-    const dimensionValuesByType: Map<string, any[]> = new Map();
-    dimensionValuesByType.set("Gender", this.subgroupOptions.genders);
-    dimensionValuesByType.set("Ethnicity", this.subgroupOptions.ethnicities);
-    dimensionValuesByType.set("ELAS", this.subgroupOptions.elasCodes);
-    dimensionValuesByType.set("Language", this.subgroupOptions.languages);
-    dimensionValuesByType.set("LEP", booleanOptions);
-    dimensionValuesByType.set("Section504", booleanOptions);
-    dimensionValuesByType.set("IEP", booleanOptions);
-    dimensionValuesByType.set("MigrantStatus", booleanOptions);
+    const dimensionValuesByType: Map<string, any[]> = new Map([
+      ['EconomicDisadvantage', booleanOptions],
+      ['Gender', this.subgroupOptions.genders],
+      ['Ethnicity', this.subgroupOptions.ethnicities],
+      ['EnglishLanguageAcquisitionStatus', this.subgroupOptions.elasCodes],
+      ['PrimaryLanguage', this.subgroupOptions.languages],
+      [
+        'MilitaryStudentIdentifier',
+        this.subgroupOptions.militaryConnectedCodes
+      ],
+      ['LimitedEnglishProficiency', booleanOptions],
+      ['Section504', booleanOptions],
+      ['IndividualEducationPlan', booleanOptions],
+      ['MigrantStatus', booleanOptions]
+    ]);
 
-    const valueComparator: Comparator<Subgroup> = (a: Subgroup, b: Subgroup) => {
+    const valueComparator: Comparator<Subgroup> = (
+      a: Subgroup,
+      b: Subgroup
+    ) => {
       const dimensionA = toDimension(a);
       const dimensionB = toDimension(b);
       const orderedValues: any[] = dimensionValuesByType.get(dimensionA.type);
       if (!orderedValues) return 0;
 
-      return orderedValues.indexOf(dimensionA.value) - orderedValues.indexOf(dimensionB.value);
+      return (
+        orderedValues.indexOf(dimensionA.value) -
+        orderedValues.indexOf(dimensionB.value)
+      );
     };
 
     return ordering(join(typeComparator, valueComparator));
@@ -406,32 +490,17 @@ export class TargetReportComponent implements OnInit, ExportResults {
       return [];
     }
 
-    return <TargetScoreExam[]>this.examFilterService
-      .filterExams(this.originalTargetScoreExams, this.assessment, this._filterBy);
-  }
-
-  private createAllSubgroups(settings: any): any[] {
-    const subgroups = [
-      { code: 'Gender', translatecode: 'gender-label', selected: false },
-      { code: 'Ethnicity', translatecode: 'ethnicity-label', selected: false }
-    ];
-    if (settings.elasEnabled) {
-      subgroups.push({ code: 'ELAS', translatecode: 'elas-label', selected: false });
-    }
-    subgroups.push({ code: 'Language', translatecode: 'language-label', selected: false});
-    if (settings.lepEnabled) {
-      subgroups.push({ code: 'LEP', translatecode: 'limited-english-proficiency-label', selected: false });
-    }
-    subgroups.push(
-      { code: 'Section504', translatecode: '504-label', selected: false },
-      { code: 'IEP', translatecode: 'iep-label', selected: false },
-      { code: 'MigrantStatus', translatecode: 'migrant-status-label', selected: false }
+    return <TargetScoreExam[]>(
+      this.examFilterService.filterExams(
+        this.originalTargetScoreExams,
+        this.assessment,
+        this._filterBy
+      )
     );
-    return subgroups;
   }
 
   getTargetReportingLevelString(level: TargetReportingLevel): string {
-    return TargetReportingLevel[ level ];
+    return TargetReportingLevel[level];
   }
 }
 
@@ -449,15 +518,14 @@ class Column implements BaseColumn {
   headerResolve: any;
 
   constructor({
-                id,
-                field = '',
-                headerInfoTranslationCode,
-                headerResolve
-              }: ColumnDefinition) {
+    id,
+    field = '',
+    headerInfoTranslationCode,
+    headerResolve
+  }: ColumnDefinition) {
     this.id = id;
     this.field = field ? field : id;
     this.headerInfoTranslationCode = headerInfoTranslationCode;
     this.headerResolve = headerResolve;
   }
-
 }

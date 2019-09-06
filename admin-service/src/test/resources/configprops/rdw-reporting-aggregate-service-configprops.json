@@ -1,0 +1,1949 @@
+{
+  "endpoints-org.springframework.boot.actuate.endpoint.EndpointProperties": {
+    "prefix": "endpoints",
+    "properties": {
+      "enabled": true,
+      "sensitive": null
+    }
+  },
+  "parent": {
+    "spring.cloud.config.retry-org.springframework.cloud.config.client.RetryProperties": {
+      "prefix": "spring.cloud.config.retry",
+      "properties": {
+        "maxAttempts": 6,
+        "initialInterval": 2000,
+        "maxInterval": 3000,
+        "multiplier": 1.1
+      }
+    },
+    "configClientProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "headers": {},
+        "profile": "local-docker",
+        "label": "rdw,develop,master",
+        "uri": "http://config-server:8888",
+        "enabled": true,
+        "failFast": true,
+        "token": null,
+        "authorization": null,
+        "password": null,
+        "discovery": {
+          "enabled": false,
+          "serviceId": "configserver"
+        },
+        "name": "rdw-reporting-aggregate-service",
+        "username": "user"
+      }
+    },
+    "spring.cloud.config-org.springframework.cloud.bootstrap.config.PropertySourceBootstrapProperties": {
+      "prefix": "spring.cloud.config",
+      "properties": {
+        "overrideSystemProperties": true,
+        "overrideNone": false,
+        "allowOverride": true
+      }
+    },
+    "encrypt-org.springframework.cloud.bootstrap.encrypt.KeyProperties": {
+      "prefix": "encrypt",
+      "properties": {
+        "failOnError": true,
+        "key": null,
+        "keyStore": {
+          "location": null,
+          "password": null,
+          "alias": null,
+          "secret": null
+        }
+      }
+    }
+  },
+  "management.info-org.springframework.boot.actuate.autoconfigure.InfoContributorProperties": {
+    "prefix": "management.info",
+    "properties": {
+      "git": {
+        "mode": "SIMPLE"
+      }
+    }
+  },
+  "metricsEndpoint": {
+    "prefix": "endpoints.metrics",
+    "properties": {
+      "id": "metrics",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "inetUtilsProperties": {
+    "prefix": "spring.cloud.inetutils",
+    "properties": {
+      "ignoredInterfaces": [],
+      "preferredNetworks": [],
+      "defaultIpAddress": "127.0.0.1",
+      "timeoutSeconds": 1,
+      "defaultHostname": "localhost",
+      "useOnlySiteLocalInterfaces": false
+    }
+  },
+  "spring.cache-org.springframework.boot.autoconfigure.cache.CacheProperties": {
+    "prefix": "spring.cache",
+    "properties": {
+      "ehcache": {
+        "config": null
+      },
+      "caffeine": {
+        "spec": null
+      },
+      "infinispan": {
+        "config": null
+      },
+      "cacheNames": [
+        "reportOptions",
+        "administrationConditions",
+        "assessments",
+        "assessmentGrades",
+        "assessmentTypes",
+        "booleans",
+        "strictBooleans",
+        "organizations",
+        "completenessCodes",
+        "claims",
+        "targets",
+        "ethnicities",
+        "genders",
+        "elases",
+        "languages",
+        "militaryConnectedCodes",
+        "schoolYears",
+        "subjects",
+        "activeAssessments",
+        "embargo"
+      ],
+      "couchbase": {
+        "expiration": 0
+      },
+      "hazelcast": {
+        "config": null
+      },
+      "jcache": {
+        "config": null,
+        "provider": null
+      },
+      "type": "SIMPLE",
+      "guava": {
+        "spec": null
+      }
+    }
+  },
+  "featuresEndpoint": {
+    "prefix": "endpoints.features",
+    "properties": {
+      "id": "features",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "spring.cloud.codec.kryo-org.springframework.cloud.stream.config.codec.kryo.KryoCodecProperties": {
+    "prefix": "spring.cloud.codec.kryo",
+    "properties": {}
+  },
+  "spring.rabbitmq-org.springframework.boot.autoconfigure.amqp.RabbitProperties": {
+    "prefix": "spring.rabbitmq",
+    "properties": {
+      "template": {
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "initialInterval": 1000,
+          "multiplier": 1,
+          "maxInterval": 10000
+        },
+        "mandatory": null,
+        "receiveTimeout": null,
+        "replyTimeout": null
+      },
+      "addresses": null,
+      "cache": {
+        "channel": {
+          "size": null,
+          "checkoutTimeout": null
+        },
+        "connection": {
+          "mode": "CHANNEL",
+          "size": null
+        }
+      },
+      "listener": {
+        "simple": {
+          "autoStartup": true,
+          "acknowledgeMode": null,
+          "concurrency": null,
+          "maxConcurrency": null,
+          "prefetch": null,
+          "transactionSize": null,
+          "defaultRequeueRejected": null,
+          "idleEventInterval": null,
+          "retry": {
+            "enabled": false,
+            "maxAttempts": 3,
+            "initialInterval": 1000,
+            "multiplier": 1,
+            "maxInterval": 10000,
+            "stateless": true
+          }
+        },
+        "retry": {
+          "enabled": false,
+          "maxAttempts": 3,
+          "initialInterval": 1000,
+          "multiplier": 1,
+          "maxInterval": 10000,
+          "stateless": true
+        },
+        "acknowledgeMode": null,
+        "concurrency": null,
+        "maxConcurrency": null,
+        "prefetch": null,
+        "transactionSize": null,
+        "defaultRequeueRejected": null,
+        "idleEventInterval": null,
+        "autoStartup": true
+      },
+      "publisherReturns": false,
+      "virtualHost": null,
+      "ssl": {
+        "enabled": false,
+        "keyStore": null,
+        "keyStorePassword": null,
+        "trustStore": null,
+        "trustStorePassword": null,
+        "algorithm": null,
+        "validateServerCertificate": true,
+        "verifyHostname": null
+      },
+      "password": null,
+      "port": 5672,
+      "publisherConfirms": false,
+      "host": "rabbitmq",
+      "requestedHeartbeat": null,
+      "connectionTimeout": null,
+      "username": null
+    }
+  },
+  "environmentEndpoint": {
+    "prefix": "endpoints.env",
+    "properties": {
+      "id": "env",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "org.opentestsystem.rdw.reporting.common.sqlbuilder.SqlBuilderConfig": {
+    "prefix": "sqlbuilder",
+    "properties": {
+      "templates": {
+        "targetAggregate": {
+          "clauses": {
+            "GROUP_BY": "e.school_year, e.asmt_id, ets.target_id, t.natural_id, t.claim_code",
+            "FROM": "exam_target_score ets JOIN exam e on e.id = ets.exam_id JOIN target t ON t.id = ets.target_id JOIN asmt a ON a.id = e.asmt_id",
+            "SELECT": "round(avg(e.scale_score)) AS score, round(stddev_samp(e.scale_score)/sqrt(count(*))) as std_err, count(*) as exam_count, avg(ets.student_relative_residual_score) AS student_relative_residual_score, stddev_samp(ets.student_relative_residual_score)/sqrt(count(*)) as student_relative_residual_score_std_err, avg(ets.standard_met_relative_residual_score) AS standard_met_relative_residual_score, stddev_samp(ets.standard_met_relative_residual_score)/sqrt(count(*)) as standard_met_relative_residual_score_std_err, e.school_year, e.asmt_id, ets.target_id, t.natural_id as target_natural_id, t.claim_code",
+            "WHERE": "e.school_year = :school_year AND a.grade_id = :asmt_grade_id AND a.subject_id = :subject_id AND a.type_id = 3"
+          },
+          "addons": {
+            "Overall": {
+              "clauses": {
+                "SELECT": "'Overall' AS dimension, null  AS dimension_id, null AS dimension_code"
+              },
+              "addons": null
+            },
+            "Language_filter": {
+              "clauses": {
+                "WHERE": "e.language_id in (:language_ids)"
+              },
+              "addons": null
+            },
+            "Section504": {
+              "clauses": {
+                "SELECT": "'Section504' AS dimension, e.section504 AS dimension_id, CASE WHEN e.section504 = 1 THEN 'yes' WHEN e.section504 = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_section504s OR e.section504 in (:section504_ids) )",
+                "GROUP_BY": "e.section504"
+              },
+              "addons": null
+            },
+            "IEP_filter": {
+              "clauses": {
+                "WHERE": "e.iep in (:iep_ids)"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode": {
+              "clauses": {
+                "SELECT": "'MilitaryConnectedCode' AS dimension, e.military_connected_id AS dimension_id, mc.code AS dimension_code",
+                "GROUP_BY": "e.military_connected_id, mc.code",
+                "WHERE": "( true = :all_military_connected OR e.military_connected_id in (:military_connected_ids) )",
+                "JOIN": "JOIN military_connected mc ON mc.id = e.military_connected_id"
+              },
+              "addons": null
+            },
+            "ELAS": {
+              "clauses": {
+                "GROUP_BY": "e.elas_id, el.code",
+                "SELECT": "'ELAS' AS dimension, e.elas_id AS dimension_id, el.code AS dimension_code",
+                "JOIN": "JOIN elas el ON el.id = e.elas_id",
+                "WHERE": "( true = :all_elas OR e.elas_id in (:elas_ids) )"
+              },
+              "addons": null
+            },
+            "Ethnicity": {
+              "clauses": {
+                "SELECT": "'Ethnicity' AS dimension, se.ethnicity_id AS dimension_id, et.code AS dimension_code",
+                "WHERE": "( true = :all_ethnicities OR se.ethnicity_id in (:ethnicity_ids) )",
+                "GROUP_BY": "se.ethnicity_id, et.code",
+                "JOIN": "JOIN student_ethnicity se ON se.student_id = e.student_id JOIN ethnicity et ON et.id = se.ethnicity_id"
+              },
+              "addons": null
+            },
+            "StudentEnrolledGrade": {
+              "clauses": {
+                "GROUP_BY": "e.grade_id, g.code",
+                "JOIN": "JOIN grade g ON g.id = e.grade_id",
+                "SELECT": "'StudentEnrolledGrade' AS dimension, e.grade_id AS dimension_id, g.code AS dimension_code"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage_filter": {
+              "clauses": {
+                "WHERE": "e.economic_disadvantage in (:economic_disadvantage_ids)"
+              },
+              "addons": null
+            },
+            "AdministrationCondition_filter": {
+              "clauses": {
+                "WHERE": "e.administration_condition_id in (:administration_condition_ids)"
+              },
+              "addons": null
+            },
+            "Gender": {
+              "clauses": {
+                "GROUP_BY": "s.gender_id, gn.code",
+                "WHERE": "( true = :all_genders OR s.gender_id in (:gender_ids) )",
+                "SELECT": "'Gender' AS dimension,\n s.gender_id  AS dimension_id,\n CASE WHEN s.gender_id IS NULL THEN 'undefined' ELSE gn.code END AS dimension_code",
+                "JOIN": "JOIN student s ON e.student_id = s.id LEFT JOIN gender gn on gn.id = s.gender_id"
+              },
+              "addons": null
+            },
+            "Gender_filter": {
+              "clauses": {
+                "JOIN": "JOIN student s ON e.student_id = s.id",
+                "WHERE": "s.gender_id in (:gender_ids)"
+              },
+              "addons": null
+            },
+            "Language": {
+              "clauses": {
+                "JOIN": "JOIN language lng ON lng.id = e.language_id",
+                "WHERE": "( true = :all_languages OR e.language_id in (:language_ids) )",
+                "GROUP_BY": "e.language_id, lng.code",
+                "SELECT": "'Language' AS dimension, e.language_id AS dimension_id, lng.code AS dimension_code"
+              },
+              "addons": null
+            },
+            "IEP": {
+              "clauses": {
+                "SELECT": "'IEP' AS dimension, e.iep AS dimension_id, CASE WHEN e.iep = 1 THEN 'yes' WHEN e.iep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_ieps OR e.iep in (:iep_ids) )",
+                "GROUP_BY": "e.iep"
+              },
+              "addons": null
+            },
+            "Completeness_filter": {
+              "clauses": {
+                "WHERE": "e.completeness_id in (:completeness_ids)"
+              },
+              "addons": null
+            },
+            "ELAS_filter": {
+              "clauses": {
+                "WHERE": "e.elas_id in (:elas_ids)"
+              },
+              "addons": null
+            },
+            "schools": {
+              "clauses": {
+                "GROUP_BY": "e.school_id",
+                "WHERE": "e.school_id in (:school_ids)",
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id"
+              },
+              "addons": null
+            },
+            "MigrantStatus": {
+              "clauses": {
+                "SELECT": "'MigrantStatus' AS dimension, e.migrant_status AS dimension_id, CASE WHEN e.migrant_status = 1 THEN 'yes' WHEN e.migrant_status = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_migrant_statuses OR e.migrant_status in (:migrant_status_ids) )",
+                "GROUP_BY": "e.migrant_status"
+              },
+              "addons": null
+            },
+            "LEP": {
+              "clauses": {
+                "GROUP_BY": "e.lep",
+                "WHERE": "( true = :all_leps OR e.lep in (:lep_ids) )",
+                "SELECT": "'LEP' AS dimension, e.lep AS dimension_id, CASE WHEN e.lep = 1 THEN 'yes' WHEN e.lep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "LEP_filter": {
+              "clauses": {
+                "WHERE": "e.lep in (:lep_ids)"
+              },
+              "addons": null
+            },
+            "MigrantStatus_filter": {
+              "clauses": {
+                "WHERE": "e.migrant_status in (:migrant_status_ids)"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage": {
+              "clauses": {
+                "SELECT": "'EconomicDisadvantage' AS dimension, e.economic_disadvantage AS dimension_id, CASE WHEN e.economic_disadvantage = 1 THEN 'yes' WHEN e.economic_disadvantage = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_economic_disadvantages OR e.economic_disadvantage in (:economic_disadvantage_ids) )",
+                "GROUP_BY": "e.economic_disadvantage"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode_filter": {
+              "clauses": {
+                "WHERE": "e.military_connected_id in (:military_connected_ids)"
+              },
+              "addons": null
+            },
+            "districts": {
+              "clauses": {
+                "JOIN": "JOIN school sch ON sch.id = e.school_id JOIN district d ON d.id = sch.district_id",
+                "GROUP_BY": "d.id",
+                "WHERE": "d.id in (:district_ids)",
+                "SELECT": "'District' AS organization_type, d.id AS organization_id"
+              },
+              "addons": null
+            },
+            "Section504_filter": {
+              "clauses": {
+                "WHERE": "e.section504 in (:section504_ids)"
+              },
+              "addons": null
+            },
+            "districtEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR sch.embargo_enabled = 0 OR 1 = :state_embargo_admin OR sch.district_id IN (:district_embargo_admin_ids)"
+              },
+              "addons": null
+            },
+            "Ethnicity_filter": {
+              "clauses": {
+                "WHERE": "EXISTS (select 1 from student_ethnicity where ethnicity_id in (:ethnicity_ids) and student_id = e.student_id)"
+              },
+              "addons": null
+            }
+          }
+        },
+        "customAggregate": {
+          "clauses": {
+            "WHERE": "e.school_year IN (:school_years) AND a.grade_id IN (:asmt_grade_ids) AND a.subject_id in (:subject_ids) AND a.type_id = :asmt_type_id",
+            "GROUP_BY": "e.school_year, e.asmt_id",
+            "SELECT": "round(avg(scale_score)) AS score, round(stddev_samp(scale_score)/sqrt(count(*))) as std_err, sum(CASE WHEN performance_level = 1 THEN 1 ELSE 0 END) AS level1, sum(CASE WHEN performance_level = 2 THEN 1 ELSE 0 END) AS level2, sum(CASE WHEN performance_level = 3 THEN 1 ELSE 0 END) AS level3, e.school_year, e.asmt_id",
+            "JOIN": "JOIN asmt a ON a.id = e.asmt_id"
+          },
+          "addons": {
+            "Gender": {
+              "clauses": {
+                "WHERE": "( true = :all_genders OR s.gender_id in (:gender_ids) )",
+                "JOIN": "JOIN student s ON e.student_id = s.id LEFT JOIN gender gn on gn.id = s.gender_id",
+                "SELECT": "'Gender' AS dimension,\n s.gender_id  AS dimension_id,\n CASE WHEN s.gender_id IS NULL THEN 'undefined' ELSE gn.code END AS dimension_code",
+                "GROUP_BY": "s.gender_id, gn.code"
+              },
+              "addons": null
+            },
+            "IEP_filter": {
+              "clauses": {
+                "WHERE": "e.iep in (:iep_ids)"
+              },
+              "addons": null
+            },
+            "LEP": {
+              "clauses": {
+                "WHERE": "( true = :all_leps OR e.lep in (:lep_ids) )",
+                "GROUP_BY": "e.lep",
+                "SELECT": "'LEP' AS dimension, e.lep AS dimension_id, CASE WHEN e.lep = 1 THEN 'yes' WHEN e.lep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "Ethnicity": {
+              "clauses": {
+                "SELECT": "'Ethnicity' AS dimension, se.ethnicity_id AS dimension_id, et.code AS dimension_code",
+                "JOIN": "JOIN student_ethnicity se ON se.student_id = e.student_id JOIN ethnicity et ON et.id = se.ethnicity_id",
+                "GROUP_BY": "se.ethnicity_id, et.code",
+                "WHERE": "( true = :all_ethnicities OR se.ethnicity_id in (:ethnicity_ids) )"
+              },
+              "addons": null
+            },
+            "AdministrationCondition_filter": {
+              "clauses": {
+                "WHERE": "e.administration_condition_id in (:administration_condition_ids)"
+              },
+              "addons": null
+            },
+            "Language_filter": {
+              "clauses": {
+                "WHERE": "e.language_id in (:language_ids)"
+              },
+              "addons": null
+            },
+            "ELAS_filter": {
+              "clauses": {
+                "WHERE": "e.elas_id in (:elas_ids)"
+              },
+              "addons": null
+            },
+            "allSchoolsInDistricts": {
+              "clauses": {
+                "GROUP_BY": "e.school_id",
+                "WHERE": "sch.district_id in (:school_district_ids)",
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id"
+              },
+              "addons": null
+            },
+            "allDistricts": {
+              "clauses": {
+                "GROUP_BY": "d.id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id JOIN district d ON d.id = sch.district_id",
+                "SELECT": "'District' AS organization_type, d.id AS organization_id"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage": {
+              "clauses": {
+                "WHERE": "( true = :all_economic_disadvantages OR e.economic_disadvantage in (:economic_disadvantage_ids) )",
+                "GROUP_BY": "e.economic_disadvantage",
+                "SELECT": "'EconomicDisadvantage' AS dimension, e.economic_disadvantage AS dimension_id, CASE WHEN e.economic_disadvantage = 1 THEN 'yes' WHEN e.economic_disadvantage = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "districts": {
+              "clauses": {
+                "WHERE": "d.id in (:district_ids)",
+                "GROUP_BY": "d.id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id JOIN district d ON d.id = sch.district_id",
+                "SELECT": "'District' AS organization_type, d.id AS organization_id"
+              },
+              "addons": null
+            },
+            "Gender_filter": {
+              "clauses": {
+                "WHERE": "s.gender_id in (:gender_ids)",
+                "JOIN": "JOIN student s ON e.student_id = s.id"
+              },
+              "addons": null
+            },
+            "Language": {
+              "clauses": {
+                "SELECT": "'Language' AS dimension, e.language_id AS dimension_id, lng.code AS dimension_code",
+                "JOIN": "JOIN language lng ON lng.id = e.language_id",
+                "GROUP_BY": "e.language_id, lng.code",
+                "WHERE": "( true = :all_languages OR e.language_id in (:language_ids) )"
+              },
+              "addons": null
+            },
+            "Section504": {
+              "clauses": {
+                "GROUP_BY": "e.section504",
+                "SELECT": "'Section504' AS dimension, e.section504 AS dimension_id, CASE WHEN e.section504 = 1 THEN 'yes' WHEN e.section504 = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_section504s OR e.section504 in (:section504_ids) )"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode_filter": {
+              "clauses": {
+                "WHERE": "e.military_connected_id in (:military_connected_ids)"
+              },
+              "addons": null
+            },
+            "iab": {
+              "clauses": {
+                "FROM": "iab_exam e"
+              },
+              "addons": null
+            },
+            "icaOrSummative": {
+              "clauses": {
+                "FROM": "exam e",
+                "SELECT": "sum(CASE WHEN performance_level = 4 THEN 1 ELSE 0 END) AS level4, sum(CASE WHEN performance_level = 5 THEN 1 ELSE 0 END) AS level5, sum(CASE WHEN performance_level = 6 THEN 1 ELSE 0 END) AS level6"
+              },
+              "addons": null
+            },
+            "MigrantStatus_filter": {
+              "clauses": {
+                "WHERE": "e.migrant_status in (:migrant_status_ids)"
+              },
+              "addons": null
+            },
+            "LEP_filter": {
+              "clauses": {
+                "WHERE": "e.lep in (:lep_ids)"
+              },
+              "addons": null
+            },
+            "Section504_filter": {
+              "clauses": {
+                "WHERE": "e.section504 in (:section504_ids)"
+              },
+              "addons": null
+            },
+            "MigrantStatus": {
+              "clauses": {
+                "GROUP_BY": "e.migrant_status",
+                "SELECT": "'MigrantStatus' AS dimension, e.migrant_status AS dimension_id, CASE WHEN e.migrant_status = 1 THEN 'yes' WHEN e.migrant_status = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_migrant_statuses OR e.migrant_status in (:migrant_status_ids) )"
+              },
+              "addons": null
+            },
+            "state": {
+              "clauses": {
+                "SELECT": "'State' AS organization_type, NULL AS organization_id"
+              },
+              "addons": null
+            },
+            "ELAS": {
+              "clauses": {
+                "SELECT": "'ELAS' AS dimension, e.elas_id AS dimension_id, el.code AS dimension_code",
+                "JOIN": "JOIN elas el ON el.id = e.elas_id",
+                "GROUP_BY": "e.elas_id, el.code",
+                "WHERE": "( true = :all_elas OR e.elas_id in (:elas_ids) )"
+              },
+              "addons": null
+            },
+            "schools": {
+              "clauses": {
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id",
+                "GROUP_BY": "e.school_id",
+                "WHERE": "e.school_id in (:school_ids)"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode": {
+              "clauses": {
+                "SELECT": "'MilitaryConnectedCode' AS dimension, e.military_connected_id AS dimension_id, mc.code AS dimension_code",
+                "WHERE": "( true = :all_military_connected OR e.military_connected_id in (:military_connected_ids) )",
+                "JOIN": "JOIN military_connected mc ON mc.id = e.military_connected_id",
+                "GROUP_BY": "e.military_connected_id, mc.code"
+              },
+              "addons": null
+            },
+            "stateEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR EXISTS (SELECT 1 FROM state_embargo WHERE aggregate = 0) OR 1 = :state_embargo_admin"
+              },
+              "addons": null
+            },
+            "districtEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR sch.embargo_enabled = 0 OR 1 = :state_embargo_admin OR sch.district_id IN (:district_embargo_admin_ids)"
+              },
+              "addons": null
+            },
+            "IEP": {
+              "clauses": {
+                "WHERE": "( true = :all_ieps OR e.iep in (:iep_ids) )",
+                "SELECT": "'IEP' AS dimension, e.iep AS dimension_id, CASE WHEN e.iep = 1 THEN 'yes' WHEN e.iep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "GROUP_BY": "e.iep"
+              },
+              "addons": null
+            },
+            "StudentEnrolledGrade": {
+              "clauses": {
+                "GROUP_BY": "e.grade_id, g.code",
+                "SELECT": "'StudentEnrolledGrade' AS dimension, e.grade_id AS dimension_id, g.code AS dimension_code",
+                "JOIN": "JOIN grade g ON g.id = e.grade_id"
+              },
+              "addons": null
+            },
+            "Ethnicity_filter": {
+              "clauses": {
+                "WHERE": "EXISTS (select 1 from student_ethnicity where ethnicity_id in (:ethnicity_ids) and student_id = e.student_id)"
+              },
+              "addons": null
+            },
+            "Completeness_filter": {
+              "clauses": {
+                "WHERE": "e.completeness_id in (:completeness_ids)"
+              },
+              "addons": null
+            },
+            "Overall": {
+              "clauses": {
+                "SELECT": "'Overall' AS dimension, null  AS dimension_id, null AS dimension_code"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage_filter": {
+              "clauses": {
+                "WHERE": "e.economic_disadvantage in (:economic_disadvantage_ids)"
+              },
+              "addons": null
+            }
+          }
+        },
+        "claimAggregate": {
+          "clauses": {
+            "SELECT": "sum(CASE WHEN ecs.category = 1 THEN 1 ELSE 0 END) AS level1, sum(CASE WHEN ecs.category = 2 THEN 1 ELSE 0 END) AS level2, sum(CASE WHEN ecs.category = 3 THEN 1 ELSE 0 END) AS level3, sum(CASE WHEN ecs.category = 4 THEN 1 ELSE 0 END) AS level4, sum(CASE WHEN ecs.category = 5 THEN 1 ELSE 0 END) AS level5, sum(CASE WHEN ecs.category = 6 THEN 1 ELSE 0 END) AS level6, e.school_year, e.asmt_id, ecs.subject_claim_score_id, ss.code as claim_code",
+            "GROUP_BY": "e.school_year, e.asmt_id, ecs.subject_claim_score_id, ss.code",
+            "FROM": "exam_claim_score ecs JOIN exam e on e.id = ecs.exam_id JOIN subject_score ss ON ss.id = ecs.subject_claim_score_id JOIN asmt a ON a.id = e.asmt_id",
+            "WHERE": "e.school_year IN (:school_years) AND a.grade_id IN (:asmt_grade_ids) AND a.subject_id in (:subject_ids) AND a.type_id = :asmt_type_id AND ss.code in (:subject_claim_score_codes)"
+          },
+          "addons": {
+            "Gender_filter": {
+              "clauses": {
+                "JOIN": "JOIN student s ON e.student_id = s.id",
+                "WHERE": "s.gender_id in (:gender_ids)"
+              },
+              "addons": null
+            },
+            "allSchoolsInDistricts": {
+              "clauses": {
+                "GROUP_BY": "e.school_id",
+                "WHERE": "sch.district_id in (:school_district_ids)",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id",
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id"
+              },
+              "addons": null
+            },
+            "districts": {
+              "clauses": {
+                "JOIN": "JOIN school sch ON sch.id = e.school_id JOIN district d ON d.id = sch.district_id",
+                "SELECT": "'District' AS organization_type, d.id AS organization_id",
+                "WHERE": "d.id in (:district_ids)",
+                "GROUP_BY": "d.id"
+              },
+              "addons": null
+            },
+            "Section504_filter": {
+              "clauses": {
+                "WHERE": "e.section504 in (:section504_ids)"
+              },
+              "addons": null
+            },
+            "LEP": {
+              "clauses": {
+                "SELECT": "'LEP' AS dimension, e.lep AS dimension_id, CASE WHEN e.lep = 1 THEN 'yes' WHEN e.lep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "GROUP_BY": "e.lep",
+                "WHERE": "( true = :all_leps OR e.lep in (:lep_ids) )"
+              },
+              "addons": null
+            },
+            "ELAS": {
+              "clauses": {
+                "WHERE": "( true = :all_elas OR e.elas_id in (:elas_ids) )",
+                "JOIN": "JOIN elas el ON el.id = e.elas_id",
+                "SELECT": "'ELAS' AS dimension, e.elas_id AS dimension_id, el.code AS dimension_code",
+                "GROUP_BY": "e.elas_id, el.code"
+              },
+              "addons": null
+            },
+            "Ethnicity": {
+              "clauses": {
+                "GROUP_BY": "se.ethnicity_id, et.code",
+                "WHERE": "( true = :all_ethnicities OR se.ethnicity_id in (:ethnicity_ids) )",
+                "SELECT": "'Ethnicity' AS dimension, se.ethnicity_id AS dimension_id, et.code AS dimension_code",
+                "JOIN": "JOIN student_ethnicity se ON se.student_id = e.student_id JOIN ethnicity et ON et.id = se.ethnicity_id"
+              },
+              "addons": null
+            },
+            "Ethnicity_filter": {
+              "clauses": {
+                "WHERE": "EXISTS (select 1 from student_ethnicity where ethnicity_id in (:ethnicity_ids) and student_id = e.student_id)"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode_filter": {
+              "clauses": {
+                "WHERE": "e.military_connected_id in (:military_connected_ids)"
+              },
+              "addons": null
+            },
+            "LEP_filter": {
+              "clauses": {
+                "WHERE": "e.lep in (:lep_ids)"
+              },
+              "addons": null
+            },
+            "allDistricts": {
+              "clauses": {
+                "GROUP_BY": "d.id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id JOIN district d ON d.id = sch.district_id",
+                "SELECT": "'District' AS organization_type, d.id AS organization_id"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage": {
+              "clauses": {
+                "GROUP_BY": "e.economic_disadvantage",
+                "SELECT": "'EconomicDisadvantage' AS dimension, e.economic_disadvantage AS dimension_id, CASE WHEN e.economic_disadvantage = 1 THEN 'yes' WHEN e.economic_disadvantage = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_economic_disadvantages OR e.economic_disadvantage in (:economic_disadvantage_ids) )"
+              },
+              "addons": null
+            },
+            "MigrantStatus": {
+              "clauses": {
+                "WHERE": "( true = :all_migrant_statuses OR e.migrant_status in (:migrant_status_ids) )",
+                "GROUP_BY": "e.migrant_status",
+                "SELECT": "'MigrantStatus' AS dimension, e.migrant_status AS dimension_id, CASE WHEN e.migrant_status = 1 THEN 'yes' WHEN e.migrant_status = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "stateEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR EXISTS (SELECT 1 FROM state_embargo WHERE aggregate = 0) OR 1 = :state_embargo_admin"
+              },
+              "addons": null
+            },
+            "Section504": {
+              "clauses": {
+                "WHERE": "( true = :all_section504s OR e.section504 in (:section504_ids) )",
+                "SELECT": "'Section504' AS dimension, e.section504 AS dimension_id, CASE WHEN e.section504 = 1 THEN 'yes' WHEN e.section504 = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "GROUP_BY": "e.section504"
+              },
+              "addons": null
+            },
+            "MigrantStatus_filter": {
+              "clauses": {
+                "WHERE": "e.migrant_status in (:migrant_status_ids)"
+              },
+              "addons": null
+            },
+            "schools": {
+              "clauses": {
+                "GROUP_BY": "e.school_id",
+                "JOIN": "JOIN school sch ON sch.id = e.school_id",
+                "WHERE": "e.school_id in (:school_ids)",
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id"
+              },
+              "addons": null
+            },
+            "state": {
+              "clauses": {
+                "SELECT": "'State' AS organization_type, NULL AS organization_id"
+              },
+              "addons": null
+            },
+            "Language": {
+              "clauses": {
+                "WHERE": "( true = :all_languages OR e.language_id in (:language_ids) )",
+                "GROUP_BY": "e.language_id, lng.code",
+                "JOIN": "JOIN language lng ON lng.id = e.language_id",
+                "SELECT": "'Language' AS dimension, e.language_id AS dimension_id, lng.code AS dimension_code"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode": {
+              "clauses": {
+                "SELECT": "'MilitaryConnectedCode' AS dimension, e.military_connected_id AS dimension_id, mc.code AS dimension_code",
+                "WHERE": "( true = :all_military_connected OR e.military_connected_id in (:military_connected_ids) )",
+                "GROUP_BY": "e.military_connected_id, mc.code",
+                "JOIN": "JOIN military_connected mc ON mc.id = e.military_connected_id"
+              },
+              "addons": null
+            },
+            "IEP": {
+              "clauses": {
+                "WHERE": "( true = :all_ieps OR e.iep in (:iep_ids) )",
+                "SELECT": "'IEP' AS dimension, e.iep AS dimension_id, CASE WHEN e.iep = 1 THEN 'yes' WHEN e.iep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "GROUP_BY": "e.iep"
+              },
+              "addons": null
+            },
+            "Gender": {
+              "clauses": {
+                "JOIN": "JOIN student s ON e.student_id = s.id LEFT JOIN gender gn on gn.id = s.gender_id",
+                "GROUP_BY": "s.gender_id, gn.code",
+                "WHERE": "( true = :all_genders OR s.gender_id in (:gender_ids) )",
+                "SELECT": "'Gender' AS dimension,\n s.gender_id  AS dimension_id,\n CASE WHEN s.gender_id IS NULL THEN 'undefined' ELSE gn.code END AS dimension_code"
+              },
+              "addons": null
+            },
+            "AdministrationCondition_filter": {
+              "clauses": {
+                "WHERE": "e.administration_condition_id in (:administration_condition_ids)"
+              },
+              "addons": null
+            },
+            "districtEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR sch.embargo_enabled = 0 OR 1 = :state_embargo_admin OR sch.district_id IN (:district_embargo_admin_ids)"
+              },
+              "addons": null
+            },
+            "Overall": {
+              "clauses": {
+                "SELECT": "'Overall' AS dimension, null  AS dimension_id, null AS dimension_code"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage_filter": {
+              "clauses": {
+                "WHERE": "e.economic_disadvantage in (:economic_disadvantage_ids)"
+              },
+              "addons": null
+            },
+            "StudentEnrolledGrade": {
+              "clauses": {
+                "GROUP_BY": "e.grade_id, g.code",
+                "SELECT": "'StudentEnrolledGrade' AS dimension, e.grade_id AS dimension_id, g.code AS dimension_code",
+                "JOIN": "JOIN grade g ON g.id = e.grade_id"
+              },
+              "addons": null
+            },
+            "IEP_filter": {
+              "clauses": {
+                "WHERE": "e.iep in (:iep_ids)"
+              },
+              "addons": null
+            },
+            "Completeness_filter": {
+              "clauses": {
+                "WHERE": "e.completeness_id in (:completeness_ids)"
+              },
+              "addons": null
+            },
+            "ELAS_filter": {
+              "clauses": {
+                "WHERE": "e.elas_id in (:elas_ids)"
+              },
+              "addons": null
+            },
+            "Language_filter": {
+              "clauses": {
+                "WHERE": "e.language_id in (:language_ids)"
+              },
+              "addons": null
+            }
+          }
+        },
+        "longitudinal": {
+          "clauses": {
+            "GROUP_BY": "e.school_year, e.subject_id, e.asmt_grade_id",
+            "SELECT": "round(avg(CASE WHEN e.years_in_one_org = :cohort_years THEN e.scale_score ELSE NULL END)) AS cohort_score, round(avg(e.scale_score)) AS score, round(stddev_samp(CASE WHEN e.years_in_one_org = :cohort_years THEN e.scale_score ELSE NULL END)/sqrt(sum(CASE WHEN e.years_in_one_org = :cohort_years THEN 1 ELSE 0 END))) AS cohort_std_err, round(stddev_samp(e.scale_score)/sqrt(count(*))) AS std_err, sum(CASE WHEN e.performance_level = 1 THEN 1 ELSE 0 END) AS level1, sum(CASE WHEN e.performance_level = 2 THEN 1 ELSE 0 END) AS level2, sum(CASE WHEN e.performance_level = 3 THEN 1 ELSE 0 END) AS level3, sum(CASE WHEN e.performance_level = 4 THEN 1 ELSE 0 END) AS level4, sum(CASE WHEN e.performance_level = 5 THEN 1 ELSE 0 END) AS level5, sum(CASE WHEN e.performance_level = 6 THEN 1 ELSE 0 END) AS level6, sum(CASE WHEN (e.performance_level = 1 AND e.years_in_one_org = :cohort_years) THEN 1 ELSE 0 END) AS cohort_level1, sum(CASE WHEN (e.performance_level = 2 AND e.years_in_one_org = :cohort_years) THEN 1 ELSE 0 END) AS cohort_level2, sum(CASE WHEN (e.performance_level = 3 AND e.years_in_one_org = :cohort_years) THEN 1 ELSE 0 END) AS cohort_level3, sum(CASE WHEN (e.performance_level = 4 AND e.years_in_one_org = :cohort_years) THEN 1 ELSE 0 END) AS cohort_level4, sum(CASE WHEN (e.performance_level = 5 AND e.years_in_one_org = :cohort_years) THEN 1 ELSE 0 END) AS cohort_level5, sum(CASE WHEN (e.performance_level = 6 AND e.years_in_one_org = :cohort_years) THEN 1 ELSE 0 END) AS cohort_level6, e.school_year, e.subject_id, e.asmt_grade_id, max(e.asmt_id) as asmt_id, CASE WHEN max(e.asmt_id) = min(e.asmt_id) THEN true ELSE false END AS singleAsmtInAggregate"
+          },
+          "addons": {
+            "LEP": {
+              "clauses": {
+                "WHERE": "( true = :all_leps OR e.lep in (:lep_ids) )",
+                "GROUP_BY": "e.lep",
+                "SELECT": "'LEP' AS dimension, e.lep AS dimension_id, CASE WHEN e.lep = 1 THEN 'yes' WHEN e.lep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "allDistricts": {
+              "clauses": {
+                "FROM": "(\n   SELECT\n     f.*,\n     sch.district_id,\n     sch.embargo_enabled,\n     count(*) OVER (PARTITION BY f.student_id, sch.district_id ) AS years_in_one_org\n   FROM exam_longitudinal f\n    JOIN school sch ON sch.id = f.school_id\n   WHERE\n     f.subject_id = :subject_id AND school_year_asmt_grade_code IN (:yearGradePairs)\n) e",
+                "GROUP_BY": "e.district_id",
+                "SELECT": "'District' AS organization_type, e.district_id AS organization_id"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage": {
+              "clauses": {
+                "GROUP_BY": "e.economic_disadvantage",
+                "SELECT": "'EconomicDisadvantage' AS dimension, e.economic_disadvantage AS dimension_id, CASE WHEN e.economic_disadvantage = 1 THEN 'yes' WHEN e.economic_disadvantage = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_economic_disadvantages OR e.economic_disadvantage in (:economic_disadvantage_ids) )"
+              },
+              "addons": null
+            },
+            "IEP_filter": {
+              "clauses": {
+                "WHERE": "e.iep in (:iep_ids)"
+              },
+              "addons": null
+            },
+            "Section504_filter": {
+              "clauses": {
+                "WHERE": "e.section504 in (:section504_ids)"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode": {
+              "clauses": {
+                "WHERE": "( true = :all_military_connected OR e.military_connected_id in (:military_connected_ids) )",
+                "SELECT": "'MilitaryConnectedCode' AS dimension, e.military_connected_id AS dimension_id, mc.code AS dimension_code",
+                "JOIN": "JOIN military_connected mc ON mc.id = e.military_connected_id",
+                "GROUP_BY": "e.military_connected_id, mc.code"
+              },
+              "addons": null
+            },
+            "Overall": {
+              "clauses": {
+                "SELECT": "'Overall' AS dimension, null  AS dimension_id, null AS dimension_code"
+              },
+              "addons": null
+            },
+            "Language": {
+              "clauses": {
+                "WHERE": "( true = :all_languages OR e.language_id in (:language_ids) )",
+                "JOIN": "JOIN language lng ON lng.id = e.language_id",
+                "SELECT": "'Language' AS dimension, e.language_id AS dimension_id, lng.code AS dimension_code",
+                "GROUP_BY": "e.language_id, lng.code"
+              },
+              "addons": null
+            },
+            "Ethnicity_filter": {
+              "clauses": {
+                "WHERE": "EXISTS (select 1 from student_ethnicity where ethnicity_id in (:ethnicity_ids) and student_id = e.student_id)"
+              },
+              "addons": null
+            },
+            "MigrantStatus_filter": {
+              "clauses": {
+                "WHERE": "e.migrant_status in (:migrant_status_ids)"
+              },
+              "addons": null
+            },
+            "ELAS": {
+              "clauses": {
+                "GROUP_BY": "e.elas_id, el.code",
+                "SELECT": "'ELAS' AS dimension, e.elas_id AS dimension_id, el.code AS dimension_code",
+                "WHERE": "( true = :all_elas OR e.elas_id in (:elas_ids) )",
+                "JOIN": "JOIN elas el ON el.id = e.elas_id"
+              },
+              "addons": null
+            },
+            "stateEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR EXISTS (SELECT 1 FROM state_embargo WHERE aggregate = 0) OR 1 = :state_embargo_admin"
+              },
+              "addons": null
+            },
+            "Gender": {
+              "clauses": {
+                "GROUP_BY": "s.gender_id, gn.code",
+                "WHERE": "( true = :all_genders OR s.gender_id in (:gender_ids) )",
+                "JOIN": "JOIN student s ON e.student_id = s.id LEFT JOIN gender gn on gn.id = s.gender_id",
+                "SELECT": "'Gender' AS dimension,\n s.gender_id  AS dimension_id,\n CASE WHEN s.gender_id IS NULL THEN 'undefined' ELSE gn.code END AS dimension_code"
+              },
+              "addons": null
+            },
+            "ELAS_filter": {
+              "clauses": {
+                "WHERE": "e.elas_id in (:elas_ids)"
+              },
+              "addons": null
+            },
+            "MigrantStatus": {
+              "clauses": {
+                "GROUP_BY": "e.migrant_status",
+                "WHERE": "( true = :all_migrant_statuses OR e.migrant_status in (:migrant_status_ids) )",
+                "SELECT": "'MigrantStatus' AS dimension, e.migrant_status AS dimension_id, CASE WHEN e.migrant_status = 1 THEN 'yes' WHEN e.migrant_status = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "Gender_filter": {
+              "clauses": {
+                "JOIN": "JOIN student s ON e.student_id = s.id",
+                "WHERE": "s.gender_id in (:gender_ids)"
+              },
+              "addons": null
+            },
+            "StudentEnrolledGrade": {
+              "clauses": {
+                "GROUP_BY": "e.grade_id, g.code",
+                "JOIN": "JOIN grade g ON g.id = e.grade_id",
+                "SELECT": "'StudentEnrolledGrade' AS dimension, e.grade_id AS dimension_id, g.code AS dimension_code"
+              },
+              "addons": null
+            },
+            "Ethnicity": {
+              "clauses": {
+                "JOIN": "JOIN student_ethnicity se ON se.student_id = e.student_id JOIN ethnicity et ON et.id = se.ethnicity_id",
+                "GROUP_BY": "se.ethnicity_id, et.code",
+                "WHERE": "( true = :all_ethnicities OR se.ethnicity_id in (:ethnicity_ids) )",
+                "SELECT": "'Ethnicity' AS dimension, se.ethnicity_id AS dimension_id, et.code AS dimension_code"
+              },
+              "addons": null
+            },
+            "districts": {
+              "clauses": {
+                "GROUP_BY": "e.district_id",
+                "SELECT": "'District' AS organization_type, e.district_id AS organization_id",
+                "FROM": "(\n   SELECT\n     f.*,\n     sch.district_id,\n     sch.embargo_enabled,\n     count(*) OVER (PARTITION BY f.student_id, sch.district_id ) AS years_in_one_org\n   FROM exam_longitudinal f\n    JOIN school sch ON sch.id = f.school_id\n   WHERE\n     f.subject_id = :subject_id AND school_year_asmt_grade_code IN (:yearGradePairs)\n   AND sch.district_id in (:district_ids)\n) e"
+              },
+              "addons": null
+            },
+            "allSchoolsInDistricts": {
+              "clauses": {
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id",
+                "GROUP_BY": "e.school_id",
+                "FROM": "(\n   SELECT\n     f.*,\n     sch.district_id,\n     sch.embargo_enabled,\n     count(*) OVER (PARTITION BY f.student_id, f.school_id ) AS years_in_one_org\n   FROM exam_longitudinal f\n    JOIN school sch ON sch.id = f.school_id\n   WHERE\n     f.subject_id = :subject_id AND school_year_asmt_grade_code IN (:yearGradePairs)\n   AND sch.district_id in (:school_district_ids)\n) e"
+              },
+              "addons": null
+            },
+            "state": {
+              "clauses": {
+                "FROM": "(\n   SELECT\n     f.*,\n     count(*) OVER (PARTITION BY f.student_id ) AS years_in_one_org\n   FROM exam_longitudinal f\n   WHERE\n     f.subject_id = :subject_id AND school_year_asmt_grade_code IN (:yearGradePairs)\n) e",
+                "SELECT": "'State' AS organization_type, NULL AS organization_id"
+              },
+              "addons": null
+            },
+            "Completeness_filter": {
+              "clauses": {
+                "WHERE": "e.completeness_id in (:completeness_ids)"
+              },
+              "addons": null
+            },
+            "MilitaryConnectedCode_filter": {
+              "clauses": {
+                "WHERE": "e.military_connected_id in (:military_connected_ids)"
+              },
+              "addons": null
+            },
+            "LEP_filter": {
+              "clauses": {
+                "WHERE": "e.lep in (:lep_ids)"
+              },
+              "addons": null
+            },
+            "Section504": {
+              "clauses": {
+                "WHERE": "( true = :all_section504s OR e.section504 in (:section504_ids) )",
+                "GROUP_BY": "e.section504",
+                "SELECT": "'Section504' AS dimension, e.section504 AS dimension_id, CASE WHEN e.section504 = 1 THEN 'yes' WHEN e.section504 = 0 THEN 'no' ELSE 'undefined' END AS dimension_code"
+              },
+              "addons": null
+            },
+            "schools": {
+              "clauses": {
+                "FROM": "(\n   SELECT\n     f.*,\n     sch.district_id,\n     sch.embargo_enabled,\n     count(*) OVER (PARTITION BY f.student_id, f.school_id ) AS years_in_one_org\n   FROM exam_longitudinal f\n    JOIN school sch ON sch.id = f.school_id\n   WHERE\n     subject_id = :subject_id AND school_year_asmt_grade_code IN (:yearGradePairs)\n    AND f.school_id in (:school_ids)\n) e",
+                "SELECT": "'School' AS organization_type, e.school_id AS organization_id",
+                "GROUP_BY": "e.school_id"
+              },
+              "addons": null
+            },
+            "IEP": {
+              "clauses": {
+                "SELECT": "'IEP' AS dimension, e.iep AS dimension_id, CASE WHEN e.iep = 1 THEN 'yes' WHEN e.iep = 0 THEN 'no' ELSE 'undefined' END AS dimension_code",
+                "WHERE": "( true = :all_ieps OR e.iep in (:iep_ids) )",
+                "GROUP_BY": "e.iep"
+              },
+              "addons": null
+            },
+            "EconomicDisadvantage_filter": {
+              "clauses": {
+                "WHERE": "e.economic_disadvantage in (:economic_disadvantage_ids)"
+              },
+              "addons": null
+            },
+            "AdministrationCondition_filter": {
+              "clauses": {
+                "WHERE": "e.administration_condition_id in (:administration_condition_ids)"
+              },
+              "addons": null
+            },
+            "districtEmbargo": {
+              "clauses": {
+                "WHERE": "e.school_year < 2019 OR e.embargo_enabled = 0 OR 1 = :state_embargo_admin OR e.district_id IN (:district_embargo_admin_ids)"
+              },
+              "addons": null
+            },
+            "Language_filter": {
+              "clauses": {
+                "WHERE": "e.language_id in (:language_ids)"
+              },
+              "addons": null
+            }
+          }
+        }
+      }
+    }
+  },
+  "configClientHealthProperties": {
+    "prefix": "health.config",
+    "properties": {
+      "timeToLive": 300000,
+      "enabled": false
+    }
+  },
+  "spring.cloud.service-registry.auto-registration-org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationProperties": {
+    "prefix": "spring.cloud.service-registry.auto-registration",
+    "properties": {
+      "enabled": true,
+      "registerManagement": true,
+      "failFast": false
+    }
+  },
+  "spring.cloud.stream-org.springframework.cloud.stream.config.BindingServiceProperties": {
+    "prefix": "spring.cloud.stream",
+    "properties": {
+      "bindings": {
+        "AggregateRequest": {
+          "group": "default",
+          "contentType": "application/json",
+          "producer": {
+            "requiredGroups": [
+              "default"
+            ]
+          }
+        },
+        "AggregateResponse": {
+          "group": "default",
+          "contentType": "application/json",
+          "producer": {
+            "requiredGroups": [
+              "default"
+            ]
+          }
+        },
+        "springCloudBusInput": {
+          "destination": "springCloudBus"
+        },
+        "springCloudBusOutput": {
+          "destination": "springCloudBus",
+          "contentType": "application/json"
+        }
+      }
+    }
+  },
+  "scopedTarget.olapDataSourceElementsProperties": {
+    "prefix": "datasources.olap_ro",
+    "properties": {
+      "schemaSearchPath": null,
+      "urlParts": {
+        "protocol": "jdbc:redshift:",
+        "hosts": "localhost:5432",
+        "database": "dev",
+        "properties": "ApplicationName=rdw-reporting-aggregate-service&loginTimeout=10&socketTimeout=0"
+      },
+      "tenants": {},
+      "minIdle": null,
+      "validationQuery": "SELECT 1",
+      "initialSize": null,
+      "url": "jdbc:redshift://localhost:5432/dev?ApplicationName=rdw-reporting-aggregate-service&loginTimeout=10&socketTimeout=0",
+      "logAbandoned": null,
+      "password": "******",
+      "testWhileIdle": true,
+      "maxIdle": null,
+      "removeAbandoned": null,
+      "driverClassName": "com.amazon.redshift.jdbc42.Driver",
+      "removeAbandonedTimeout": null,
+      "username": "root",
+      "validationInterval": 30000,
+      "maxActive": null
+    }
+  },
+  "serverProperties": {
+    "prefix": "server",
+    "properties": {
+      "contextParameters": {},
+      "address": null,
+      "maxHttpPostSize": 0,
+      "undertow": {
+        "maxHttpPostSize": -1,
+        "bufferSize": null,
+        "buffersPerRegion": null,
+        "ioThreads": null,
+        "workerThreads": null,
+        "directBuffers": null,
+        "accesslog": {
+          "enabled": null,
+          "pattern": "common",
+          "prefix": "access_log.",
+          "suffix": "log",
+          "dir": "/logs",
+          "rotate": true
+        }
+      },
+      "tomcat": {
+        "accesslog": {
+          "enabled": false,
+          "pattern": "common",
+          "directory": "logs",
+          "prefix": "access_log",
+          "suffix": ".log",
+          "rotate": true,
+          "renameOnRotate": false,
+          "fileDateFormat": ".yyyy-MM-dd",
+          "requestAttributesEnabled": false,
+          "buffered": true
+        },
+        "internalProxies": "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1",
+        "protocolHeader": null,
+        "protocolHeaderHttpsValue": "https",
+        "portHeader": "X-Forwarded-Port",
+        "remoteIpHeader": null,
+        "basedir": null,
+        "backgroundProcessorDelay": 10,
+        "maxThreads": 4,
+        "minSpareThreads": 10,
+        "maxHttpPostSize": 2097152,
+        "redirectContextRoot": true,
+        "uriEncoding": "UTF-8",
+        "maxConnections": 0,
+        "acceptCount": 10,
+        "additionalTldSkipPatterns": []
+      },
+      "displayName": "application",
+      "session": {
+        "timeout": null,
+        "trackingModes": null,
+        "persistent": false,
+        "storeDir": null,
+        "cookie": {
+          "name": null,
+          "domain": null,
+          "path": null,
+          "comment": null,
+          "httpOnly": null,
+          "secure": null,
+          "maxAge": null
+        }
+      },
+      "contextPath": null,
+      "error": {
+        "path": "/error",
+        "includeStacktrace": "NEVER"
+      },
+      "ssl": null,
+      "serverHeader": null,
+      "useForwardHeaders": null,
+      "port": null,
+      "maxHttpHeaderSize": 131072,
+      "servletPath": "/",
+      "jspServlet": null,
+      "jetty": {
+        "maxHttpPostSize": 200000,
+        "acceptors": -1,
+        "selectors": -1
+      },
+      "connectionTimeout": null
+    }
+  },
+  "spring.metrics.export-org.springframework.boot.actuate.metrics.export.MetricExportProperties": {
+    "prefix": "spring.metrics.export",
+    "properties": {
+      "excludes": null,
+      "statsd": {
+        "host": null,
+        "port": 8125,
+        "prefix": null
+      },
+      "includes": null,
+      "triggers": {},
+      "enabled": true,
+      "redis": {
+        "prefix": "spring.metrics.rdw-reporting-aggregate-service.24331746e715162d76e1934b1f9444d9",
+        "key": "******"
+      },
+      "aggregate": {
+        "prefix": "rdw-reporting-aggregate-service.24331746e715162d76e1934b1f9444d9",
+        "keyPattern": "k.d"
+      }
+    }
+  },
+  "spring.integration.poller-org.springframework.cloud.stream.config.DefaultPollerProperties": {
+    "prefix": "spring.integration.poller",
+    "properties": {
+      "fixedDelay": 1000,
+      "maxMessagesPerPoll": 1
+    }
+  },
+  "configurationPropertiesReportEndpoint": {
+    "prefix": "endpoints.configprops",
+    "properties": {
+      "id": "configprops",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "loggersEndpoint": {
+    "prefix": "endpoints.loggers",
+    "properties": {
+      "id": "loggers",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "endpoints.jmx-org.springframework.boot.actuate.autoconfigure.EndpointMBeanExportProperties": {
+    "prefix": "endpoints.jmx",
+    "properties": {
+      "uniqueNames": false,
+      "staticNames": {},
+      "enabled": true,
+      "domain": ""
+    }
+  },
+  "spring.http.encoding-org.springframework.boot.autoconfigure.web.HttpEncodingProperties": {
+    "prefix": "spring.http.encoding",
+    "properties": {
+      "charset": "UTF-8",
+      "force": false,
+      "mapping": null,
+      "forceRequest": false,
+      "forceResponse": false
+    }
+  },
+  "shutdownEndpoint": {
+    "prefix": "endpoints.shutdown",
+    "properties": {
+      "id": "shutdown",
+      "sensitive": true,
+      "enabled": false
+    }
+  },
+  "beansEndpoint": {
+    "prefix": "endpoints.beans",
+    "properties": {
+      "id": "beans",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.aggregateReportingPropertiesRoot": {
+    "prefix": "aggregate-reporting",
+    "properties": {
+      "stateAggregateAssessmentTypes": [
+        "sum"
+      ],
+      "tenants": {},
+      "assessmentTypes": [
+        "ica",
+        "sum",
+        "iab"
+      ],
+      "statewideUserAssessmentTypes": [
+        "sum"
+      ]
+    }
+  },
+  "archivePropertiesRoot": {
+    "prefix": "archive",
+    "properties": {
+      "tenants": {
+        "TS": {
+          "uriRoot": null,
+          "pathPrefix": "TS",
+          "s3AccessKey": null,
+          "s3SecretKey": null,
+          "s3RegionStatic": null,
+          "s3Sse": null
+        }
+      },
+      "s3SecretKey": null,
+      "s3AccessKey": null,
+      "s3Sse": null,
+      "s3RegionStatic": "us-west-2",
+      "uriRoot": "file:///tmp/",
+      "pathPrefix": null
+    }
+  },
+  "requestMappingEndpoint": {
+    "prefix": "endpoints.mappings",
+    "properties": {
+      "id": "mappings",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "scopedTarget.reportingSystemSettings": {
+    "prefix": "reporting",
+    "properties": {
+      "irisVendorId": null,
+      "tenants": {
+        "CA": {
+          "analyticsTrackingId": null,
+          "interpretiveGuideUrl": null,
+          "accessDeniedUrl": null,
+          "landingPageUrl": null,
+          "irisVendorId": null,
+          "minItemDataYear": null,
+          "percentileDisplayEnabled": null,
+          "reportLanguages": [],
+          "schoolYear": null,
+          "state": {
+            "name": "California",
+            "code": "CA"
+          },
+          "transferAccessEnabled": null,
+          "translationLocation": null,
+          "uiLanguages": [],
+          "userGuideUrl": null,
+          "targetReport": {
+            "insufficientDataCutoff": null,
+            "minNumberOfStudents": null
+          },
+          "studentFields": {
+            "MigrantStatus": "Enabled",
+            "Section504": "Disabled",
+            "LimitedEnglishProficiency": "Disabled",
+            "Ethnicity": "Enabled",
+            "EconomicDisadvantage": "Disabled",
+            "Gender": "Disabled",
+            "EnglishLanguageAcquisitionStatus": "Enabled",
+            "IndividualEducationPlan": "Disabled",
+            "PrimaryLanguage": "Enabled",
+            "MilitaryStudentIdentifier": "Disabled"
+          },
+          "effectiveReportLanguages": [
+            "en"
+          ]
+        },
+        "TS": {
+          "analyticsTrackingId": null,
+          "interpretiveGuideUrl": null,
+          "accessDeniedUrl": null,
+          "landingPageUrl": null,
+          "irisVendorId": null,
+          "minItemDataYear": null,
+          "percentileDisplayEnabled": null,
+          "reportLanguages": [],
+          "schoolYear": null,
+          "state": {
+            "name": "Test State",
+            "code": "TS"
+          },
+          "transferAccessEnabled": null,
+          "translationLocation": null,
+          "uiLanguages": [],
+          "userGuideUrl": null,
+          "targetReport": {
+            "insufficientDataCutoff": null,
+            "minNumberOfStudents": null
+          },
+          "studentFields": {
+            "MigrantStatus": "Enabled",
+            "Section504": "Admin",
+            "LimitedEnglishProficiency": "Enabled",
+            "Ethnicity": "Enabled",
+            "EconomicDisadvantage": "Admin",
+            "Gender": "Enabled",
+            "EnglishLanguageAcquisitionStatus": "Disabled",
+            "IndividualEducationPlan": "Admin",
+            "PrimaryLanguage": "Enabled",
+            "MilitaryStudentIdentifier": "Enabled"
+          },
+          "effectiveReportLanguages": [
+            "en"
+          ]
+        }
+      },
+      "transferAccessEnabled": true,
+      "reportLanguages": [],
+      "effectiveReportLanguages": [
+        "en"
+      ],
+      "interpretiveGuideUrl": null,
+      "accessDeniedUrl": null,
+      "uiLanguages": [],
+      "translationLocation": "binary-http://config-server:8888/*/*/master/i18n/",
+      "userGuideUrl": null,
+      "schoolYear": 2019,
+      "minItemDataYear": null,
+      "percentileDisplayEnabled": null,
+      "state": {
+        "name": "California",
+        "code": "CA"
+      },
+      "targetReport": {
+        "insufficientDataCutoff": 0.2,
+        "minNumberOfStudents": 0
+      },
+      "studentFields": {},
+      "analyticsTrackingId": null,
+      "landingPageUrl": null
+    }
+  },
+  "refreshEndpoint": {
+    "prefix": "endpoints.refresh",
+    "properties": {
+      "id": "refresh",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "jwtSettings": {
+    "prefix": "jwt",
+    "properties": {
+      "routePaths": null,
+      "secret": "******"
+    }
+  },
+  "spring.transaction-org.springframework.boot.autoconfigure.transaction.TransactionProperties": {
+    "prefix": "spring.transaction",
+    "properties": {
+      "rollbackOnCommitFailure": null,
+      "defaultTimeout": null
+    }
+  },
+  "statusEndpoint": {
+    "prefix": "endpoints.status",
+    "properties": {
+      "id": "status",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.jackson-org.springframework.boot.autoconfigure.jackson.JacksonProperties": {
+    "prefix": "spring.jackson",
+    "properties": {
+      "serialization": {
+        "WRITE_DATES_AS_TIMESTAMPS": false
+      },
+      "propertyNamingStrategy": null,
+      "defaultPropertyInclusion": "NON_NULL",
+      "parser": {},
+      "dateFormat": null,
+      "deserialization": {},
+      "generator": {},
+      "timeZone": null,
+      "mapper": {},
+      "locale": null,
+      "jodaDateTimeFormat": null
+    }
+  },
+  "busEndpoint": {
+    "prefix": "endpoints.bus",
+    "properties": {
+      "id": "bus",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "spring.http.multipart-org.springframework.boot.autoconfigure.web.MultipartProperties": {
+    "prefix": "spring.http.multipart",
+    "properties": {
+      "maxRequestSize": "10MB",
+      "fileSizeThreshold": "0",
+      "location": null,
+      "maxFileSize": "1MB",
+      "enabled": true,
+      "resolveLazily": false
+    }
+  },
+  "spring.info-org.springframework.boot.autoconfigure.info.ProjectInfoProperties": {
+    "prefix": "spring.info",
+    "properties": {
+      "build": {
+        "location": {}
+      },
+      "git": {
+        "location": {}
+      }
+    }
+  },
+  "spring.datasource-org.springframework.boot.autoconfigure.jdbc.DataSourceProperties": {
+    "prefix": "spring.datasource",
+    "properties": {
+      "schema": null,
+      "dataPassword": null,
+      "data": null,
+      "dataUsername": null,
+      "generateUniqueName": false,
+      "xa": {
+        "dataSourceClassName": null,
+        "properties": {}
+      },
+      "type": null,
+      "separator": ";",
+      "url": null,
+      "platform": "all",
+      "continueOnError": false,
+      "jndiName": null,
+      "sqlScriptEncoding": null,
+      "password": null,
+      "schemaPassword": null,
+      "name": "testdb",
+      "driverClassName": null,
+      "initialize": true,
+      "schemaUsername": null,
+      "username": null
+    }
+  },
+  "traceEndpoint": {
+    "prefix": "endpoints.trace",
+    "properties": {
+      "id": "trace",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "infoEndpoint": {
+    "prefix": "endpoints.info",
+    "properties": {
+      "id": "info",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "management.trace-org.springframework.boot.actuate.trace.TraceProperties": {
+    "prefix": "management.trace",
+    "properties": {
+      "include": [
+        "REQUEST_HEADERS",
+        "RESPONSE_HEADERS",
+        "COOKIES",
+        "ERRORS",
+        "TIME_TAKEN"
+      ]
+    }
+  },
+  "spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties": {
+    "prefix": "spring.resources",
+    "properties": {
+      "cachePeriod": null,
+      "addMappings": true,
+      "chain": {
+        "cache": true,
+        "htmlApplicationCache": false,
+        "gzipped": false,
+        "strategy": {
+          "fixed": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ],
+            "version": null
+          },
+          "content": {
+            "enabled": false,
+            "paths": [
+              "/**"
+            ]
+          }
+        }
+      },
+      "staticLocations": [
+        "/",
+        "classpath:/META-INF/resources/",
+        "classpath:/resources/",
+        "classpath:/static/",
+        "classpath:/public/"
+      ]
+    }
+  },
+  "management.health.status-org.springframework.boot.actuate.autoconfigure.HealthIndicatorProperties": {
+    "prefix": "management.health.status",
+    "properties": {
+      "order": null
+    }
+  },
+  "healthEndpoint": {
+    "prefix": "endpoints.health",
+    "properties": {
+      "timeToLive": 1000,
+      "id": "health",
+      "sensitive": false,
+      "enabled": true
+    }
+  },
+  "scopedTarget.tenantProperties": {
+    "prefix": "tenantProperties",
+    "properties": {
+      "tenants": {
+        "CA": {
+          "id": "CA",
+          "key": "******",
+          "name": "California",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        },
+        "TS": {
+          "id": "TS",
+          "key": "******",
+          "name": "Test Tenant",
+          "description": null,
+          "sandbox": false,
+          "sandboxDataset": null,
+          "created": {}
+        }
+      },
+      "status": {
+        "tenantKeys": [
+          "CA",
+          "TS"
+        ]
+      }
+    }
+  },
+  "spring.cloud.stream.integration-org.springframework.cloud.stream.config.SpringIntegrationProperties": {
+    "prefix": "spring.cloud.stream.integration",
+    "properties": {
+      "messageHandlerNotPropagatedHeaders": [
+        "contentType"
+      ]
+    }
+  },
+  "configClientProperties": {
+    "prefix": "spring.cloud.config",
+    "properties": {
+      "headers": {},
+      "profile": "local-docker",
+      "label": "rdw,develop,master",
+      "uri": "http://config-server:8888",
+      "enabled": true,
+      "failFast": true,
+      "token": null,
+      "authorization": null,
+      "password": null,
+      "discovery": {
+        "enabled": false,
+        "serviceId": "configserver"
+      },
+      "name": "rdw-reporting-aggregate-service",
+      "username": "user"
+    }
+  },
+  "endpoints.metrics.filter-org.springframework.boot.actuate.autoconfigure.MetricFilterProperties": {
+    "prefix": "endpoints.metrics.filter",
+    "properties": {
+      "counterSubmissions": [
+        "MERGED"
+      ],
+      "gaugeSubmissions": [
+        "MERGED"
+      ]
+    }
+  },
+  "securityProperties": {
+    "prefix": "security",
+    "properties": {
+      "headers": {
+        "xss": true,
+        "cache": true,
+        "frame": true,
+        "contentType": true,
+        "contentSecurityPolicy": null,
+        "contentSecurityPolicyMode": "DEFAULT",
+        "hsts": "ALL"
+      },
+      "ignored": [],
+      "sessions": "STATELESS",
+      "requireSsl": false,
+      "filterOrder": -100,
+      "enableCsrf": false,
+      "filterDispatcherTypes": null,
+      "basic": {
+        "enabled": true,
+        "realm": "Spring",
+        "path": [
+          "/**"
+        ],
+        "authorizeMode": "ROLE"
+      },
+      "user": {
+        "name": "user",
+        "password": "******",
+        "role": [
+          "USER",
+          "ACTUATOR"
+        ]
+      }
+    }
+  },
+  "dumpEndpoint": {
+    "prefix": "endpoints.dump",
+    "properties": {
+      "id": "dump",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "autoConfigurationReportEndpoint": {
+    "prefix": "endpoints.autoconfig",
+    "properties": {
+      "id": "autoconfig",
+      "sensitive": true,
+      "enabled": true
+    }
+  },
+  "managementServerProperties": {
+    "prefix": "management",
+    "properties": {
+      "security": {
+        "enabled": false,
+        "roles": [
+          "ACTUATOR"
+        ],
+        "sessions": "STATELESS"
+      },
+      "address": null,
+      "port": 8008,
+      "addApplicationContextHeader": true,
+      "contextPath": "",
+      "ssl": null
+    }
+  },
+  "spring.cloud.bus-org.springframework.cloud.bus.BusProperties": {
+    "prefix": "spring.cloud.bus",
+    "properties": {
+      "trace": {
+        "enabled": false
+      },
+      "ack": {
+        "enabled": true,
+        "destinationService": null
+      },
+      "destination": "springCloudBus",
+      "refresh": {
+        "enabled": true
+      },
+      "env": {
+        "enabled": true
+      },
+      "enabled": true
+    }
+  },
+  "simpleDiscoveryProperties": {
+    "prefix": "spring.cloud.discovery.client.simple",
+    "properties": {
+      "instances": {},
+      "local": {
+        "uri": "http://6c27d2bea553:0",
+        "metadata": {},
+        "serviceId": "rdw-reporting-aggregate-service"
+      }
+    }
+  },
+  "spring.mvc-org.springframework.boot.autoconfigure.web.WebMvcProperties": {
+    "prefix": "spring.mvc",
+    "properties": {
+      "dateFormat": null,
+      "servlet": {
+        "loadOnStartup": -1
+      },
+      "staticPathPattern": "/**",
+      "dispatchOptionsRequest": true,
+      "dispatchTraceRequest": false,
+      "locale": null,
+      "ignoreDefaultModelOnRedirect": true,
+      "logResolvedException": false,
+      "async": {
+        "requestTimeout": null
+      },
+      "messageCodesResolverFormat": null,
+      "mediaTypes": {},
+      "view": {
+        "prefix": null,
+        "suffix": null
+      },
+      "localeResolver": "ACCEPT_HEADER",
+      "throwExceptionIfNoHandlerFound": false
+    }
+  },
+  "diskSpaceHealthIndicatorProperties": {
+    "prefix": "management.health.diskspace",
+    "properties": {
+      "path": "/.",
+      "threshold": 10485760
+    }
+  }
+}

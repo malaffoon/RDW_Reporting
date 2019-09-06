@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AssessmentItem } from "../../../model/assessment-item.model";
-import { ExportItemsRequest } from "../../../model/export-items-request.model";
-import { DynamicItemField } from "../../../model/item-point-field.model";
-import { AssessmentProvider } from "../../../assessment-provider.interface";
-import { ExamStatisticsCalculator } from "../../exam-statistics-calculator";
-import { Exam } from "../../../model/exam.model";
-import { Assessment } from "../../../model/assessment.model";
-import { RequestType } from "../../../../shared/enum/request-type.enum";
-import { ExportResults } from "../../assessment-results.component";
-import { AssessmentExporter } from "../../../assessment-exporter.interface";
+import { AssessmentItem } from '../../../model/assessment-item.model';
+import { ExportItemsRequest } from '../../../model/export-items-request.model';
+import { DynamicItemField } from '../../../model/item-point-field.model';
+import { AssessmentProvider } from '../../../assessment-provider.interface';
+import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
+import { Exam } from '../../../model/exam';
+import { Assessment } from '../../../model/assessment';
+import { RequestType } from '../../../../shared/enum/request-type.enum';
+import { AssessmentExporter } from '../../../assessment-exporter.interface';
+import { ExportResults } from '../export-results';
 
 @Component({
   selector: 'results-by-item',
@@ -47,7 +47,9 @@ export class ResultsByItemComponent implements OnInit, ExportResults {
     this._exams = value;
 
     if (this.filteredAssessmentItems) {
-      this.filteredAssessmentItems = this.filterAssessmentItems(this._assessmentItems);
+      this.filteredAssessmentItems = this.filterAssessmentItems(
+        this._assessmentItems
+      );
       this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
     }
   }
@@ -64,39 +66,63 @@ export class ResultsByItemComponent implements OnInit, ExportResults {
   private _exams: Exam[];
   private _pointColumns: DynamicItemField[] = [];
 
-  constructor(private examCalculator: ExamStatisticsCalculator) {
-  }
+  constructor(private examCalculator: ExamStatisticsCalculator) {}
 
   ngOnInit() {
-    this.assessmentProvider.getAssessmentItems(this.assessment.id).subscribe(assessmentItems => {
+    this.assessmentProvider
+      .getAssessmentItems(this.assessment.id)
+      .subscribe(assessmentItems => {
+        const numOfScores = assessmentItems.reduce(
+          (x, y) => x + y.scores.length,
+          0
+        );
 
-      const numOfScores = assessmentItems.reduce((x, y) => x + y.scores.length, 0);
+        if (numOfScores !== 0) {
+          // todo: move?
+          this._pointColumns = this.examCalculator.getPointFields(
+            assessmentItems
+          );
 
-      if (numOfScores !== 0) {
-        // todo: move?
-        this._pointColumns = this.examCalculator.getPointFields(assessmentItems);
+          this._assessmentItems = assessmentItems;
+          this.filteredAssessmentItems = this.filterAssessmentItems(
+            assessmentItems
+          );
 
-        this._assessmentItems = assessmentItems;
-        this.filteredAssessmentItems = this.filterAssessmentItems(assessmentItems);
+          this.examCalculator.aggregateItemsByPoints(
+            this.filteredAssessmentItems
+          );
+        }
 
-        this.examCalculator.aggregateItemsByPoints(this.filteredAssessmentItems);
-      }
+        this.columns = [
+          new Column({ id: 'number', field: 'position' }),
+          new Column({ id: 'claim', field: 'claimTarget', headerInfo: true }),
+          new Column({
+            id: 'difficulty',
+            sortField: 'difficultySortOrder',
+            headerInfo: true
+          }),
+          new Column({
+            id: 'standard',
+            field: 'commonCoreStandardIds',
+            headerInfo: true
+          }),
+          new Column({
+            id: 'full-credit',
+            field: 'fullCredit',
+            styleClass: 'level-up',
+            headerInfo: true
+          }),
+          ...this._pointColumns.map(this.toColumn)
+        ];
 
-      this.columns = [
-        new Column({id: 'number', field: 'position'}),
-        new Column({id: 'claim', field: 'claimTarget', headerInfo: true}),
-        new Column({id: 'difficulty', sortField: 'difficultySortOrder', headerInfo: true}),
-        new Column({id: 'standard', field: 'commonCoreStandardIds', headerInfo: true}),
-        new Column({id: 'full-credit', field: 'fullCredit', styleClass: 'level-up', headerInfo: true}),
-        ...this._pointColumns.map(this.toColumn)
-      ];
-
-      this.loading = false;
-    });
+        this.loading = false;
+      });
   }
 
   hasDataToExport(): boolean {
-    return this.filteredAssessmentItems && this.filteredAssessmentItems.length > 0;
+    return (
+      this.filteredAssessmentItems && this.filteredAssessmentItems.length > 0
+    );
   }
 
   exportToCsv(): void {
@@ -109,13 +135,16 @@ export class ResultsByItemComponent implements OnInit, ExportResults {
     this.assessmentExporter.exportItemsToCsv(request);
   }
 
-  private filterAssessmentItems(assessmentItems: AssessmentItem[]): AssessmentItem[] {
+  private filterAssessmentItems(
+    assessmentItems: AssessmentItem[]
+  ): AssessmentItem[] {
     const filtered = [];
 
     for (const assessmentItem of assessmentItems) {
       const filteredItem = Object.assign(new AssessmentItem(), assessmentItem);
       filteredItem.scores = assessmentItem.scores.filter(score =>
-        this._exams.some(exam => exam.id === score.examId));
+        this._exams.some(exam => exam.id === score.examId)
+      );
       filtered.push(filteredItem);
     }
 
@@ -127,7 +156,7 @@ export class ResultsByItemComponent implements OnInit, ExportResults {
       id: 'point',
       label: pointColumn.label,
       field: pointColumn.numberField,
-      styleClass:  index === 0 ? 'level-down' : '',
+      styleClass: index === 0 ? 'level-down' : '',
       numberField: pointColumn.numberField,
       percentField: pointColumn.percentField
     });
@@ -147,15 +176,15 @@ class Column {
   percentField?: string;
 
   constructor({
-                id,
-                field = '',
-                sortField = '',
-                headerInfo = false,
-                styleClass = '',
-                label = '',
-                numberField = '',
-                percentField = ''
-              }) {
+    id,
+    field = '',
+    sortField = '',
+    headerInfo = false,
+    styleClass = '',
+    label = '',
+    numberField = '',
+    percentField = ''
+  }) {
     this.id = id;
     this.field = field ? field : id;
     this.sortField = sortField ? sortField : this.field;

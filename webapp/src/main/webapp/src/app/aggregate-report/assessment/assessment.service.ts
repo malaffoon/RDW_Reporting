@@ -17,9 +17,7 @@ export interface AssessmentQuery {
  */
 @Injectable()
 export class AssessmentService {
-
-  constructor(private dataService: DataService) {
-  }
+  constructor(private dataService: DataService) {}
 
   /**
    * Gets assessments matching the request search criteria
@@ -28,22 +26,29 @@ export class AssessmentService {
    * @returns {Observable<Assessment[]>}
    */
   getAssessments(query: AssessmentQuery): Observable<Assessment[]> {
-    return this.dataService.get(`${AggregateServiceRoute}/assessments`, {
-      params: <any>query
-    }).pipe(
-      map(serverAssessments => serverAssessments.map(serverAssessment => <Assessment>{
-        id: serverAssessment.id,
-        name: serverAssessment.name,
-        label: serverAssessment.label,
-        type: serverAssessment.typeCode,
-        subject: serverAssessment.subjectCode,
-        grade: serverAssessment.gradeCode,
-        gradeSequence: serverAssessment.gradeSequence,
-        schoolYear: serverAssessment.schoolYear,
-        cutPoints: serverAssessment.cutPoints.filter(point => point != null)
-      }))
-    );
+    return this.dataService
+      .get(`${AggregateServiceRoute}/assessments`, {
+        params: <any>query
+      })
+      .pipe(
+        map(serverAssessments =>
+          serverAssessments.map(
+            serverAssessment =>
+              <Assessment>{
+                id: serverAssessment.id,
+                name: serverAssessment.name,
+                label: serverAssessment.label,
+                type: serverAssessment.typeCode,
+                subject: serverAssessment.subjectCode,
+                grade: serverAssessment.gradeCode,
+                gradeSequence: serverAssessment.gradeSequence,
+                schoolYear: serverAssessment.schoolYear,
+                cutPoints: serverAssessment.cutPoints.filter(
+                  point => point != null
+                )
+              }
+          )
+        )
+      );
   }
-
 }
-

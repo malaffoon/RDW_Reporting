@@ -1,0 +1,26 @@
+<hr />
+<a
+  href="javascript:void(0)"
+  (click)="collapsedChanged.emit(!collapsed)"
+  angulartics2On="click"
+  angularticsAction="ToggleCollapseResults"
+  angularticsCategory="AssessmentResults"
+>
+  {{
+    'assessment-results.' + (collapsed ? 'show-results' : 'hide-results')
+      | translate
+  }}
+  <i
+    aria-hidden="true"
+    class="fa"
+    [ngClass]="{
+      'fa-chevron-up': !collapsed,
+      'fa-chevron-down': collapsed
+    }"
+  ></i>
+  <span class="sr-only">{{
+    'assessment-results.' + (collapsed ? 'show-results' : 'hide-results')
+      | translate
+  }}</span>
+</a>
+<hr />

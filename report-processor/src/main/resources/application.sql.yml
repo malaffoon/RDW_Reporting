@@ -8,60 +8,77 @@ sql:
         e.section504,
         e.economic_disadvantage,
         e.migrant_status,
-        ${sql.snippet.claimColumns},
+        ${sql.snippet.claimAndAltScoreColumns},
         ${sql.snippet.exam}
       WHERE e.student_id = :student_id
        AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
 
   exam:
+    # this is used to query for IABs for report generation
     findAllIabsByStudentIdsAndQueryParamsUnknownPermissions: >-
       SELECT
         d.name AS district_name,
         round(p.mean) AS percentile_mean,
         ps.percentile_rank,
-        ${sql.snippet.writingTraits},
+        ei.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        ei.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        ei.trait_conventions_score as ei_trait_conventions_score,
+        i.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
       LEFT JOIN exam_item ei ON ei.exam_id=e.id
+        AND (
+          ei.trait_evidence_elaboration_score IS NOT NULL
+          OR ei.trait_organization_purpose_score IS NOT NULL
+          OR ei.trait_conventions_score IS NOT NULL
+        )
       LEFT JOIN item i ON i.id = ei.item_id
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_code is null or su.code=:subject_code)
+        AND (:subject_code is null or su.code=:subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id = 2
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
-      ORDER BY e.completed_at DESC,
-        i.performance_task_writing_type DESC
+      ORDER BY e.completed_at DESC
 
+    # this is used to query for IABs for report generation
     findAllIabsByStudentIdsAndQueryParamsGroupPermissions: >-
       SELECT
         d.name AS district_name,
         round(p.mean) AS percentile_mean,
         ps.percentile_rank,
-        ${sql.snippet.writingTraits},
+        ei.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
+        ei.trait_organization_purpose_score as ei_trait_organization_purpose_score,
+        ei.trait_conventions_score as ei_trait_conventions_score,
+        i.performance_task_writing_type,
         ${sql.snippet.exam}
       JOIN district d ON s.district_id=d.id
       $[groupJoinPlaceholder]
       LEFT JOIN exam_item ei ON ei.exam_id=e.id
+        AND (
+          ei.trait_evidence_elaboration_score IS NOT NULL
+          OR ei.trait_organization_purpose_score IS NOT NULL
+          OR ei.trait_conventions_score IS NOT NULL
+        )
       LEFT JOIN item i ON i.id=ei.item_id
       ${sql.reportProcessor.snippet.percentileLeftJoin}
       WHERE e.student_id in (:student_ids)
         AND $[groupFilterPlaceholder]
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_code is null or su.code=:subject_code)
+        AND (:subject_code is null or su.code=:subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=2
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
-      ORDER BY e.completed_at DESC,
-              i.performance_task_writing_type DESC
+      ORDER BY e.completed_at DESC
 
+    # this is used to query for results for report generation
     findAllIcasOrSummativesByStudentIdsAndQueryParamsUnknownPermissions: >-
       SELECT
         d.name AS district_name,
-        ${sql.snippet.claimColumns},
+        ${sql.snippet.claimAndAltScoreColumns},
         wt.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
         wt.trait_organization_purpose_score as ei_trait_organization_purpose_score,
         wt.trait_conventions_score as ei_trait_conventions_score,
@@ -81,17 +98,18 @@ sql:
       ) as wt on wt.exam_id = e.id
       WHERE e.student_id in (:student_ids)
         AND (:school_year is null or e.school_year=:school_year)
-        AND (:subject_code is null or su.code=:subject_code)
+        AND (:subject_code is null or su.code=:subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=:type_id
         AND ${sql.reportProcessor.snippet.schoolFilter}
         AND ${sql.reportProcessor.snippet.studentExamPermissionWithEmbargo}
       ORDER BY e.completed_at asc
 
+    # this is used to query for results for report generation
     findAllIcasOrSummativesByStudentIdsAndQueryParamsGroupPermissions: >-
       SELECT
         d.name AS district_name,
-        ${sql.snippet.claimColumns},
+        ${sql.snippet.claimAndAltScoreColumns},
         wt.trait_evidence_elaboration_score as ei_trait_evidence_elaboration_score,
         wt.trait_organization_purpose_score as ei_trait_organization_purpose_score,
         wt.trait_conventions_score as ei_trait_conventions_score,
@@ -112,7 +130,7 @@ sql:
       $[groupJoinPlaceholder]
       WHERE e.student_id in (:student_ids)
         AND $[groupFilterPlaceholder]
-        AND (:subject_code is null or su.code=:subject_code)
+        AND (:subject_code is null or su.code=:subject_code) AND sat.printed_report=1
         AND (:school_year is null or e.school_year=:school_year)
         AND (:grade_id is null or a.grade_id=:grade_id)
         AND a.type_id=:type_id
@@ -151,6 +169,25 @@ sql:
         'ScaleScore',
         'ScaleScoreStandardError',
 
+        'Alt1ScoreAchievementLevel',
+        'Alt1ScaleScore',
+        'Alt1ScaleScoreStandardError',
+        'Alt2ScoreAchievementLevel',
+        'Alt2ScaleScore',
+        'Alt2ScaleScoreStandardError',
+        'Alt3ScoreAchievementLevel',
+        'Alt3ScaleScore',
+        'Alt3ScaleScoreStandardError',
+        'Alt4ScoreAchievementLevel',
+        'Alt4ScaleScore',
+        'Alt4ScaleScoreStandardError',
+        'Alt5ScoreAchievementLevel',
+        'Alt5ScaleScore',
+        'Alt5ScaleScoreStandardError',
+        'Alt6ScoreAchievementLevel',
+        'Alt6ScaleScore',
+        'Alt6ScaleScoreStandardError',
+
         'Claim1ScoreAchievementLevel',
         'Claim2ScoreAchievementLevel',
         'Claim3ScoreAchievementLevel',
@@ -165,6 +202,7 @@ sql:
         'LEPStatus',
         'LanguageCode',
         'LanguageAltCode',
+        'MilitaryConnectedStudentIndicator',
         'EnglishLanguageAcquisitionStatus',
         'EnglishLanguageAcquisitionStatusStartDate',
 
@@ -208,6 +246,25 @@ sql:
         COALESCE(e.scale_score, ''),
         COALESCE(e.scale_score_std_err, ''),
 
+        COALESCE(e.alt1_performance_level, ''),
+        COALESCE(e.alt1_scale_score, ''),
+        COALESCE(e.alt1_scale_score_std_err, ''),
+        COALESCE(e.alt2_performance_level, ''),
+        COALESCE(e.alt2_scale_score, ''),
+        COALESCE(e.alt2_scale_score_std_err, ''),
+        COALESCE(e.alt3_performance_level, ''),
+        COALESCE(e.alt3_scale_score, ''),
+        COALESCE(e.alt3_scale_score_std_err, ''),
+        COALESCE(e.alt4_performance_level, ''),
+        COALESCE(e.alt4_scale_score, ''),
+        COALESCE(e.alt4_scale_score_std_err, ''),
+        COALESCE(e.alt5_performance_level, ''),
+        COALESCE(e.alt5_scale_score, ''),
+        COALESCE(e.alt5_scale_score_std_err, ''),
+        COALESCE(e.alt6_performance_level, ''),
+        COALESCE(e.alt6_scale_score, ''),
+        COALESCE(e.alt6_scale_score_std_err, ''),
+
         COALESCE(e.claim1_category, ''),
         COALESCE(e.claim2_category, ''),
         COALESCE(e.claim3_category, ''),
@@ -223,6 +280,7 @@ sql:
         (CASE WHEN e.lep = 1 THEN 'Yes' WHEN e.lep = 0 THEN 'No' ELSE '' END),
         COALESCE(e.language_code, ''),
         COALESCE(lan.altcode, ''),
+        COALESCE(e.military_connected_code, ''),
         COALESCE(e.elas_code, ''),
         COALESCE(e.elas_start_at, ''),
 
@@ -257,7 +315,7 @@ sql:
       ${sql.reportProcessor.snippet.selectFromStudent}
       WHERE (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_code is null or sub.code = :subject_code)
+        AND (:subject_code is null or sub.code = :subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -270,7 +328,7 @@ sql:
       WHERE $[groupFilterPlaceholder]
         AND (:student_id is null or st.id = :student_id)
         AND (:school_year is null or e.school_year = :school_year)
-        AND (:subject_code is null or sub.code = :subject_code)
+        AND (:subject_code is null or sub.code = :subject_code) AND sat.printed_report=1
         AND (:grade_id is null or a.grade_id = :grade_id)
         AND (:assessment_type is null or a.type_id = :assessment_type)
         AND ${sql.reportProcessor.snippet.schoolFilter}
@@ -291,7 +349,7 @@ sql:
             ${sql.snippet.studentExamPermissionWithoutEmbargo}
             AND
             (
-               e.school_year < ${reporting.school-year}
+               e.school_year < :system_school_year
                OR e.type_id <> 3
                OR s.embargo_enabled = 0
             )
@@ -323,6 +381,7 @@ sql:
             JOIN school s ON e.school_id = s.id
             JOIN school isch ON st.inferred_school_id = isch.id
             JOIN subject sub ON sub.id=a.subject_id
+            JOIN subject_asmt_type sat on a.subject_id=sat.subject_id and a.type_id=sat.asmt_type_id
 
       exportExamsFilter: >-
         e.school_year = :school_year

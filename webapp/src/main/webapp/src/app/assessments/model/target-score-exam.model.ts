@@ -1,6 +1,6 @@
-import { Exam } from './exam.model';
+import { Exam } from './exam';
 
-export class TargetScoreExam extends Exam {
+export interface TargetScoreExam extends Exam {
   targetId: number;
   standardMetRelativeResidualScore: number;
   studentRelativeResidualScore: number;

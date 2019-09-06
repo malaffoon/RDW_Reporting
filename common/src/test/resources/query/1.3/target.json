@@ -1,0 +1,38 @@
+{
+  "schoolYear": 0,
+  "name": "Keith's Report",
+  "accommodationsVisible": false,
+  "disableTransferAccess": false,
+  "query": {
+    "assessmentTypeCode": "sum",
+    "assessmentGradeCodes": [
+      "06"
+    ],
+    "includeState": false,
+    "includeAllDistricts": false,
+    "includeAllSchoolsOfDistricts": false,
+    "includeAllDistrictsOfSchools": false,
+    "districtIds": [
+      1
+    ],
+    "completenessCodes": [
+      "Complete"
+    ],
+    "administrativeConditionCodes": [
+      "Valid"
+    ],
+    "valueDisplayType": "Percent",
+    "achievementLevelDisplayType": "Separate",
+    "columnOrder": [
+      "claim",
+      "target",
+      "dimension"
+    ],
+    "studentFilters": {},
+    "schoolYear": 2018,
+    "subjectCode": "Math",
+    "reportType": "Target",
+    "filteredSubgroupQuery": false
+  },
+  "reportType": "AggregateReportRequest"
+}

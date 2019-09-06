@@ -31,7 +31,7 @@
         }
       }
     },
-    "copyright": "&copy; 2018 The Regents of the University of California",
+    "copyright": "&copy; 2019 The Regents of the University of California",
     "date": {
       "label": "Date Taken:"
     },
@@ -367,27 +367,28 @@
         "Organization": "Organization / Purpose",
         "Unknown": {
           "Conventions": {
-            "0": "Unknown.Conventions.0",
-            "1": "Unknown.Conventions.1",
-            "2": "Unknown.Conventions.2"
+            "0": "",
+            "1": "",
+            "2": ""
           },
           "Evidence": {
-            "0": "The evidence in the response is insufficient.",
-            "1": "Unknown.Evidence/Elaboration.1",
-            "2": "Unknown.Evidence/Elaboration.2",
-            "3": "Unknown.Evidence/Elaboration.3",
-            "4": "Unknown.Evidence/Elaboration.4"
+            "0": "",
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": ""
           },
           "Organization": {
-            "0": "The organization of the response is insufficient.",
-            "1": "Unknown.Organization/Purpose.1",
-            "2": "Unknown.Organization/Purpose.2",
-            "3": "Unknown.Organization/Purpose.3",
-            "4": "Unknown.Organization/Purpose.4"
+            "0": "",
+            "1": "",
+            "2": "",
+            "3": "",
+            "4": ""
           }
         },
         "outof": "of {0}",
-        "purpose": "Writing Purpose: {0}"
+        "purpose": "Writing Purpose: {0}",
+        "purpose-not-specified": "Writing Purpose: Not Specified"
       }
     }
   }
