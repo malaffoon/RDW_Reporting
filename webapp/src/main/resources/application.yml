@@ -70,6 +70,9 @@ server:
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
+  session:
+    cookie:
+      max-age: 7200
 
 spring:
   resources:
