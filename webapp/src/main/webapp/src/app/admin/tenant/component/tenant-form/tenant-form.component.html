@@ -74,7 +74,10 @@
           </div>
         </li>
         <li>
-          <a class="btn btn-default" [routerLink]="['..']">
+          <a
+            class="btn btn-default"
+            [routerLink]="[mode === 'create' ? '..' : '../..']"
+          >
             {{ 'common.action.cancel' | translate }}
           </a>
         </li>
