@@ -1443,9 +1443,11 @@
     "Subjects": "Exams"
   },
   "tenant-metric-table": {
+    "lastRun": "The data shown on this page was generated when migrations last ran (scheduled to run every 24 hours). See the migration logs for the exact time.",
     "column": {
       "schoolYear": "School Year",
       "subjectCode": "Subject",
+      "assessmentType": "Assessment Type",
       "count": "Count"
     }
   },

@@ -535,33 +535,74 @@ sql:
 
   metrics:
     findAll: >-
-      SELECT 'Subjects' AS category,
-          sy.year as school_year,
-          s.code as subject_code,
-          COUNT(e.id) as count
-      FROM exam e
-          JOIN asmt a ON a.id = e.asmt_id
-          LEFT OUTER JOIN subject s ON s.id = a.subject_id
-          JOIN school_year sy ON a.school_year = sy.year
-      GROUP BY category, school_year, subject_code
+      SELECT m.category,
+             m.school_year,
+             m.subject_code,
+             m.asmt_type,
+             m.cnt
+      FROM (
+        SELECT 'Subjects' AS category,
+        e.school_year  AS school_year,
+        s.code AS subject_code,
+        t.code AS asmt_type,
+        sum(e.cnt) AS cnt
+        FROM (SELECT COUNT(*) AS cnt,
+                     school_year,
+                     asmt_id
+              FROM exam
+              GROUP BY school_year, asmt_id ) e
+        JOIN asmt a
+          ON a.id = e.asmt_id
+        JOIN asmt_type t
+          ON a.type_id = t.id
+        JOIN subject s
+          ON s.id = a.subject_id
+        GROUP BY  e.school_year, s.code, t.code
       UNION ALL
-      SELECT 'Students' AS category,
-          sy.year as school_year,
-          NULL AS subject_code,
-          COUNT(s.id) as count
-      FROM exam e
-          JOIN student s ON s.id = e.student_id
-          JOIN asmt a ON a.id = e.asmt_id
-          JOIN school_year sy ON sy.year = a.school_year
-      GROUP BY category, school_year, subject_code
+        SELECT 'Subjects' AS category,
+        e.school_year  AS school_year,
+        s.code AS subject_code,
+        t.code AS asmt_type,
+        sum(e.cnt) AS cnt
+        FROM (SELECT COUNT(*) AS cnt,
+                     school_year,
+                     asmt_id
+             FROM iab_exam
+             GROUP BY school_year, asmt_id ) e
+        JOIN asmt a
+          ON a.id = e.asmt_id
+        JOIN asmt_type t
+          ON a.type_id = t.id
+        JOIN subject s
+          ON s.id = a.subject_id
+        GROUP BY  e.school_year, s.code, t.code
       UNION ALL
-      SELECT 'Schools' AS category,
-          sy.year as school_year,
-          NULL AS subject_code,
-          COUNT(sc.id) as count
-      FROM exam e
-          JOIN school sc ON sc.id = e.school_id
-          JOIN asmt a ON a.id = e.asmt_id
-          JOIN school_year sy ON sy.year = a.school_year
-      GROUP BY category, school_year, subject_code
-      ORDER BY category, school_year DESC, subject_code;
+        SELECT 'Students' AS category,
+        s.school_year,
+        NULL AS subject_code,
+        NULL AS asmt_type,
+        COUNT(distinct s.student_id) as cnt
+        FROM (
+          SELECT DISTINCT student_id,
+                 school_year
+                 from iab_exam
+          UNION
+          SELECT DISTINCT student_id,
+                 school_year from exam) s
+        GROUP BY s.school_year, subject_code, asmt_type
+      UNION ALL
+        SELECT 'Schools' AS category,
+        s.school_year,
+        NULL AS subject_code,
+        NULL AS asmt_type,
+        COUNT(distinct s.school_id) as cnt
+        FROM (
+          SELECT DISTINCT school_id,
+                 school_year
+                 from iab_exam
+          UNION
+          SELECT DISTINCT school_id,
+                 school_year from exam) s
+        GROUP BY s.school_year, subject_code, asmt_type
+      ) as m
+      ORDER BY m.category, m.school_year DESC, m.subject_code, m.asmt_type;
