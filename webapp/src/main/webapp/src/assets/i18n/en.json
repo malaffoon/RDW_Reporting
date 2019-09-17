@@ -1446,6 +1446,7 @@
     "column": {
       "schoolYear": "School Year",
       "subjectCode": "Subject",
+      "assessmentType": "Assessment Type",
       "count": "Count"
     }
   },

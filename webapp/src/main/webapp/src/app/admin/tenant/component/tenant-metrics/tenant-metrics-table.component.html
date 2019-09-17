@@ -7,6 +7,9 @@
       <th *ngIf="_hasSubjects">
         {{ 'tenant-metric-table.column.subjectCode' | translate }}
       </th>
+      <th *ngIf="_hasSubjects">
+        {{ 'tenant-metric-table.column.assessmentType' | translate }}
+      </th>
       <th class="text-right">
         {{ 'tenant-metric-table.column.count' | translate }}
       </th>
@@ -23,6 +26,9 @@
       </td>
       <td *ngIf="_hasSubjects">
         {{ row.subjectCode }}
+      </td>
+      <td *ngIf="_hasSubjects">
+        {{ row.assessmentType }}
       </td>
       <td class="text-right">
         {{ row.count | number: '1.0-0' }}

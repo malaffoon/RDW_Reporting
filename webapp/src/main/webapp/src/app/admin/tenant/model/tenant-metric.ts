@@ -2,6 +2,7 @@ export interface TenantMetric {
   type: TenantMetricType;
   schoolYear: number;
   subjectCode?: string;
+  assessmentType?: string;
   count: number;
 }
 
