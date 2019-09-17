@@ -7,7 +7,7 @@
       {{ 'common.action.cancel' | translate }}
     </button>
   </page-heading>
-
+  <span>{{ 'tenant-metric-table.lastRun' | translate }}</span>
   <div class="table-grid">
     <ng-container *ngFor="let group of (metrics$ | async)">
       <div>
