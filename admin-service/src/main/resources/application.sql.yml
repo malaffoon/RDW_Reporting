@@ -539,7 +539,7 @@ sql:
              m.school_year,
              m.subject_code,
              m.asmt_type,
-             sum(m.cnt) as cnt
+             m.cnt
       FROM (
         SELECT 'Subjects' AS category,
         e.school_year  AS school_year,
@@ -558,7 +558,7 @@ sql:
         JOIN subject s
           ON s.id = a.subject_id
         GROUP BY  e.school_year, s.code, t.code
-      UNION
+      UNION ALL
         SELECT 'Subjects' AS category,
         e.school_year  AS school_year,
         s.code AS subject_code,
@@ -576,7 +576,7 @@ sql:
         JOIN subject s
           ON s.id = a.subject_id
         GROUP BY  e.school_year, s.code, t.code
-      UNION
+      UNION ALL
         SELECT 'Students' AS category,
         s.school_year,
         NULL AS subject_code,
@@ -590,7 +590,7 @@ sql:
           SELECT DISTINCT student_id,
                  school_year from exam) s
         GROUP BY s.school_year, subject_code, asmt_type
-      UNION
+      UNION ALL
         SELECT 'Schools' AS category,
         s.school_year,
         NULL AS subject_code,
@@ -605,5 +605,4 @@ sql:
                  school_year from exam) s
         GROUP BY s.school_year, subject_code, asmt_type
       ) as m
-      GROUP BY m.category, m.school_year, m.subject_code, m.asmt_type
       ORDER BY m.category, m.school_year DESC, m.subject_code, m.asmt_type;
