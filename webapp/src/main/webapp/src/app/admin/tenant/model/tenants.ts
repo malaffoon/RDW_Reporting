@@ -126,12 +126,15 @@ export function toTenant(
       name: label,
       description,
       sandbox,
-      sandboxDataset: dataSetId
+      sandboxDataset: dataSetId,
+      created,
+      createdBy,
+      updated,
+      updatedBy
     },
     administrationStatus: {
       message,
       stackTrace,
-      updated,
       tenantAdministrationStatus: status
     },
     parentTenantKey: parentTenantCode,
@@ -150,7 +153,10 @@ export function toTenant(
       message,
       stackTrace
     },
-    updatedOn: new Date(updated),
+    createdOn: Date.parse(created),
+    createdBy,
+    updatedOn: Date.parse(updated),
+    updatedBy,
     configurations: toConfigurations(serverTenant, type),
     localizations: valued(flatten(localizations || {})),
     parentTenantCode,

@@ -10,6 +10,33 @@ import {
   refCount,
   takeUntil
 } from 'rxjs/operators';
+import { TenantMetric, TenantMetricType } from '../../model/tenant-metric';
+import { ranking } from '@kourge/ordering/comparator';
+import { ordering } from '@kourge/ordering';
+
+interface TenantMetricByType {
+  type: TenantMetricType;
+  values: TenantMetric[];
+}
+
+function groupByType(metrics: TenantMetric[]): TenantMetricByType[] {
+  return metrics.reduce((groups, value) => {
+    const group = groups.find(({ type }) => type === value.type);
+    if (group == null) {
+      groups.push({
+        type: value.type,
+        values: [value]
+      });
+    } else {
+      group.values.push(value);
+    }
+    return groups;
+  }, []);
+}
+
+const byType = ordering(ranking(['Schools', 'Students', 'Subjects'])).on(
+  ({ type }) => type
+).compare;
 
 @Component({
   selector: 'app-tenant-metrics',
@@ -18,7 +45,7 @@ import {
 })
 export class TenantMetricsComponent implements OnInit, OnDestroy {
   tenant$: Observable<TenantConfiguration>;
-  metrics$: Observable<any>;
+  metrics$: Observable<TenantMetricByType[]>;
   initialized$: Observable<boolean>;
   destroyed$: Subject<void> = new Subject();
 
@@ -31,12 +58,17 @@ export class TenantMetricsComponent implements OnInit, OnDestroy {
     const key$ = this.route.params.pipe(map(({ id }) => id));
 
     this.tenant$ = key$.pipe(
-      flatMap(key => this.tenantService.get(key)),
+      flatMap(key =>
+        this.tenantService
+          .getAll(this.route.snapshot.data.type)
+          .pipe(map(tenants => tenants.find(tenant => tenant.code === key)))
+      ),
       publishReplay(),
       refCount()
     );
     this.metrics$ = key$.pipe(
       flatMap(key => this.tenantService.getMetrics(key)),
+      map(metrics => groupByType(metrics).sort(byType)),
       publishReplay(),
       refCount()
     );

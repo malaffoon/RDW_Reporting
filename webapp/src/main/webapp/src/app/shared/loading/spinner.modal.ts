@@ -1,11 +1,4 @@
-import { Component } from '@angular/core';
-import {
-  Router,
-  NavigationStart,
-  NavigationEnd,
-  NavigationCancel,
-  NavigationError
-} from '@angular/router';
+import { Component, Input } from '@angular/core';
 
 /**
  * Loading spinner that displays on route changes
@@ -15,5 +8,6 @@ import {
   templateUrl: 'spinner.modal.html'
 })
 export class SpinnerModal {
+  @Input()
   loading: boolean = false;
 }

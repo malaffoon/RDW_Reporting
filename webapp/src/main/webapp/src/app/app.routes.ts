@@ -1,6 +1,5 @@
 import { Route, Routes } from '@angular/router';
 import { TranslateResolve } from './translate.resolve';
-import { SandboxLoginComponent } from './sandbox/sandbox-login.component';
 import { userGroupRoutes } from './user-group/user-group.routes';
 import { reportRoutes } from './report/report.routes';
 import { adminRoutes } from './admin/admin.routes';
@@ -12,6 +11,7 @@ import { HasOneOrMorePermissionCanActivate } from './shared/security/can-activat
 import { ErrorComponent } from './shared/component/error/error.component';
 import { AccessDeniedComponent } from './shared/security/component/access-denied/access-denied.component';
 import { SessionExpiredComponent } from './shared/security/component/session-expired/session-expired.component';
+import { sandboxLoginRoutes } from './sandbox/sandbox-login.routes';
 
 /**
  * Routes accessible without permissions
@@ -38,13 +38,7 @@ export const publicRoutes: Route[] = [
       translateComplete: TranslateResolve
     }
   },
-  {
-    path: 'sandbox-login',
-    component: SandboxLoginComponent,
-    resolve: {
-      translateComplete: TranslateResolve
-    }
-  }
+  ...sandboxLoginRoutes
 ];
 
 /**

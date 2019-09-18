@@ -18,10 +18,9 @@ const defaultUserService = <UserService>{
 @Injectable()
 export class RdwTranslateLoader implements TranslateLoader {
   private clientTranslationsLoader: TranslateLoader;
-  private serverTranslationsLoader: TranslateLoader;
 
   constructor(
-    http: HttpClient,
+    private http: HttpClient,
     private subjectService: SubjectService,
     @Optional()
     private userService: UserService = defaultUserService
@@ -30,11 +29,6 @@ export class RdwTranslateLoader implements TranslateLoader {
       http,
       '/assets/i18n/',
       '.json'
-    );
-    this.serverTranslationsLoader = new TranslateHttpLoader(
-      http,
-      '/api/translations/',
-      ''
     );
   }
 
@@ -50,16 +44,54 @@ export class RdwTranslateLoader implements TranslateLoader {
       );
   }
 
+  getTenantTranslation(
+    languageCode: string,
+    tenantKey: string
+  ): Observable<any> {
+    if (tenantKey == null) {
+      return this.getClientTranslations(languageCode);
+    }
+    return forkJoin(
+      this.getClientTranslations(languageCode),
+      this.getServerTranslations(languageCode, tenantKey)
+    ).pipe(
+      map(([clientTranslations, serverTranslations]) =>
+        merge(clientTranslations, serverTranslations)
+      )
+    );
+  }
+
   private getClientTranslations(languageCode: string): Observable<any> {
     return EmbeddedLanguages.indexOf(languageCode) != -1
       ? this.clientTranslationsLoader.getTranslation(languageCode)
       : EmptyObservable;
   }
 
-  private getServerTranslations(languageCode: string): Observable<any> {
-    return this.serverTranslationsLoader
-      .getTranslation(languageCode)
-      .pipe(catchError(() => EmptyObservable));
+  private getServerTranslations(
+    languageCode: string,
+    tenantKey?: string
+  ): Observable<any> {
+    const params = tenantKey != null ? { tenantKey } : {};
+    return this.http.get(`/api/translations/${languageCode}`, { params });
+  }
+
+  private getUserTranslations(languageCode: string) {
+    return forkJoin(
+      this.getClientTranslations(languageCode),
+      this.getServerTranslations(languageCode).pipe(catchError(() => of({}))),
+      this.subjectService.getSubjectCodes().pipe(catchError(() => of([])))
+    ).pipe(
+      map(([clientTranslations, serverTranslations, subjects]) =>
+        merge(
+          clientTranslations,
+          // the side effects of this method are overwriting defaults in the clients en.json...
+          subjects.length > 0
+            ? this.createSubjectTranslations(subjects, serverTranslations)
+            : {},
+          serverTranslations
+        )
+      )
+    );
   }
 
   /**
@@ -101,24 +133,5 @@ export class RdwTranslateLoader implements TranslateLoader {
     }
 
     return subjectTranslations;
-  }
-
-  private getUserTranslations(languageCode: string) {
-    return forkJoin(
-      this.getClientTranslations(languageCode),
-      this.getServerTranslations(languageCode).pipe(catchError(() => of({}))),
-      this.subjectService.getSubjectCodes().pipe(catchError(() => of([])))
-    ).pipe(
-      map(([clientTranslations, serverTranslations, subjects]) =>
-        merge(
-          clientTranslations,
-          // the side effects of this method are overwriting defaults in the clients en.json...
-          subjects.length > 0
-            ? this.createSubjectTranslations(subjects, serverTranslations)
-            : {},
-          serverTranslations
-        )
-      )
-    );
   }
 }

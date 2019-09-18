@@ -1,1 +1,38 @@
-<p>Metrics Table</p>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>
+        {{ 'tenant-metric-table.column.schoolYear' | translate }}
+      </th>
+      <th *ngIf="_hasSubjects">
+        {{ 'tenant-metric-table.column.subjectCode' | translate }}
+      </th>
+      <th *ngIf="_hasSubjects">
+        {{ 'tenant-metric-table.column.assessmentType' | translate }}
+      </th>
+      <th class="text-right">
+        {{ 'tenant-metric-table.column.count' | translate }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let row of _rows; index as i">
+      <td>
+        {{
+          i === 0 || _rows[i - 1].schoolYear !== row.schoolYear
+            ? (row.schoolYear | schoolYear)
+            : ''
+        }}
+      </td>
+      <td *ngIf="_hasSubjects">
+        {{ row.subjectCode }}
+      </td>
+      <td *ngIf="_hasSubjects">
+        {{ row.assessmentType }}
+      </td>
+      <td class="text-right">
+        {{ row.count | number: '1.0-0' }}
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -39,15 +39,14 @@
     </ng-container>
     <ng-template #notProcessing>
       <div class="controls">
-        <!-- Disabled until there is content on the metrics page -->
-        <!--        <button-->
-        <!--          type="button"-->
-        <!--          class="btn btn-success btn-outlined"-->
-        <!--          [routerLink]="[tenant.id, 'metrics']"-->
-        <!--        >-->
-        <!--          <i class="fa fa-bar-chart"></i> Stats-->
-        <!--        </button>-->
-
+        <button
+          *ngIf="tenant.type === 'TENANT'"
+          type="button"
+          class="btn btn-success btn-outlined"
+          [routerLink]="[tenant.id, 'metrics']"
+        >
+          <i class="fa fa-bar-chart"></i> Stats
+        </button>
         <button
           *ngIf="status.active"
           type="button"
@@ -88,18 +87,23 @@
       </div>
     </ng-container>
     <ng-template #body>
-      <p class="description">
+      <p class="data-set-o" *ngIf="tenant.dataSet != null">
+        <i class="fa fa-database mr-xs"></i> {{ tenant.dataSet.label }}
+      </p>
+      <p class="updated-on" *ngIf="tenant.updatedOn">
+        <i class="fa fa-calendar mr-xs"></i>
+        {{
+          'tenant-link.updatedOn'
+            | translate
+              : {
+                  dateTime: tenant.updatedOn | date: 'medium',
+                  username: tenant.updatedBy
+                }
+        }}
+      </p>
+      <p class="description" *ngIf="tenant.description != null">
         {{ tenant.description }}
       </p>
-      <strong class="data-set" *ngIf="tenant.dataSet != null">
-        {{ tenant.dataSet.label }}
-      </strong>
-      <div class="small text-muted" *ngIf="tenant.updatedOn != null">
-        {{
-          'tenant-link.updated-on'
-            | translate: { dateTime: tenant.updatedOn | date: 'medium' }
-        }}
-      </div>
     </ng-template>
   </div>
 </div>

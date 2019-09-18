@@ -3,13 +3,26 @@
     <h1 class="h2" heading>
       {{ 'tenant-metrics.heading' | translate: (tenant$ | async) }}
     </h1>
-    <button controls class="btn btn-default" [routerLink]="['..']">
+    <button controls class="btn btn-default" [routerLink]="['../..']">
       {{ 'common.action.cancel' | translate }}
     </button>
   </page-heading>
-  <app-tenant-metrics-table
-    [metrics]="metrics$ | async"
-  ></app-tenant-metrics-table>
+  <span>{{ 'tenant-metric-table.lastRun' | translate }}</span>
+  <div class="table-grid">
+    <ng-container *ngFor="let group of (metrics$ | async)">
+      <div>
+        <h2 class="h3">{{ 'tenant-metric-type.' + group.type | translate }}</h2>
+        <ng-container *ngIf="group.values.length > 0; else noMetrics">
+          <app-tenant-metrics-table
+            [metrics]="group.values"
+          ></app-tenant-metrics-table>
+        </ng-container>
+        <ng-template #noMetrics>
+          <!-- anything to do here? -->
+        </ng-template>
+      </div>
+    </ng-container>
+  </div>
 </ng-container>
 <ng-template #loading>
   <spinner></spinner>

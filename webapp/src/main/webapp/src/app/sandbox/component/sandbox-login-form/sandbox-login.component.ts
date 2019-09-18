@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { SandboxLoginService } from './sandbox-login.service';
-import { Sandbox } from './sandbox';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { distinctUntilChanged, finalize, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { uuid } from '../shared/support/support';
 import { byString } from '@kourge/ordering/comparator';
 import { ordering } from '@kourge/ordering';
+import { Sandbox } from '../../model/sandbox';
+import { SandboxLoginService } from '../../service/sandbox-login.service';
+import { uuid } from '../../../shared/support/support';
+import { RdwTranslateLoader } from '../../../shared/i18n/rdw-translate-loader';
 
 const byKey = ordering(byString).on(({ key }) => key).compare;
 
@@ -25,15 +26,26 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
   initialized: boolean;
   sandboxes: Sandbox[];
+  loadingTranslations$: Subject<boolean> = new BehaviorSubject(false);
   private _destroyed: Subject<void> = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private service: SandboxLoginService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private translationLoader: RdwTranslateLoader
   ) {}
 
   ngOnInit(): void {
+    this.formGroup.controls.sandbox.valueChanges
+      .pipe(
+        takeUntil(this._destroyed),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.onSandboxChange();
+      });
+
     combineLatest(this.route.queryParams, this.service.getAll())
       .pipe(takeUntil(this._destroyed))
       .subscribe(([params, sandboxes]) => {
@@ -56,12 +68,6 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
         this.initialized = true;
       });
-
-    this.formGroup.controls.sandbox.valueChanges
-      .pipe(takeUntil(this._destroyed))
-      .subscribe(() => {
-        this.onSandboxChange();
-      });
   }
 
   ngOnDestroy(): void {
@@ -71,6 +77,7 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
 
   onSandboxChange(): void {
     const { sandbox, role } = this.formGroup.controls;
+    // auto-select first role of the sandbox
     if (sandbox.value == null) {
       role.disable();
       role.setValue(null);
@@ -78,6 +85,22 @@ export class SandboxLoginComponent implements OnInit, OnDestroy {
       role.enable();
       role.setValue(sandbox.value.roles[0]);
     }
+    // update translations
+    this.loadingTranslations$.next(true);
+    const tenantKey = sandbox.value != null ? sandbox.value.key : undefined;
+    this.translationLoader
+      .getTenantTranslation(this.translateService.currentLang, tenantKey)
+      .pipe(
+        finalize(() => {
+          this.loadingTranslations$.next(false);
+        })
+      )
+      .subscribe(translations => {
+        this.translateService.setTranslation(
+          this.translateService.currentLang,
+          translations
+        );
+      });
   }
 
   onSubmit(): void {
