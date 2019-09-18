@@ -1,6 +1,17 @@
 ## Change Log
 
-#### 2.0.1 - 2019-
+#### 2.1.0 - 2019-09-18
+
+* RP-688: Sandbox landing page does not localize when sandbox selected
+* RP-726: Show summary metrics about each tenant in UI
+* RP-749: Show each tenant's creation time, updated time, and updated by in tenant dashboard
+* RP-759: School field displayed off-center (too high) on schools page
+* RP-763: SAML timeout/redirect loop
+* RP-777: Cancel button on edit page fails to return user to tenant/sandbox dashboard
+* RP-795: Unable to save changes to CA tenant in Stage/Production
+* RP-752: Localization settings not documented
+* RP-760: Unable to update the welcome banner
+* RP-761: Implement admin guide feedback provided by Smarter
 
 #### 2.0.0 - 2019-08-27
 
