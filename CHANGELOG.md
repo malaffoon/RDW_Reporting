@@ -1,5 +1,7 @@
 ## Change Log
 
+#### 2.2.0 - 
+
 #### 2.1.0 - 2019-09-18
 
 * RP-688: Sandbox landing page does not localize when sandbox selected
