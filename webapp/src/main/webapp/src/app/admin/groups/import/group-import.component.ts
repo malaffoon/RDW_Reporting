@@ -51,7 +51,7 @@ export class GroupImportComponent implements OnInit {
     ) => {
       this.importResults.push(
         this.studentGroupService.mapImportResultFromApi({
-          message: this.translate.instant('admin-groups.import.upload-failed'),
+          message: this.translate.instant('group-import.upload-failed'),
           filename: item.file.name,
           status: 'FAILED'
         })
