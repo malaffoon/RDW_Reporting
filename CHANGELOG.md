@@ -1,6 +1,11 @@
 ## Change Log
 
-#### 2.2.0 - 
+#### 2.2.0 - 2019-10-15
+
+* RP-726 Show summary metrics about each tenant in UI (Part 2)
+* RP-803 CERS User Group Upload Failing 
+* RP-753 Tenant/Sandbox Updates - Crash TRT migrations in Instance
+* RP-826 Institution name containing commas causes problems
 
 #### 2.1.0 - 2019-09-18
 
