@@ -10,8 +10,8 @@
     ></assessment-label>
     <sb-radio-button-group
       *ngIf="scoreTypeOptions != null && scoreTypeOptions.length > 1"
-      [id]="scoreTypeId"
-      [name]="scoreTypeName"
+      [id]="uuid"
+      [name]="uuid"
       [options]="scoreTypeOptions"
       [(ngModel)]="scoreType"
       analyticsCategory="AssessmentResults"
