@@ -363,6 +363,7 @@ export class AssessmentResultsComponent implements OnInit {
   scoreTypeOptions: Option[] = [];
   showInstructionalResources: boolean;
   embargo: Embargo;
+  uuid: String = Utils.newGuid();
 
   /**
    * The active score type in the display
