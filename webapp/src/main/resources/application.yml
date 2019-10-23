@@ -47,7 +47,7 @@ saml:
   key-store-password: ${rdw.reporting.keystore.password}
   private-key-entry-alias: ${rdw.reporting.keystore.alias}
   private-key-entry-password: ${rdw.reporting.keystore.entry.password}
-  idp-metadata-url: "https://smarterbalanced.oktapreview.com/app/exknzssimqgHg710E0h7/sso/saml/metadata"
+  idp-metadata-url: ${rdw.reporting.idp}
   sp-entity-id: ${rdw.reporting.entityId}
   # SAML settings when hosting behind a load balancer or reverse proxy
   load-balance:
@@ -60,15 +60,8 @@ saml:
 
 security:
   filter-dispatcher-types: FORWARD, INCLUDE, REQUEST, ASYNC, ERROR
-#  require-ssl: true
 
 server:
-  port: 8443
-  ssl:
-    key-store-type: PKCS12
-    key-store: "classpath:rdwssl.p12"
-    key-store-password: password
-    key-alias: rdwssl
   # tomcat settings for reasonable performance: adjust for tiny/huge configurations
   tomcat:
     max-connections: 0
@@ -197,3 +190,24 @@ zuul:
       path: /api/reporting-service/**
       url: http://localhost:8180
       stripPrefix: true
+
+---
+
+# Activate the Spring profile "okta" in order to integrate with Okta SSO instead of OpenAM.
+# This requires SSL, so the local URL will change from http://localhost:8080 to https://localhost:8443
+spring:
+  profiles: okta
+
+security:
+  require-ssl: true
+
+server:
+  port: 8443
+  ssl:
+    key-store-type: PKCS12
+    key-store: "classpath:rdwssl.p12"
+    key-store-password: password
+    key-alias: rdwssl
+
+saml:
+  idp-metadata-url: "https://smarterbalanced.oktapreview.com/app/exknzssimqgHg710E0h7/sso/saml/metadata"
