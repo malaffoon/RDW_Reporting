@@ -47,6 +47,7 @@ saml:
   key-store-password: ${rdw.reporting.keystore.password}
   private-key-entry-alias: ${rdw.reporting.keystore.alias}
   private-key-entry-password: ${rdw.reporting.keystore.entry.password}
+  max-authentication-age: 604800
   idp-metadata-url: ${rdw.reporting.idp}
   sp-entity-id: ${rdw.reporting.entityId}
   # SAML settings when hosting behind a load balancer or reverse proxy
@@ -70,6 +71,7 @@ server:
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,text/csv
+
 
 spring:
   resources:
@@ -190,3 +192,18 @@ zuul:
       path: /api/reporting-service/**
       url: http://localhost:8180
       stripPrefix: true
+
+---
+spring:
+  profiles: okta
+
+server:
+  session:
+    cookie:
+      max-age: 3600
+
+reporting:
+  logout-redirect-url: "https://smarterbalanced.oktapreview.com"
+
+saml:
+  idp-metadata-url: "https://smarterbalanced.oktapreview.com/app/exknzssimqgHg710E0h7/sso/saml/metadata"
