@@ -1,1 +1,25 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.cls-1{fill:#231f20;}</style></defs><title> </title><path class="cls-1" d="M2.64,30.45a1.47,1.47,0,0,0-1.56-.13,1.49,1.49,0,0,0-.83,1.34V98.13a1.5,1.5,0,0,0,1.5,1.5H91.83a1.49,1.49,0,0,0,.89-2.7Zm.61,66.18v-62l84,62Z"/><path class="cls-1" d="M51.54,48.27a1.77,1.77,0,0,0,1.07.36,1.82,1.82,0,0,0,1.81-1.81V12.41a1.81,1.81,0,0,0-1.81-1.81H6a1.81,1.81,0,0,0-1.07,3.26Z"/><path class="cls-1" d="M99.62.87a1.53,1.53,0,0,0-1.27-.7H67.79a1.5,1.5,0,0,0-1.5,1.5V65a1.49,1.49,0,0,0,1.16,1.46,1.32,1.32,0,0,0,.34,0,1.51,1.51,0,0,0,1.35-.85L99.7,2.32A1.53,1.53,0,0,0,99.62.87ZM69.29,58.47V3.17H96Z"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 100 100" style="enable-background:new 0 0 100 100;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill:#FFFFFF;}
+	.st2{fill:#FFFFFF;stroke:#FFFFFF;stroke-width:0.25;stroke-miterlimit:10;}
+	.st3{fill:none;stroke:#000000;stroke-width:0.25;stroke-linecap:round;stroke-miterlimit:10;}
+	.st4{fill:#D9D9D9;}
+	.st5{fill:none;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:10;}
+	.st6{fill:none;stroke:#000000;stroke-width:0.4396;stroke-miterlimit:10;}
+	.st7{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;}
+	.st8{fill:none;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
+</style>
+<g>
+	<path d="M2.64,30.45c-0.46-0.34-1.06-0.39-1.57-0.13c-0.51,0.25-0.82,0.77-0.82,1.34v66.48c0,0.83,0.67,1.5,1.5,1.5h90.08
+		c0.65,0,1.22-0.42,1.42-1.03s-0.01-1.29-0.53-1.68L2.64,30.45z M3.25,96.63v-62l84.02,62H3.25z"/>
+	<path d="M51.54,48.27c0.32,0.23,0.69,0.35,1.07,0.35c0.28,0,0.56-0.06,0.81-0.19c0.61-0.31,0.99-0.93,0.99-1.61V12.41
+		c0-1-0.81-1.81-1.81-1.81H5.98c-0.78,0-1.47,0.5-1.72,1.24c-0.24,0.74,0.02,1.55,0.64,2.02L51.54,48.27z"/>
+	<path d="M99.62,0.87c-0.27-0.44-0.75-0.7-1.27-0.7H67.79c-0.83,0-1.5,0.67-1.5,1.5v63.36c0,0.7,0.48,1.31,1.17,1.46
+		c0.11,0.03,0.22,0.04,0.33,0.04c0.57,0,1.1-0.32,1.35-0.85L99.7,2.32C99.92,1.86,99.89,1.31,99.62,0.87z M69.29,58.47V3.17h26.67
+		L69.29,58.47z"/>
+</g>
+</svg>
