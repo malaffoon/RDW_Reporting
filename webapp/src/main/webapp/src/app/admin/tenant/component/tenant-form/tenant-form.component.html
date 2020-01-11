@@ -62,8 +62,9 @@
                     <a
                       class="dropdown-item"
                       href="javascript:void(0)"
-                      (keyup.space)="delete.emit(value)"
                       (click)="delete.emit(value)"
+                      (keyup.space)="delete.emit(value)"
+                      (keydown.space)="$event.preventDefault()"
                     >
                       <i class="fa fa-trash"></i>
                       {{ 'common.action.delete' | translate }}

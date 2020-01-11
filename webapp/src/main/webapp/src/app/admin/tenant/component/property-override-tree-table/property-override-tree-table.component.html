@@ -176,6 +176,8 @@
                           *ngIf="showPasswordToggle(data)"
                           href="javascript:void(0)"
                           (click)="data.showSecure = !data.showSecure"
+                          (keyup.space)="data.showSecure = !data.showSecure"
+                          (keydown.space)="$event.preventDefault()"
                         >
                           <i
                             class="fa fa-md"
@@ -189,12 +191,14 @@
                           *ngIf="modified(data)"
                           href="javascript:void(0)"
                           (click)="onResetButtonClick(data)"
+                          (keyup.space)="onResetButtonClick(data)"
+                          (keydown.space)="$event.preventDefault()"
                           popover="{{
                             'tenant-configuration-form.popover.reset'
                               | translate
                           }}"
                           container="body"
-                          triggers="mouseenter:mouseleave"
+                          triggers="hover focus"
                         >
                           <i class="fa fa-undo fa-md"></i>
                         </a>
@@ -208,7 +212,7 @@
                               | translate
                           }}"
                           container="body"
-                          triggers="mouseenter:mouseleave"
+                          triggers="hover focus"
                         >
                           <i class="fa fa-asterisk fa-md"></i>
                         </a>
@@ -217,7 +221,7 @@
                           href="javascript:void(0)"
                           [popover]="errorsPopover"
                           container="body"
-                          triggers="mouseenter:mouseleave"
+                          triggers="hover focus"
                         >
                           <i class="fa fa-warning fa-md red"></i>
                         </a>

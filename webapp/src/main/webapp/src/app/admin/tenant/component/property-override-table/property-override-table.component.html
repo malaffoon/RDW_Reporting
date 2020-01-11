@@ -59,6 +59,8 @@
                     *ngIf="modified(property)"
                     href="javascript:void(0)"
                     (click)="onResetButtonClick(property)"
+                    (keyup.space)="onResetButtonClick(property)"
+                    (keydown.space)="$event.preventDefault()"
                     popover="{{
                       'tenant-configuration-form.popover.reset' | translate
                     }}"
