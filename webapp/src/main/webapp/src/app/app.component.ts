@@ -77,10 +77,10 @@ export class AppComponent implements OnInit {
     this.initializeNavigationLoadingSpinner();
   }
 
-  scrollToMainContent() {
-    setTimeout(() => {
-      document.getElementById('maincontent').scrollIntoView();
-    }, 0);
+  getMainContentLink(url) {
+    // Strips any existing anchor off url and adds main content anchor in its place.
+    let n = url.indexOf('#');
+    return (n < 0 ? url : url.substring(0, n)) + '#maincontent';
   }
 
   private initializeAnalytics(trackingId: string): void {
