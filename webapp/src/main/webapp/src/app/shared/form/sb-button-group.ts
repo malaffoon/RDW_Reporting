@@ -157,11 +157,7 @@ const ControllerByInputType: { [inputType: string]: InputController } = {
       >
         <input
           type="checkbox"
-          [attr.checked]="
-            isAllOption
-              ? stateInternal.selectedAllOption
-              : stateInternal.selectedOptions.has(option)
-          "
+          [attr.checked]="stateInternal.selectedOptions.has(option)"
           [name]="name"
           [disabled]="option.disabled"
           (click)="
@@ -319,6 +315,9 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]>
   }
 
   set value(value: any) {
+    if (value == null) {
+      value = [];
+    }
     if (this._initialized) {
       this.setValueAndNotifyChanges(this.parseInputValues(value));
       this._state = this.computeState(this._options, this._value);

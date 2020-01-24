@@ -143,18 +143,15 @@
                           </select>
                         </ng-container>
                         <ng-container *ngSwitchCase="'multiselect'">
-                          <!-- todo switch to typeahead based on amount of options -->
-                          <p-multiSelect
-                            tabindex="0"
-                            inputId="{{ configuration.name }}"
+                          <sb-button-group
+                            id="{{ configuration.name }}"
                             name="{{ configuration.name }}"
-                            formControlName="{{ configuration.name }}"
                             [options]="getOptions(data) | async"
-                            appendTo="body"
-                            defaultLabel="None"
-                            [showHeader]="false"
-                            [maxSelectedLabels]="5"
-                          ></p-multiSelect>
+                            [vertical]="(getOptions(data) | async).length > 5"
+                            [allOptionEnabled]="false"
+                            [noneStateEnabled]="true"
+                            formControlName="{{ configuration.name }}"
+                          ></sb-button-group>
                         </ng-container>
                       </ng-container>
 
