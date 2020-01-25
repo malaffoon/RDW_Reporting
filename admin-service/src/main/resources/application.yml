@@ -236,7 +236,7 @@ archive:
   #s3-sse:
 
 art-client:
-  url: https://art-deployment.sbtds.org/rest/
+  url: https://art-qa.sbtds.org/rest/
   oauth2:
     access-token-uri: https://sso-deployment.sbtds.org:443/auth/oauth2/access_token?realm=/sbac
     client-id: sbacdw
