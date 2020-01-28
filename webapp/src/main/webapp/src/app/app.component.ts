@@ -77,10 +77,8 @@ export class AppComponent implements OnInit {
     this.initializeNavigationLoadingSpinner();
   }
 
-  getMainContentLink(url) {
-    // Strips any existing anchor off url and adds main content anchor in its place.
-    let n = url.indexOf('#');
-    return (n < 0 ? url : url.substring(0, n)) + '#maincontent';
+  get mainContentHref(): string {
+    return this.router.url.replace(/(#.*)/, '') + '#maincontent';
   }
 
   private initializeAnalytics(trackingId: string): void {

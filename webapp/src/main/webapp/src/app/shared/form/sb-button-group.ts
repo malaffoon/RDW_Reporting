@@ -157,7 +157,11 @@ const ControllerByInputType: { [inputType: string]: InputController } = {
       >
         <input
           type="checkbox"
-          [attr.checked]="stateInternal.selectedOptions.has(option)"
+          [attr.checked]="
+            isAllOption
+              ? stateInternal.selectedAllOption
+              : stateInternal.selectedOptions.has(option)
+          "
           [name]="name"
           [disabled]="option.disabled"
           (click)="
