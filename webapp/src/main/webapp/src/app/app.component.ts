@@ -77,10 +77,8 @@ export class AppComponent implements OnInit {
     this.initializeNavigationLoadingSpinner();
   }
 
-  scrollToMainContent() {
-    setTimeout(() => {
-      document.getElementById('maincontent').scrollIntoView();
-    }, 0);
+  get mainContentHref(): string {
+    return this.router.url.replace(/(#.*)/, '') + '#maincontent';
   }
 
   private initializeAnalytics(trackingId: string): void {

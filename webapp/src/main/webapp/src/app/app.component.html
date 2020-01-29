@@ -1,10 +1,7 @@
 <header *ngIf="{ login: router.url.includes('/sandbox-login') } as state">
-  <a
-    class="sr-only sr-only-focusable"
-    href="javascript:void(0)"
-    (click)="scrollToMainContent()"
-    >{{ 'home.skip-link' | translate }}</a
-  >
+  <a class="sr-only sr-only-focusable" [href]="mainContentHref">{{
+    'home.skip-link' | translate
+  }}</a>
   <ng-container *ngIf="(user$ | async) as user">
     <ng-container *ngIf="(applicationSettings$ | async) as settings">
       <app-navigation
@@ -32,7 +29,7 @@
 </header>
 <sb-breadcrumbs></sb-breadcrumbs>
 
-<div id="maincontent" class="container">
+<div id="maincontent" class="container" #main>
   <router-outlet></router-outlet>
 </div>
 

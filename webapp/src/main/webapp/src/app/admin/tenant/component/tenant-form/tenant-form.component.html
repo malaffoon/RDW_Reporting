@@ -63,6 +63,8 @@
                       class="dropdown-item"
                       href="javascript:void(0)"
                       (click)="delete.emit(value)"
+                      (keyup.space)="delete.emit(value)"
+                      (keydown.space)="$event.preventDefault()"
                     >
                       <i class="fa fa-trash"></i>
                       {{ 'common.action.delete' | translate }}
@@ -74,12 +76,13 @@
           </div>
         </li>
         <li>
-          <a
+          <button
+            type="button"
             class="btn btn-default"
             [routerLink]="[mode === 'create' ? '..' : '../..']"
           >
             {{ 'common.action.cancel' | translate }}
-          </a>
+          </button>
         </li>
       </ul>
     </div>

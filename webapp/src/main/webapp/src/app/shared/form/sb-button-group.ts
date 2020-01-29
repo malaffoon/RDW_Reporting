@@ -319,6 +319,9 @@ export class SBButtonGroup extends AbstractControlValueAccessor<any[]>
   }
 
   set value(value: any) {
+    if (value == null) {
+      value = [];
+    }
     if (this._initialized) {
       this.setValueAndNotifyChanges(this.parseInputValues(value));
       this._state = this.computeState(this._options, this._value);
