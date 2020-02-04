@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { Option } from '../../model/form/option';
 import { ConstraintType } from '../../model/form/constraint-type';
-import { share } from 'rxjs/operators';
+import { map, share } from 'rxjs/operators';
 
 function addTreeNodesRecursively(
   nodes: TreeNode[],
@@ -178,7 +178,17 @@ export class PropertyOverrideTreeTableComponent
         translateService: this.translateService,
         injector: this.injector
       })
-      .pipe(share()));
+      .pipe(
+        map(x => this.mapOptions(x)),
+        share()
+      ));
+  }
+
+  mapOptions(options: any[]): any[] {
+    return options.map(x => ({
+      ...x,
+      text: x.label
+    }));
   }
 
   getErrors(property: Property): string[] {

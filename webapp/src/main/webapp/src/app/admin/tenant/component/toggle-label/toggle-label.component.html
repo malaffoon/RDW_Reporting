@@ -1,4 +1,9 @@
-<a href="javascript:void(0)" (click)="openChange.emit(!open)">
+<a
+  href="javascript:void(0)"
+  (click)="openChange.emit(!open)"
+  (keydown.arrowLeft)="openChange.emit(false)"
+  (keydown.arrowRight)="openChange.emit(true)"
+>
   <i
     aria-hidden="true"
     class="fa"
