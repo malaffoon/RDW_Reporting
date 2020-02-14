@@ -1,3 +1,9 @@
+app:
+  cache:
+    translation:
+      # every 2 mins (2 * 60 * 1000)
+      refresh-delay: "120000"
+
 # actuator end-points should be served from a different port than the API/web content
 management:
   port: 8008
@@ -95,7 +101,7 @@ spring:
 
   cache:
     type: SIMPLE
-    cache-names: permissionsByRole, translations, translation_properties
+    cache-names: permissionsByRole, translations, translation_properties, jdbcTranslationProvider
 
   cloud:
     stream:
