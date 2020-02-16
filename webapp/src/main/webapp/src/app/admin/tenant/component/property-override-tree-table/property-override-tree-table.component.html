@@ -190,6 +190,10 @@
                           (click)="onResetButtonClick(data)"
                           (keyup.space)="onResetButtonClick(data)"
                           (keydown.space)="$event.preventDefault()"
+                          [attr.aria-label]="
+                            'tenant-configuration-form.popover.reset'
+                              | translate
+                          "
                           popover="{{
                             'tenant-configuration-form.popover.reset'
                               | translate
@@ -204,6 +208,10 @@
                             data.configuration.required && !context.hasErrors
                           "
                           href="javascript:void(0)"
+                          [attr.aria-label]="
+                            'tenant-configuration-form.popover.required'
+                              | translate
+                          "
                           popover="{{
                             'tenant-configuration-form.popover.required'
                               | translate
@@ -216,6 +224,10 @@
                         <a
                           *ngIf="context.hasErrors"
                           href="javascript:void(0)"
+                          [attr.aria-label]="
+                            'tenant-configuration-form.error.required'
+                              | translate
+                          "
                           [popover]="errorsPopover"
                           container="body"
                           triggers="hover focus"
