@@ -156,7 +156,10 @@
                       </ng-container>
 
                       <ng-template #errorsPopover>
-                        <div *ngFor="let errorName of getErrors(data)">
+                        <div
+                          id="error-popover"
+                          *ngFor="let errorName of getErrors(data)"
+                        >
                           <span class="maroon">
                             {{
                               'tenant-configuration-form.error.' + errorName
@@ -175,6 +178,9 @@
                           (click)="data.showSecure = !data.showSecure"
                           (keyup.space)="data.showSecure = !data.showSecure"
                           (keydown.space)="$event.preventDefault()"
+                          [attr.aria-label]="
+                            data.showSecure ? 'Hide secret' : 'Show secret'
+                          "
                         >
                           <i
                             class="fa fa-md"
@@ -224,10 +230,7 @@
                         <a
                           *ngIf="context.hasErrors"
                           href="javascript:void(0)"
-                          [attr.aria-label]="
-                            'tenant-configuration-form.error.required'
-                              | translate
-                          "
+                          aria-labelledby="error-popover"
                           [popover]="errorsPopover"
                           container="body"
                           triggers="hover focus"

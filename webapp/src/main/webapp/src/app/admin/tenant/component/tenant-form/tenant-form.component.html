@@ -113,8 +113,13 @@
             formControlName="key"
             (input)="onKeyInput($event.target.value)"
             data-lpignore
+            aria-labelledby="tenant-key-error"
           />
-          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+          <span
+            id="tenant-key-error"
+            class="help-block"
+            *ngIf="showErrors(control, form.submitted)"
+          >
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.key.error.required' | translate }}
             </ng-container>
@@ -153,8 +158,13 @@
             type="text"
             class="form-control"
             formControlName="id"
+            aria-labelledby="tenant-id-error"
           />
-          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+          <span
+            class="help-block"
+            id="tenant-id-error"
+            *ngIf="showErrors(control, form.submitted)"
+          >
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.id.error.required' | translate }}
             </ng-container>
@@ -279,8 +289,13 @@
             id="label"
             name="label"
             formControlName="label"
+            aria-labelledby="tenant-name-error"
           />
-          <span class="help-block" *ngIf="showErrors(control, form.submitted)">
+          <span
+            id="tenant-name-error"
+            class="help-block"
+            *ngIf="showErrors(control, form.submitted)"
+          >
             <ng-container *ngIf="control.errors.required">
               {{ 'tenant-form.field.name.error.required' | translate }}
             </ng-container>
