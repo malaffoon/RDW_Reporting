@@ -98,7 +98,11 @@ gw build it -Pcommon=1.1.0-SNAPSHOT
 #### Docker Images
 To build the docker images run:
 ```bash
-gw buildImage
+gw dockerBuildImage
+```
+or 
+```bash
+gw dBI
 ```
 
 ### Coverage Reports
