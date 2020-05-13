@@ -60,7 +60,6 @@ dependencies {
 node {
     version = '12.11.1'
     npmVersion = '6.11.3'
-    distBaseUrl = 'https://nodejs.org/dist'
     download = true
 }
 
