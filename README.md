@@ -1,27 +1,16 @@
 ## RDW_Reporting
 
 Additional documentation:
-1. RDW_Reporting is part of the RDW suite of projects and applications. For all things RDW please refer to 
-[RDW repo](https://github.com/SmarterApp/RDW)
-1. [Change log](CHANGELOG.md)
-1. [Contributing developer notes](CONTRIBUTING.md)
-1. [License](LICENSE)
+1. RDW_Reporting is part of the RDW suite of projects and applications. For all things RDW please refer to [RDW repo](https://github.com/SmarterApp/RDW)
+2. [Change log](CHANGELOG.md)
+3. [Contributing developer notes](CONTRIBUTING.md)
+4. [License](LICENSE)
+5. [DevSetup-QuickGuide](DEVSETUP-QUICKGUIDE.md)
 
 ### Prerequisites
-Java 8.
+Please See the [DevSetup-QuickGuide](DEVSETUP-QUICKGUIDE.md)
 
-Gradle. The project uses bundled gradle so no explicit installation is required. However, it is highly 
-recommended to install gdub (https://github.com/dougborg/gdub) because it handles some shortcomings of 
-gradle's commandline behavior. The instructions assume this, using `gw` instead of `./gradlew` or `gradle`.
-
-Node
-```bash
-# Install node.js
-# Download the most current from https://nodejs.org/en/
- 
-# Install angular-cli
-npm install @angular/cli
-```
+The following list various options for that may be needed while developing RDW_Reporting.
 
 RDW_Reporting makes use of other projects. These are published to publicly available repositories
 and RDW_Reporting uses those artifacts. However, a developer may want to have local copies for
@@ -33,8 +22,9 @@ reference, debugging, or concurrent development.
 #### MySQL
 MySQL is required for building, testing, and running these applications locally. Please refer to the
 [RDW Schema](https://github.com/SmarterApp/RDW_Schema) project for instructions on setting up MySQL.
-RDW_Reporting ITs (integration tests) use RDW_Schema. If you are developing RDW_Schema and would like
-to test your local changes in this project, you can build RDW_Schema locally, install your changes
+RDW_Reporting ITs (integration tests) use RDW_Schema. 
+
+* If you are developing RDW_Schema and would like to test your local changes in this project, you can build RDW_Schema locally, install your changes
 to the local repository, and specify the SNAPSHOT version of RDW_Schema when building RDW_Reporting:
 ```bash
 cd ../RDW_Schema
@@ -47,13 +37,6 @@ gw build it -Pschema=2.4.0-SNAPSHOT
 
 The service depends on the database being configured properly. See instructions below under [Running](#running) 
 
-
-#### wkhtmltopdf
-wkhtmltopdf is required for building (integration tests) the applications. To install:
-```bash
-brew install Caskroom/cask/wkhtmltopdf
-```
-For running the application, wkhtmltopdf is bundled as a service and is run in a docker container.
 
 ### Building
 After cloning the repository run:
