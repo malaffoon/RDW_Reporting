@@ -2,10 +2,11 @@
 
 Additional documentation:
 1. RDW_Reporting is part of the RDW suite of projects and applications. For all things RDW please refer to [RDW repo](https://github.com/SmarterApp/RDW)
-2. [Change log](CHANGELOG.md)
-3. [Contributing developer notes](CONTRIBUTING.md)
-4. [License](LICENSE)
-5. [DevSetup-QuickGuide](DEVSETUP-QUICKGUIDE.md)
+1. [Change log](CHANGELOG.md)
+1. [Contributing developer notes](CONTRIBUTING.md)
+1. [DevSetup-QuickGuide](DEVSETUP-QUICKGUIDE.md)
+1. [License](LICENSE)
+
 
 ### Prerequisites
 Please See the [DevSetup-QuickGuide](DEVSETUP-QUICKGUIDE.md)

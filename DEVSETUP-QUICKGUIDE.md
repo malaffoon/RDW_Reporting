@@ -76,7 +76,7 @@ gw migrateAll
 
 ### Update Environment
 The following environment variable are needed to run RDW_Reporting using Docker.
-Note: can use chk (README.md https://github.com/SmarterApp/RDW_Reporting/blob/develop/README.md)
+Note: can use chk [README.md](README.md)
 ```bash
 export GIT_USER=(your GitLab User Name) 
 export GIT_PASSWORD=(your GitLab pwd)
