@@ -2,6 +2,9 @@
 
 This document is targeted at developers contributing to the RDW_Reporting project.
 
+### DevSetup Guide 
+[DevSetup-QuickGuide](DEVSETUP-QUICKGUIDE.md)
+
 ### Coding Conventions
 
 #### Application Configuration
