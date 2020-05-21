@@ -73,6 +73,7 @@ export class AggregateReportOptionsService {
               'CustomAggregate',
               'Longitudinal',
               'Claim',
+              'AltScore',
               'Target'
             ]
           : <ReportQueryType[]>['CustomAggregate', 'Claim'],

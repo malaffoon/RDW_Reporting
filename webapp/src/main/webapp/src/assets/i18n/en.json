@@ -56,6 +56,7 @@
     "subheading": "Select the attributes to include in the report. Then click \"Create Report.\"",
     "field": {
       "claim-codes-label": "Claims",
+      "alt-score-codes-label": "Alt Scores",
       "assessment-grade-range-label": "Assessment Grades",
       "to-school-year-label": "Most Recent Academic Year",
       "to-school-year-info": "The year for the highest assessment grade selected",
@@ -89,6 +90,7 @@
     },
     "section": {
       "claim-heading": "Claim",
+      "alt-score-heading": "Alt Score",
       "organization": {
         "heading": "Schools and Districts",
         "subtext": "Select schools and districts to compare.",
@@ -282,6 +284,11 @@
         "description": "Compare Claim-level performance on available assessments.",
         "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
+      },
+      "AltScore": {
+        "description": "Compare alt score performance on available assessments.",
+        "disabled": "Alternate Score Reports are only available for ICA and summative assessments.",
+        "label": "Alt Score Report"
       },
       "CustomAggregate": {
         "description": "Compare performance by selected school years.",

@@ -8,6 +8,12 @@ export interface Claim {
   readonly code: string;
 }
 
+export interface AltScore {
+  readonly assessmentType: string;
+  readonly subject: string;
+  readonly code: string;
+}
+
 export interface Subject {
   readonly code: string;
   readonly assessmentType: string;

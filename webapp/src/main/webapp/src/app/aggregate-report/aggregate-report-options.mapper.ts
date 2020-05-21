@@ -237,6 +237,11 @@ export class AggregateReportOptionsMapper {
         schoolYears: [options.schoolYears[0]],
         claimCodesBySubject: []
       },
+      altScoreReport: {
+        assessmentGrades: [],
+        schoolYears: [options.schoolYears[0]],
+        altScoreCodesBySubject: []
+      },
       longitudinalCohort: {
         assessmentGrades: [],
         toSchoolYear: options.schoolYears[0]
