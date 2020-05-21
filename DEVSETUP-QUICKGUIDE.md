@@ -78,6 +78,7 @@ gw migrateAll
 The following environment variable are needed to run RDW_Reporting using Docker.
 Note: can use chk [README.md](README.md)
 ```bash
+export CONFIG_SERVICE_REPO=https://gitlab.com/fairwaytech/rdw_config.git
 export GIT_USER=(your GitLab User Name) 
 export GIT_PASSWORD=(your GitLab pwd)
 export RDW_REPORTING_KEYSTORE_PATH=file:~/Downloads/rdw-reporting-saml.jks
