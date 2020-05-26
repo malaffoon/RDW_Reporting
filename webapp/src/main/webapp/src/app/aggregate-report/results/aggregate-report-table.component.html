@@ -65,6 +65,14 @@
         </span>
 
         <span
+          *ngSwitchCase="'altScore'"
+          info-button
+          title="{{ 'target-report.columns.alt-score' | translate }}"
+          content="{{ 'common.info.alt-score' | translate }}"
+        >
+        </span>
+
+        <span
           *ngSwitchCase="'target'"
           info-button
           title="{{ 'target-report.columns.target' | translate }}"

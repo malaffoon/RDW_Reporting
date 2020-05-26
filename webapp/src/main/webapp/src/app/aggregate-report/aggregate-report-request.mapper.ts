@@ -4,7 +4,11 @@ import { AggregateReportFormSettings } from './aggregate-report-form-settings';
 import { AggregateReportFormOptions } from './aggregate-report-form-options';
 import { TranslateService } from '@ngx-translate/core';
 import { AssessmentDefinition } from './assessment/assessment-definition';
-import { AggregateReportOptions, Claim } from './aggregate-report-options';
+import {
+  AggregateReportOptions,
+  AltScore,
+  Claim
+} from './aggregate-report-options';
 import { Observable, forkJoin, of } from 'rxjs';
 import {
   District,
@@ -170,6 +174,18 @@ export class AggregateReportRequestMapper {
       query.claimCodesBySubject = this.claimsBySubjectMapping(
         settings.subjects.map(subject => subject.code),
         settings.claimReport.claimCodesBySubject
+      );
+    } else if (
+      this.reportService.getEffectiveReportType(
+        settings.reportType,
+        assessmentDefinition
+      ) === 'AltScore'
+    ) {
+      query.assessmentGradeCodes = settings.altScoreReport.assessmentGrades;
+      query.schoolYears = settings.altScoreReport.schoolYears;
+      query.altScoreCodesBySubject = this.altScoresBySubjectMapping(
+        settings.subjects.map(subject => subject.code),
+        settings.altScoreReport.altScoreCodesBySubject
       );
     } else if (
       this.reportService.getEffectiveReportType(
@@ -622,6 +638,19 @@ export class AggregateReportRequestMapper {
     for (const claim of claims) {
       if (obj[claim.subject] != null) {
         obj[claim.subject].push(claim.code);
+      }
+    }
+    return obj;
+  }
+
+  altScoresBySubjectMapping(subjects: string[], altScores: AltScore[]) {
+    const obj = {};
+    for (const subject of subjects) {
+      obj[subject] = [];
+    }
+    for (const altScore of altScores) {
+      if (obj[altScore.subject] != null) {
+        obj[altScore.subject].push(altScore.code);
       }
     }
     return obj;

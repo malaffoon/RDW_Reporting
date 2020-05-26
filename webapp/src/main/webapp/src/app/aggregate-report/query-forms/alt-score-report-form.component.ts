@@ -218,7 +218,7 @@ export class AltScoreReportFormComponent extends MultiOrganizationQueryFormCompo
   }
 
   private initializeAltScoresForAssessmentType(): void {
-    // TODO: modify for Alt Scores and replace deprecated code
+    // TODO: replace deprecated code
     const orderingObservables: Observable<
       boolean
     >[] = this.filteredOptions.subjects.map(subject => {
@@ -226,16 +226,19 @@ export class AltScoreReportFormComponent extends MultiOrganizationQueryFormCompo
       return this.orderingService
         .getAltScoreOrdering(subjectCode, this.settings.assessmentType)
         .pipe(
-          map(claimOrdering => {
+          map(altScoreOrdering => {
             this.altScoresBySubject[
               subjectCode
-            ] = this.filteredOptions.claimCodes
+            ] = this.filteredOptions.altScoreCodes
               .filter(
                 altScore =>
                   altScore.value.subject === subjectCode &&
                   altScore.value.assessmentType === this.settings.assessmentType
               )
-              .sort(claimOrdering.on<any>(claim => claim.value.code).compare);
+              .sort(
+                altScoreOrdering.on<any>(altScore => altScore.value.code)
+                  .compare
+              );
             return true;
           })
         );

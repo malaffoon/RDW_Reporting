@@ -49,7 +49,7 @@ export class OrderingService {
       .pipe(
         map(definition =>
           ordering(
-            ranking(definition == null ? [] : definition.alternateScore.codes)
+            ranking(definition == null ? [] : definition.alternateScoreCodes)
           )
         )
       );

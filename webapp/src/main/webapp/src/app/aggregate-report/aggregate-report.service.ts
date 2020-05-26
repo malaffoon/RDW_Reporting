@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../shared/data/data.service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AggregateServiceRoute } from '../shared/service-route';
 import { AggregateReportRow } from '../report/aggregate-report';
 import { AssessmentService } from './assessment/assessment.service';
@@ -41,6 +41,11 @@ export class AggregateReportService {
    * @param query the report parameters
    */
   getEstimatedRowCount(query: AggregateReportQueryType): Observable<number> {
+    // TODO: (rdw-phase-6) remove this stub when alt-score backend implemented
+    if (query.type === 'AltScore') {
+      return of(10);
+    }
+
     return this.dataService.post(
       `${AggregateServiceRoute}/aggregate/estimatedRowCount`,
       query

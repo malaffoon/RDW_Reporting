@@ -155,6 +155,7 @@ function createColumns(
     new Column({ id: 'assessmentLabel' }),
     new Column({ id: 'schoolYear' }),
     new Column({ id: 'claim', field: 'claimCode', classes: 'wrapping' }),
+    new Column({ id: 'altScore', field: 'altScoreCode', classes: 'wrapping' }),
     new Column({ id: 'dimension', field: 'subgroup.id', classes: 'wrapping' }),
     new Column({ id: 'target', field: 'targetNaturalId', classes: 'wrapping' })
   ];
@@ -181,6 +182,7 @@ function createColumns(
       );
       break;
     case 'Claim':
+    case 'AltScore':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
         new Column({
