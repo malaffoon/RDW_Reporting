@@ -222,6 +222,31 @@ function createColumns(
   ];
 }
 
+function levelsByReportType(
+  reportType: ReportQueryType,
+  subjectDefinition: SubjectDefinition
+): number[] {
+  let levels: number[] = null;
+
+  switch (reportType) {
+    case 'Claim':
+      if (subjectDefinition.claimScore != null) {
+        levels = subjectDefinition.claimScore.levels;
+      }
+      break;
+    case 'AltScore':
+      if (subjectDefinition.alternateScore != null) {
+        levels = subjectDefinition.alternateScore.levels;
+      }
+      break;
+    default:
+      levels = subjectDefinition.overallScore.levels;
+      break;
+  }
+
+  return levels || [];
+}
+
 function createPerformanceLevelColumns(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
@@ -230,12 +255,7 @@ function createPerformanceLevelColumns(
   performanceLevelDisplayType: string
 ): Column[] {
   const performanceLevelsByDisplayType = {
-    Separate:
-      reportType === 'Claim'
-        ? subjectDefinition.claimScore != null
-          ? subjectDefinition.claimScore.levels
-          : []
-        : subjectDefinition.overallScore.levels,
+    Separate: levelsByReportType(reportType, subjectDefinition),
     Grouped: [
       subjectDefinition.overallScore.standardCutoff - 1,
       subjectDefinition.overallScore.standardCutoff

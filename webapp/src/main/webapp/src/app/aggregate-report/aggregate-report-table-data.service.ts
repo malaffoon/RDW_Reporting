@@ -263,13 +263,13 @@ export class AggregateReportTableDataService {
           },
           {
             getValues: context =>
-              context.settings.claimReport.assessmentGrades.map(
+              context.settings.altScoreReport.assessmentGrades.map(
                 grade => <any>{ assessmentGradeCode: grade }
               )
           },
           {
             getValues: context =>
-              context.settings.claimReport.schoolYears.map(
+              context.settings.altScoreReport.schoolYears.map(
                 year => <any>{ schoolYear: year }
               )
           },
@@ -303,7 +303,7 @@ export class AggregateReportTableDataService {
                   altScore =>
                     <any>{
                       subjectCode: subjectCode,
-                      claimCode: altScore.code
+                      altScoreCode: altScore.code
                     }
                 );
             }
