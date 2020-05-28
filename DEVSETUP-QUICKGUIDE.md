@@ -132,7 +132,7 @@ To Shutdown the Docker Images
 docker-compose down 
 ```
 ## Tips & Troubleshooting
-#### * If working from home, get your IP whitelisted. 
+#### * If you are working offsite and need to run the aggregate-service, have an admin whitelist your IP address for the AWS security group sbacdw-redshift. 
 
 #### * Error when running `docker-compose up -d` getting "stuck on" config_server. 
 check your GIT LAB user name and password are set properly in your environment (can use the `export` cmd to list current environment settings.
