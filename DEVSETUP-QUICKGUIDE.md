@@ -131,17 +131,20 @@ To Shutdown the Docker Images
 ```bash
 docker-compose down 
 ```
-### Tips & Troubleshooting
-* Error when running `docker-compose up -d` getting "stuck on" config_server. 
-** check your GIT LAB user name and password are set properly in your environment (can use the `export` cmd to list current environment settings.
+## Tips & Troubleshooting
+#### * If working from home, get your IP whitelisted. 
 
-* If working from home, get your IP whitelisted. 
+#### * Error when running `docker-compose up -d` getting "stuck on" config_server. 
+check your GIT LAB user name and password are set properly in your environment (can use the `export` cmd to list current environment settings.
 
-* mysql.sock error when running locally
-** uninstall mysql & remove all my.cnf files (note: location of my.cnf file may differ)
-*** ```bash
-     brew uninstall mysql@5.6
-     rm /usr/local/etc/mycnf
-     ```
-** start from the begining of the MySQL installation setup in the RDW_Schema -> README.md file 
-*** NOTE: to follow the steps closely.
+#### * mysql.sock error when running locally
+1) uninstall mysql 
+```bash
+brew uninstall mysql@5.6
+```
+2) remove all my.cnf files (note: location of my.cnf file may differ)
+```bash
+rm /usr/local/etc/mycnf
+```
+3) start from the begining of the MySQL installation setup in the RDW_Schema -> README.md file 
+#### NOTE: to follow the steps closely.
