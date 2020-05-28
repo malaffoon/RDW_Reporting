@@ -136,3 +136,12 @@ docker-compose down
 ** check your GIT LAB user name and password are set properly in your environment (can use the `export` cmd to list current environment settings.
 
 * If working from home, get your IP whitelisted. 
+
+* mysql.sock error when running locally
+** uninstall mysql & remove all my.cnf files (note: location of my.cnf file may differ)
+*** ```bash
+     brew uninstall mysql@5.6
+     rm /usr/local/etc/mycnf
+     ```
+** start from the begining of the MySQL installation setup in the RDW_Schema -> README.md file 
+*** NOTE: to follow the steps closely.
