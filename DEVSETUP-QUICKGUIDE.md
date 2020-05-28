@@ -120,9 +120,9 @@ This will take a few minutes to run, and you can check on the container status u
 docker ps 
 ```
 
-To view reporting webapp logs to verify it is up and running, run the following cmd, look for Tomcat is up and running on port 8080.
+To view reporting webapp logs to verify it is up and running, run the following cmd, look for Tomcat is up and running on port 8080. (ctrl-c) to exit.
 ```bash
-docker logs -f reporting_webapp_1
+docker logs -f rdw_reporting_webapp_1
 ```
 
 Once all of the containers are running, goto Http://localhost:8080 and the SB webapp should be available.
