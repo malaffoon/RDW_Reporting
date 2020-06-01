@@ -123,7 +123,7 @@ subprojects {
         implementation 'org.slf4j:slf4j-api'
 
         // handy for creating metadata with @ConfigurationProperties
-        compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+        implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
         runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
