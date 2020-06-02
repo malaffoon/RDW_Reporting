@@ -1,0 +1,198 @@
+<page-heading>
+  <h1 class="h2" heading>{{ 'test-results.title' | translate }}</h1>
+  <ul class="list-unstyled list-inline" controls>
+    <li>
+      <a class="btn btn-primary btn-sm" [routerLink]="['history']"
+        ><i class="fa fa-cloud-download"></i>
+        {{ 'test-results.history-link' | translate }}</a
+      >
+    </li>
+  </ul>
+</page-heading>
+
+<ng-container>
+  <ng-container>
+    <div class="row">
+      <div class="col-md-2" *ngIf="testResultsState">
+        {{ 'test-results.state-header' | translate }}
+        {{ testResultsState }}
+      </div>
+    </div>
+    <div class="well">
+      <div class="row">
+        <!-- School Year Select -->
+        <div class="col-md-2 test-left">
+          <label for="select-schoolyear">{{
+            'test-results.filter-school-year' | translate
+          }}</label>
+
+          <select
+            id="select-schoolyear"
+            [(ngModel)]="testResultFilters.schoolYear"
+            class="form-control"
+            (ngModelChange)="onChangeSchoolYearFilter($event)"
+          >
+            <option
+              *ngFor="let schoolYear of schoolYearOptions"
+              [ngValue]="schoolYear"
+            >
+              {{ schoolYear }}
+              <!--              {{ schoolYear | schoolYear}}-->
+            </option>
+          </select>
+        </div>
+
+        <!-- District Select  -->
+        <div class="col-md-2 text-left" *ngIf="showDistrictFilter">
+          <label for="select-district">{{
+            'test-results.filter-district' | translate
+          }}</label>
+          <select
+            id="select-district"
+            [(ngModel)]="testResultFilters.district"
+            class="form-control"
+            (ngModelChange)="onChangeDistrictFilter($event)"
+          >
+            <option
+              *ngFor="let district of districtOptions"
+              [ngValue]="district"
+            >
+              {{ district }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-2" *ngIf="!showDistrictFilter">
+          {{ userDistrict }}
+        </div>
+
+        <!-- Subject Select  -->
+        <div class="col-md-2">
+          <label for="select-subject">{{
+            'test-results.filter-subject' | translate
+          }}</label>
+          <select
+            id="select-subject"
+            [(ngModel)]="testResultFilters.subject"
+            class="form-control"
+            (ngModelChange)="onChangeSubjectFilter($event)"
+          >
+            <option *ngFor="let subject of subjectOptions" [ngValue]="subject">
+              {{ subject | translate }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Report Type Select -->
+        <div class="col-md-2">
+          <label for="select-report-type">{{
+            'test-results.filter-report-type' | translate
+          }}</label>
+          <select
+            id="select-report-type"
+            [(ngModel)]="testResultFilters.reportType"
+            class="form-control"
+            (ngModelChange)="onChangeReportTypeFilter($event)"
+          >
+            <option
+              *ngFor="let reportType of reportTypeOptions"
+              [ngValue]="reportType"
+            >
+              {{ reportType | translate }}
+            </option>
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <!--       Place Holder for the test results counts - that cannot be filtered -->
+        </div>
+
+        <!-- Status Type Select  -->
+        <div class="col-md-2">
+          <label for="select-status">{{
+            'test-results.filter-status' | translate
+          }}</label>
+          <select
+            id="select-status"
+            [(ngModel)]="testResultFilters.status"
+            class="form-control"
+            (ngModelChange)="onChangeStatusFilter($event)"
+          >
+            <option *ngFor="let status of statusOptions" [ngValue]="status">
+              {{ status | translate }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<!--    <table class='table'-->
+<!--          *ngIf='testResults&& testResults.length'>-->
+<ng-container>
+  <ng-container>
+    <div class="well">
+      <div class="table-list-container">
+        <p-table
+          [columns]="columns"
+          [value]="filteredTestResults"
+          sortField="name"
+          [autoLayout]="true"
+          [paginator]="true"
+          [rows]="10"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th
+                *ngFor="let column of columns"
+                [pSortableColumn]="column.field"
+                [pSortableColumnDisabled]="!column.sortable"
+                [ngSwitch]="column.id"
+              >
+                <span *ngSwitchCase="'deleted'"></span>
+
+                <span *ngSwitchDefault>
+                  {{ 'test-results.columns.' + column.id | translate }}
+                </span>
+
+                <p-sortIcon
+                  *ngIf="column.sortable"
+                  [field]="column.field"
+                ></p-sortIcon>
+              </th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-group let-columns="columns">
+            <tr>
+              <td *ngFor="let column of columns" [ngSwitch]="column.id">
+                <span *ngSwitchDefault>
+                  {{ group[column.field] }}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length">
+                {{ 'test-results.no-test-results' | translate }}
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <div class="modal-footer">
+        <button
+          (click)="OpenChangeResultsModal()"
+          class="btn btn-primary btn-sm"
+          controls
+          type="button"
+        >
+          <i class="fa fa-pencil-square"></i>
+          {{ 'test-results.change-status' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

@@ -17,7 +17,7 @@
       "student-count": "Num. of Students",
       "subjects": "Subjects"
     },
-    "filter": "Search groups by name",
+    "filter": "Search groups by name - Boyah!",
     "no-results": "No groups found matching the given filter criteria.",
     "no-schools": "Your user account does not have access to view the groups of any schools.",
     "search-school": "Start typing a school name...",
@@ -1213,6 +1213,10 @@
         "button": "Tenants",
         "description": "Manage Reporting System Tenants"
       },
+      "test-results": {
+        "button": "Test Results Management",
+        "description": "Manage summative test results."
+      },
       "titles": {
         "administrator-tools": "Administrator Tools"
       }
@@ -1987,5 +1991,58 @@
     "head": "Deactivate pipeline",
     "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
     "accept": "Deactivate"
+  },
+  "test-results": {
+    "all-text": "All",
+    "change-status": "Change Status",
+    "columns": {
+      "school-year": "School Year",
+      "district": "District",
+      "subject": "Subject",
+      "report-type": "Report Type",
+      "result-count": "Result Count",
+      "status": "Status"
+    },
+    "empty-message": "There are no test results that match your search.  Please try again.",
+    "filter-school-year": "Select School Year",
+    "filter-district": "Select District",
+    "filter-subject": "Select Subject",
+    "filter-report-type": "Select Report Type",
+    "filter-status": "Select Status",
+    "history-link": "Audit History",
+    "no-test-results": "Contact your administrator for access to test results.",
+    "state-header": "State:",
+    "status-placeholder": "Select Status (required)",
+    "title": "Test Results Management"
+  },
+  "test-results-subject-options": {
+    "ela": "ELA",
+    "elpac": "ELPAC",
+    "math": "Math",
+    "science": "Science"
+  },
+  "test-results-report-type-options": {
+    "individual": "Individual",
+    "aggregate": "Aggregate"
+  },
+  "test-results-status-options": {
+    "loading": "Loading",
+    "reviewing": "Reviewing",
+    "released": "Released"
+  },
+  "test-results-change-results": {
+    "header": "Test Results Management changes"
+  },
+  "test-results-change-status": {
+    "breadcrumb": "Change Test Results Status",
+    "change-status-link": "Change Status",
+    "district": "District:",
+    "header": "Change Test Results Status",
+    "review-text": "You are about to change the status for these test results:",
+    "report-type": "Report Type:",
+    "school-year": "School Year:",
+    "set-status-text": "Set status to:",
+    "subjects": "Subjects:",
+    "state": "State:"
   }
 }

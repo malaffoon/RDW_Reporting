@@ -7,6 +7,9 @@ export const aggregateReportBreadcrumb = ({ translateService }) =>
 export const embargoBreadcrumb = ({ translateService }) =>
   translateService.instant('embargo.title');
 
+export const testResultsBreadcrumb = ({ translateService }) =>
+  translateService.instant('test-results.title');
+
 export const organizationExportBreadcrumb = ({ translateService }) =>
   translateService.instant('organization-export.title');
 
@@ -105,6 +108,16 @@ export const adminRoutes: Route[] = [
           breadcrumb: tenantsBreadcrumb,
           permissions: ['TENANT_READ'],
           type: 'TENANT'
+        }
+      },
+      {
+        path: 'test-results',
+        loadChildren:
+          'app/admin/test-results/test-results.module#TestResultsModule',
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: testResultsBreadcrumb,
+          permissions: ['EMBARGO_WRITE']
         }
       }
     ]
