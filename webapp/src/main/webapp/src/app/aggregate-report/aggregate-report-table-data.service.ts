@@ -119,6 +119,19 @@ export class AggregateReportTableDataService {
     maximumRows: number = DefaultMaximumRowCount
   ): AggregateReportItem[] {
     let valueProviders: ValueProvider[] = [];
+
+    function getOptimalSubject(subjects, codesBySubject) {
+      for (const subject of subjects) {
+        for (const code of codesBySubject) {
+          if (subject.code === code.subject) {
+            return subject;
+          }
+        }
+      }
+
+      return subjects[0];
+    }
+
     switch (
       this.reportService.getEffectiveReportType(
         settings.reportType,
@@ -190,7 +203,12 @@ export class AggregateReportTableDataService {
           },
           {
             getValues: context => [
-              { subjectCode: context.settings.subjects[0] }
+              {
+                subjectCode: getOptimalSubject(
+                  context.settings.subjects,
+                  context.settings.claimReport.claimCodesBySubject
+                )
+              }
             ]
           },
           {
@@ -258,7 +276,12 @@ export class AggregateReportTableDataService {
           },
           {
             getValues: context => [
-              { subjectCode: context.settings.subjects[0] }
+              {
+                subjectCode: getOptimalSubject(
+                  context.settings.subjects,
+                  context.settings.altScoreReport.altScoreCodesBySubject
+                )
+              }
             ]
           },
           {

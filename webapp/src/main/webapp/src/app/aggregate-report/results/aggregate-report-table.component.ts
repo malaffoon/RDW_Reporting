@@ -637,6 +637,7 @@ export class AggregateReportTableComponent implements OnInit {
   columns: Column[];
   sortMode: boolean | string;
   claimReport: boolean;
+  altScoreReport: boolean;
   center: boolean;
 
   constructor(
@@ -647,6 +648,7 @@ export class AggregateReportTableComponent implements OnInit {
   ngOnInit(): void {
     this.sortMode = this.preview ? false : 'single';
     this.claimReport = this.reportType === 'Claim';
+    this.altScoreReport = this.reportType === 'AltScore';
     this.center =
       this.reportType !== 'Claim' &&
       this.subjectDefinition.performanceLevelStandardCutoff != null;
@@ -665,6 +667,7 @@ export class AggregateReportTableComponent implements OnInit {
     if (this._initialized && previousValue !== value) {
       this.center =
         this.reportType !== 'Claim' &&
+        this.reportType !== 'AltScore' &&
         this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
@@ -680,6 +683,7 @@ export class AggregateReportTableComponent implements OnInit {
     this._reportType = value;
     if (this._initialized && previousValue !== value) {
       this.claimReport = this.reportType === 'Claim';
+      this.altScoreReport = this.reportType === 'AltScore';
       this.center =
         this.reportType !== 'Claim' &&
         this.subjectDefinition.overallScore.standardCutoff != null;

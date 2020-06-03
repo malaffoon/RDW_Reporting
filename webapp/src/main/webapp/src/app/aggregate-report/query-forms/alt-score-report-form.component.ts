@@ -24,10 +24,10 @@ import { UserQueryService } from '../../report/user-query.service';
 import { canGetEstimatedRowCount } from '../support';
 import { AltScore } from '../aggregate-report-options';
 import { SubgroupFilterSupport } from '../../shared/model/subgroup-filters';
+import { SubjectDefinition } from '../../subject/subject';
 
 @Component({
   selector: 'alt-score-report-form',
-  // template: '<h1>Alt Score Report</h1>'
   templateUrl: './alt-score-report-form.component.html'
 })
 export class AltScoreReportFormComponent extends MultiOrganizationQueryFormComponent {
@@ -128,6 +128,28 @@ export class AltScoreReportFormComponent extends MultiOrganizationQueryFormCompo
     });
 
     this.initializeAltScoresForAssessmentType();
+    this.onAltScoreChange();
+  }
+
+  get subjectDefinition(): SubjectDefinition {
+    function getOptimalSubject(_settings) {
+      for (const subject of _settings.subjects) {
+        for (const altScoreCode of _settings.altScoreReport
+          .altScoreCodesBySubject) {
+          if (subject.code === altScoreCode.subject) {
+            return subject;
+          }
+        }
+      }
+      return _settings.subjects[0];
+    }
+
+    const { settings } = this;
+    return this.subjectDefinitions.find(
+      x =>
+        x.subject === getOptimalSubject(settings).code &&
+        x.assessmentType === settings.assessmentType
+    );
   }
 
   getFormGroup(): FormGroup {

@@ -41,7 +41,7 @@ export class AggregateReportService {
    * @param query the report parameters
    */
   getEstimatedRowCount(query: AggregateReportQueryType): Observable<number> {
-    // TODO: (rdw-phase-6) remove this stub when alt-score backend implemented
+    // TODO: (rdw6) remove this stub when alt-score backend implemented
     if (query.type === 'AltScore') {
       return of(10);
     }

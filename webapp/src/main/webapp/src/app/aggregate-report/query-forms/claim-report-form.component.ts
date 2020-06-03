@@ -24,6 +24,7 @@ import { UserQueryService } from '../../report/user-query.service';
 import { canGetEstimatedRowCount } from '../support';
 import { Claim } from '../aggregate-report-options';
 import { SubgroupFilterSupport } from '../../shared/model/subgroup-filters';
+import { SubjectDefinition } from '../../subject/subject';
 
 @Component({
   selector: 'claim-report-form',
@@ -127,6 +128,27 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     });
 
     this.initializeClaimsForAssessmentType();
+    this.onClaimChange();
+  }
+
+  get subjectDefinition(): SubjectDefinition {
+    function getOptimalSubject(_settings) {
+      for (const subject of _settings.subjects) {
+        for (const claimCode of _settings.claimReport.claimCodesBySubject) {
+          if (subject.code === claimCode.subject) {
+            return subject;
+          }
+        }
+      }
+      return _settings.subjects[0];
+    }
+
+    const { settings } = this;
+    return this.subjectDefinitions.find(
+      x =>
+        x.subject === getOptimalSubject(settings).code &&
+        x.assessmentType === settings.assessmentType
+    );
   }
 
   getFormGroup(): FormGroup {
