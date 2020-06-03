@@ -25,7 +25,6 @@
           <label for="select-schoolyear">{{
             'test-results.filter-school-year' | translate
           }}</label>
-
           <select
             id="select-schoolyear"
             [(ngModel)]="testResultFilters.schoolYear"
@@ -62,7 +61,14 @@
           </select>
         </div>
         <div class="col-md-2" *ngIf="!showDistrictFilter">
-          {{ userDistrict }}
+          <label for="select-district-admin">{{
+            'test-results.district-admin' | translate
+          }}</label>
+          <select id="select-district-admin" class="form-control">
+            <option disabled="" value="0: undefined">
+              {{ testResultFilters.district }}
+            </option>
+          </select>
         </div>
 
         <!-- Subject Select  -->
@@ -117,6 +123,7 @@
             class="form-control"
             (ngModelChange)="onChangeStatusFilter($event)"
           >
+            <option disabled="" value="0: undefined">Select </option>
             <option *ngFor="let status of statusOptions" [ngValue]="status">
               {{ status | translate }}
             </option>
@@ -127,8 +134,6 @@
   </ng-container>
 </ng-container>
 
-<!--    <table class='table'-->
-<!--          *ngIf='testResults&& testResults.length'>-->
 <ng-container>
   <ng-container>
     <div class="well">

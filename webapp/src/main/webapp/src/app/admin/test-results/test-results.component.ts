@@ -38,7 +38,7 @@ export class TestResultsComponent implements OnInit {
   testResultFilters: TestResultFilters;
   filteredTestResults: TestResult[];
   userDistrict: string; // when it's a district admin
-  showDistrictFilter: boolean = true;
+  showDistrictFilter: boolean = true; // set false if districtAdmin
   testResultsState: string;
   private _testResults: TestResult[];
 
@@ -80,7 +80,6 @@ export class TestResultsComponent implements OnInit {
   ngOnInit() {
     // TODO set from user session
     this.testResultsState = 'California';
-    this.userDistrict = 'District 12'; //used when user is DistrictAdmin
 
     // Data for Drop downs
     this.schoolYearOptions = this.testResultsService.getTestResultsSchoolYearOptions();
@@ -89,9 +88,13 @@ export class TestResultsComponent implements OnInit {
     this.reportTypeOptions = this.testResultsService.getTestResultsReportTypeOptions();
     this.statusOptions = this.testResultsService.getTestResultsStatusOptions();
 
-    // set defaults
+    // set defaults - needed since this is initialized first
     this.testResultsService.setTestResultFilterDefaults();
     this.testResultFilters = this.testResultsService.getTestResultFilterDefaults();
+    if (!this.showDistrictFilter) {
+      this.userDistrict = 'District 12'; //used when user is DistrictAdmin
+      this.testResultFilters.district = this.userDistrict;
+    }
     this.testResults = this.testResultsService.getTestResults(
       this.testResultFilters
     );

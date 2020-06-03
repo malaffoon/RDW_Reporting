@@ -2003,6 +2003,7 @@
       "result-count": "Result Count",
       "status": "Status"
     },
+    "district-admin": "District Admin",
     "empty-message": "There are no test results that match your search.  Please try again.",
     "filter-school-year": "Select School Year",
     "filter-district": "Select District",

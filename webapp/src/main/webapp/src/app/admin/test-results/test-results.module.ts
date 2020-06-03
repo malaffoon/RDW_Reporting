@@ -11,6 +11,7 @@ import { TestResultsComponent } from './test-results.component';
 import { BsDropdownModule, ModalModule } from 'ngx-bootstrap';
 import { testResultsRoutes } from './test-results.routes';
 import { ChangeTestResultsStatusModal } from './change-test-results-status-modal';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { ChangeTestResultsStatusModal } from './change-test-results-status-modal
     TableModule,
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(testResultsRoutes),
-    BsDropdownModule
+    BsDropdownModule,
+    DropdownModule
   ],
   declarations: [TestResultsComponent, ChangeTestResultsStatusModal]
 })
