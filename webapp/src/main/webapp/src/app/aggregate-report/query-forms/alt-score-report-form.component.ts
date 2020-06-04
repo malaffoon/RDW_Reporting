@@ -22,15 +22,15 @@ import { SubjectService } from '../../subject/subject.service';
 import { ReportQueryType } from '../../report/report';
 import { UserQueryService } from '../../report/user-query.service';
 import { canGetEstimatedRowCount } from '../support';
-import { Claim } from '../aggregate-report-options';
+import { AltScore } from '../aggregate-report-options';
 import { SubgroupFilterSupport } from '../../shared/model/subgroup-filters';
 import { SubjectDefinition } from '../../subject/subject';
 
 @Component({
-  selector: 'claim-report-form',
-  templateUrl: './claim-report-form.component.html'
+  selector: 'alt-score-report-form',
+  templateUrl: './alt-score-report-form.component.html'
 })
-export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponent {
+export class AltScoreReportFormComponent extends MultiOrganizationQueryFormComponent {
   assessmentDefinition: AssessmentDefinition;
 
   /**
@@ -43,9 +43,9 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
    */
   showAdvancedFilters = false;
 
-  claimsBySubject = {};
+  altScoresBySubject = {};
   selectionBySubject = {};
-  claimsCollapsed = true;
+  altScoresCollapsed = true;
 
   private options: AggregateReportFormOptions;
 
@@ -85,7 +85,7 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
   initialize(): void {
     super.initialize();
 
-    this.settings.reportType = 'Claim';
+    this.settings.reportType = 'AltScore';
     this.options = this.optionMapper.map(this.aggregateReportOptions);
     this.assessmentDefinition = this.assessmentDefinitionService.get(
       this.settings.assessmentType,
@@ -114,28 +114,29 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
       ],
       reportName: [this.settings.name],
       assessmentGrades: [
-        this.settings.claimReport.assessmentGrades,
+        this.settings.altScoreReport.assessmentGrades,
         notEmpty({
           messageId: 'aggregate-report-form.field.assessment-grades-empty-error'
         })
       ],
       schoolYears: [
-        this.settings.claimReport.schoolYears,
+        this.settings.altScoreReport.schoolYears,
         notEmpty({
           messageId: 'aggregate-report-form.field.school-year-empty-error'
         })
       ]
     });
 
-    this.initializeClaimsForAssessmentType();
-    this.onClaimChange();
+    this.initializeAltScoresForAssessmentType();
+    this.onAltScoreChange();
   }
 
   get subjectDefinition(): SubjectDefinition {
     function getOptimalSubject(_settings) {
       for (const subject of _settings.subjects) {
-        for (const claimCode of _settings.claimReport.claimCodesBySubject) {
-          if (subject.code === claimCode.subject) {
+        for (const altScoreCode of _settings.altScoreReport
+          .altScoreCodesBySubject) {
+          if (subject.code === altScoreCode.subject) {
             return subject;
           }
         }
@@ -160,30 +161,30 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
   }
 
   getReportType(): ReportQueryType {
-    return 'Claim';
+    return 'AltScore';
   }
 
   getNavItems(): ScrollNavItem[] {
     return [
       {
-        id: 'claimOrganizationSection',
+        id: 'altScoreOrganizationSection',
         translationKey: 'aggregate-report-form.section.organization.heading'
       },
       {
-        id: 'claimAssessmentSection',
+        id: 'altScoreAssessmentSection',
         translationKey: 'aggregate-report-form.section.assessment-heading'
       },
       {
-        id: 'claimSubgroupSection',
+        id: 'altScoreSubgroupSection',
         translationKey:
           'aggregate-report-form.section.comparative-subgroups-heading'
       },
       {
-        id: 'claimReviewSection',
+        id: 'altScoreReviewSection',
         translationKey: 'aggregate-report-form.section.review-heading'
       },
       {
-        id: 'claimPreviewSection',
+        id: 'altScorePreviewSection',
         translationKey: 'aggregate-report-form.section.preview-heading'
       }
     ];
@@ -201,20 +202,20 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
 
     this.updateColumnOrder();
     this.markOrganizationsControlTouched();
-    this.initializeClaimsForAssessmentType();
+    this.initializeAltScoresForAssessmentType();
     this.updateSubjectsEnabled();
     this.onSubjectsChange();
   }
 
   onSubjectsChange(): void {
-    this.onClaimChange();
+    this.onAltScoreChange();
   }
 
   capableOfRowEstimation(): boolean {
     const {
       schools,
       districts,
-      claimReport: { assessmentGrades, schoolYears }
+      altScoreReport: { assessmentGrades, schoolYears }
     } = this.settings;
     return canGetEstimatedRowCount(
       this.includeStateResults,
@@ -225,43 +226,47 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     );
   }
 
-  onClaimChange() {
-    this.settings.claimReport.claimCodesBySubject = this.getAllSelectedClaims();
+  onAltScoreChange() {
+    this.settings.altScoreReport.altScoreCodesBySubject = this.getAllSelectedAltScores();
     this.onSettingsChange();
   }
 
-  private getAllSelectedClaims(): Claim[] {
-    const claims: Claim[] = [];
+  private getAllSelectedAltScores(): AltScore[] {
+    const altScores: AltScore[] = [];
     for (const subject of this.settings.subjects) {
-      claims.push(...this.selectionBySubject[subject.code]);
+      altScores.push(...this.selectionBySubject[subject.code]);
     }
-    return claims;
+    return altScores;
   }
 
-  private initializeClaimsForAssessmentType(): void {
+  private initializeAltScoresForAssessmentType(): void {
+    // TODO: replace deprecated code
     const orderingObservables: Observable<
       boolean
     >[] = this.filteredOptions.subjects.map(subject => {
       const subjectCode = subject.value.code;
       return this.orderingService
-        .getScorableClaimOrdering(subjectCode, this.settings.assessmentType)
+        .getAltScoreOrdering(subjectCode, this.settings.assessmentType)
         .pipe(
-          map(claimOrdering => {
-            this.claimsBySubject[
+          map(altScoreOrdering => {
+            this.altScoresBySubject[
               subjectCode
-            ] = this.filteredOptions.claimCodes
+            ] = this.filteredOptions.altScoreCodes
               .filter(
-                claim =>
-                  claim.value.subject === subjectCode &&
-                  claim.value.assessmentType === this.settings.assessmentType
+                altScore =>
+                  altScore.value.subject === subjectCode &&
+                  altScore.value.assessmentType === this.settings.assessmentType
               )
-              .sort(claimOrdering.on<any>(claim => claim.value.code).compare);
+              .sort(
+                altScoreOrdering.on<any>(altScore => altScore.value.code)
+                  .compare
+              );
             return true;
           })
         );
     });
 
-    //Once the orderings have been fetched, continue initialization
+    // Once the orderings have been fetched, continue initialization
     forkJoin(...orderingObservables).subscribe(() => {
       this.initializeSelectionBySubject();
     });
@@ -271,24 +276,24 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
     // Map selected claims by subject
     const selections: Map<
       string,
-      Claim[]
-    > = this.settings.claimReport.claimCodesBySubject
+      AltScore[]
+    > = this.settings.altScoreReport.altScoreCodesBySubject
       .filter(claim => claim.assessmentType === this.settings.assessmentType)
-      .reduce((map, claim) => {
-        const subjectClaims = map.get(claim.subject) || [];
-        subjectClaims.push(claim);
-        map.set(claim.subject, subjectClaims);
-        return map;
+      .reduce((subjectMap, altScore) => {
+        const subjectAltScores = subjectMap.get(altScore.subject) || [];
+        subjectAltScores.push(altScore);
+        subjectMap.set(altScore.subject, subjectAltScores);
+        return subjectMap;
       }, new Map());
 
     const subjectCodes = this.settings.subjects.map(subject => subject.code);
-    for (let subject of subjectCodes) {
+    for (const subject of subjectCodes) {
       if (selections.has(subject)) {
         // Initialize selection based on settings values
         this.selectionBySubject[subject] = selections.get(subject);
       } else {
         // Set selection to 'All'
-        this.selectionBySubject[subject] = this.claimsBySubject[subject].map(
+        this.selectionBySubject[subject] = this.altScoresBySubject[subject].map(
           option => option.value
         );
       }

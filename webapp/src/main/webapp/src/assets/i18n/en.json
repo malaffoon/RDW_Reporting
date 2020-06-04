@@ -56,6 +56,7 @@
     "subheading": "Select the attributes to include in the report. Then click \"Create Report.\"",
     "field": {
       "claim-codes-label": "Claims",
+      "alt-score-codes-label": "Alt Scores",
       "assessment-grade-range-label": "Assessment Grades",
       "to-school-year-label": "Most Recent Academic Year",
       "to-school-year-info": "The year for the highest assessment grade selected",
@@ -89,6 +90,7 @@
     },
     "section": {
       "claim-heading": "Claim",
+      "alt-score-heading": "Alt Score",
       "organization": {
         "heading": "Schools and Districts",
         "subtext": "Select schools and districts to compare.",
@@ -132,6 +134,7 @@
       "avg-scale-score": "Average Scale Score",
       "avg-scale-score-suffix": "± Error Band",
       "claim": "Claim",
+      "alt-score": "Alt Score",
       "dimension": "Subgroup",
       "grouped-performance-level-prefix": {
         "0": "Below",
@@ -282,6 +285,11 @@
         "description": "Compare Claim-level performance on available assessments.",
         "disabled": "Claim Reports are only available for ICA and summative assessments.",
         "label": "Claim Report"
+      },
+      "AltScore": {
+        "description": "Compare alt score performance on available assessments.",
+        "disabled": "Alternate Score Reports are only available for ICA and summative assessments.",
+        "label": "Alt Score Report"
       },
       "CustomAggregate": {
         "description": "Compare performance by selected school years.",
@@ -537,6 +545,7 @@
     },
     "info": {
       "claim": "Claims are a way of classifying test content. The claim is the major topic area. For example, in English language arts, reading is a claim and in Math, Concepts and Procedures is a claim.",
+      "alt-score": "Alternate scores are lorem ipsum",
       "target": "Within each claim, there are targets that describe the particular knowledge and skills that the test measures. Each target may encompass one or more standards from the Common Core State Standards. Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text. For more information, see the Smarter Balanced Content Specifications."
     },
     "instructional-resource": {
@@ -1769,6 +1778,7 @@
     "caution-message": "Assessment target scores based on fewer than 50 students may be less reliable and will have fewer unique items contributing to the overall target summary.",
     "columns": {
       "claim": "Claim",
+      "alt-score": "Alt Score",
       "target": "Target",
       "subgroup": "Subgroup",
       "studentsTested": "Students Tested",

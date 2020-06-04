@@ -155,6 +155,7 @@ function createColumns(
     new Column({ id: 'assessmentLabel' }),
     new Column({ id: 'schoolYear' }),
     new Column({ id: 'claim', field: 'claimCode', classes: 'wrapping' }),
+    new Column({ id: 'altScore', field: 'altScoreCode', classes: 'wrapping' }),
     new Column({ id: 'dimension', field: 'subgroup.id', classes: 'wrapping' }),
     new Column({ id: 'target', field: 'targetNaturalId', classes: 'wrapping' })
   ];
@@ -181,6 +182,7 @@ function createColumns(
       );
       break;
     case 'Claim':
+    case 'AltScore':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
         new Column({
@@ -220,6 +222,31 @@ function createColumns(
   ];
 }
 
+function levelsByReportType(
+  reportType: ReportQueryType,
+  subjectDefinition: SubjectDefinition
+): number[] {
+  let levels: number[] = null;
+
+  switch (reportType) {
+    case 'Claim':
+      if (subjectDefinition.claimScore != null) {
+        levels = subjectDefinition.claimScore.levels;
+      }
+      break;
+    case 'AltScore':
+      if (subjectDefinition.alternateScore != null) {
+        levels = subjectDefinition.alternateScore.levels;
+      }
+      break;
+    default:
+      levels = subjectDefinition.overallScore.levels;
+      break;
+  }
+
+  return levels || [];
+}
+
 function createPerformanceLevelColumns(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
@@ -228,12 +255,7 @@ function createPerformanceLevelColumns(
   performanceLevelDisplayType: string
 ): Column[] {
   const performanceLevelsByDisplayType = {
-    Separate:
-      reportType === 'Claim'
-        ? subjectDefinition.claimScore != null
-          ? subjectDefinition.claimScore.levels
-          : []
-        : subjectDefinition.overallScore.levels,
+    Separate: levelsByReportType(reportType, subjectDefinition),
     Grouped: [
       subjectDefinition.overallScore.standardCutoff - 1,
       subjectDefinition.overallScore.standardCutoff
@@ -615,6 +637,7 @@ export class AggregateReportTableComponent implements OnInit {
   columns: Column[];
   sortMode: boolean | string;
   claimReport: boolean;
+  altScoreReport: boolean;
   center: boolean;
 
   constructor(
@@ -625,6 +648,7 @@ export class AggregateReportTableComponent implements OnInit {
   ngOnInit(): void {
     this.sortMode = this.preview ? false : 'single';
     this.claimReport = this.reportType === 'Claim';
+    this.altScoreReport = this.reportType === 'AltScore';
     this.center =
       this.reportType !== 'Claim' &&
       this.subjectDefinition.performanceLevelStandardCutoff != null;
@@ -643,6 +667,7 @@ export class AggregateReportTableComponent implements OnInit {
     if (this._initialized && previousValue !== value) {
       this.center =
         this.reportType !== 'Claim' &&
+        this.reportType !== 'AltScore' &&
         this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
@@ -658,6 +683,7 @@ export class AggregateReportTableComponent implements OnInit {
     this._reportType = value;
     if (this._initialized && previousValue !== value) {
       this.claimReport = this.reportType === 'Claim';
+      this.altScoreReport = this.reportType === 'AltScore';
       this.center =
         this.reportType !== 'Claim' &&
         this.subjectDefinition.overallScore.standardCutoff != null;

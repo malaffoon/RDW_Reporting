@@ -257,6 +257,7 @@ describe('AggregateReportRequestMapper', () => {
           code: '4'
         }
       ],
+      altScores: [],
       statewideReporter: false,
       subjects: [
         {
