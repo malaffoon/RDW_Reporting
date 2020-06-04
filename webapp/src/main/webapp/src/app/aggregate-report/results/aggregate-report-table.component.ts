@@ -328,6 +328,17 @@ function createPerformanceLevelColumnDynamicFields(
   };
 }
 
+function getModifier(reportType) {
+  switch (reportType) {
+    case 'Claim':
+      return 'claim-score.';
+    case 'AltScore':
+      return 'alt-score.';
+    default:
+      return '';
+  }
+}
+
 function getPerformanceLevelColumnHeaderText(
   translate: TranslateService,
   subjectDefinition: SubjectDefinition,
@@ -340,9 +351,7 @@ function getPerformanceLevelColumnHeaderText(
     displayType === 'Separate'
       ? `subject.${subjectDefinition.subject}.asmt-type.${
           subjectDefinition.assessmentType
-        }.${
-          reportType === 'Claim' ? 'claim-score.' : ''
-        }level.${level}.short-name`
+        }.${getModifier(reportType)}level.${level}.short-name`
       : `aggregate-report-table.columns.grouped-performance-level-prefix.${index}`
   );
 }
@@ -358,7 +367,7 @@ function getPerformanceLevelColumnHeaderSuffix(
     ? translate.instant(
         `subject.${subjectDefinition.subject}.asmt-type.${
           subjectDefinition.assessmentType
-        }.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.suffix`
+        }.${getModifier(reportType)}level.${level}.suffix`
       )
     : '';
 }
@@ -372,7 +381,7 @@ function getPerformanceLevelColors(
   return translate.instant(
     `subject.${subjectDefinition.subject}.asmt-type.${
       subjectDefinition.assessmentType
-    }.${reportType === 'Claim' ? 'claim-score.' : ''}level.${level}.color`
+    }.${getModifier(reportType)}level.${level}.color`
   );
 }
 
@@ -685,7 +694,8 @@ export class AggregateReportTableComponent implements OnInit {
       this.claimReport = this.reportType === 'Claim';
       this.altScoreReport = this.reportType === 'AltScore';
       this.center =
-        this.reportType !== 'Claim' &&
+        !this.claimReport &&
+        !this.altScoreReport &&
         this.subjectDefinition.overallScore.standardCutoff != null;
       this.buildAndRender();
     }
