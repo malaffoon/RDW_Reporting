@@ -31,12 +31,12 @@
             class="form-control"
             (ngModelChange)="onChangeSchoolYearFilter($event)"
           >
+            <option [value]="schoolYearDefault">All</option>
             <option
               *ngFor="let schoolYear of schoolYearOptions"
               [ngValue]="schoolYear"
             >
               {{ schoolYear }}
-              <!--              {{ schoolYear | schoolYear}}-->
             </option>
           </select>
         </div>
@@ -123,7 +123,6 @@
             class="form-control"
             (ngModelChange)="onChangeStatusFilter($event)"
           >
-            <option disabled="" value="0: undefined">Select </option>
             <option *ngFor="let status of statusOptions" [ngValue]="status">
               {{ status | translate }}
             </option>

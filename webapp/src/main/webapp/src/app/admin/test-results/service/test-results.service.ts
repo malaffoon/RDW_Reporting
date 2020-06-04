@@ -11,10 +11,11 @@ export class TestResultsService implements OnInit {
   private defaultTestResultFilters = new TestResultFilters();
   private mockTestResults = new MockTestResults();
 
-  private statusDefault: string = '';
-  private schoolYearsDefault;
-  number = null;
+  // todo condense to one
   private allDefault: string = 'All';
+  statusDefault: string = this.allDefault;
+  schoolYearsDefault: any = this.allDefault;
+  number = null;
 
   ngOnInit(): void {
     this.setTestResultFilterDefaults();

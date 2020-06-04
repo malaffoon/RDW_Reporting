@@ -102,6 +102,10 @@ export class TestResultsComponent implements OnInit {
   }
 
   // need to save each selected Option to filtered Group
+  statusDefault: any = this.testResultsService.statusDefault;
+  schoolYearDefault: any = this.testResultsService.schoolYearsDefault;
+
+  // need to save each selected Option to filtered Group
   updateFilteredTestResults() {
     this.filteredTestResults = this.testResultsService.getTestResults(
       this.testResultFilters
