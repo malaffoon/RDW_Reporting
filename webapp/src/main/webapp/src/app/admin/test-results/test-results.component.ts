@@ -6,8 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../shared/notification/notification.service';
 import { TestResult } from './model/test-result';
 import { TestResultsService } from './service/test-results.service';
-import { ChangeTestResultsStatusModal } from './change-test-results-status-modal';
 import { TestResultFilters } from './model/test-result-filters';
+import { TestResultsChangeStatusModal } from './test-results-change-status.modal';
 
 class Column {
   id: string; // en.json name
@@ -70,11 +70,12 @@ export class TestResultsComponent implements OnInit {
 
   OpenChangeResultsModal() {
     let modalReference: BsModalRef = this.modalService.show(
-      ChangeTestResultsStatusModal,
+      TestResultsChangeStatusModal,
       { backdrop: 'static' }
     );
-    let modal: ChangeTestResultsStatusModal = modalReference.content;
-    modal.testResultFilter = this.testResultFilters;
+    let modal: TestResultsChangeStatusModal = modalReference.content;
+    modal.selectedFilters = this.testResultFilters;
+    modal.statusOptions = this.statusOptions;
   }
 
   ngOnInit() {
@@ -84,11 +85,12 @@ export class TestResultsComponent implements OnInit {
     // Data for Drop downs
     this.schoolYearOptions = this.testResultsService.getTestResultsSchoolYearOptions();
     this.districtOptions = this.testResultsService.getTestResultsDistrictOptions();
+    // TODO  user session determines if Loading is available (only for DevOps)
     this.subjectOptions = this.testResultsService.getTestResultsSubjectOptions();
     this.reportTypeOptions = this.testResultsService.getTestResultsReportTypeOptions();
     this.statusOptions = this.testResultsService.getTestResultsStatusOptions();
 
-    // set defaults - needed since this is initialized first
+    // set defaults - needed since this component is initialized first
     this.testResultsService.setTestResultFilterDefaults();
     this.testResultFilters = this.testResultsService.getTestResultFilterDefaults();
     if (!this.showDistrictFilter) {

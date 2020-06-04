@@ -10,10 +10,12 @@ import { RouterModule } from '@angular/router';
 import { TestResultsComponent } from './test-results.component';
 import { BsDropdownModule, ModalModule } from 'ngx-bootstrap';
 import { testResultsRoutes } from './test-results.routes';
-import { ChangeTestResultsStatusModal } from './change-test-results-status-modal';
 import { DropdownModule } from 'primeng/dropdown';
+import { TestResultsChangeStatusModal } from './test-results-change-status.modal';
 
 @NgModule({
+  declarations: [TestResultsComponent, TestResultsChangeStatusModal],
+  entryComponents: [TestResultsChangeStatusModal],
   imports: [
     CommonModule,
     ButtonModule,
@@ -25,7 +27,6 @@ import { DropdownModule } from 'primeng/dropdown';
     RouterModule.forChild(testResultsRoutes),
     BsDropdownModule,
     DropdownModule
-  ],
-  declarations: [TestResultsComponent, ChangeTestResultsStatusModal]
+  ]
 })
 export class TestResultsModule {}

@@ -40,7 +40,7 @@ export class TestResultsService implements OnInit {
 
     // otherwise filter
     let filterList: any = testResults.filter(tr =>
-      this.applyTRFilter(tr, testResultFilters)
+      this.applyTestResultsFilter(tr, testResultFilters)
     );
     console.log('the filtered list = ' + JSON.stringify(filterList));
     // return filterList;
@@ -48,18 +48,26 @@ export class TestResultsService implements OnInit {
   }
 
   // TODO  log changes and no need to persist
-  changeTestResults() {
-    this.logTestResults(this.testResultFilters);
+  changeTestResults(testResultFilters: TestResultFilters, newStatus: string) {
+    console.log(
+      'New status (' +
+        newStatus +
+        ') for Test results that match:  ' +
+        testResultFilters
+    );
+    this.testResultFilters.status = newStatus;
+    this.logTestResults(testResultFilters);
   }
 
   // TODO add save of data
   logTestResults(testResultFilters: TestResultFilters) {
     console.log('Change Request Log Info:' + JSON.stringify(testResultFilters));
+    // covert to csv for test
   }
 
   setTestResultFilterDefaults() {
     this.defaultTestResultFilters.schoolYear = this.schoolYearsDefault;
-    this.defaultTestResultFilters.district = this.allDefault;
+    this.defaultTestResultFilters.district = this.allDefault; // TODO set from session if District Admin
     this.defaultTestResultFilters.subject = this.allDefault;
     this.defaultTestResultFilters.state = 'California'; // TODO Get from session
     this.defaultTestResultFilters.reportType = this.allDefault;
@@ -90,6 +98,7 @@ export class TestResultsService implements OnInit {
     return [this.allDefault, 'ELA', 'ELPAC', 'Math', 'Science'];
   }
   getTestResultsStatusOptions(): string[] {
+    // Loading only available for DevOps permission
     return [this.statusDefault, 'Loading', 'Reviewing', 'Released'];
   }
 
@@ -97,7 +106,7 @@ export class TestResultsService implements OnInit {
     return [this.allDefault, 'Individual', 'Aggregate'];
   }
 
-  private applyTRFilter(
+  private applyTestResultsFilter(
     testResult: TestResult,
     testResultFilters: TestResultFilters
   ) {

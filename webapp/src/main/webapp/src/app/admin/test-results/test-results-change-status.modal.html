@@ -1,13 +1,21 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">
     {{ 'test-results-change-status.header' | translate }}
+    <button
+      type="button"
+      class="close pull-right"
+      title="{{'common.action.close' | translate}}"
+      (click)="cancel()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
   </h4>
 
   <div class="modal-body">
     <div class="modal-body text-left">
       <div class="modal-table">
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             {{ 'test-results-change-status.school-year' | translate }}
           </div>
           <div class="col-md-2">
@@ -15,7 +23,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             {{ 'test-results-change-status.state' | translate }}
           </div>
           <div class="col-md-2">
@@ -23,7 +31,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             {{ 'test-results-change-status.district' | translate }}
           </div>
           <div class="col-md-2">
@@ -31,7 +39,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             {{ 'test-results-change-status.subjects' | translate }}
           </div>
           <div class="col-md-2">
@@ -39,19 +47,17 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             {{ 'test-results-change-status.report-type' | translate }}
           </div>
-          <div class="col-md-2">
-            Aggregate
-          </div>
+          <div class="col-md-2"></div>
         </div>
         <div class="row">
-          <div class="col-md-2">
+          <div class="col-md-3">
             {{ 'test-results-change-status.set-status-text' | translate }}
           </div>
           <div class="col-md-2">
-            <select id="select-status">
+            <select>
               <option *ngFor="let status of statusOptions" [ngValue]="status">
                 {{ status }}
               </option>
@@ -60,16 +66,20 @@
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="modal-footer">
-    <span>
-      <button type="button" class="btn btn-default" (click)="cancel()">
-        {{ 'common.action.cancel' | translate }}
-      </button>
-      <button class="btn btn-primary" (click)="changeTestResults()">
-        {{ 'common.action.create' | translate }}
-      </button>
-    </span>
+    <div class="modal-footer">
+      <span>
+        <button type="button" class="btn btn-default" (click)="cancel()">
+          {{ 'common.action.cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="changeTestResults()"
+        >
+          {{ 'test-results-change-status.change-status-link' | translate }}
+        </button>
+      </span>
+    </div>
   </div>
 </div>
