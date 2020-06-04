@@ -1695,6 +1695,7 @@
     "report-type": {
       "CustomAggregate": "Aggregate Report: Yearly",
       "Claim": "Aggregate Report: Claims",
+      "AltScore": "Aggregate Report: Alt Scores",
       "DistrictSchoolExport": "District / School Export",
       "Longitudinal": "Aggregate Report: Longitudinal",
       "Target": "Aggregate Report: Target",

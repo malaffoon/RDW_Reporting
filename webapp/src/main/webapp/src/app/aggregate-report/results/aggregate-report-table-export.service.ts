@@ -97,7 +97,10 @@ export class AggregateReportTableExportService {
             );
           }
         );
-    } else if (options.reportType === 'Claim') {
+    } else if (
+      options.reportType === 'Claim' ||
+      options.reportType === 'AltScore'
+    ) {
       this.addPerformanceLevelColumns(builder, options);
     } else {
       builder.withColumn(
@@ -193,6 +196,19 @@ export class AggregateReportTableExportService {
         (item: AggregateReportItem) => {
           return this.translateService.instant(
             `subject.${item.subjectCode}.claim.${item.claimCode}.name`
+          );
+        }
+      );
+    }
+
+    if ('altScore' === column) {
+      return builder.withColumn(
+        this.translateService.instant(
+          'aggregate-report-table.columns.alt-score'
+        ),
+        (item: AggregateReportItem) => {
+          return this.translateService.instant(
+            `subject.${item.subjectCode}.alt.${item.altScoreCode}.name`
           );
         }
       );
