@@ -1214,7 +1214,7 @@
         "description": "Manage Reporting System Tenants"
       },
       "test-results": {
-        "button": "Test Results Management",
+        "button": "Test Results",
         "description": "Manage summative test results."
       },
       "titles": {
@@ -2005,16 +2005,18 @@
     },
     "district-admin": "District Admin",
     "empty-message": "There are no test results that match your search.  Please try again.",
-    "filter-school-year": "Select School Year",
-    "filter-district": "Select District",
-    "filter-subject": "Select Subject",
-    "filter-report-type": "Select Report Type",
-    "filter-status": "Select Status",
+    "filter-district": "District",
+    "filter-title": "Filer Test Results",
+    "filter-report-type": "Report Type",
+    "filter-school-year": "School Year",
+    "filter-status": "Status",
+    "filter-subject": "Subject",
     "history-link": "Audit History",
     "no-test-results": "Contact your administrator for access to test results.",
-    "state-header": "State:",
+    "selected-title": "Selected Test Results",
+    "state-header": "State",
     "status-placeholder": "Select Status (required)",
-    "title": "Test Results Management"
+    "title": "Manage Test Results"
   },
   "test-results-subject-options": {
     "ela": "ELA",

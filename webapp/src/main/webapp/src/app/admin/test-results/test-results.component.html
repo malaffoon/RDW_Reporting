@@ -2,8 +2,8 @@
   <h1 class="h2" heading>{{ 'test-results.title' | translate }}</h1>
   <ul class="list-unstyled list-inline" controls>
     <li>
-      <a class="btn btn-primary btn-sm" [routerLink]="['history']"
-        ><i class="fa fa-cloud-download"></i>
+      <a class="btn btn-sm" href="./testResultsAudit202006040.csv"
+        ><i class="fa fa-cloud-download" aria-hidden="true"></i>
         {{ 'test-results.history-link' | translate }}</a
       >
     </li>
@@ -12,14 +12,24 @@
 
 <ng-container>
   <ng-container>
-    <div class="row">
-      <div class="col-md-2" *ngIf="testResultsState">
-        {{ 'test-results.state-header' | translate }}
-        {{ testResultsState }}
-      </div>
-    </div>
     <div class="well">
+      {{ 'test-results.filter-title' | translate }}
       <div class="row">
+        <div class="col-md-2" *ngIf="testResultsState">
+          <label for="select-state">
+            {{ 'test-results.state-header' | translate }}
+          </label>
+          <select
+            id="select-state"
+            class="form-control"
+            [(ngModel)]="testResultsState"
+            disabled
+          >
+            <option>
+              {{ testResultsState }}
+            </option>
+          </select>
+        </div>
         <!-- School Year Select -->
         <div class="col-md-2 test-left">
           <label for="select-schoolyear">{{
@@ -64,8 +74,8 @@
           <label for="select-district-admin">{{
             'test-results.district-admin' | translate
           }}</label>
-          <select id="select-district-admin" class="form-control">
-            <option disabled="" value="0: undefined">
+          <select id="select-district-admin" class="form-control" disabled>
+            <option>
               {{ testResultFilters.district }}
             </option>
           </select>
@@ -108,10 +118,6 @@
           </select>
         </div>
 
-        <div class="col-md-2">
-          <!--       Place Holder for the test results counts - that cannot be filtered -->
-        </div>
-
         <!-- Status Type Select  -->
         <div class="col-md-2">
           <label for="select-status">{{
@@ -136,6 +142,8 @@
 <ng-container>
   <ng-container>
     <div class="well">
+      {{ 'test-results.selected-title' | translate }}
+
       <div class="table-list-container">
         <p-table
           [columns]="columns"

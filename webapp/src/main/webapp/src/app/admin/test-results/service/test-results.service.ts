@@ -140,6 +140,10 @@ export class TestResultsService implements OnInit {
     return true;
   }
 
+  generateAuditHistory() {
+    // determine what can be returned
+  }
+
   validateTestResultsFilterAreDefault(testResultFilters: TestResultFilters) {
     if (
       this.statusDefault == testResultFilters.status &&

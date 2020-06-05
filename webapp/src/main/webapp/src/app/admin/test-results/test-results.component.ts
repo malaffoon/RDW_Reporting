@@ -138,4 +138,6 @@ export class TestResultsComponent implements OnInit {
     this.testResultFilters.status = status;
     this.updateFilteredTestResults();
   }
+
+  onDownloadAuditFile() {}
 }

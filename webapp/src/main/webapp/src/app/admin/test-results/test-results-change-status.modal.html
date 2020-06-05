@@ -57,7 +57,11 @@
             {{ 'test-results-change-status.set-status-text' | translate }}
           </div>
           <div class="col-md-2">
-            <select>
+            <select
+              [(ngModel)]="selectedStatus"
+              class="form-control"
+              (ngModelChange)="onChangeStatusFilter($event)"
+            >
               <option *ngFor="let status of statusOptions" [ngValue]="status">
                 {{ status }}
               </option>
