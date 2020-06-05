@@ -20,7 +20,7 @@ idea {
 project.ext.apps = subprojects.findAll { !'lib'.equalsIgnoreCase(it.findProperty('moduleType') as String) }
 
 // Set version dependencies. This allows the cli to force version, e.g. `-Pcommon=1.1.0-SNAPSHOT`
-String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "2.4.0-14"
+String rdwCommonVersion = project.hasProperty("common") ? project.property("common") : "2.4.0-15"
 String rdwSchemaVersion = project.hasProperty("schema") ? project.property("schema") : "2.4.0-8"
 String dockerPrefix = "smarterbalanced"
 
@@ -123,7 +123,7 @@ subprojects {
         implementation 'org.slf4j:slf4j-api'
 
         // handy for creating metadata with @ConfigurationProperties
-        implementation 'org.springframework.boot:spring-boot-configuration-processor'
+        compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
 
         runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
