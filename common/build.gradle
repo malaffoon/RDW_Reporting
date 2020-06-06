@@ -29,6 +29,9 @@ dependencies {
 task testsJar(type: Jar, dependsOn: testClasses) {
     archiveClassifier.set('tests')
     from sourceSets.test.output
+    // the sample.sql.yml file overrides the default entries in default-report-template-addons.sql.yml
+    // so it must be excluded from the tests jar ...
+    exclude('**/sample.sql.yml')
 }
 configurations {
     tests {
