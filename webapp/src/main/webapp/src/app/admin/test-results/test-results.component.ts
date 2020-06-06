@@ -71,7 +71,7 @@ export class TestResultsComponent implements OnInit {
   OpenChangeResultsModal() {
     let modalReference: BsModalRef = this.modalService.show(
       TestResultsChangeStatusModal,
-      { backdrop: 'static' }
+      { backdrop: 'static', focus: true, show: true }
     );
     let modal: TestResultsChangeStatusModal = modalReference.content;
     modal.selectedFilters = this.testResultFilters;
