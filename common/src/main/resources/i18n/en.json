@@ -6,9 +6,11 @@
     "aggregate": {
       "export": {
         "header": {
+          "alt-score": "Alt",
           "assessment": "AssessmentName",
           "assessment-type": "AssessmentType",
           "attributes": "Attributes",
+          "claim": "Claim",
           "cohort": {
             "score": "CohortScaleScore",
             "standard-deviation": "CohortScaleScoreStandardDeviation",
@@ -25,9 +27,8 @@
           "student-relative-residual-scores-level": "StudentRelativeResidualScoresLevel",
           "standard-met-relative-residual-level": "StandardMetRelativeResidualLevel",
           "subject": "Subject",
-          "year": "SchoolYear",
-          "claim": "Claim",
-          "target": "Target"
+          "target": "Target",
+          "year": "SchoolYear"
         }
       }
     },
