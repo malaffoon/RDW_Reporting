@@ -41,11 +41,6 @@ export class AggregateReportService {
    * @param query the report parameters
    */
   getEstimatedRowCount(query: AggregateReportQueryType): Observable<number> {
-    // TODO: (rdw6) remove this stub when alt-score backend implemented
-    if (query.type === 'AltScore') {
-      return of(10);
-    }
-
     return this.dataService.post(
       `${AggregateServiceRoute}/aggregate/estimatedRowCount`,
       query
