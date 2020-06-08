@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { TestResultFilters } from './model/test-result-filters';
 
 @Component({
-  selector: 'test-results-change-status.modal',
+  selector: 'test-results-change-status-modal',
   templateUrl: 'test-results-change-status.modal.html'
 })
 export class TestResultsChangeStatusModal implements OnInit {
@@ -28,13 +28,15 @@ export class TestResultsChangeStatusModal implements OnInit {
       });
   }
 
-  private cancel() {
-    this.modal.hide();
-  }
-
   ngOnInit(): void {
     this.selectedFilters = this.service.getTestResultFilterDefaults();
     this.statusOptions = this.service.getTestResultsStatusOptions();
+    this.selectedStatus =
+      this.service.isDistrictAdmin() == true ? 'Released' : 'Reviewing';
+  }
+
+  private cancel() {
+    this.modal.hide();
   }
 
   changeTestResults(): void {

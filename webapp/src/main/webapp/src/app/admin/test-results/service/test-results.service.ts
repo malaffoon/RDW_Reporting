@@ -15,6 +15,8 @@ export class TestResultsService implements OnInit {
   private allDefault: string = 'All';
   statusDefault: string = this.allDefault;
   schoolYearsDefault: any = this.allDefault;
+  private districtAdmin = false; // set from User's permissions
+  private devOps = true; // set from User's permissions
   number = null;
 
   ngOnInit(): void {
@@ -85,7 +87,6 @@ export class TestResultsService implements OnInit {
 
   getTestResultsDistrictOptions(): string[] {
     return [
-      this.allDefault,
       'District 2',
       'District 4',
       'District 7',
@@ -95,15 +96,19 @@ export class TestResultsService implements OnInit {
   }
 
   getTestResultsSubjectOptions(): string[] {
-    return [this.allDefault, 'ELA', 'ELPAC', 'Math', 'Science'];
+    return ['ELA', 'ELPAC', 'Math', 'Science'];
   }
+
   getTestResultsStatusOptions(): string[] {
     // Loading only available for DevOps permission
-    return [this.statusDefault, 'Loading', 'Reviewing', 'Released'];
+    if (this.isDevOps()) {
+      return ['Loading', 'Reviewing', 'Released'];
+    }
+    return ['Reviewing', 'Released'];
   }
 
   getTestResultsReportTypeOptions(): string[] {
-    return [this.allDefault, 'Individual', 'Aggregate'];
+    return ['Individual', 'Aggregate'];
   }
 
   private applyTestResultsFilter(
@@ -138,6 +143,14 @@ export class TestResultsService implements OnInit {
       return false;
 
     return true;
+  }
+
+  isDistrictAdmin(): boolean {
+    return this.districtAdmin;
+  }
+
+  isDevOps(): boolean {
+    return this.devOps;
   }
 
   generateAuditHistory() {

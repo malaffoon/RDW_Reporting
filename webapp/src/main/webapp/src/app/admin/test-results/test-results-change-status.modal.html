@@ -1,15 +1,15 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">
     {{ 'test-results-change-status.header' | translate }}
-    <button
-      type="button"
-      class="close pull-right"
-      title="{{'common.action.close' | translate}}"
-      (click)="cancel()"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
   </h4>
+  <button
+    type="button"
+    class="close pull-right"
+    title="{{'common.action.close' | translate}}"
+    (click)="cancel()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
 
 <div class="modal-body text-left">
@@ -19,7 +19,7 @@
         {{ 'test-results-change-status.school-year' | translate }}
       </div>
       <div class="col-md-2">
-        All
+        {{ selectedFilters.schoolYear }}
       </div>
     </div>
     <div class="row">
@@ -34,29 +34,31 @@
       <div class="col-md-3">
         {{ 'test-results-change-status.district' | translate }}
       </div>
-      <div class="col-md-2">
-        ALL
+      <div class="col-md-3">
+        {{ selectedFilters.district }}
       </div>
     </div>
     <div class="row">
       <div class="col-md-3">
         {{ 'test-results-change-status.subjects' | translate }}
       </div>
-      <div class="col-md-2">
-        ALL
+      <div class="col-md-3">
+        {{ selectedFilters.subject }}
       </div>
     </div>
     <div class="row">
       <div class="col-md-3">
         {{ 'test-results-change-status.report-type' | translate }}
       </div>
-      <div class="col-md-2"></div>
+      <div class="col-md-3">
+        {{ selectedFilters.reportType }}
+      </div>
     </div>
     <div class="row">
       <div class="col-md-3">
         {{ 'test-results-change-status.set-status-text' | translate }}
       </div>
-      <div class="col-md-2">
+      <div class="col-md-4">
         <select
           [(ngModel)]="selectedStatus"
           class="form-control"

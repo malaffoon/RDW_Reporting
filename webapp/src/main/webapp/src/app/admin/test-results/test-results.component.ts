@@ -38,7 +38,7 @@ export class TestResultsComponent implements OnInit {
   testResultFilters: TestResultFilters;
   filteredTestResults: TestResult[];
   userDistrict: string; // when it's a district admin
-  showDistrictFilter: boolean = true; // set false if districtAdmin
+  showDistrictFilter: boolean; // set false if districtAdmin
   testResultsState: string;
   private _testResults: TestResult[];
 
@@ -68,10 +68,12 @@ export class TestResultsComponent implements OnInit {
     this.updateFilteredTestResults();
   }
 
-  OpenChangeResultsModal() {
+  openChangeResultsModal() {
+    console.log('testing 1');
+
     let modalReference: BsModalRef = this.modalService.show(
       TestResultsChangeStatusModal,
-      { backdrop: 'static', focus: true, show: true }
+      {}
     );
     let modal: TestResultsChangeStatusModal = modalReference.content;
     modal.selectedFilters = this.testResultFilters;
@@ -81,6 +83,7 @@ export class TestResultsComponent implements OnInit {
   ngOnInit() {
     // TODO set from user session
     this.testResultsState = 'California';
+    this.showDistrictFilter = !this.testResultsService.isDistrictAdmin();
 
     // Data for Drop downs
     this.schoolYearOptions = this.testResultsService.getTestResultsSchoolYearOptions();
