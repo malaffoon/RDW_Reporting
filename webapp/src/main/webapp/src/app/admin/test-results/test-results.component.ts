@@ -35,6 +35,7 @@ export class TestResultsComponent implements OnInit {
     new Column({ id: 'status' })
   ];
 
+  changeResultsTooltip: string = 'Change status of selected test results';
   testResultFilters: TestResultFilters;
   filteredTestResults: TestResult[];
   userDistrict: string; // when it's a district admin

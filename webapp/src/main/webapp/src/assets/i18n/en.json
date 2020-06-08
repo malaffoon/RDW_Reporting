@@ -2016,7 +2016,8 @@
     "selected-title": "Selected Test Results",
     "state-header": "State",
     "status-placeholder": "Select Status (required)",
-    "title": "Manage Test Results"
+    "title": "Manage Test Results",
+    "tooltip": "Change status of selected test results"
   },
   "test-results-subject-options": {
     "ela": "ELA",

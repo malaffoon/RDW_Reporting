@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
 import { RouterModule } from '@angular/router';
 import { TestResultsComponent } from './test-results.component';
-import { BsDropdownModule, ModalModule } from 'ngx-bootstrap';
+import { BsDropdownModule, ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { testResultsRoutes } from './test-results.routes';
 import { DropdownModule } from 'primeng/dropdown';
 import { TestResultsChangeStatusModal } from './test-results-change-status.modal';
@@ -26,7 +26,8 @@ import { TestResultsChangeStatusModal } from './test-results-change-status.modal
     TranslateModule.forChild(translateModuleConfiguration),
     RouterModule.forChild(testResultsRoutes),
     BsDropdownModule,
-    DropdownModule
+    DropdownModule,
+    TooltipModule
   ]
 })
 export class TestResultsModule {}
