@@ -11,68 +11,67 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-
-<div class="modal-body text-left">
-  <div class="modal-table">
-    <div class="row">
-      <div class="col-md-3">
-        {{ 'test-results-change-status.school-year' | translate }}
-      </div>
-      <div class="col-md-2">
-        {{ selectedFilters.schoolYear }}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
-        {{ 'test-results-change-status.state' | translate }}
-      </div>
-      <div class="col-md-2">
-        California
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
-        {{ 'test-results-change-status.district' | translate }}
-      </div>
-      <div class="col-md-3">
-        {{ selectedFilters.district }}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
-        {{ 'test-results-change-status.subjects' | translate }}
-      </div>
-      <div class="col-md-3">
-        {{ selectedFilters.subject }}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
-        {{ 'test-results-change-status.report-type' | translate }}
-      </div>
-      <div class="col-md-3">
-        {{ selectedFilters.reportType }}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
-        {{ 'test-results-change-status.set-status-text' | translate }}
-      </div>
-      <div class="col-md-4">
-        <select
-          [(ngModel)]="selectedStatus"
-          class="form-control"
-          (ngModelChange)="onChangeStatusFilter($event)"
-        >
-          <option *ngFor="let status of statusOptions" [ngValue]="status">
-            {{ status }}
-          </option>
-        </select>
-      </div>
+<div class="modal-body form-horizontal">
+  <div class="form-group row">
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-change-status.school-year' | translate }}
+    </label>
+    <span class="col-xs-8 text-overflow-ellipsis">
+      {{ selectedFilters.schoolYear }}
+    </span>
+  </div>
+  <div class="form-group row">
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-change-status.state' | translate }}
+    </label>
+    <span class="col-xs-8 text-overflow-ellipsis">
+      California
+    </span>
+  </div>
+  <div class="form-group row">
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-change-status.district' | translate }}
+    </label>
+    <span class="col-xs-8 text-overflow-ellipsis">
+      {{ selectedFilters.district }}
+    </span>
+  </div>
+  <div class="form-group row">
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-change-status.subjects' | translate }}
+    </label>
+    <span class="col-xs-8 text-overflow-ellipsis">
+      {{ selectedFilters.subject }}
+    </span>
+  </div>
+  <div class="form-group row">
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-change-status.report-type' | translate }}
+    </label>
+    <span class="col-xs-8 text-overflow-ellipsis">
+      {{ selectedFilters.reportType }}
+    </span>
+  </div>
+  <div class="form-group row">
+    <p class="text-info ml-md mt-md mb-sm">
+      You are about to set the <b>status</b> for the test result(s) above to:
+    </p>
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-change-status.set-status-text' | translate }}
+    </label>
+    <div class="col-xs-6 set-status">
+      <select
+        [(ngModel)]="selectedStatus"
+        class="form-control"
+        (ngModelChange)="onChangeStatusFilter($event)"
+      >
+        <option *ngFor="let status of statusOptions" [ngValue]="status">
+          {{ status }}
+        </option>
+      </select>
     </div>
   </div>
 </div>
-
 <div class="modal-footer">
   <span>
     <button type="button" class="btn btn-default" (click)="cancel()">

@@ -3,7 +3,7 @@
   <ul class="list-unstyled list-inline" controls>
     <li>
       <a
-        class="btn btn-sm"
+        class="btn btn-default"
         href="/assets/testResultsAudit202006040.csv"
         download="/assets/testResultsAudit202006040.csv"
         ><i class="fa fa-cloud-download" aria-hidden="true"></i>
@@ -15,7 +15,7 @@
 
 <ng-container>
   <ng-container>
-    <div class="well">
+    <div class="well well-results">
       {{ 'test-results.filter-title' | translate }}
       <div class="row">
         <div class="col-md-2" *ngIf="testResultsState">
@@ -158,7 +158,7 @@
 
 <ng-container>
   <ng-container>
-    <div class="well">
+    <div class="well well-results">
       {{ 'test-results.selected-title' | translate }}
 
       <div class="table-list-container">
@@ -211,10 +211,10 @@
           </ng-template>
         </p-table>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer table-footer">
         <button
           (click)="openChangeResultsModal()"
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary"
           controls
           type="button"
           [tooltip]="changeResultsTooltip"
