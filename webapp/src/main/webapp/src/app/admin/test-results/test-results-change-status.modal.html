@@ -12,6 +12,12 @@
   </button>
 </div>
 <div class="modal-body form-horizontal">
+  <div *ngIf="unableToChange" class="alert alert-danger">
+    {{ 'successful-change.error' | translate }}
+  </div>
+  <div *ngIf="successfulChange" class="alert alert-info">
+    {{ 'test-results-change-status.successful-change' | translate }}
+  </div>
   <div class="form-group row">
     <label class="col-xs-4 control-label">
       {{ 'test-results-change-status.school-year' | translate }}
@@ -72,13 +78,20 @@
     </div>
   </div>
 </div>
-<div class="modal-footer">
+<div class="modal-footer" *ngIf="!successfulChange">
   <span>
     <button type="button" class="btn btn-default" (click)="cancel()">
       {{ 'common.action.cancel' | translate }}
     </button>
     <button type="button" class="btn btn-primary" (click)="changeTestResults()">
       {{ 'test-results-change-status.change-status-link' | translate }}
+    </button>
+  </span>
+</div>
+<div class="modal-footer" *ngIf="successfulChange">
+  <span>
+    <button type="button" class="btn btn-default" (click)="cancel()">
+      {{ 'test-results-change-status.dismiss' | translate }}
     </button>
   </span>
 </div>

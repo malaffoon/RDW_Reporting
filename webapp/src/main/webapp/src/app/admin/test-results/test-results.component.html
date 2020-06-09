@@ -1,6 +1,6 @@
 <page-heading>
   <h1 class="h2" heading>{{ 'test-results.title' | translate }}</h1>
-  <ul class="list-unstyled list-inline" controls>
+  <ul class="list-unstyled list-inline" controls *ngIf="showAudit">
     <li>
       <a
         class="btn btn-default"
@@ -91,9 +91,9 @@
 
         <!-- Subject Select  -->
         <div class="col-md-2">
-          <label for="select-subject">{{
-            'test-results.filter-subject' | translate
-          }}</label>
+          <label for="select-subject"
+            >{{ 'test-results.filter-subject' | translate }}
+          </label>
           <select
             id="select-subject"
             [(ngModel)]="testResultFilters.subject"
@@ -111,9 +111,13 @@
 
         <!-- Report Type Select -->
         <div class="col-md-2">
-          <label for="select-report-type">{{
-            'test-results.filter-report-type' | translate
-          }}</label>
+          <label for="select-report-type">
+            <span
+              info-button
+              title="{{ 'test-results.filter-report-type' | translate }}"
+              content="{{ 'test-results.report-type-tooltip' | translate }}"
+            ></span>
+          </label>
           <select
             id="select-report-type"
             [(ngModel)]="testResultFilters.reportType"
@@ -134,9 +138,13 @@
 
         <!-- Status Type Select  -->
         <div class="col-md-2">
-          <label for="select-status">{{
-            'test-results.filter-status' | translate
-          }}</label>
+          <label for="select-status">
+            <span
+              info-button
+              title="{{ 'test-results.filter-status' | translate }}"
+              content="{{ 'test-results.status-tooltip' | translate }}"
+            ></span
+          ></label>
           <select
             id="select-status"
             [(ngModel)]="testResultFilters.status"
@@ -169,6 +177,7 @@
           [autoLayout]="true"
           [paginator]="true"
           [rows]="10"
+          paginatorPosition="bottom"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>

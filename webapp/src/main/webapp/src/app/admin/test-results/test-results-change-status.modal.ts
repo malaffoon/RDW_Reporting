@@ -15,6 +15,8 @@ export class TestResultsChangeStatusModal implements OnInit {
   selectedFilters: TestResultFilters;
   statusOptions: string[];
   selectedStatus: string;
+  unableToChange: boolean;
+  successfulChange: boolean = false;
 
   constructor(
     private modal: BsModalRef,
@@ -41,7 +43,15 @@ export class TestResultsChangeStatusModal implements OnInit {
 
   changeTestResults(): void {
     this.service.changeTestResults(this.selectedFilters, this.selectedStatus);
-    this.modal.hide();
+    if (!this.service.successfulChange) {
+      this.unableToChange = true;
+    } else {
+      this.successfulChange = true;
+      // setTimeout(() => {
+      //   document.getElementById('success-alert').scrollIntoView();
+      // }, 500);
+      // this.modal.hide();
+    }
   }
 
   onChangeStatusFilter(status: any): void {

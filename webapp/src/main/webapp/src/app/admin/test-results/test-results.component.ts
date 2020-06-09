@@ -40,6 +40,7 @@ export class TestResultsComponent implements OnInit {
   filteredTestResults: TestResult[];
   userDistrict: string; // when it's a district admin
   showDistrictFilter: boolean; // set false if districtAdmin
+  showAudit: boolean; // only DevOps has ability
   testResultsState: string;
   private _testResults: TestResult[];
 
@@ -85,6 +86,7 @@ export class TestResultsComponent implements OnInit {
     // TODO set from user session
     this.testResultsState = 'California';
     this.showDistrictFilter = !this.testResultsService.isDistrictAdmin();
+    this.showAudit = this.testResultsService.isDevOps();
 
     // Data for Drop downs
     this.schoolYearOptions = this.testResultsService.getTestResultsSchoolYearOptions();
@@ -109,7 +111,6 @@ export class TestResultsComponent implements OnInit {
 
   // need to save each selected Option to filtered Group
   statusDefault: any = this.testResultsService.statusDefault;
-  schoolYearDefault: any = this.testResultsService.schoolYearsDefault;
 
   // need to save each selected Option to filtered Group
   updateFilteredTestResults() {

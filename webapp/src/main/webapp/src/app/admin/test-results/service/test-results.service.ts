@@ -18,6 +18,7 @@ export class TestResultsService implements OnInit {
   private districtAdmin = false; // set from User's permissions
   private devOps = true; // set from User's permissions
   number = null;
+  successfulChange: boolean = false;
 
   ngOnInit(): void {
     this.setTestResultFilterDefaults();
@@ -51,6 +52,7 @@ export class TestResultsService implements OnInit {
 
   // TODO  log changes and no need to persist
   changeTestResults(testResultFilters: TestResultFilters, newStatus: string) {
+    this.successfulChange = false;
     console.log(
       'New status (' +
         newStatus +
@@ -59,6 +61,7 @@ export class TestResultsService implements OnInit {
     );
     this.testResultFilters.status = newStatus;
     this.logTestResults(testResultFilters);
+    this.successfulChange = true;
   }
 
   // TODO add save of data

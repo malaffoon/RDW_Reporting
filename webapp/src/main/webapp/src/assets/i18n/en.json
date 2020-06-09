@@ -2013,9 +2013,11 @@
     "filter-subject": "Subject",
     "history-link": "Audit History",
     "no-test-results": "Contact your administrator for access to test results.",
+    "report-type-tooltip": "Report Type Tooltip information here",
     "selected-title": "Selected Test Results",
     "state-header": "State",
     "status-placeholder": "Select Status (required)",
+    "status-tooltip": "Status Tooltip information here",
     "title": "Manage Test Results",
     "tooltip": "Change status of selected test results"
   },
@@ -2040,13 +2042,16 @@
   "test-results-change-status": {
     "breadcrumb": "Change Test Results Status",
     "change-status-link": "Change Status",
+    "dismiss": "Dismiss",
     "district": "District:",
+    "error-changing-results": "Failed to change the selected test results",
     "header": "Change Test Results Status",
     "review-text": "You are about to change the status for these test results:",
     "report-type": "Report Type:",
     "school-year": "School Year:",
     "set-status-text": "Set status to:",
     "subjects": "Subjects:",
+    "successful-change": "Successfully submitted request to change the selected test results. It can take up to 24 hours to see these changes. ",
     "state": "State:"
   }
 }
