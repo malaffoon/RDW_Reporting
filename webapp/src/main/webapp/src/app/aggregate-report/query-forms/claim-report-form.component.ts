@@ -201,8 +201,8 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
 
     this.updateColumnOrder();
     this.markOrganizationsControlTouched();
-    this.initializeClaimsForAssessmentType();
     this.updateSubjectsEnabled();
+    this.initializeClaimsForAssessmentType();
     this.onSubjectsChange();
   }
 
