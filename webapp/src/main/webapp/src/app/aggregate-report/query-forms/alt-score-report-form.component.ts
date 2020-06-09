@@ -202,8 +202,8 @@ export class AltScoreReportFormComponent extends MultiOrganizationQueryFormCompo
 
     this.updateColumnOrder();
     this.markOrganizationsControlTouched();
-    this.initializeAltScoresForAssessmentType();
     this.updateSubjectsEnabled();
+    this.initializeAltScoresForAssessmentType();
     this.onSubjectsChange();
   }
 
