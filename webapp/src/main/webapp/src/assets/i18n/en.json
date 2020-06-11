@@ -2012,14 +2012,13 @@
     "filter-status": "Status",
     "filter-subject": "Subject",
     "history-link": "Audit History",
+    "is-sandbox": "Test Results Management is not available for Sandboxes. ",
     "no-test-results": "Contact your administrator for access to test results.",
     "report-type-tooltip": "Report Type Tooltip information here",
     "selected-title": "Selected Test Results",
     "state-header": "State",
-    "status-placeholder": "Select Status (required)",
     "status-tooltip": "Status Tooltip information here",
-    "title": "Manage Test Results",
-    "tooltip": "Change status of selected test results"
+    "title": "Manage Test Results"
   },
   "test-results-subject-options": {
     "ela": "ELA",

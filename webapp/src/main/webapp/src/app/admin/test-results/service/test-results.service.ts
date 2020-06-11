@@ -15,10 +15,14 @@ export class TestResultsService implements OnInit {
   private allDefault: string = 'All';
   statusDefault: string = this.allDefault;
   schoolYearsDefault: any = this.allDefault;
+  successfulChange: boolean;
+
+  // todo update. Below determine what to display depending on session and user
+  //  change to see the different Test Results Configurations
   private districtAdmin = false; // set from User's permissions
   private devOps = true; // set from User's permissions
-  number = null;
-  successfulChange: boolean = false;
+  private sandbox: boolean = false; //set from session info
+  private adminDistrict: string = 'District 12'; // default district for districtAdmin
 
   ngOnInit(): void {
     this.setTestResultFilterDefaults();
@@ -61,7 +65,7 @@ export class TestResultsService implements OnInit {
     );
     this.testResultFilters.status = newStatus;
     this.logTestResults(testResultFilters);
-    this.successfulChange = true;
+    this.successfulChange = true; // comment out to test error
   }
 
   // TODO add save of data
@@ -156,6 +160,10 @@ export class TestResultsService implements OnInit {
     return this.devOps;
   }
 
+  isSandbox(): boolean {
+    return this.sandbox;
+  }
+
   generateAuditHistory() {
     // determine what can be returned
   }
@@ -171,5 +179,9 @@ export class TestResultsService implements OnInit {
       return true;
     }
     return false;
+  }
+
+  getAdminUserDistrict() {
+    return this.adminDistrict;
   }
 }

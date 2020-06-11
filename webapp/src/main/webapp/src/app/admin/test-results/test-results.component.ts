@@ -34,17 +34,25 @@ export class TestResultsComponent implements OnInit {
     new Column({ id: 'result-count', field: 'resultCount', sortable: false }),
     new Column({ id: 'status' })
   ];
+  private _testResults: TestResult[];
 
-  changeResultsTooltip: string = 'Change status of selected test results';
+  changeResultsTooltip: string =
+    'Change status of selected test results (all pages).';
   testResultFilters: TestResultFilters;
   filteredTestResults: TestResult[];
+
+  // Used to determine what to display
   userDistrict: string; // when it's a district admin
   showDistrictFilter: boolean; // set false if districtAdmin
   showAudit: boolean; // only DevOps has ability
-  testResultsState: string;
-  private _testResults: TestResult[];
+  state: string; // state of tenant or sandbox logged into
+  numOfRows: number = 10; // todo set to be configurable
 
-  // TODO Replace with real data
+  // results of change request
+  successfulChange: boolean;
+  unableToChange: boolean;
+
+  // TODO Replace drop downs with real data
   schoolYearOptions: number[];
   districtOptions: string[];
   subjectOptions: string[];
@@ -80,11 +88,15 @@ export class TestResultsComponent implements OnInit {
     let modal: TestResultsChangeStatusModal = modalReference.content;
     modal.selectedFilters = this.testResultFilters;
     modal.statusOptions = this.statusOptions;
+    modal.changeStatusEvent.subscribe(res => {
+      this.successfulChange = res.data;
+      this.unableToChange = res.error;
+    });
   }
 
   ngOnInit() {
     // TODO set from user session
-    this.testResultsState = 'California';
+    this.state = 'California';
     this.showDistrictFilter = !this.testResultsService.isDistrictAdmin();
     this.showAudit = this.testResultsService.isDevOps();
 
@@ -100,7 +112,7 @@ export class TestResultsComponent implements OnInit {
     this.testResultsService.setTestResultFilterDefaults();
     this.testResultFilters = this.testResultsService.getTestResultFilterDefaults();
     if (!this.showDistrictFilter) {
-      this.userDistrict = 'District 12'; //used when user is DistrictAdmin
+      this.userDistrict = this.testResultsService.getAdminUserDistrict(); //used when user is DistrictAdmin
       this.testResultFilters.district = this.userDistrict;
     }
     this.testResults = this.testResultsService.getTestResults(
@@ -145,4 +157,12 @@ export class TestResultsComponent implements OnInit {
   }
 
   onDownloadAuditFile() {}
+
+  closeSuccessAlert() {
+    this.successfulChange = false;
+  }
+
+  closeErrorAlert() {
+    this.unableToChange = false;
+  }
 }

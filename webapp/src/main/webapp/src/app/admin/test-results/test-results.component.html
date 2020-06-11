@@ -15,21 +15,44 @@
 
 <ng-container>
   <ng-container>
+    <div *ngIf="unableToChange" class="alert alert-danger">
+      <button
+        type="button"
+        class="close pull-right"
+        title="{{ 'common.action.close' | translate }}"
+        (click)="closeErrorAlert()"
+      >
+        x
+      </button>
+      {{ 'test-results-change-status.error-changing-results' | translate }}
+    </div>
+    <div *ngIf="successfulChange" class="alert alert-info">
+      <button
+        type="button"
+        class="close pull-right"
+        title="{{ 'common.action.close' | translate }}"
+        (click)="closeSuccessAlert()"
+      >
+        x
+      </button>
+      {{ 'test-results-change-status.successful-change' | translate }}
+    </div>
+
     <div class="well well-results">
       {{ 'test-results.filter-title' | translate }}
       <div class="row">
-        <div class="col-md-2" *ngIf="testResultsState">
+        <div class="col-md-2" *ngIf="state">
           <label for="select-state">
             {{ 'test-results.state-header' | translate }}
           </label>
           <select
             id="select-state"
             class="form-control"
-            [(ngModel)]="testResultsState"
+            [(ngModel)]="state"
             disabled
           >
             <option>
-              {{ testResultsState }}
+              {{ state }}
             </option>
           </select>
         </div>
@@ -176,8 +199,7 @@
           sortField="name"
           [autoLayout]="true"
           [paginator]="true"
-          [rows]="10"
-          paginatorPosition="bottom"
+          [rows]="numOfRows"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
