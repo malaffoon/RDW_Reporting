@@ -163,7 +163,9 @@ export class WritingTraitScoresComponent
   traitScoreSummaries$: Observable<Map<string, WritingTraitScoreSummary>[]>;
   writingTraits$: Observable<string[]>;
   writingTraitType$: Observable<string>;
-  summaryColumnsBySummary$: Observable<Map<WritingTraitScoreSummary, Column[]>>;
+  summaryColumnsBySummary$: Observable<
+    Map<string, Map<WritingTraitScoreSummary, Column[]>>
+  >;
   exportRequest$: Observable<ExportWritingTraitsRequest>;
   initialized$: Observable<boolean>;
 
@@ -264,8 +266,10 @@ export class WritingTraitScoresComponent
       map(
         ([assessment, summaries]) => <any>new Map(
             summaries.map(summary => {
+              const key = summary.keys().next().value;
+              console.log('key is ' + key);
               return <any>[
-                summary.get('key'),
+                summary,
                 [
                   new Column({ id: 'category', sortable: false }),
                   new Column({
@@ -274,7 +278,7 @@ export class WritingTraitScoresComponent
                     styleClass: 'level-up'
                   }),
                   ...toTraitSummaryColumns(
-                    summary.get('key'),
+                    summary.values().next().value,
                     assessment.type === 'sum'
                   )
                 ]
@@ -296,7 +300,7 @@ export class WritingTraitScoresComponent
         return {
           assessment,
           assessmentItems,
-          summaries: summaries.map(s => s.get('key')),
+          summaries: summaries.map(s => s.values()[0]),
           showAsPercent: this.showValuesAsPercent,
           type: RequestType.WritingTraitScores
         };

@@ -115,10 +115,17 @@ export class ExamStatisticsCalculator {
   ): Map<string, WritingTraitScoreSummary>[] {
     const summaryMaps = [];
 
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
     assessmentItems.forEach(assessmentItem => {
       const purpose = assessmentItem.performanceTaskWritingType;
+      console.log('Purpose:', purpose);
 
       const summary = new WritingTraitScoreSummary();
+      const fakeSummary = new WritingTraitScoreSummary();
+
       const itemsWithTraitScores = assessmentItem.scores.filter(
         x => x.points >= 0 && x.writingTraitScores != null
       );
@@ -129,6 +136,17 @@ export class ExamStatisticsCalculator {
         summary.organization.numbers[score.writingTraitScores.organization]++;
         summary.conventions.numbers[score.writingTraitScores.conventions]++;
         summary.total.numbers[score.points]++;
+
+        fakeSummary.evidence.numbers[
+          score.writingTraitScores.evidence
+        ] += getRandomInt(3);
+        fakeSummary.organization.numbers[
+          score.writingTraitScores.organization
+        ] += getRandomInt(3);
+        fakeSummary.conventions.numbers[
+          score.writingTraitScores.conventions
+        ] += getRandomInt(3);
+        fakeSummary.total.numbers[score.points] += getRandomInt(3);
       });
 
       // calculate the averages and the percents based on the raw numbers
@@ -141,13 +159,29 @@ export class ExamStatisticsCalculator {
           count += num;
 
           aggregate.percents[index] =
-            totalAnswers == 0 ? 0 : (num / totalAnswers) * 100;
+            totalAnswers === 0 ? 0 : (num / totalAnswers) * 100;
         });
 
-        aggregate.average = count == 0 ? 0 : total / count;
+        aggregate.average = count === 0 ? 0 : total / count;
       });
-      const summaryMap = new Map();
-      summaryMap.set('key', summary);
+
+      fakeSummary.rows.forEach((aggregate, points) => {
+        let total = 0;
+        let count = 0;
+
+        aggregate.numbers.forEach((num, index) => {
+          total += num * index;
+          count += num;
+
+          aggregate.percents[index] =
+            totalAnswers === 0
+              ? 0
+              : (num / totalAnswers) * (Math.random() + 0.5) * 100;
+        });
+
+        aggregate.average = count === 0 ? 0 : total / count;
+      });
+      const summaryMap = new Map([[purpose, summary], ['Other', fakeSummary]]);
 
       summaryMaps.push(summaryMap);
     });

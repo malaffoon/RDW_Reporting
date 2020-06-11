@@ -176,11 +176,14 @@
     </h4>
 
     <p-tabView>
-      <p-tabPanel header="key">
+      <p-tabPanel
+        *ngFor="let purpose of traitScoreSummary.keys()"
+        header="{{ purpose }}"
+      >
         <p-table
           *ngIf="hasWritingTraitItems"
-          [columns]="summaryColumnsBySummary.get(traitScoreSummary.get('key'))"
-          [value]="traitScoreSummary.get('key').rows"
+          [columns]="summaryColumnsBySummary.get(traitScoreSummary)"
+          [value]="traitScoreSummary.get(purpose).rows"
           [autoLayout]="true"
           rowExpandMode="single"
           dataKey="position"
