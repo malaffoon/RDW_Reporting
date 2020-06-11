@@ -50,7 +50,6 @@ export class TestResultsService implements OnInit {
       this.applyTestResultsFilter(tr, testResultFilters)
     );
     console.log('the filtered list = ' + JSON.stringify(filterList));
-    // return filterList;
     return filterList;
   }
 

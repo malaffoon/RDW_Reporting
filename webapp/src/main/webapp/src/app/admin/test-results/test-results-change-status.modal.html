@@ -79,7 +79,12 @@
 </div>
 <div class="modal-footer">
   <span>
-    <button type="button" class="btn btn-default" (click)="cancel()">
+    <button
+      type="button"
+      class="btn btn-default"
+      (click)="cancel()"
+      title="{{'common.action.cancel' | translate}}"
+    >
       {{ 'common.action.cancel' | translate }}
     </button>
     <button
@@ -87,6 +92,7 @@
       class="btn btn-primary"
       *ngIf="!showSandboxAlert"
       (click)="changeTestResults()"
+      title="{{'test-results-change-status.change-status-link' | translate}}"
     >
       {{ 'test-results-change-status.change-status-link' | translate }}
     </button>

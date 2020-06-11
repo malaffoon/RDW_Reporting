@@ -6,6 +6,7 @@
         class="btn btn-default"
         href="/assets/testResultsAudit202006040.csv"
         download="/assets/testResultsAudit202006040.csv"
+        title="{{ 'test-results.history-link' | translate }}"
         ><i class="fa fa-cloud-download" aria-hidden="true"></i>
         {{ 'test-results.history-link' | translate }}</a
       >
@@ -18,22 +19,22 @@
     <div *ngIf="unableToChange" class="alert alert-danger">
       <button
         type="button"
-        class="close pull-right"
+        class="close"
         title="{{ 'common.action.close' | translate }}"
         (click)="closeErrorAlert()"
       >
-        x
+        <span aria-hidden="true">&times;</span>
       </button>
       {{ 'test-results-change-status.error-changing-results' | translate }}
     </div>
     <div *ngIf="successfulChange" class="alert alert-info">
       <button
         type="button"
-        class="close pull-right"
+        class="close"
         title="{{ 'common.action.close' | translate }}"
         (click)="closeSuccessAlert()"
       >
-        x
+        <span aria-hidden="true">&times;</span>
       </button>
       {{ 'test-results-change-status.successful-change' | translate }}
     </div>
@@ -223,8 +224,13 @@
             </tr>
           </ng-template>
 
-          <ng-template pTemplate="body" let-group let-columns="columns">
-            <tr>
+          <ng-template
+            pTemplate="body"
+            let-group
+            let-rowData
+            let-columns="columns"
+          >
+            <tr [ngClass]="testResultsRowStyleClass(rowData)">
               <td *ngFor="let column of columns" [ngSwitch]="column.id">
                 <span *ngSwitchDefault>
                   {{ group[column.field] }}
@@ -246,9 +252,9 @@
         <button
           (click)="openChangeResultsModal()"
           class="btn btn-primary"
-          controls
           type="button"
           [tooltip]="changeResultsTooltip"
+          title="{{ 'test-results.change-status' | translate }}"
         >
           <i class="fa fa-pencil-square"></i>
           {{ 'test-results.change-status' | translate }}
