@@ -8,6 +8,7 @@ import { Exam } from '../model/exam';
 import { DynamicItemField } from '../model/item-point-field.model';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
+import { sum } from '../../exam/model/score-statistics';
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -111,15 +112,17 @@ export class ExamStatisticsCalculator {
 
   aggregateWritingTraitScores(
     assessmentItems: AssessmentItem[]
-  ): WritingTraitScoreSummary[] {
-    let summaries: WritingTraitScoreSummary[] = [];
+  ): Map<string, WritingTraitScoreSummary>[] {
+    const summaryMaps = [];
 
     assessmentItems.forEach(assessmentItem => {
-      let summary = new WritingTraitScoreSummary();
-      let itemsWithTraitScores = assessmentItem.scores.filter(
+      const purpose = assessmentItem.performanceTaskWritingType;
+
+      const summary = new WritingTraitScoreSummary();
+      const itemsWithTraitScores = assessmentItem.scores.filter(
         x => x.points >= 0 && x.writingTraitScores != null
       );
-      let totalAnswers = itemsWithTraitScores.length;
+      const totalAnswers = itemsWithTraitScores.length;
 
       itemsWithTraitScores.forEach((score, index) => {
         summary.evidence.numbers[score.writingTraitScores.evidence]++;
@@ -143,18 +146,20 @@ export class ExamStatisticsCalculator {
 
         aggregate.average = count == 0 ? 0 : total / count;
       });
+      const summaryMap = new Map();
+      summaryMap.set('key', summary);
 
-      summaries.push(summary);
+      summaryMaps.push(summaryMap);
     });
 
-    return summaries;
+    return summaryMaps;
   }
 
   aggregateItemsByResponse(assessmentItems: AssessmentItem[]) {
-    for (let item of assessmentItems) {
+    for (const item of assessmentItems) {
       this.assertNumberOfChoicesIsValid(item.numberOfChoices);
 
-      //Only include "scored" item scores
+      // Only include "scored" item scores
       const itemScores: ExamItemScore[] = item.scores.filter(
         score => score.points >= 0
       );
