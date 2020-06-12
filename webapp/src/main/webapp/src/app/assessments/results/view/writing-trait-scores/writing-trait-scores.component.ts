@@ -177,6 +177,7 @@ export class WritingTraitScoresComponent
   private destroyed$: Subject<void> = new Subject();
   private _hasDataToExport: boolean;
   isDevMode = isDevMode();
+  purposes = ['ARGU', 'EXPL', 'INFO', 'NARR', 'OPIN'];
 
   constructor(private examCalculator: ExamStatisticsCalculator) {}
 
@@ -195,7 +196,7 @@ export class WritingTraitScoresComponent
       )
     );
 
-    this.writingTraits$.subscribe(val => console.log(val));
+    // this.writingTraits$.subscribe(val => console.log(val));
 
     this.items$ = combineLatest(
       this.assessment$,
@@ -210,13 +211,13 @@ export class WritingTraitScoresComponent
       share()
     );
 
-    this.items$.subscribe(val => console.log(val));
+    // this.items$.subscribe(val => console.log(val));
 
     this.hasWritingTraitItems$ = this.items$.pipe(
       map(items => items.length > 0)
     );
 
-    this.hasWritingTraitItems$.subscribe(val => console.log(val));
+    // this.hasWritingTraitItems$.subscribe(val => console.log(val));
 
     this.writingTraitType$ = this.items$.pipe(
       map(items =>
@@ -245,7 +246,7 @@ export class WritingTraitScoresComponent
       shareReplay(1)
     );
 
-    this.itemViews$.subscribe(val => console.log(val));
+    // this.itemViews$.subscribe(val => console.log(val));
 
     this.traitScoreSummaries$ = this.itemViews$.pipe(
       map(items =>
@@ -256,7 +257,7 @@ export class WritingTraitScoresComponent
       shareReplay(1)
     );
 
-    this.traitScoreSummaries$.subscribe(val => console.log(val));
+    // this.traitScoreSummaries$.subscribe(val => console.log(val));
 
     this.summaryColumnsBySummary$ = combineLatest(
       this.assessment$,
@@ -267,7 +268,6 @@ export class WritingTraitScoresComponent
         ([assessment, summaries]) => <any>new Map(
             summaries.map(summary => {
               const key = summary.keys().next().value;
-              console.log('key is ' + key);
               return <any>[
                 summary,
                 [
@@ -288,7 +288,7 @@ export class WritingTraitScoresComponent
       )
     );
 
-    this.summaryColumnsBySummary$.subscribe(val => console.log(val));
+    // this.summaryColumnsBySummary$.subscribe(val => console.log(val));
 
     this.exportRequest$ = combineLatest(
       this.assessment$,
@@ -307,7 +307,7 @@ export class WritingTraitScoresComponent
       })
     );
 
-    this.exportRequest$.subscribe(val => console.log(val));
+    // this.exportRequest$.subscribe(val => console.log(val));
 
     this.initialized$ = combineLatest(
       this.assessment$,

@@ -8,7 +8,6 @@ import { Exam } from '../model/exam';
 import { DynamicItemField } from '../model/item-point-field.model';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
-import { sum } from '../../exam/model/score-statistics';
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -120,8 +119,7 @@ export class ExamStatisticsCalculator {
     }
 
     assessmentItems.forEach(assessmentItem => {
-      const purpose = assessmentItem.performanceTaskWritingType;
-      console.log('Purpose:', purpose);
+      // const purpose = assessmentItem.performanceTaskWritingType;
 
       const summary = new WritingTraitScoreSummary();
       const fakeSummary = new WritingTraitScoreSummary();
@@ -181,7 +179,7 @@ export class ExamStatisticsCalculator {
 
         aggregate.average = count === 0 ? 0 : total / count;
       });
-      const summaryMap = new Map([[purpose, summary], ['Other', fakeSummary]]);
+      const summaryMap = new Map([['NARR', summary], ['ARGU', fakeSummary]]);
 
       summaryMaps.push(summaryMap);
     });

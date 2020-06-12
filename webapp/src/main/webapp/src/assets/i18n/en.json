@@ -920,6 +920,7 @@
       "max-points": "Max Points",
       "student-points": "Student Points"
     },
+
     "subject-select-label": "Subject",
     "tenant-status": {
       "CREATE_STARTED": "Creating {{tenantType}}",
@@ -1409,6 +1410,23 @@
       "StudentSSID": "Student SSID"
     },
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
+  },
+  "subject": {
+    "ELA": {
+      "category": {
+        "ORG": "Organization / Purpose",
+        "EVI": "Evidence / Elaboration",
+        "CON": "Conventions"
+      },
+      "purpose": {
+        "ARGU": "Argument",
+        "EXPL": "Explanatory",
+        "INFO": "Informative",
+        "NARR": "Narrative",
+        "OPIN": "Opinion"
+      },
+      "no-data": "There is no data for this ELA Purpose"
+    }
   },
   "tenant": {
     "initialization-error": {
