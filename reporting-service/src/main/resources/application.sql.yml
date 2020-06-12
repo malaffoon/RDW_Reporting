@@ -331,8 +331,8 @@ sql:
         EXISTS(SELECT 1 FROM item i WHERE i.asmt_id = a.id AND i.type = 'WER') as has_wer_item,
         su.code as subject_code,
         sat.target_report,
-        sat.printed_report
-
+        sat.printed_report,
+        sat.trait_report
 
       selectFromExamItem: >-
        SELECT
