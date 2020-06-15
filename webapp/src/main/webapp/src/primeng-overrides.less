@@ -285,19 +285,74 @@ body {
     }
   }
 }
-/**Test Results Manager UI Updates **/
+
+/**Test Results Table Color UI Updates **/
+.loadingColor {
+  &:hover {
+    color: @black;
+    background-color: #d9edf7 !important;
+    opacity: 0.8 !important;
+  }
+}
+.reviewingColor {
+  &:hover {
+    color: @black;
+    background-color: #fcf8e3 !important;
+    opacity: 0.8 !important;
+  }
+}
+.releasedColor {
+  &:hover {
+    color: @black;
+    background-color: #dff0d8 !important;
+    opacity: 0.8 !important;
+  }
+}
 .well-results {
   padding: 20px;
 }
-.table-list-container {
-  padding-top: 8px;
+.set-status {
+  padding-left: 0px;
 }
-ul.pagination.pagination-sm {
-  margin: 16px 0;
+hr {
+  margin: 15px;
+  border-top: 1px solid #d5d5d5;
 }
 .table-footer {
   padding: 20px 0 5px;
 }
-.set-status {
-  padding-left: 0px;
+.ui-table {
+  .ui-paginator-bottom {
+    border: none;
+  }
+}
+.ui-paginator-pages {
+  font-size: 14px;
+}
+.ui-paginator-bottom.ui-paginator.ui-widget.ui-widget-header.ui-unselectable-text.ui-helper-clearfix {
+  margin: 0.5em;
+}
+body {
+  .ui-paginator {
+    .ui-paginator-first,
+    .ui-paginator-prev,
+    .ui-paginator-next,
+    .ui-paginator-last {
+      color: @gray-darker;
+      transition: background-color 0.3s;
+      min-height: 1em;
+      min-width: 1em;
+      padding: 1em;
+      vertical-align: middle;
+    }
+    .ui-paginator-pages {
+      .ui-paginator-page {
+        padding: 10px;
+        min-width: 0;
+        color: @gray-darkest;
+        transition: background-color 0.3s;
+        border-radius: 0;
+      }
+    }
+  }
 }

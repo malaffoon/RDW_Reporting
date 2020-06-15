@@ -27,17 +27,14 @@ class Column {
   styles: [
     '.loadingColor{\n' +
       '  background-color:#d9edf7;\n' +
-      '  background-image:none;\n' +
       '}\n' +
       '\n' +
       '.reviewingColor{\n' +
       '  background-color:#fcf8e3;\n' +
-      '  background-image:none;\n' +
       '}\n' +
       '\n' +
       '.releasedColor{\n' +
       '  background-color:#dff0d8;\n' +
-      '  background-image:none;\n' +
       '}'
   ]
 })
