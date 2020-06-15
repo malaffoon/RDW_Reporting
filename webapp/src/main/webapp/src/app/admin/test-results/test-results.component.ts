@@ -23,20 +23,7 @@ class Column {
 
 @Component({
   selector: 'test-results',
-  templateUrl: './test-results.component.html',
-  styles: [
-    '.loadingColor{\n' +
-      '  background-color:#d9edf7;\n' +
-      '}\n' +
-      '\n' +
-      '.reviewingColor{\n' +
-      '  background-color:#fcf8e3;\n' +
-      '}\n' +
-      '\n' +
-      '.releasedColor{\n' +
-      '  background-color:#dff0d8;\n' +
-      '}'
-  ]
+  templateUrl: './test-results.component.html'
 })
 export class TestResultsComponent implements OnInit {
   columns: Column[] = [
