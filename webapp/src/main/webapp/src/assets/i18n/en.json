@@ -1206,6 +1206,10 @@
         "button": "Instructional Resources",
         "description": "Upload links to instructional resources in the system."
       },
+      "isr-template": {
+        "button": "ISR Template",
+        "description": "Manage ISR Templates."
+      },
       "organizational-export": {
         "button": "District / School Exports",
         "description": "Export data for analysis in another application."
@@ -1998,5 +2002,21 @@
     "head": "Deactivate pipeline",
     "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
     "accept": "Deactivate"
+  },
+  "isr-template": {
+    "columns": {
+      "assessment-type": "Assessment Type",
+      "subject": "Subject",
+      "status": "ISR Template",
+      "template-name": "Template Name",
+      "uploaded-date": "Uploaded Date",
+      "location": "Location",
+      "reference-template": "Reference Template"
+    },
+    "configured": " Configured on ",
+    "empty-message": "There are no templates results.",
+    "not-configured": " Not Configured",
+    "reference-template": "Reference Template",
+    "title": "ISR Templates"
   }
 }

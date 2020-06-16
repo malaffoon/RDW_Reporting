@@ -63,6 +63,12 @@ const links: Link[] = [
     icon: 'fa-cog',
     permission: 'TENANT_READ',
     disabled: ({ tenantAdministrationDisabled }) => tenantAdministrationDisabled
+  },
+  {
+    id: 'isr-template',
+    path: '/isr-template',
+    icon: 'fa-cog',
+    permission: 'EMBARGO_WRITE'
   }
 ];
 

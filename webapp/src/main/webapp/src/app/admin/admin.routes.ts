@@ -25,6 +25,9 @@ export const sandboxesBreadcrumb = ({ translateService }) =>
 export const tenantsBreadcrumb = ({ translateService }) =>
   translateService.instant('tenants.heading.TENANT');
 
+export const isrTemplateBreadcrumb = ({ translateService }) =>
+  translateService.instant('isr-template.title');
+
 export const adminRoutes: Route[] = [
   {
     path: '',
@@ -105,6 +108,16 @@ export const adminRoutes: Route[] = [
           breadcrumb: tenantsBreadcrumb,
           permissions: ['TENANT_READ'],
           type: 'TENANT'
+        }
+      },
+      {
+        path: 'isr-template',
+        loadChildren:
+          'app/admin/isr-template/isr-template.module#IsrTemplateModule',
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: isrTemplateBreadcrumb,
+          permissions: ['EMBARGO_WRITE']
         }
       }
     ]
