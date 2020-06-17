@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../shared/notification/notification.service';
@@ -10,7 +10,7 @@ class Column {
   field: string; // isr-template field
   sortable: boolean;
 
-  constructor({ id, field = '', sortable = false }) {
+  constructor({ id, field = '', sortable = true }) {
     this.id = id;
     this.field = field ? field : id;
     this.sortable = sortable;
@@ -23,24 +23,23 @@ class Column {
   styles: [
     '.configuredTemplate{ color: green }' +
       '.notConfiguredTemplate{ color: red }' +
-      '.greyDisabled{ ' +
-      '   color: grey; ' +
-      '   isDisabled: true;' +
-      '} ' +
-      '.blueEnabled{ ' +
-      '   color: lightBlue; ' +
-      '   isDisabled: false;' +
-      '}'
+      '.uploadTemplate{ color: green }' +
+      '.downloadTemplate{ color: blue }' +
+      '.deleteTemplate{ color: red }'
   ]
 })
 export class IsrTemplateComponent implements OnInit {
   columns: Column[] = [
-    new Column({ id: 'assessment-type', field: 'assessmentType' }),
     new Column({ id: 'subject' }),
+    new Column({ id: 'assessment-type', field: 'assessmentType' }),
     new Column({ id: 'status' })
   ];
 
   isrTemplates: IsrTemplate[];
+  showDelete: boolean;
+  showDownload: boolean;
+  @ViewChild('fileDialog')
+  fileDialog: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -52,17 +51,47 @@ export class IsrTemplateComponent implements OnInit {
 
   ngOnInit(): void {
     this.isrTemplates = this.istTemplateService.getIsrTemplates();
+    this.showDownload = true;
+    this.showDelete = true;
   }
 
   getStatus(rowData: IsrTemplate) {
-    return rowData.uploadedDate === null
+    return rowData.uploadedDate == null
       ? 'notConfiguredTemplate'
       : ' configuredTemplate';
   }
 
-  displayDownload(rowData: IsrTemplate) {
-    return rowData.uploadedDate === null
-      ? 'greyDisabled'
-      : 'color: blueEnabled';
+  downloadAvailable(rowData: IsrTemplate) {
+    if (rowData.templateName == null) {
+      console.log(
+        'rowData.templateName=' +
+          rowData.templateName +
+          'disableDownload=' +
+          this.showDownload
+      );
+      this.showDownload = false;
+      return '{disabled: true}';
+    }
+    console.log('rowData.templateName=' + rowData.templateName);
+
+    this.showDownload = true;
+    return 'downloadEnabled';
+  }
+
+  getUpload() {
+    return 'uploadTemplate';
+  }
+
+  openFileDialog() {
+    this.fileDialog.nativeElement.click();
+  }
+
+  displayDelete(rowData: IsrTemplate) {
+    if (rowData.templateName == null) {
+      this.showDelete = false;
+      return '{disabled: true}';
+    }
+    this.showDelete = false;
+    return 'deleteEnabled';
   }
 }

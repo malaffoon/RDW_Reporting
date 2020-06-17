@@ -1,5 +1,18 @@
 <page-heading>
   <h1 class="h2" heading>{{ 'isr-template.title' | translate }}</h1>
+  <ul class="list-unstyled list-inline" controls>
+    <li>
+      <a
+        class="btn btn-primary"
+        href="/assets/template/reference-template.pdf"
+        download="/assets/template/reference-template.pdf"
+        title="{{ 'isr-template.reference-template' | translate }}"
+        tooltip="{{ 'isr-template.reference-tooltip' | translate }}"
+        ><i class="fa fa-cloud-download" aria-hidden="true"></i>
+        {{ 'isr-template.reference-template' | translate }}</a
+      >
+    </li>
+  </ul>
 </page-heading>
 
 <ng-container>
@@ -30,13 +43,7 @@
                 ></p-sortIcon>
               </th>
               <th>
-                <a
-                  href="/assets/template/reference-template.pdf"
-                  download="/assets/template/reference-template.pdf"
-                  title="{{ 'isr-template.reference-template' | translate }}"
-                  ><i class="fa fa-cloud-download" aria-hidden="true"></i>
-                  {{ 'isr-template.reference-template' | translate }}</a
-                >
+                <!-- Empty Header -->
               </th>
             </tr>
           </ng-template>
@@ -56,36 +63,49 @@
                   {{ group[column.field] }}
                 </span>
               </td>
-              <td [ngClass]="displayDownload(rowData)">
-                <a>
-                  <i
+              <td>
+                <a
+                  href="javascript:void(0)"
+                  (click)="openFileDialog()"
+                  [ngClass]="getUpload"
+                  title="{{ 'isr-template.upload-template-title' | translate }}"
+                  ><i
                     class="fa fa-cloud-upload"
+                    style="color:green;"
                     aria-hidden="true"
-                    title="Upload New Template"
+                    title="{{
+                      'isr-template.upload-template-title' | translate
+                    }}"
                   ></i>
                 </a>
-
-                <a
-                  href="/assets/template/test-template.csv"
-                  download="/assets/template/test-template.csv"
-                  title="{{ 'isr-template.reference-template' | translate }}"
-                  [ngClass]="displayDownload(rowData)"
-                  ><i
-                    class="fa fa-cloud-download"
+                <span *ngIf="showDownload">
+                  <a
+                    href="/assets/template/test-template.csv"
+                    download="/assets/template/test-template.csv"
+                    title="{{
+                      'isr-template.download-template-title' | translate
+                    }}"
                     aria-hidden="true"
-                    title="Download Current Template"
-                  ></i>
-                </a>
-
-                <a
-                  [ngClass]="displayDownload(rowData)"
-                  ng-disabled="rowData.uploadDate == null"
-                  ><i
-                    class="fa fa-ban"
-                    aria-hidden="true"
-                    title="Remove Current Template"
-                  ></i>
-                </a>
+                    ><i
+                      class="fa fa-cloud-download"
+                      style="color:blue;"
+                      title="{{
+                        'isr-template.download-template-title' | translate
+                      }}"
+                    ></i>
+                  </a>
+                </span>
+                <span *ngIf="showDelete">
+                  <a aria-hidden="true"
+                    ><i
+                      class="fa fa-ban"
+                      style="color:darkred;"
+                      title="{{
+                        'isr-template.remove-template-title' | translate
+                      }}"
+                    ></i>
+                  </a>
+                </span>
               </td>
             </tr>
           </ng-template>

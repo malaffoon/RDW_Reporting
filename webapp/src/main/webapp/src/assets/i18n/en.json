@@ -2005,18 +2005,21 @@
   },
   "isr-template": {
     "columns": {
-      "assessment-type": "Assessment Type",
       "subject": "Subject",
+      "assessment-type": "Assessment Type",
       "status": "ISR Template",
       "template-name": "Template Name",
       "uploaded-date": "Uploaded Date",
-      "location": "Location",
-      "reference-template": "Reference Template"
+      "location": "Location"
     },
     "configured": " Configured on ",
+    "download-template-title": "Download the current template",
     "empty-message": "There are no templates results.",
     "not-configured": " Not Configured",
     "reference-template": "Reference Template",
-    "title": "ISR Templates"
+    "reference-tooltip": "Down the Reference Template to create new report templates.",
+    "remove-template-title": "Remove the current Template",
+    "title": "Individual Student Report (ISR) Templates",
+    "upload-template-title": "Upload the a new template"
   }
 }

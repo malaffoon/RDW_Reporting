@@ -7,7 +7,7 @@ export class IsrTemplateService {
   constructor(private datePipe: TranslateDatePipe) {}
 
   formatAsLocalDate(date: Date): string {
-    return this.datePipe.transform(date, 'yyyy-MM-dd');
+    return this.datePipe.transform(date, 'yyyy-MM-dd hh:mm');
   }
 
   getNotConfigured(): string {
@@ -22,57 +22,57 @@ export class IsrTemplateService {
   getIsrTemplates(): IsrTemplate[] {
     return [
       {
-        assessmentType: 'IAB',
         subject: 'ELA',
-        status: this.getConfigured(new Date('Jan 4, 2020')),
+        assessmentType: 'IAB',
+        status: this.getConfigured(new Date('Jan 4, 2020 13:45')),
         templateName: 'ISRTemplate-IAB-ELA',
         location: './',
         uploadedDate: new Date('Jan 4, 2020')
       },
       {
-        assessmentType: 'IAB',
-        subject: 'Math',
-        status: this.getConfigured(new Date('Jan 4, 2020')),
-        templateName: 'template-IAB-Math',
-        location: './templates/',
-        uploadedDate: new Date('Jan 4, 2020')
-      },
-      {
-        assessmentType: 'ICA',
         subject: 'ELA',
-        status: this.getConfigured(new Date('Feb 4, 2020')),
+        assessmentType: 'ICA',
+        status: this.getConfigured(new Date('Feb 4, 2020 09:23')),
         templateName: 'template-ICA-ELA',
         location: './',
         uploadedDate: new Date('Feb 4, 2020')
       },
       {
-        assessmentType: 'ICA',
-        subject: 'Math',
-        status: this.getNotConfigured(),
-        templateName: null,
-        location: null,
-        uploadedDate: null
-      },
-      {
-        assessmentType: 'Summative',
         subject: 'ELA',
-        status: this.getConfigured(new Date('Mar 10, 2020')),
+        assessmentType: 'Summative',
+        status: this.getConfigured(new Date('Mar 10, 2020 11:07')),
         templateName: 'template-summative-ELA',
         location: './',
         uploadedDate: new Date('Mar 10, 2020')
       },
       {
-        assessmentType: 'Summative',
         subject: 'ELPAC',
+        assessmentType: 'Summative',
         status: this.getNotConfigured(),
         templateName: null,
         location: null,
         uploadedDate: null
       },
       {
-        assessmentType: 'Summative',
         subject: 'Math',
-        status: this.getConfigured(new Date('June 4, 2020')),
+        assessmentType: 'IAB',
+        status: this.getConfigured(new Date('Jan 4, 2020 13:46')),
+        templateName: 'template-IAB-Math',
+        location: './templates/',
+        uploadedDate: new Date('Jan 4, 2020')
+      },
+      {
+        subject: 'Math',
+        assessmentType: 'ICA',
+        status: this.getNotConfigured(),
+        templateName: null,
+        location: null,
+        uploadedDate: null
+      },
+      {
+        subject: 'Math',
+        assessmentType: 'Summative',
+        status: this.getConfigured(new Date('June 4, 2020 18:19')),
         templateName: 'template-summative-math',
         location: './',
         uploadedDate: new Date('June 4, 2020')
