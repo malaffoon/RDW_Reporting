@@ -4,10 +4,10 @@ import { WritingTraitType } from './writing-trait-type.model';
  * This class represents one of the writing traits (Evidence, Organization, Conventions)
  */
 export class WritingTrait {
-  type: WritingTraitType;
+  type: string;
   maxPoints: number;
 
-  constructor(type: WritingTraitType, maxPoints: number) {
+  constructor(type: string, maxPoints: number) {
     this.type = type;
     this.maxPoints = maxPoints;
   }

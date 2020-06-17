@@ -12,7 +12,7 @@ import { WritingTraitScoreSummary } from '../../../model/writing-trait-score-sum
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
 import { WritingTrait } from '../../../model/writing-trait.model';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { flatMap, map, share, shareReplay, takeUntil } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
 import { filter } from 'rxjs/internal/operators/filter';
@@ -177,7 +177,6 @@ export class WritingTraitScoresComponent
   private destroyed$: Subject<void> = new Subject();
   private _hasDataToExport: boolean;
   isDevMode = isDevMode();
-  purposes = ['ARGU', 'EXPL', 'INFO', 'NARR', 'OPIN'];
 
   constructor(private examCalculator: ExamStatisticsCalculator) {}
 
@@ -191,7 +190,7 @@ export class WritingTraitScoresComponent
     this.writingTraits$ = this.assessment$.pipe(
       map(({ type }) =>
         type === 'sum'
-          ? ['evidence', 'organization', 'conventions']
+          ? []
           : ['evidence', 'organization', 'conventions', 'total']
       )
     );
@@ -248,15 +247,35 @@ export class WritingTraitScoresComponent
 
     // this.itemViews$.subscribe(val => console.log(val));
 
-    this.traitScoreSummaries$ = this.itemViews$.pipe(
-      map(items =>
-        this.examCalculator.aggregateWritingTraitScores(
+    this.traitScoreSummaries$ = combineLatest(
+      this.assessment$,
+      this.itemViews$
+    ).pipe(
+      takeUntil(this.destroyed$),
+      map(([assessment, items]) => {
+        if (assessment.type === 'sum') {
+          // TODO: replace hardcoded traits and purposes with calls to services
+          const traits = [
+            new WritingTrait('EVI', 4),
+            new WritingTrait('ORG', 4),
+            new WritingTrait('CON', 2)
+          ];
+          const purposes = ['ARGU', 'EXPL', 'INFO', 'NARR', 'OPIN'];
+
+          return this.examCalculator.aggregateExamWritingTraitScores(
+            items.map(({ item }) => item),
+            traits,
+            purposes
+          );
+        }
+        return this.examCalculator.aggregateWritingTraitScores(
           items.map(({ item }) => item)
-        )
-      ),
+        );
+      }),
       shareReplay(1)
     );
 
+    // console.log('Trait score summaries:');
     // this.traitScoreSummaries$.subscribe(val => console.log(val));
 
     this.summaryColumnsBySummary$ = combineLatest(
@@ -267,7 +286,9 @@ export class WritingTraitScoresComponent
       map(
         ([assessment, summaries]) => <any>new Map(
             summaries.map(summary => {
-              const key = summary.keys().next().value;
+              if (summary.size === 0) {
+                return [];
+              }
               return <any>[
                 summary,
                 [
@@ -300,7 +321,7 @@ export class WritingTraitScoresComponent
         return {
           assessment,
           assessmentItems,
-          summaries: summaries.map(s => s.values()[0]),
+          summaries: summaries,
           showAsPercent: this.showValuesAsPercent,
           type: RequestType.WritingTraitScores
         };
@@ -327,5 +348,9 @@ export class WritingTraitScoresComponent
     this.exportRequest$.pipe(first()).subscribe(request => {
       this.assessmentExporter.exportWritingTraitScoresToCsv(request);
     });
+  }
+
+  purposes(traitScoreSummary: Map<string, any>) {
+    return Array.from(traitScoreSummary.keys());
   }
 }

@@ -960,7 +960,8 @@
       "evidence": "Evidence / Elaboration",
       "organization": "Organization / Purpose",
       "total": "Transformed Points",
-      "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide."
+      "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide.",
+      "no-data": "There is no writing trait data to report."
     }
   },
   "common-ngx": {
@@ -1410,23 +1411,6 @@
       "StudentSSID": "Student SSID"
     },
     "submitted-message": "Creating report. Visit <a href=\"/reports\">My Reports</a> for status."
-  },
-  "subject": {
-    "ELA": {
-      "category": {
-        "ORG": "Organization / Purpose",
-        "EVI": "Evidence / Elaboration",
-        "CON": "Conventions"
-      },
-      "purpose": {
-        "ARGU": "Argument",
-        "EXPL": "Explanatory",
-        "INFO": "Informative",
-        "NARR": "Narrative",
-        "OPIN": "Opinion"
-      },
-      "no-data": "There is no data for this ELA Purpose"
-    }
   },
   "tenant": {
     "initialization-error": {

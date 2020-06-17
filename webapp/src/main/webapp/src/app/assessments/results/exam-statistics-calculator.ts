@@ -8,6 +8,7 @@ import { Exam } from '../model/exam';
 import { DynamicItemField } from '../model/item-point-field.model';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
+import { WritingTrait } from '../model/writing-trait.model';
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -109,20 +110,94 @@ export class ExamStatisticsCalculator {
     return pointFields;
   }
 
-  aggregateWritingTraitScores(
-    assessmentItems: AssessmentItem[]
-  ): Map<string, WritingTraitScoreSummary>[] {
+  aggregateExamWritingTraitScores(
+    assessmentItems: AssessmentItem[],
+    writingTraits: WritingTrait[],
+    purposes: string[]
+  ) {
     const summaryMaps = [];
-
-    function getRandomInt(max) {
-      return Math.floor(Math.random() * Math.floor(max));
-    }
+    const randomInt = max => Math.floor(Math.random() * Math.floor(max));
 
     assessmentItems.forEach(assessmentItem => {
-      // const purpose = assessmentItem.performanceTaskWritingType;
+      const summaryMap = new Map();
+      summaryMaps.push(summaryMap);
 
-      const summary = new WritingTraitScoreSummary();
-      const fakeSummary = new WritingTraitScoreSummary();
+      const totalTabs = randomInt(5);
+      if (totalTabs === 0) {
+        return;
+      }
+
+      const summaries = [];
+      for (let i = 0; i < totalTabs; i++) {
+        summaries.push(new WritingTraitScoreSummary(writingTraits));
+      }
+
+      const itemsWithTraitScores = assessmentItem.scores.filter(
+        x => x.points >= 0 && x.writingTraitScores != null
+      );
+      const totalAnswers = itemsWithTraitScores.length;
+
+      itemsWithTraitScores.forEach((score, index) => {
+        // TODO: this will eventually work with data keyed to subject-specific categories and purposes
+        // This is the retrieved data for a single purpose
+        summaries[0].aggregators.get('EVI').numbers[
+          score.writingTraitScores.evidence
+        ]++;
+        summaries[0].aggregators.get('ORG').numbers[
+          score.writingTraitScores.organization
+        ]++;
+        summaries[0].aggregators.get('CON').numbers[
+          score.writingTraitScores.conventions
+        ]++;
+
+        // Fake up more data.
+        for (let i = 1; i < totalTabs; i++) {
+          summaries[i].aggregators.get('EVI').numbers[
+            score.writingTraitScores.evidence
+          ] += randomInt(3);
+          summaries[i].aggregators.get('ORG').numbers[
+            score.writingTraitScores.organization
+          ] += randomInt(3);
+          summaries[i].aggregators.get('CON').numbers[
+            score.writingTraitScores.conventions
+          ] += randomInt(3);
+        }
+      });
+
+      // calculate the averages and the percents based on the raw numbers
+      summaries.forEach(summary =>
+        summary.rows.forEach((aggregate, points) => {
+          let total = 0;
+          let count = 0;
+
+          aggregate.numbers.forEach((num, index) => {
+            total += num * index;
+            count += num;
+
+            aggregate.percents[index] =
+              totalAnswers === 0 ? 0 : (num / totalAnswers) * 100;
+          });
+
+          aggregate.average = count === 0 ? 0 : total / count;
+        })
+      );
+
+      for (let i = 0; i < totalTabs; i++) {
+        summaryMap.set(purposes[i], summaries[i]);
+      }
+    });
+
+    return summaryMaps;
+  }
+
+  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]) {
+    // Used for IAB and ICA assessments.
+    const summaryMaps = [];
+
+    assessmentItems.forEach(assessmentItem => {
+      const purpose = assessmentItem.performanceTaskWritingType;
+
+      const summary = WritingTraitScoreSummary.InterimScoreSummary();
 
       const itemsWithTraitScores = assessmentItem.scores.filter(
         x => x.points >= 0 && x.writingTraitScores != null
@@ -134,17 +209,6 @@ export class ExamStatisticsCalculator {
         summary.organization.numbers[score.writingTraitScores.organization]++;
         summary.conventions.numbers[score.writingTraitScores.conventions]++;
         summary.total.numbers[score.points]++;
-
-        fakeSummary.evidence.numbers[
-          score.writingTraitScores.evidence
-        ] += getRandomInt(3);
-        fakeSummary.organization.numbers[
-          score.writingTraitScores.organization
-        ] += getRandomInt(3);
-        fakeSummary.conventions.numbers[
-          score.writingTraitScores.conventions
-        ] += getRandomInt(3);
-        fakeSummary.total.numbers[score.points] += getRandomInt(3);
       });
 
       // calculate the averages and the percents based on the raw numbers
@@ -163,24 +227,7 @@ export class ExamStatisticsCalculator {
         aggregate.average = count === 0 ? 0 : total / count;
       });
 
-      fakeSummary.rows.forEach((aggregate, points) => {
-        let total = 0;
-        let count = 0;
-
-        aggregate.numbers.forEach((num, index) => {
-          total += num * index;
-          count += num;
-
-          aggregate.percents[index] =
-            totalAnswers === 0
-              ? 0
-              : (num / totalAnswers) * (Math.random() + 0.5) * 100;
-        });
-
-        aggregate.average = count === 0 ? 0 : total / count;
-      });
-      const summaryMap = new Map([['NARR', summary], ['ARGU', fakeSummary]]);
-
+      const summaryMap = new Map([[purpose, summary]]);
       summaryMaps.push(summaryMap);
     });
 

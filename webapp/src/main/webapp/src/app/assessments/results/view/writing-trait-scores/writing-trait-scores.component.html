@@ -22,12 +22,12 @@
 <ng-template
   #traitScoreSummaryTable
   let-type="type"
+  let-subject="subject"
   let-hasData="hasData"
   let-rows="rows"
   let-columns="columns"
 >
   <p-table
-    *ngIf="hasData"
     [columns]="columns"
     [value]="rows"
     [autoLayout]="true"
@@ -70,7 +70,11 @@
       <tr *ngIf="!(type === 'sum' && item.trait.type == totalType)">
         <td *ngFor="let column of columns" [ngSwitch]="column.id">
           <div *ngSwitchCase="'category'">
-            <span *ngIf="item.trait.type != totalType">{{
+            <span *ngIf="type === 'sum'">{{
+              'subject.' + subject + '.trait.category.' + item.trait.type
+                | translate
+            }}</span>
+            <span *ngIf="item.trait.type != totalType && type !== 'sum'">{{
               'common.writing-trait.' + item.trait.type | translate
             }}</span>
             <span
@@ -109,17 +113,6 @@
       </tr>
     </ng-template>
   </p-table>
-  <div
-    *ngIf="!hasData"
-    style="height: 136px;
-           width: 640px;
-           text-align: center;
-           padding: 60px;
-           font-size: large;
-           font-weight: bolder;"
-  >
-    {{ 'subject.ELA.no-data' | translate }}
-  </div>
 </ng-template>
 
 <ng-template
@@ -275,31 +268,38 @@
   </p-table>
 
   <div *ngFor="let traitScoreSummary of traitScoreSummaries">
+    <!-- Interim type assessments have single table for writing traits-->
     <ng-container *ngIf="assessment.type !== 'sum'">
       <h4 *ngIf="hasWritingTraitItems" class="pt-md">
         {{ 'writing-trait-scores.aggregate-header' | translate }}
       </h4>
       <ng-template
+        *ngIf="traitScoreSummary.size > 0"
         [ngTemplateOutlet]="traitScoreSummaryTable"
         [ngTemplateOutletContext]="{
           type: assessment.type,
-          hasData: !!traitScoreSummary.size,
           columns: summaryColumnsBySummary.get(traitScoreSummary),
           rows: traitScoreSummary.values().next().value.rows
         }"
       >
       </ng-template>
     </ng-container>
-    <p-tabView *ngIf="assessment.type === 'sum'">
+
+    <!-- Summative type assessments have a table for each writing purpose on a tabbed panel-->
+    <p-tabView *ngIf="assessment.type === 'sum' && traitScoreSummary.size > 0">
       <p-tabPanel
-        *ngFor="let purpose of purposes; let i = index"
+        *ngFor="let purpose of purposes(traitScoreSummary); let i = index"
         [selected]="i === 0"
-        header="{{ 'subject.ELA.purpose.' + purpose | translate }}"
+        header="{{
+          'subject.' + assessment.subject + '.trait.purpose.' + purpose
+            | translate
+        }}"
       >
         <ng-template
           [ngTemplateOutlet]="traitScoreSummaryTable"
           [ngTemplateOutletContext]="{
             type: assessment.type,
+            subject: assessment.subject,
             hasData: !!traitScoreSummary.get(purpose),
             columns: summaryColumnsBySummary.get(traitScoreSummary),
             rows: traitScoreSummary.get(purpose)?.rows
@@ -308,5 +308,8 @@
         </ng-template>
       </p-tabPanel>
     </p-tabView>
+    <h2 *ngIf="traitScoreSummary.size === 0">
+      {{ 'common.writing-trait.no-data' | translate }}
+    </h2>
   </div>
 </ng-template>

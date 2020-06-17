@@ -532,7 +532,7 @@ export class CsvBuilder {
     for (const ethnicity of ethnicities) {
       this.withColumn(ethnicity, item => {
         if (
-          getExam(item).student.ethnicityCodes.some(code => code == ethnicity)
+          getExam(item).student.ethnicityCodes.some(code => code === ethnicity)
         ) {
           return this.getPolarTranslation(1);
         }
@@ -652,13 +652,22 @@ export class CsvBuilder {
   }
 
   withPerformanceTaskWritingType(
-    getAssessmentItem: (item: any) => AssessmentItem
+    getPurpose: (item: any) => string,
+    subject: string,
+    isSummative: boolean
   ) {
     return this.withColumn(
       this.translateService.instant(
         'common.results.assessment-item-columns.purpose'
       ),
-      item => getAssessmentItem(item).performanceTaskWritingType
+      item => {
+        const purpose = getPurpose(item);
+        return isSummative
+          ? this.translateService.instant(
+              'subject.' + subject + '.trait.purpose.' + purpose
+            )
+          : purpose;
+      }
     );
   }
 
