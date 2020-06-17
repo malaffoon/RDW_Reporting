@@ -22,10 +22,7 @@ class Column {
   templateUrl: './isr-template.component.html',
   styles: [
     '.configuredTemplate{ color: green }' +
-      '.notConfiguredTemplate{ color: red }' +
-      '.uploadTemplate{ color: green }' +
-      '.downloadTemplate{ color: blue }' +
-      '.deleteTemplate{ color: red }'
+      '.notConfiguredTemplate{ color: red }'
   ]
 })
 export class IsrTemplateComponent implements OnInit {
@@ -60,38 +57,10 @@ export class IsrTemplateComponent implements OnInit {
       ? 'notConfiguredTemplate'
       : ' configuredTemplate';
   }
-
-  downloadAvailable(rowData: IsrTemplate) {
-    if (rowData.templateName == null) {
-      console.log(
-        'rowData.templateName=' +
-          rowData.templateName +
-          'disableDownload=' +
-          this.showDownload
-      );
-      this.showDownload = false;
-      return '{disabled: true}';
-    }
-    console.log('rowData.templateName=' + rowData.templateName);
-
-    this.showDownload = true;
-    return 'downloadEnabled';
+  showIcons(rowData) {
+    return rowData.templateName != null;
   }
-
-  getUpload() {
-    return 'uploadTemplate';
-  }
-
   openFileDialog() {
     this.fileDialog.nativeElement.click();
-  }
-
-  displayDelete(rowData: IsrTemplate) {
-    if (rowData.templateName == null) {
-      this.showDelete = false;
-      return '{disabled: true}';
-    }
-    this.showDelete = false;
-    return 'deleteEnabled';
   }
 }

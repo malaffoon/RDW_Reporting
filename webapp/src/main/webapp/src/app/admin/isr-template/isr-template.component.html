@@ -67,7 +67,6 @@
                 <a
                   href="javascript:void(0)"
                   (click)="openFileDialog()"
-                  [ngClass]="getUpload"
                   title="{{ 'isr-template.upload-template-title' | translate }}"
                   ><i
                     class="fa fa-cloud-upload"
@@ -78,24 +77,24 @@
                     }}"
                   ></i>
                 </a>
-                <span *ngIf="showDownload">
-                  <a
-                    href="/assets/template/test-template.csv"
-                    download="/assets/template/test-template.csv"
-                    title="{{
-                      'isr-template.download-template-title' | translate
-                    }}"
-                    aria-hidden="true"
-                    ><i
-                      class="fa fa-cloud-download"
-                      style="color:blue;"
-                      title="{{
-                        'isr-template.download-template-title' | translate
-                      }}"
-                    ></i>
-                  </a>
-                </span>
-                <span *ngIf="showDelete">
+                <ng-container>
+                  <span *ngIf="showIcons(rowData)">
+                    <a
+                      href="/assets/template/test-template.csv"
+                      download="/assets/template/test-template.csv"
+                      aria-hidden="true"
+                      ><i
+                        class="fa fa-cloud-download"
+                        style="color:blue;"
+                        title="{{
+                          'isr-template.download-template-title' | translate
+                        }}"
+                      ></i>
+                    </a>
+                  </span>
+                </ng-container>
+
+                <span *ngIf="showIcons(rowData)">
                   <a aria-hidden="true"
                     ><i
                       class="fa fa-ban"
