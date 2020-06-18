@@ -273,16 +273,31 @@ export class AltScoreReportFormComponent extends MultiOrganizationQueryFormCompo
   }
 
   private initializeSelectionBySubject(): void {
-    // Map selected claims by subject
+    // Selections must match exactly with the values used as options.
+    const findMatching = input => {
+      return this.altScoresBySubject[input.subject]
+        .map(opt => opt.value)
+        .find(
+          altScore =>
+            altScore.code === input.code &&
+            altScore.assessmentType === input.assessmentType
+        );
+    };
+
     const selections: Map<
       string,
       AltScore[]
     > = this.settings.altScoreReport.altScoreCodesBySubject
-      .filter(claim => claim.assessmentType === this.settings.assessmentType)
+      .filter(
+        altScore => altScore.assessmentType === this.settings.assessmentType
+      )
       .reduce((subjectMap, altScore) => {
         const subjectAltScores = subjectMap.get(altScore.subject) || [];
-        subjectAltScores.push(altScore);
-        subjectMap.set(altScore.subject, subjectAltScores);
+        const altScoreFromOption = findMatching(altScore);
+        if (altScoreFromOption) {
+          subjectAltScores.push(altScoreFromOption);
+          subjectMap.set(altScore.subject, subjectAltScores);
+        }
         return subjectMap;
       }, new Map());
 
