@@ -54,7 +54,6 @@ export class IsrTemplateComponent implements OnInit {
 
   ngOnInit(): void {
     this.isrTemplates = this.isrTemplateService.getIsrTemplates();
-    //this.showSandboxAlert = this.isrTemplateService.isSandbox();
   }
 
   getStatus(rowData: IsrTemplate) {
@@ -69,7 +68,7 @@ export class IsrTemplateComponent implements OnInit {
 
   openFileDialog() {
     if (this.isrTemplateService.isSandbox()) {
-      //open Sandbox Modal
+      // open Sandbox Modal
     }
     this.fileDialog.nativeElement.click();
   }
