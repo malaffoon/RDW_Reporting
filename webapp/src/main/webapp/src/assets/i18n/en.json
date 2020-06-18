@@ -1222,6 +1222,10 @@
         "button": "Tenants",
         "description": "Manage Reporting System Tenants"
       },
+      "test-results-availability": {
+        "button": "Test Results Availability",
+        "description": "Manage summative test results availability."
+      },
       "titles": {
         "administrator-tools": "Administrator Tools"
       }
@@ -1998,5 +2002,48 @@
     "head": "Deactivate pipeline",
     "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
     "accept": "Deactivate"
+  },
+  "test-results-availability": {
+    "all-text": "All",
+    "change-status": "Change Status",
+    "columns": {
+      "school-year": "School Year",
+      "district": "District",
+      "subject": "Subject",
+      "report-type": "Report Type",
+      "result-count": "Result Count",
+      "status": "Status"
+    },
+    "district-admin": "District Admin",
+    "empty-message": "There are no test results that match your search.  Please try again.",
+    "filter-district": "District",
+    "filter-title": "Filter Test Results",
+    "filter-report-type": "Report Type",
+    "filter-school-year": "School Year",
+    "filter-status": "Status",
+    "filter-subject": "Subject",
+    "history-link": "Audit History",
+    "is-sandbox": "Test Results Availability Management is not available for Sandboxes. ",
+    "no-test-results": "Contact your administrator for access to test results.",
+    "report-type-tooltip": "Report Type Tooltip information here",
+    "selected-title": "Selected Test Results",
+    "state-header": "State",
+    "status-tooltip": "Status Tooltip information here",
+    "title": "Manage Test Results Availability"
+  },
+  "test-results-availability-change-status": {
+    "breadcrumb": "Change Test Results Availability Status",
+    "change-status-link": "Change Status",
+    "dismiss": "Dismiss",
+    "district": "District:",
+    "error-changing-results": "Failed to change the selected test results availability",
+    "header": "Change Test Results Availability Status",
+    "review-text": "You are about to change the availability status for these test results:",
+    "report-type": "Report Type:",
+    "school-year": "School Year:",
+    "set-status-text": "Set status to:",
+    "subjects": "Subjects:",
+    "successful-change": "Successfully submitted request to change the selected test results availability. It can take up to 24 hours to see these changes. ",
+    "state": "State:"
   }
 }
