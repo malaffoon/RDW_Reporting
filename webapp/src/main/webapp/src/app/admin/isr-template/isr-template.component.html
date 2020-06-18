@@ -88,15 +88,16 @@
               </td>
               <td>
                 <span>
-                  <!--TODO Triggers the upload file-->
                   <input
                     type="file"
-                    accept="image/*"
-                    #file
+                    #fileInput
                     style="display:none;"
+                    ng2FileSelect
+                    [uploader]="fileUploader"
+                    (onFileSelected)="onFileSelected($event)"
                   />
                   <a
-                    (click)="file.click()"
+                    (click)="fileInput.click()"
                     href="javascript:void(0)"
                     title="{{
                       'isr-template.upload-template-title' | translate

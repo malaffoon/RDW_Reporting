@@ -10,9 +10,9 @@ import { isrTemplateRoutes } from './isr-template.routes';
 import { ModalModule, TooltipModule } from 'ngx-bootstrap';
 import { ButtonModule } from 'primeng/button';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
-import { FileUploadModule } from 'primeng/fileupload';
 import { IsrTemplateService } from './service/isr-template.service';
 import { IsrTemplateDeleteModal } from './isr-template-delete.modal';
+import { FileUploadModule } from 'ng2-file-upload';
 
 @NgModule({
   declarations: [IsrTemplateDeleteModal, IsrTemplateComponent],

@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../shared/notification/notification.service';
+import { FileUploader } from 'ng2-file-upload';
 import { IsrTemplate } from './model/isr-template';
 import { IsrTemplateService } from './service/isr-template.service';
 import { IsrTemplateDeleteModal } from './isr-template-delete.modal';
@@ -18,14 +19,11 @@ class Column {
     this.sortable = sortable;
   }
 }
+const URL = 'http://localhost:4200/fileupload/'; // todo uppdate with real info
 
 @Component({
   selector: 'isr-template',
-  templateUrl: './isr-template.component.html',
-  styles: [
-    '.configuredTemplate{ color: green }' +
-      '.notConfiguredTemplate{ color: red }'
-  ]
+  templateUrl: './isr-template.component.html'
 })
 export class IsrTemplateComponent implements OnInit {
   columns: Column[] = [
@@ -35,14 +33,30 @@ export class IsrTemplateComponent implements OnInit {
   ];
 
   isrTemplates: IsrTemplate[];
+
   // below determine which if any alert need to be displayed
   unableToDelete: boolean;
   successfulDelete: boolean;
   unableToUpload: boolean;
   showSandboxAlert: boolean; // if sandbox and user tries to upload a template
 
-  @ViewChild('fileDialog')
-  fileDialog: ElementRef;
+  fileUploader: FileUploader = new FileUploader({
+    url: URL,
+    disableMultipart: false,
+    autoUpload: true,
+    method: 'post',
+    itemAlias: 'temp[ate',
+    allowedFileType: ['image', 'pdf', 'html']
+  });
+
+  public onFileSelected(event: EventEmitter<File[]>) {
+    if (this.isrTemplateService.sandbox) {
+      this.showSandboxAlert = true;
+    } else {
+      const file: File = event[0];
+      console.log(file);
+    }
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -66,22 +80,6 @@ export class IsrTemplateComponent implements OnInit {
 
   showIcons(rowData) {
     return rowData.templateName != null;
-  }
-
-  openFileDialog() {
-    if (this.isrTemplateService.sandbox) {
-      // open Sandbox alert
-      this.showSandboxAlert = true;
-    } else {
-      this.fileDialog.nativeElement.click();
-    }
-  }
-
-  onUpload($event: any) {
-    if (this.isrTemplateService.sandbox) {
-      this.showSandboxAlert = true;
-    }
-    console.log($event);
   }
 
   openDeleteTemplateModal(rowData: IsrTemplate) {
