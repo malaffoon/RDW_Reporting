@@ -285,77 +285,60 @@ body {
     }
   }
 }
+/**Writing Trait Scores UI Updates **/
 
-/**Test Results Table Color UI Updates **/
-.loadingColor {
-  background-color: #d9edf7 !important;
+body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-active {
+  color: @gray;
+  background-color: @white;
+  border-color: @gray-light;
+  border-bottom: none;
+  position: relative;
   &:hover {
-    color: @black;
-    background-color: #d9edf7 !important;
-    opacity: 0.8 !important;
+    background-color: @white;
   }
 }
-.reviewingColor {
-  background-color: #fcf8e3 !important;
-  &:hover {
-    color: @black;
-    background-color: #fcf8e3 !important;
-    opacity: 0.8 !important;
-  }
+body
+  .ui-tabview.ui-tabview-top
+  .ui-tabview-nav
+  li:not(.ui-state-active):not(.ui-state-disabled):hover {
+  border-color: @gray-light;
+  border-bottom: none;
+  background-color: @gray-lighter;
 }
-.releasedColor {
-  background-color: #dff0d8 !important;
-  &:hover {
-    color: @black;
-    background-color: #dff0d8 !important;
-    opacity: 0.8 !important;
-  }
+body .ui-tabview.ui-tabview-top .ui-tabview-nav {
+  margin-left: 7.5px;
+  border-bottom: none;
 }
-.well-results {
+body .ui-tabview .ui-tabview-panel {
   padding: 20px;
+  border: 1px solid @gray-light;
+  border-radius: 5px;
 }
-.set-status {
-  padding-left: 0px;
+body .ui-tabview.ui-tabview-top .ui-tabview-nav li {
+  border-bottom: none;
 }
-hr {
-  margin: 15px;
-  border-top: 1px solid #d5d5d5;
+:focus {
+  outline: none !important;
+  outline-color: transparent;
+  outline-style: auto;
+  outline-width: 1px;
 }
-.table-footer {
-  padding: 20px 0 5px;
+body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default a {
+  padding: 10px 15px;
+  color: @gray-darkest;
+  margin-top: -1px;
 }
-.ui-table {
-  .ui-paginator-bottom {
-    border: none;
-  }
+body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default {
+  margin-right: 8px;
 }
-.ui-paginator-pages {
-  font-size: 14px;
+.table tr th.level-up,
+.table tr td.level-up {
+  background-image: none;
 }
-.ui-paginator-bottom.ui-paginator.ui-widget.ui-widget-header.ui-unselectable-text.ui-helper-clearfix {
-  margin: 0.5em;
+.table tr th.level-down:before {
+  display: none;
 }
-body {
-  .ui-paginator {
-    .ui-paginator-first,
-    .ui-paginator-prev,
-    .ui-paginator-next,
-    .ui-paginator-last {
-      color: @gray-darker;
-      transition: background-color 0.3s;
-      min-height: 1em;
-      min-width: 1em;
-      padding: 1em;
-      vertical-align: middle;
-    }
-    .ui-paginator-pages {
-      .ui-paginator-page {
-        padding: 10px;
-        min-width: 0;
-        color: @gray-darkest;
-        transition: background-color 0.3s;
-        border-radius: 0;
-      }
-    }
-  }
+.writing-trait-scores > .ui-table-wrapper {
+  display: inline-block;
+  min-width: 100% !important;
 }

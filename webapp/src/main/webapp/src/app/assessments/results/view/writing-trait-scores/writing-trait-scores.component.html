@@ -267,7 +267,7 @@
     </ng-template>
   </p-table>
 
-  <div *ngFor="let traitScoreSummary of traitScoreSummaries">
+  <div *ngFor="let traitScoreSummary of traitScoreSummaries" class="mt-sm">
     <!-- Interim type assessments have single table for writing traits-->
     <ng-container *ngIf="assessment.type !== 'sum'">
       <h4 *ngIf="hasWritingTraitItems" class="pt-md">
