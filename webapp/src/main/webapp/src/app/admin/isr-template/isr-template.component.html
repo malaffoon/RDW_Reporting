@@ -17,7 +17,7 @@
 
 <ng-container>
   <ng-container>
-    <div *ngIf="unableToDelete" class="alert alert-danger">
+    <div *ngIf="unableToUpload" class="alert alert-danger">
       <button
         type="button"
         class="close"
@@ -28,6 +28,18 @@
       </button>
       {{ 'test-results-change-status.error-changing-results' | translate }}
     </div>
+    <div *ngIf="showSandboxAlert" class="alert alert-warning">
+      <button
+        type="button"
+        class="close"
+        title="{{ 'common.action.close' | translate }}"
+        (click)="closeSandboxAlert()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ 'isr-template.is-sandbox-upload' | translate }}
+    </div>
+
     <div class="well well-results">
       <div class="table-list-container">
         <p-table
@@ -118,7 +130,7 @@
                       }}"
                       ><i
                         class="fa fa-ban"
-                        style="color:darkred;"
+                        style="color:red;"
                         title="{{
                           'isr-template.remove-template-title' | translate
                         }}"

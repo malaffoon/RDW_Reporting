@@ -7,10 +7,10 @@ import { filter } from 'rxjs/operators';
 import { NavigationStart, Router } from '@angular/router';
 
 @Component({
-  selector: 'delete-isr-template-modal',
-  templateUrl: './delete-isr-template.modal.html'
+  selector: 'isr-template-delete-modal',
+  templateUrl: './isr-template-delete.modal.html'
 })
-export class DeleteIsrTemplateModal implements OnInit {
+export class IsrTemplateDeleteModal implements OnInit {
   private _subscription: Subscription;
   public deleteTemplateEvent: EventEmitter<any> = new EventEmitter();
   isrTemplate: IsrTemplate = new IsrTemplate();
@@ -19,6 +19,7 @@ export class DeleteIsrTemplateModal implements OnInit {
   deleteSuccessful: boolean;
   unableToDelete: boolean;
   showSandboxAlert: boolean; // if sandbox and user tries to change status
+
   constructor(
     private modal: BsModalRef,
     private isrTemplateService: IsrTemplateService,
@@ -42,8 +43,13 @@ export class DeleteIsrTemplateModal implements OnInit {
   }
 
   delete() {
-    console.log(this.isrTemplate);
-    if (this.isrTemplateService.isSandbox()) {
+    console.log(
+      this.isrTemplate.templateName +
+        ' Sandbox?' +
+        this.isrTemplateService.sandbox
+    );
+    if (this.isrTemplateService.sandbox) {
+      console.log('IS SANDBOX');
       // is a sandbox, do not allow and actual test results status changes
       // keep modal up to display message to user
       this.showSandboxAlert = true;
@@ -51,9 +57,10 @@ export class DeleteIsrTemplateModal implements OnInit {
       this.isrTemplateService.delete(this.isrTemplate);
       this.deleteSuccessful = true;
       // set to true to test alert
-      this.unableToDelete = true;
+      this.unableToDelete = false;
+      this.triggerDeleteTemplate(this.deleteSuccessful, this.unableToDelete);
+      this.modal.hide();
     }
-    this.triggerDeleteTemplate(this.deleteSuccessful, this.unableToDelete);
   }
 
   private triggerDeleteTemplate(

@@ -2017,6 +2017,7 @@
     "delete-header": "Are you sure you wan to delete this template?",
     "download-template-title": "Download the current template",
     "empty-message": "There are no templates results.",
+    "error-deleting-template": "Failed to delete the template.",
     "is-sandbox-delete": "Deleting ISR Templates is not available for Sandboxes.",
     "is-sandbox-upload": "Uploading or changing ISR Templates is not available for Sandboxes.",
     "not-configured": " Not Configured",

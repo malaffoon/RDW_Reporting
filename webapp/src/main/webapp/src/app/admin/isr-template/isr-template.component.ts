@@ -1,11 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../shared/notification/notification.service';
 import { IsrTemplate } from './model/isr-template';
 import { IsrTemplateService } from './service/isr-template.service';
-import { DeleteIsrTemplateModal } from './delete-isr-template.modal';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { IsrTemplateDeleteModal } from './isr-template-delete.modal';
 
 class Column {
   id: string; // en.json name
@@ -38,7 +38,8 @@ export class IsrTemplateComponent implements OnInit {
   // below determine which if any alert need to be displayed
   unableToDelete: boolean;
   successfulDelete: boolean;
-  showSandboxAlert: boolean; // if sandbox and user tries to change status
+  unableToUpload: boolean;
+  showSandboxAlert: boolean; // if sandbox and user tries to upload a template
 
   @ViewChild('fileDialog')
   fileDialog: ElementRef;
@@ -54,12 +55,13 @@ export class IsrTemplateComponent implements OnInit {
 
   ngOnInit(): void {
     this.isrTemplates = this.isrTemplateService.getIsrTemplates();
+    this.unableToUpload = false;
   }
 
   getStatus(rowData: IsrTemplate) {
     return rowData.uploadedDate == null
       ? 'notConfiguredTemplate'
-      : ' configuredTemplate';
+      : 'configuredTemplate';
   }
 
   showIcons(rowData) {
@@ -67,34 +69,44 @@ export class IsrTemplateComponent implements OnInit {
   }
 
   openFileDialog() {
-    if (this.isrTemplateService.isSandbox()) {
-      // open Sandbox Modal
+    if (this.isrTemplateService.sandbox) {
+      // open Sandbox alert
+      this.showSandboxAlert = true;
+    } else {
+      this.fileDialog.nativeElement.click();
     }
-    this.fileDialog.nativeElement.click();
   }
 
   onUpload($event: any) {
-    if (this.isrTemplateService.isSandbox()) {
+    if (this.isrTemplateService.sandbox) {
       this.showSandboxAlert = true;
     }
     console.log($event);
   }
 
   openDeleteTemplateModal(rowData: IsrTemplate) {
-    const modalReference: BsModalRef = this.modalService.show(
-      DeleteIsrTemplateModal,
+    let modalReference: BsModalRef = this.modalService.show(
+      IsrTemplateDeleteModal,
       {}
     );
-    const modal: DeleteIsrTemplateModal = modalReference.content;
-
+    let modal: IsrTemplateDeleteModal = modalReference.content;
     modal.isrTemplate = rowData;
+
     modal.deleteTemplateEvent.subscribe(res => {
       this.successfulDelete = res.data;
       this.unableToDelete = res.error;
     });
+
+    if (this.successfulDelete) {
+      // todo refresh template list
+    }
   }
 
   closeErrorAlert() {
     this.unableToDelete = false;
+  }
+
+  closeSandboxAlert() {
+    this.showSandboxAlert = false;
   }
 }

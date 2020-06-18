@@ -1,17 +1,13 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 import { IsrTemplate } from '../model/isr-template';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class IsrTemplateService implements OnInit {
-  private sandbox: boolean;
+export class IsrTemplateService {
+  sandbox = false; // todo set from session info
 
   constructor(private datePipe: TranslateDatePipe) {}
-
-  ngOnInit(): void {
-    this.sandbox = false; // set from session info
-  }
 
   formatAsLocalDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd hh:mm');
@@ -28,10 +24,6 @@ export class IsrTemplateService implements OnInit {
   delete(isrTemplate: IsrTemplate): Observable<any> {
     console.log('Deleted template: ' + isrTemplate.templateName);
     return new Observable<any>();
-  }
-
-  isSandbox(): boolean {
-    return this.sandbox;
   }
 
   // todo update with real data
