@@ -2004,6 +2004,7 @@
     "accept": "Deactivate"
   },
   "isr-template": {
+    "action-header": "Actions",
     "columns": {
       "subject": "Subject",
       "assessment-type": "Assessment Type",
@@ -2013,12 +2014,16 @@
       "location": "Location"
     },
     "configured": " Configured on ",
+    "delete-header": "Are you sure you wan to delete this template?",
     "download-template-title": "Download the current template",
     "empty-message": "There are no templates results.",
+    "is-sandbox-delete": "Deleting ISR Templates is not available for Sandboxes.",
+    "is-sandbox-upload": "Uploading or changing ISR Templates is not available for Sandboxes.",
     "not-configured": " Not Configured",
     "reference-template": "Reference Template",
     "reference-tooltip": "Down the Reference Template to create new report templates.",
     "remove-template-title": "Remove the current Template",
+    "subject-tooltip": "The subject's tooltip",
     "title": "Individual Student Report (ISR) Templates",
     "upload-template-title": "Upload the a new template"
   }

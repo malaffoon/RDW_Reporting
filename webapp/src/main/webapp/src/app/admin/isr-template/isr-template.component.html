@@ -8,7 +8,7 @@
         download="/assets/template/reference-template.pdf"
         title="{{ 'isr-template.reference-template' | translate }}"
         tooltip="{{ 'isr-template.reference-tooltip' | translate }}"
-        ><i class="fa fa-cloud-download" aria-hidden="true"></i>
+        ><i class="fa fa-cloud-download" aria-hidden="false"></i>
         {{ 'isr-template.reference-template' | translate }}</a
       >
     </li>
@@ -17,6 +17,17 @@
 
 <ng-container>
   <ng-container>
+    <div *ngIf="unableToDelete" class="alert alert-danger">
+      <button
+        type="button"
+        class="close"
+        title="{{ 'common.action.close' | translate }}"
+        (click)="closeErrorAlert()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ 'test-results-change-status.error-changing-results' | translate }}
+    </div>
     <div class="well well-results">
       <div class="table-list-container">
         <p-table
@@ -43,7 +54,7 @@
                 ></p-sortIcon>
               </th>
               <th>
-                <!-- Empty Header -->
+                {{ 'isr-template.action-header' | translate }}
               </th>
             </tr>
           </ng-template>
@@ -64,46 +75,56 @@
                 </span>
               </td>
               <td>
-                <a
-                  href="javascript:void(0)"
-                  (click)="openFileDialog()"
-                  title="{{ 'isr-template.upload-template-title' | translate }}"
-                  ><i
-                    class="fa fa-cloud-upload"
-                    style="color:green;"
-                    aria-hidden="true"
+                <span *ngIf="showActionIcons(rowData)">
+                  <a
+                    href="javascript:void(0)"
+                    (click)="openFileDialog()"
                     title="{{
                       'isr-template.upload-template-title' | translate
                     }}"
-                  ></i>
-                </a>
-                <ng-container>
+                    ><i
+                      class="fa fa-cloud-upload"
+                      style="color:green;"
+                      aria-hidden="true"
+                      title="{{
+                        'isr-template.upload-template-title' | translate
+                      }}"
+                    ></i>
+                  </a>
+
+                  <ng-container>
+                    <span *ngIf="showIcons(rowData)">
+                      <a
+                        href="/assets/template/test-template.csv"
+                        download="/assets/template/test-template.csv"
+                        aria-hidden="false"
+                        ><i
+                          class="fa fa-cloud-download"
+                          style="color:blue;"
+                          title="{{
+                            'isr-template.download-template-title' | translate
+                          }}"
+                        ></i>
+                      </a>
+                    </span>
+                  </ng-container>
+
                   <span *ngIf="showIcons(rowData)">
                     <a
-                      href="/assets/template/test-template.csv"
-                      download="/assets/template/test-template.csv"
-                      aria-hidden="true"
+                      href="javascript:void(0);"
+                      (click)="openDeleteTemplateModal(rowData)"
+                      title="{{
+                        'isr-template.remove-template-title' | translate
+                      }}"
                       ><i
-                        class="fa fa-cloud-download"
-                        style="color:blue;"
+                        class="fa fa-ban"
+                        style="color:darkred;"
                         title="{{
-                          'isr-template.download-template-title' | translate
+                          'isr-template.remove-template-title' | translate
                         }}"
                       ></i>
                     </a>
                   </span>
-                </ng-container>
-
-                <span *ngIf="showIcons(rowData)">
-                  <a aria-hidden="true"
-                    ><i
-                      class="fa fa-ban"
-                      style="color:darkred;"
-                      title="{{
-                        'isr-template.remove-template-title' | translate
-                      }}"
-                    ></i>
-                  </a>
                 </span>
               </td>
             </tr>

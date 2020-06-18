@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">
+    {{ 'isr-template.delete-header' | translate }}
+  </h4>
+</div>
+
+<div *ngIf="unableToDelete" class="alert alert-danger">
+  {{ 'delete-instructional-resource-modal.error' | translate }}
+</div>
+
+<ng-container>
+  <div *ngIf="showSandboxAlert" class="alert alert-dismissable">
+    {{ 'test-results.is-sandbox-delete' | translate }}
+  </div>
+  <div class="modal-footer">
+    <span>
+      <button type="button" class="btn btn-default" (click)="cancel()">
+        {{ (unableToDelete? 'common.action.close' : 'common.action.cancel') |
+        translate }}
+      </button>
+      <button
+        *ngIf="!showSandboxAlert"
+        class="btn btn-danger"
+        (click)="delete()"
+      >
+        {{ 'common.action.delete' | translate }}
+      </button>
+    </span>
+  </div>
+</ng-container>

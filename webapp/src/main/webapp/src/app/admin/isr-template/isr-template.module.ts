@@ -12,9 +12,11 @@ import { ButtonModule } from 'primeng/button';
 import { ReportingCommonModule } from '../../shared/reporting-common.module';
 import { FileUploadModule } from 'primeng/fileupload';
 import { IsrTemplateService } from './service/isr-template.service';
+import { DeleteIsrTemplateModal } from './delete-isr-template.modal';
 
 @NgModule({
-  declarations: [IsrTemplateComponent],
+  declarations: [IsrTemplateComponent, DeleteIsrTemplateModal],
+  entryComponents: [DeleteIsrTemplateModal],
   imports: [
     ButtonModule,
     CommonModule,
