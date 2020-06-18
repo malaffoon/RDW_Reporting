@@ -2,29 +2,31 @@
   <h4 class="modal-title pull-left">
     {{ 'isr-template.delete-header' | translate }}
   </h4>
+  <button
+    type="button"
+    class="close pull-right"
+    title="{{'common.action.close' | translate}}"
+    (click)="cancel()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
-
-<ng-container>
+<div class="modal-body">
   <div *ngIf="unableToDelete" class="alert alert-danger">
     {{ 'isr-template.error-deleting-template' | translate }}
   </div>
   <div *ngIf="showSandboxAlert" class="alert alert-dismissable">
     {{ 'isr-template.is-sandbox-delete' | translate }}
   </div>
-
-  <div class="modal-footer">
-    <span>
-      <button type="button" class="btn btn-default" (click)="cancel()">
-        {{ (( unableToDelete || showSandboxAlert )? 'common.action.close' :
-        'common.action.cancel') | translate }}
-      </button>
-      <button
-        *ngIf="!showSandboxAlert"
-        class="btn btn-danger"
-        (click)="delete()"
-      >
-        {{ 'common.action.delete' | translate }}
-      </button>
-    </span>
-  </div>
-</ng-container>
+</div>
+<div class="modal-footer">
+  <span>
+    <button type="button" class="btn btn-default" (click)="cancel()">
+      {{ (( unableToDelete || showSandboxAlert )? 'common.action.close' :
+      'common.action.cancel') | translate }}
+    </button>
+    <button *ngIf="!showSandboxAlert" class="btn btn-danger" (click)="delete()">
+      {{ 'common.action.delete' | translate }}
+    </button>
+  </span>
+</div>

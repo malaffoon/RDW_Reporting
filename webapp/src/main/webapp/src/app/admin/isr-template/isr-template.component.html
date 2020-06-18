@@ -65,7 +65,7 @@
                   [field]="column.field"
                 ></p-sortIcon>
               </th>
-              <th>
+              <th style="width:15%;">
                 {{ 'isr-template.action-header' | translate }}
               </th>
             </tr>
@@ -88,15 +88,21 @@
               </td>
               <td>
                 <span>
+                  <!--TODO Triggers the upload file-->
+                  <input
+                    type="file"
+                    accept="image/*"
+                    #file
+                    style="display:none;"
+                  />
                   <a
+                    (click)="file.click()"
                     href="javascript:void(0)"
-                    (click)="openFileDialog()"
                     title="{{
                       'isr-template.upload-template-title' | translate
                     }}"
                     ><i
-                      class="fa fa-cloud-upload"
-                      style="color:green;"
+                      class="fa fa-upload"
                       aria-hidden="true"
                       title="{{
                         'isr-template.upload-template-title' | translate
@@ -112,7 +118,6 @@
                         aria-hidden="false"
                         ><i
                           class="fa fa-cloud-download"
-                          style="color:blue;"
                           title="{{
                             'isr-template.download-template-title' | translate
                           }}"
@@ -130,7 +135,6 @@
                       }}"
                       ><i
                         class="fa fa-ban"
-                        style="color:red;"
                         title="{{
                           'isr-template.remove-template-title' | translate
                         }}"

@@ -2014,18 +2014,18 @@
       "location": "Location"
     },
     "configured": " Configured on ",
-    "delete-header": "Are you sure you wan to delete this template?",
-    "download-template-title": "Download the current template",
+    "delete-header": "Are you sure you want to delete this template?",
+    "download-template-title": "Download Current Template",
     "empty-message": "There are no templates results.",
     "error-deleting-template": "Failed to delete the template.",
     "is-sandbox-delete": "Deleting ISR Templates is not available for Sandboxes.",
     "is-sandbox-upload": "Uploading or changing ISR Templates is not available for Sandboxes.",
     "not-configured": " Not Configured",
     "reference-template": "Reference Template",
-    "reference-tooltip": "Down the Reference Template to create new report templates.",
-    "remove-template-title": "Remove the current Template",
+    "reference-tooltip": "Download the Reference Template to create new report templates.",
+    "remove-template-title": "Remove Current Template",
     "subject-tooltip": "The subject's tooltip",
     "title": "Individual Student Report (ISR) Templates",
-    "upload-template-title": "Upload the a new template"
+    "upload-template-title": "Upload New Template"
   }
 }
