@@ -2014,7 +2014,8 @@
       "location": "Location"
     },
     "configured": " Configured on ",
-    "delete-header": "Are you sure you want to delete this template?",
+    "delete-header": "Are you sure?",
+    "delete-body": "You are about to delete this template. This cannot be undone.",
     "download-template-title": "Download Current Template",
     "empty-message": "There are no templates results.",
     "error-deleting-template": "Failed to delete the template.",
