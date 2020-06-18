@@ -7,8 +7,8 @@ export const aggregateReportBreadcrumb = ({ translateService }) =>
 export const embargoBreadcrumb = ({ translateService }) =>
   translateService.instant('embargo.title');
 
-export const testResultsBreadcrumb = ({ translateService }) =>
-  translateService.instant('test-results.title');
+export const testResultsAvailabilityBreadcrumb = ({ translateService }) =>
+  translateService.instant('test-results-availability.title');
 
 export const organizationExportBreadcrumb = ({ translateService }) =>
   translateService.instant('organization-export.title');
@@ -111,12 +111,12 @@ export const adminRoutes: Route[] = [
         }
       },
       {
-        path: 'test-results',
+        path: 'test-results-availability',
         loadChildren:
-          'app/admin/test-results/test-results.module#TestResultsModule',
+          'app/admin/test-results-availability/test-results-availability.module#TestResultsAvailabilityModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: testResultsBreadcrumb,
+          breadcrumb: testResultsAvailabilityBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
       }

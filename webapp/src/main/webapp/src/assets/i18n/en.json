@@ -1213,9 +1213,9 @@
         "button": "Tenants",
         "description": "Manage Reporting System Tenants"
       },
-      "test-results": {
-        "button": "Test Results",
-        "description": "Manage summative test results."
+      "test-results-availability": {
+        "button": "Test Results Availability",
+        "description": "Manage summative test results availability."
       },
       "titles": {
         "administrator-tools": "Administrator Tools"
@@ -1992,7 +1992,7 @@
     "body": "Are you sure you want to deactivate the {{pipelineName}} pipeline? By deactivating this script, no user transformations will be applied in the {{pipelineName}} pipeline.",
     "accept": "Deactivate"
   },
-  "test-results": {
+  "test-results-availability": {
     "all-text": "All",
     "change-status": "Change Status",
     "columns": {
@@ -2012,45 +2012,27 @@
     "filter-status": "Status",
     "filter-subject": "Subject",
     "history-link": "Audit History",
-    "is-sandbox": "Test Results Management is not available for Sandboxes. ",
+    "is-sandbox": "Test Results Availability Management is not available for Sandboxes. ",
     "no-test-results": "Contact your administrator for access to test results.",
     "report-type-tooltip": "Report Type Tooltip information here",
     "selected-title": "Selected Test Results",
     "state-header": "State",
     "status-tooltip": "Status Tooltip information here",
-    "title": "Manage Test Results"
+    "title": "Manage Test Results Availability"
   },
-  "test-results-subject-options": {
-    "ela": "ELA",
-    "elpac": "ELPAC",
-    "math": "Math",
-    "science": "Science"
-  },
-  "test-results-report-type-options": {
-    "individual": "Individual",
-    "aggregate": "Aggregate"
-  },
-  "test-results-status-options": {
-    "loading": "Loading",
-    "reviewing": "Reviewing",
-    "released": "Released"
-  },
-  "test-results-change-results": {
-    "header": "Test Results Management changes"
-  },
-  "test-results-change-status": {
-    "breadcrumb": "Change Test Results Status",
+  "test-results-availability-change-status": {
+    "breadcrumb": "Change Test Results Availability Status",
     "change-status-link": "Change Status",
     "dismiss": "Dismiss",
     "district": "District:",
-    "error-changing-results": "Failed to change the selected test results",
-    "header": "Change Test Results Status",
-    "review-text": "You are about to change the status for these test results:",
+    "error-changing-results": "Failed to change the selected test results availability",
+    "header": "Change Test Results Availability Status",
+    "review-text": "You are about to change the availability status for these test results:",
     "report-type": "Report Type:",
     "school-year": "School Year:",
     "set-status-text": "Set status to:",
     "subjects": "Subjects:",
-    "successful-change": "Successfully submitted request to change the selected test results. It can take up to 24 hours to see these changes. ",
+    "successful-change": "Successfully submitted request to change the selected test results availability. It can take up to 24 hours to see these changes. ",
     "state": "State:"
   }
 }

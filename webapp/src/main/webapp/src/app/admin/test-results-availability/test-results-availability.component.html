@@ -1,14 +1,16 @@
 <page-heading>
-  <h1 class="h2" heading>{{ 'test-results.title' | translate }}</h1>
+  <h1 class="h2" heading>
+    {{ 'test-results-availability.title' | translate }}
+  </h1>
   <ul class="list-unstyled list-inline" controls *ngIf="showAudit">
     <li>
       <a
         class="btn btn-default"
         href="/assets/testResultsAudit202006040.csv"
         download="/assets/testResultsAudit202006040.csv"
-        title="{{ 'test-results.history-link' | translate }}"
+        title="{{ 'test-results-availability.history-link' | translate }}"
         ><i class="fa fa-cloud-download" aria-hidden="true"></i>
-        {{ 'test-results.history-link' | translate }}</a
+        {{ 'test-results-availability.history-link' | translate }}</a
       >
     </li>
   </ul>
@@ -25,7 +27,10 @@
       >
         <span aria-hidden="true">&times;</span>
       </button>
-      {{ 'test-results-change-status.error-changing-results' | translate }}
+      {{
+        'test-results-availability-change-status.error-changing-results'
+          | translate
+      }}
     </div>
     <div *ngIf="successfulChange" class="alert alert-info">
       <button
@@ -36,15 +41,17 @@
       >
         <span aria-hidden="true">&times;</span>
       </button>
-      {{ 'test-results-change-status.successful-change' | translate }}
+      {{
+        'test-results-availability-change-status.successful-change' | translate
+      }}
     </div>
 
     <div class="well well-results">
-      {{ 'test-results.filter-title' | translate }}
+      {{ 'test-results-availability.filter-title' | translate }}
       <div class="row">
         <div class="col-md-2" *ngIf="state">
           <label for="select-state">
-            {{ 'test-results.state-header' | translate }}
+            {{ 'test-results-availability.state-header' | translate }}
           </label>
           <select
             id="select-state"
@@ -60,16 +67,16 @@
         <!-- School Year Select -->
         <div class="col-md-2 test-left">
           <label for="select-schoolyear">{{
-            'test-results.filter-school-year' | translate
+            'test-results-availability.filter-school-year' | translate
           }}</label>
           <select
             id="select-schoolyear"
-            [(ngModel)]="testResultFilters.schoolYear"
+            [(ngModel)]="testResultAvailabilityFilters.schoolYear"
             class="form-control"
             (ngModelChange)="onChangeSchoolYearFilter($event)"
           >
             <option>
-              {{ 'test-results.all-text' | translate }}
+              {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option
               *ngFor="let schoolYear of schoolYearOptions"
@@ -83,16 +90,16 @@
         <!-- District Select  -->
         <div class="col-md-2 text-left" *ngIf="showDistrictFilter">
           <label for="select-district">{{
-            'test-results.filter-district' | translate
+            'test-results-availability.filter-district' | translate
           }}</label>
           <select
             id="select-district"
-            [(ngModel)]="testResultFilters.district"
+            [(ngModel)]="testResultAvailabilityFilters.district"
             class="form-control"
             (ngModelChange)="onChangeDistrictFilter($event)"
           >
             <option>
-              {{ 'test-results.all-text' | translate }}
+              {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option
               *ngFor="let district of districtOptions"
@@ -104,11 +111,11 @@
         </div>
         <div class="col-md-2" *ngIf="!showDistrictFilter">
           <label for="select-district-admin">{{
-            'test-results.district-admin' | translate
+            'test-results-availability.district-admin' | translate
           }}</label>
           <select id="select-district-admin" class="form-control" disabled>
             <option>
-              {{ testResultFilters.district }}
+              {{ testResultAvailabilityFilters.district }}
             </option>
           </select>
         </div>
@@ -116,16 +123,16 @@
         <!-- Subject Select  -->
         <div class="col-md-2">
           <label for="select-subject"
-            >{{ 'test-results.filter-subject' | translate }}
+            >{{ 'test-results-availability.filter-subject' | translate }}
           </label>
           <select
             id="select-subject"
-            [(ngModel)]="testResultFilters.subject"
+            [(ngModel)]="testResultAvailabilityFilters.subject"
             class="form-control"
             (ngModelChange)="onChangeSubjectFilter($event)"
           >
             <option>
-              {{ 'test-results.all-text' | translate }}
+              {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option *ngFor="let subject of subjectOptions" [ngValue]="subject">
               {{ subject | translate }}
@@ -138,18 +145,22 @@
           <label for="select-report-type">
             <span
               info-button
-              title="{{ 'test-results.filter-report-type' | translate }}"
-              content="{{ 'test-results.report-type-tooltip' | translate }}"
+              title="{{
+                'test-results-availability.filter-report-type' | translate
+              }}"
+              content="{{
+                'test-results-availability.report-type-tooltip' | translate
+              }}"
             ></span>
           </label>
           <select
             id="select-report-type"
-            [(ngModel)]="testResultFilters.reportType"
+            [(ngModel)]="testResultAvailabilityFilters.reportType"
             class="form-control"
             (ngModelChange)="onChangeReportTypeFilter($event)"
           >
             <option>
-              {{ 'test-results.all-text' | translate }}
+              {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option
               *ngFor="let reportType of reportTypeOptions"
@@ -165,18 +176,22 @@
           <label for="select-status">
             <span
               info-button
-              title="{{ 'test-results.filter-status' | translate }}"
-              content="{{ 'test-results.status-tooltip' | translate }}"
+              title="{{
+                'test-results-availability.filter-status' | translate
+              }}"
+              content="{{
+                'test-results-availability.status-tooltip' | translate
+              }}"
             ></span
           ></label>
           <select
             id="select-status"
-            [(ngModel)]="testResultFilters.status"
+            [(ngModel)]="testResultAvailabilityFilters.status"
             class="form-control"
             (ngModelChange)="onChangeStatusFilter($event)"
           >
             <option>
-              {{ 'test-results.all-text' | translate }}
+              {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option *ngFor="let status of statusOptions" [ngValue]="status">
               {{ status | translate }}
@@ -191,7 +206,7 @@
 <ng-container>
   <ng-container>
     <div class="well well-results">
-      {{ 'test-results.selected-title' | translate }}
+      {{ 'test-results-availability.selected-title' | translate }}
 
       <div class="table-list-container mt-sm">
         <p-table
@@ -213,7 +228,9 @@
                 <span *ngSwitchCase="'deleted'"></span>
 
                 <span *ngSwitchDefault>
-                  {{ 'test-results.columns.' + column.id | translate }}
+                  {{
+                    'test-results-availability.columns.' + column.id | translate
+                  }}
                 </span>
 
                 <p-sortIcon
@@ -242,7 +259,7 @@
           <ng-template pTemplate="emptymessage" let-columns>
             <tr>
               <td [attr.colspan]="columns.length">
-                {{ 'test-results.no-test-results' | translate }}
+                {{ 'test-results-availability.no-test-results' | translate }}
               </td>
             </tr>
           </ng-template>
@@ -254,10 +271,10 @@
           class="btn btn-primary"
           type="button"
           [tooltip]="changeResultsTooltip"
-          title="{{ 'test-results.change-status' | translate }}"
+          title="{{ 'test-results-availability.change-status' | translate }}"
         >
           <i class="fa fa-pencil-square"></i>
-          {{ 'test-results.change-status' | translate }}
+          {{ 'test-results-availability.change-status' | translate }}
         </button>
       </div>
     </div>

@@ -1,10 +1,10 @@
-import { TestResult } from './model/test-result';
+import { TestResultAvailability } from './model/test-result-availability';
 
-export class MockTestResults {
+export class MockTestResultsAvailability {
   // TODO remove once real data is available
-  mockTestResults: TestResult[];
+  mockTestResults: TestResultAvailability[];
 
-  getMockTestResults(): TestResult[] {
+  getMockTestResults(): TestResultAvailability[] {
     return [
       {
         schoolYear: 2020,

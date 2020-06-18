@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { UserService } from '../../shared/security/service/user.service';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../shared/notification/notification.service';
-import { TestResult } from './model/test-result';
-import { TestResultsService } from './service/test-results.service';
-import { TestResultFilters } from './model/test-result-filters';
-import { TestResultsChangeStatusModal } from './test-results-change-status.modal';
+import { TestResultAvailability } from './model/test-result-availability';
+import { TestResultsAvailabilityService } from './service/test-results-availability.service';
+import { TestResultAvailabilityFilters } from './model/test-result-availability-filters';
+import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
 
 class Column {
   id: string; // en.json name
@@ -23,9 +22,9 @@ class Column {
 
 @Component({
   selector: 'test-results',
-  templateUrl: './test-results.component.html'
+  templateUrl: './test-results-availability.component.html'
 })
-export class TestResultsComponent implements OnInit {
+export class TestResultsAvailabilityComponent implements OnInit {
   columns: Column[] = [
     new Column({ id: 'school-year', field: 'schoolYear' }),
     new Column({ id: 'district' }),
@@ -34,12 +33,12 @@ export class TestResultsComponent implements OnInit {
     new Column({ id: 'result-count', field: 'resultCount', sortable: false }),
     new Column({ id: 'status' })
   ];
-  private _testResults: TestResult[];
+  private _testResultsAvailability: TestResultAvailability[];
 
   changeResultsTooltip: string =
-    'Change status of selected test results (all pages).';
-  testResultFilters: TestResultFilters;
-  filteredTestResults: TestResult[];
+    'Change status of selected test results availability (all pages).';
+  testResultAvailabilityFilters: TestResultAvailabilityFilters;
+  filteredTestResults: TestResultAvailability[];
 
   // Used to determine what to display
   userDistrict: string; // when it's a district admin
@@ -63,30 +62,28 @@ export class TestResultsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private modalService: BsModalService,
-    private userService: UserService,
     private translateService: TranslateService,
     private notificationService: NotificationService,
-    private testResultsService: TestResultsService
+    private testResultsService: TestResultsAvailabilityService
   ) {}
 
-  get testResults(): TestResult[] {
-    return this._testResults;
+  get testResultsAvailability(): TestResultAvailability[] {
+    return this._testResultsAvailability;
   }
 
-  set testResults(testResults: TestResult[]) {
-    this._testResults = testResults;
+  set testResultsAvailability(testResults: TestResultAvailability[]) {
+    this._testResultsAvailability = testResults;
     this.updateFilteredTestResults();
   }
 
   openChangeResultsModal() {
-    console.log('testing 1');
-
     let modalReference: BsModalRef = this.modalService.show(
-      TestResultsChangeStatusModal,
+      TestResultsAvailabilityChangeStatusModal,
       {}
     );
-    let modal: TestResultsChangeStatusModal = modalReference.content;
-    modal.selectedFilters = this.testResultFilters;
+    let modal: TestResultsAvailabilityChangeStatusModal =
+      modalReference.content;
+    modal.selectedFilters = this.testResultAvailabilityFilters;
     modal.statusOptions = this.statusOptions;
     modal.changeStatusEvent.subscribe(res => {
       this.successfulChange = res.data;
@@ -110,15 +107,15 @@ export class TestResultsComponent implements OnInit {
 
     // set defaults - needed since this component is initialized first
     this.testResultsService.setTestResultFilterDefaults();
-    this.testResultFilters = this.testResultsService.getTestResultFilterDefaults();
+    this.testResultAvailabilityFilters = this.testResultsService.getTestResultAvailabilityFilterDefaults();
     if (!this.showDistrictFilter) {
       this.userDistrict = this.testResultsService.getAdminUserDistrict(); //used when user is DistrictAdmin
-      this.testResultFilters.district = this.userDistrict;
+      this.testResultAvailabilityFilters.district = this.userDistrict;
     }
-    this.testResults = this.testResultsService.getTestResults(
-      this.testResultFilters
+    this.testResultsAvailability = this.testResultsService.getTestResults(
+      this.testResultAvailabilityFilters
     );
-    this.filteredTestResults = this.testResults;
+    this.filteredTestResults = this.testResultsAvailability;
   }
 
   // need to save each selected Option to filtered Group
@@ -127,36 +124,36 @@ export class TestResultsComponent implements OnInit {
   // need to save each selected Option to filtered Group
   updateFilteredTestResults() {
     this.filteredTestResults = this.testResultsService.getTestResults(
-      this.testResultFilters
+      this.testResultAvailabilityFilters
     );
   }
 
   onChangeSchoolYearFilter(schoolYear: any) {
-    this.testResultFilters.schoolYear = schoolYear;
+    this.testResultAvailabilityFilters.schoolYear = schoolYear;
     this.updateFilteredTestResults();
   }
 
   onChangeDistrictFilter(district: any) {
-    this.testResultFilters.district = district;
+    this.testResultAvailabilityFilters.district = district;
     this.updateFilteredTestResults();
   }
 
   onChangeSubjectFilter(subject: any) {
-    this.testResultFilters.subject = subject;
+    this.testResultAvailabilityFilters.subject = subject;
     this.updateFilteredTestResults();
   }
 
   onChangeReportTypeFilter(reportType: any) {
-    this.testResultFilters.reportType = reportType;
+    this.testResultAvailabilityFilters.reportType = reportType;
     this.updateFilteredTestResults();
   }
 
   onChangeStatusFilter(status: any) {
-    this.testResultFilters.status = status;
+    this.testResultAvailabilityFilters.status = status;
     this.updateFilteredTestResults();
   }
 
-  testResultsRowStyleClass(rowData: TestResult) {
+  testResultsRowStyleClass(rowData: TestResultAvailability) {
     return rowData.status == 'Loading'
       ? 'loadingColor'
       : rowData.status == 'Reviewing'

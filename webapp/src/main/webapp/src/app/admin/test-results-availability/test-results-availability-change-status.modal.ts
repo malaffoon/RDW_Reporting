@@ -1,19 +1,19 @@
 import { BsModalRef } from 'ngx-bootstrap';
-import { TestResultsService } from './service/test-results.service';
+import { TestResultsAvailabilityService } from './service/test-results-availability.service';
 import { NavigationStart, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { TestResultFilters } from './model/test-result-filters';
+import { TestResultAvailabilityFilters } from './model/test-result-availability-filters';
 
 @Component({
   selector: 'test-results-change-status-modal',
-  templateUrl: 'test-results-change-status.modal.html'
+  templateUrl: 'test-results-availability-change-status.modal.html'
 })
-export class TestResultsChangeStatusModal implements OnInit {
+export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   private _subscription: Subscription;
   public changeStatusEvent: EventEmitter<any> = new EventEmitter();
-  selectedFilters: TestResultFilters;
+  selectedFilters: TestResultAvailabilityFilters;
   statusOptions: string[];
   selectedStatus: string;
 
@@ -24,7 +24,7 @@ export class TestResultsChangeStatusModal implements OnInit {
 
   constructor(
     private modal: BsModalRef,
-    private service: TestResultsService,
+    private service: TestResultsAvailabilityService,
     private router: Router
   ) {
     this._subscription = router.events
@@ -35,7 +35,7 @@ export class TestResultsChangeStatusModal implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedFilters = this.service.getTestResultFilterDefaults();
+    this.selectedFilters = this.service.getTestResultAvailabilityFilterDefaults();
     this.statusOptions = this.service.getTestResultsStatusOptions();
     this.selectedStatus =
       this.service.isDistrictAdmin() == true ? 'Released' : 'Reviewing';

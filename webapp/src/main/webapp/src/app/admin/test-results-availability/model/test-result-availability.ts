@@ -1,4 +1,4 @@
-export interface TestResult {
+export interface TestResultAvailability {
   readonly schoolYear: number;
   readonly district: string;
   readonly subject: string;

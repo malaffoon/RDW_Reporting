@@ -1,4 +1,4 @@
-export class TestResultFilters {
+export class TestResultAvailabilityFilters {
   state: string;
   schoolYear: number;
   district: string;

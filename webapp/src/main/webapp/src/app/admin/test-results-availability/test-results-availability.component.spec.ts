@@ -1,14 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TestResultsComponent } from './test-results.component';
+import { TestResultsAvailabilityComponent } from './test-results-availability.component';
 import { BsModalService } from 'ngx-bootstrap';
-import { TestResultsService } from './service/test-results.service';
+import { TestResultsAvailabilityService } from './service/test-results-availability.service';
 
 describe('TestResultsComponent', () => {
   let modalService: BsModalService;
-  let testResultsService: TestResultsService;
-  let component: TestResultsComponent;
-  let fixture: ComponentFixture<TestResultsComponent>;
+  let testResultsService: TestResultsAvailabilityService;
+  let component: TestResultsAvailabilityComponent;
+  let fixture: ComponentFixture<TestResultsAvailabilityComponent>;
 
   beforeEach(async(() => {
     modalService = jasmine.createSpyObj('BsModalService', ['show']);
@@ -17,12 +17,12 @@ describe('TestResultsComponent', () => {
     ]);
 
     TestBed.configureTestingModule({
-      declarations: [TestResultsComponent]
+      declarations: [TestResultsAvailabilityComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TestResultsComponent);
+    fixture = TestBed.createComponent(TestResultsAvailabilityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

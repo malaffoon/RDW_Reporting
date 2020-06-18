@@ -7,15 +7,18 @@ import { TableModule } from 'primeng/table';
 import { TranslateModule } from '@ngx-translate/core';
 import { translateModuleConfiguration } from '../../shared/translate-module-configuration';
 import { RouterModule } from '@angular/router';
-import { TestResultsComponent } from './test-results.component';
+import { TestResultsAvailabilityComponent } from './test-results-availability.component';
 import { BsDropdownModule, ModalModule, TooltipModule } from 'ngx-bootstrap';
-import { testResultsRoutes } from './test-results.routes';
+import { testResultsAvailabilityRoutes } from './test-results-availability.routes';
 import { DropdownModule } from 'primeng/dropdown';
-import { TestResultsChangeStatusModal } from './test-results-change-status.modal';
+import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
 
 @NgModule({
-  declarations: [TestResultsComponent, TestResultsChangeStatusModal],
-  entryComponents: [TestResultsChangeStatusModal],
+  declarations: [
+    TestResultsAvailabilityComponent,
+    TestResultsAvailabilityChangeStatusModal
+  ],
+  entryComponents: [TestResultsAvailabilityChangeStatusModal],
   imports: [
     CommonModule,
     ButtonModule,
@@ -24,10 +27,10 @@ import { TestResultsChangeStatusModal } from './test-results-change-status.modal
     ModalModule.forRoot(),
     TableModule,
     TranslateModule.forChild(translateModuleConfiguration),
-    RouterModule.forChild(testResultsRoutes),
+    RouterModule.forChild(testResultsAvailabilityRoutes),
     BsDropdownModule,
     DropdownModule,
     TooltipModule
   ]
 })
-export class TestResultsModule {}
+export class TestResultsAvailabilityModule {}
