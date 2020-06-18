@@ -127,21 +127,20 @@ function createOrderingByColumnField(
     claimCode:
       reportType === 'Target'
         ? createOrganizationalClaimOrdering(subjectDefinition.subject, preview)
-        : reportType === 'AltScore'
-        ? ordering(
-            ranking(
-              subjectDefinition.alternateScore != null
-                ? subjectDefinition.alternateScore.codes
-                : []
-            )
-          ).on(row => row.altScoreCode)
         : ordering(
             ranking(
               subjectDefinition.claimScore != null
                 ? subjectDefinition.claimScore.codes
                 : []
             )
-          ).on(row => row.claimCode)
+          ).on(row => row.claimCode),
+    altScoreCode: ordering(
+      ranking(
+        subjectDefinition.alternateScore != null
+          ? subjectDefinition.alternateScore.codes
+          : []
+      )
+    ).on(row => row.altScoreCode)
   };
 }
 
@@ -337,6 +336,7 @@ function createPerformanceLevelColumnDynamicFields(
 }
 
 function getModifier(reportType) {
+  // Used to get proper key for translating level colors, headings, and suffixes.
   switch (reportType) {
     case 'Claim':
       return 'claim-score.';
