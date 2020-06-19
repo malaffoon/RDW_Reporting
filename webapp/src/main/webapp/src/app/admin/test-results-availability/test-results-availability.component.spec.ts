@@ -4,7 +4,7 @@ import { TestResultsAvailabilityComponent } from './test-results-availability.co
 import { BsModalService } from 'ngx-bootstrap';
 import { TestResultsAvailabilityService } from './service/test-results-availability.service';
 
-describe('TestResultsComponent', () => {
+xdescribe('TestResultsAvailabilityComponent', () => {
   let modalService: BsModalService;
   let testResultsService: TestResultsAvailabilityService;
   let component: TestResultsAvailabilityComponent;
