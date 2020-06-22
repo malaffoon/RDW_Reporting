@@ -123,6 +123,16 @@ export const adminRoutes: Route[] = [
           breadcrumb: isrTemplateBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
+      },
+      {
+        path: 'isr-template',
+        loadChildren:
+          'app/admin/isr-template/isr-template.module#IsrTemplateModule',
+        canActivate: [HasAnyPermissionCanActivate],
+        data: {
+          breadcrumb: isrTemplateBreadcrumb,
+          permissions: ['EMBARGO_WRITE']
+        }
       }
     ]
   }
