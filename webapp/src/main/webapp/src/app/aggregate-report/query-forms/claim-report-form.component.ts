@@ -261,43 +261,28 @@ export class ClaimReportFormComponent extends MultiOrganizationQueryFormComponen
         );
     });
 
-    // Once the orderings have been fetched, continue initialization
+    //Once the orderings have been fetched, continue initialization
     forkJoin(...orderingObservables).subscribe(() => {
       this.initializeSelectionBySubject();
     });
   }
 
   private initializeSelectionBySubject(): void {
-    // Selections must match exactly with the values used as options.
-    const findMatching = input => {
-      return this.claimsBySubject[input.subject]
-        .map(opt => opt.value)
-        .find(
-          claim =>
-            claim.code === input.code &&
-            claim.assessmentType === input.assessmentType
-        );
-    };
-
     // Map selected claims by subject
     const selections: Map<
       string,
       Claim[]
     > = this.settings.claimReport.claimCodesBySubject
       .filter(claim => claim.assessmentType === this.settings.assessmentType)
-      .reduce((subjectMap, claim) => {
-        const subjectClaims = subjectMap.get(claim.subject) || [];
-        const claimFromOption = findMatching(claim);
-        if (claimFromOption) {
-          subjectClaims.push(claimFromOption);
-          subjectMap.set(claim.subject, subjectClaims);
-        }
-        subjectMap.set(claim.subject, subjectClaims);
-        return subjectMap;
+      .reduce((map, claim) => {
+        const subjectClaims = map.get(claim.subject) || [];
+        subjectClaims.push(claim);
+        map.set(claim.subject, subjectClaims);
+        return map;
       }, new Map());
 
     const subjectCodes = this.settings.subjects.map(subject => subject.code);
-    for (const subject of subjectCodes) {
+    for (let subject of subjectCodes) {
       if (selections.has(subject)) {
         // Initialize selection based on settings values
         this.selectionBySubject[subject] = selections.get(subject);

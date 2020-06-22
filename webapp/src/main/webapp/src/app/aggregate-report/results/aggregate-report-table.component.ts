@@ -133,14 +133,7 @@ function createOrderingByColumnField(
                 ? subjectDefinition.claimScore.codes
                 : []
             )
-          ).on(row => row.claimCode),
-    altScoreCode: ordering(
-      ranking(
-        subjectDefinition.alternateScore != null
-          ? subjectDefinition.alternateScore.codes
-          : []
-      )
-    ).on(row => row.altScoreCode)
+          ).on(row => row.claimCode)
   };
 }
 
@@ -336,7 +329,6 @@ function createPerformanceLevelColumnDynamicFields(
 }
 
 function getModifier(reportType) {
-  // Used to get proper key for translating level colors, headings, and suffixes.
   switch (reportType) {
     case 'Claim':
       return 'claim-score.';
@@ -653,6 +645,8 @@ export class AggregateReportTableComponent implements OnInit {
   treeColumns: number[] = [];
   columns: Column[];
   sortMode: boolean | string;
+  claimReport: boolean;
+  altScoreReport: boolean;
   center: boolean;
 
   constructor(
@@ -662,8 +656,10 @@ export class AggregateReportTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.sortMode = this.preview ? false : 'single';
+    this.claimReport = this.reportType === 'Claim';
+    this.altScoreReport = this.reportType === 'AltScore';
     this.center =
-      !(this.claimReport || this.altScoreReport) &&
+      this.reportType !== 'Claim' &&
       this.subjectDefinition.performanceLevelStandardCutoff != null;
     this.buildAndRender();
     this._initialized = true;
@@ -673,21 +669,14 @@ export class AggregateReportTableComponent implements OnInit {
     return this._subjectDefinition;
   }
 
-  get claimReport(): boolean {
-    return this.reportType && this.reportType === 'Claim';
-  }
-
-  get altScoreReport(): boolean {
-    return this.reportType && this.reportType === 'AltScore';
-  }
-
   @Input()
   set subjectDefinition(value: SubjectDefinition) {
     const previousValue = this._subjectDefinition;
     this._subjectDefinition = value;
     if (this._initialized && previousValue !== value) {
       this.center =
-        !(this.claimReport || this.altScoreReport) &&
+        this.reportType !== 'Claim' &&
+        this.reportType !== 'AltScore' &&
         this.subjectDefinition.performanceLevelStandardCutoff != null;
       this.buildAndRender();
     }
@@ -702,8 +691,11 @@ export class AggregateReportTableComponent implements OnInit {
     const previousValue = this._reportType;
     this._reportType = value;
     if (this._initialized && previousValue !== value) {
+      this.claimReport = this.reportType === 'Claim';
+      this.altScoreReport = this.reportType === 'AltScore';
       this.center =
-        !(this.claimReport || this.altScoreReport) &&
+        !this.claimReport &&
+        !this.altScoreReport &&
         this.subjectDefinition.overallScore.standardCutoff != null;
       this.buildAndRender();
     }

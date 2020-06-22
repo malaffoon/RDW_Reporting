@@ -46,11 +46,12 @@ export const adminRoutes: Route[] = [
         }
       },
       {
-        path: 'embargoes',
-        loadChildren: 'app/admin/embargo/embargo.module#EmbargoModule',
+        path: 'test-results-availability',
+        loadChildren:
+          'app/admin/test-results-availability/test-results-availability.module#TestResultsAvailabilityModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: embargoBreadcrumb,
+          breadcrumb: testResultsAvailabilityBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
       },
@@ -114,12 +115,12 @@ export const adminRoutes: Route[] = [
         }
       },
       {
-        path: 'test-results-availability',
+        path: 'isr-template',
         loadChildren:
-          'app/admin/test-results-availability/test-results-availability.module#TestResultsAvailabilityModule',
+          'app/admin/isr-template/isr-template.module#IsrTemplateModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: testResultsAvailabilityBreadcrumb,
+          breadcrumb: isrTemplateBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
       },
