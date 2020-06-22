@@ -128,7 +128,8 @@ sql:
         sat.claim_score_performance_level_count,
         sat.alt_score_performance_level_count,
         sat.target_report,
-        sat.printed_report
+        sat.printed_report,
+        sat.trait_report
       FROM subject_asmt_type sat
         JOIN asmt_type at ON at.id = sat.asmt_type_id
         JOIN subject s ON s.id = sat.subject_id

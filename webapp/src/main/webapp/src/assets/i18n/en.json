@@ -967,7 +967,7 @@
       "home-sr": "Home",
       "window-title": "Smarter Balanced | Reporting System"
     },
-    "footer": "© 2020 The Regents of the University of California",
+    "footer": "© 2019 The Regents of the University of California",
     "languages": {
       "en": "English",
       "es": "Español",
@@ -1205,10 +1205,6 @@
       "instructional-resources": {
         "button": "Instructional Resources",
         "description": "Upload links to instructional resources in the system."
-      },
-      "isr-template": {
-        "button": "ISR Template",
-        "description": "Manage ISR Templates."
       },
       "organizational-export": {
         "button": "District / School Exports",
@@ -2049,31 +2045,5 @@
     "subjects": "Subjects:",
     "successful-change": "Successfully submitted request to change the selected test results availability. It can take up to 24 hours to see these changes. ",
     "state": "State:"
-  },
-  "isr-template": {
-    "action-header": "Actions",
-    "columns": {
-      "subject": "Subject",
-      "assessment-type": "Assessment Type",
-      "status": "ISR Template",
-      "template-name": "Template Name",
-      "uploaded-date": "Uploaded Date",
-      "location": "Location"
-    },
-    "configured": " Configured on ",
-    "delete-header": "Are you sure?",
-    "delete-body": "You are about to delete this template. This cannot be undone.",
-    "download-template-title": "Download Current Template",
-    "empty-message": "There are no templates results.",
-    "error-deleting-template": "Failed to delete the template.",
-    "is-sandbox-delete": "Deleting ISR Templates is not available for Sandboxes.",
-    "is-sandbox-upload": "Uploading or changing ISR Templates is not available for Sandboxes.",
-    "not-configured": " Not Configured",
-    "reference-template": "Reference Template",
-    "reference-tooltip": "Download the Reference Template to create new report templates.",
-    "remove-template-title": "Remove Current Template",
-    "subject-tooltip": "The subject's tooltip",
-    "title": "Individual Student Report (ISR) Templates",
-    "upload-template-title": "Upload New Template"
   }
 }

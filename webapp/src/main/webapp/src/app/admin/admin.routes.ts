@@ -28,9 +28,6 @@ export const sandboxesBreadcrumb = ({ translateService }) =>
 export const tenantsBreadcrumb = ({ translateService }) =>
   translateService.instant('tenants.heading.TENANT');
 
-export const isrTemplateBreadcrumb = ({ translateService }) =>
-  translateService.instant('isr-template.title');
-
 export const adminRoutes: Route[] = [
   {
     path: '',
@@ -46,12 +43,11 @@ export const adminRoutes: Route[] = [
         }
       },
       {
-        path: 'test-results-availability',
-        loadChildren:
-          'app/admin/test-results-availability/test-results-availability.module#TestResultsAvailabilityModule',
+        path: 'embargoes',
+        loadChildren: 'app/admin/embargo/embargo.module#EmbargoModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: testResultsAvailabilityBreadcrumb,
+          breadcrumb: embargoBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
       },
@@ -115,22 +111,12 @@ export const adminRoutes: Route[] = [
         }
       },
       {
-        path: 'isr-template',
+        path: 'test-results-availability',
         loadChildren:
-          'app/admin/isr-template/isr-template.module#IsrTemplateModule',
+          'app/admin/test-results-availability/test-results-availability.module#TestResultsAvailabilityModule',
         canActivate: [HasAnyPermissionCanActivate],
         data: {
-          breadcrumb: isrTemplateBreadcrumb,
-          permissions: ['EMBARGO_WRITE']
-        }
-      },
-      {
-        path: 'isr-template',
-        loadChildren:
-          'app/admin/isr-template/isr-template.module#IsrTemplateModule',
-        canActivate: [HasAnyPermissionCanActivate],
-        data: {
-          breadcrumb: isrTemplateBreadcrumb,
+          breadcrumb: testResultsAvailabilityBreadcrumb,
           permissions: ['EMBARGO_WRITE']
         }
       }
