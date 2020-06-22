@@ -12,7 +12,9 @@
   </button>
 </div>
 <div class="modal-body">
-  <p>{{ 'isr-template.delete-body' | translate }}</p>
+  <div *ngIf="!showSandboxAlert">
+    {{ 'isr-template.delete-body' | translate }}
+  </div>
   <div *ngIf="unableToDelete" class="alert alert-danger">
     {{ 'isr-template.error-deleting-template' | translate }}
   </div>

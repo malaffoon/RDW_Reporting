@@ -286,14 +286,84 @@ body {
   }
 }
 
-//IRS Template UI Overrides
+/**Test Results Table Color UI Updates **/
+.loadingColor {
+  background-color: #d9edf7 !important;
+  &:hover {
+    color: @black;
+    background-color: #d9edf7 !important;
+    opacity: 0.8 !important;
+  }
+}
+.reviewingColor {
+  background-color: #fcf8e3 !important;
+  &:hover {
+    color: @black;
+    background-color: #fcf8e3 !important;
+    opacity: 0.8 !important;
+  }
+}
+.releasedColor {
+  background-color: #dff0d8 !important;
+  &:hover {
+    color: @black;
+    background-color: #dff0d8 !important;
+    opacity: 0.8 !important;
+  }
+}
+.well-results {
+  padding: 20px;
+}
+.set-status {
+  padding-left: 0px;
+}
+hr {
+  margin: 15px;
+  border-top: 1px solid #d5d5d5;
+}
+.table-footer {
+  padding: 20px 0 5px;
+}
+.ui-table {
+  .ui-paginator-bottom {
+    border: none;
+  }
+}
+.ui-paginator-pages {
+  font-size: 14px;
+}
+.ui-paginator-bottom.ui-paginator.ui-widget.ui-widget-header.ui-unselectable-text.ui-helper-clearfix {
+  margin: 0.5em;
+}
+body {
+  .ui-paginator {
+    .ui-paginator-first,
+    .ui-paginator-prev,
+    .ui-paginator-next,
+    .ui-paginator-last {
+      color: @gray-darker;
+      transition: background-color 0.3s;
+      min-height: 1em;
+      min-width: 1em;
+      padding: 1em;
+      vertical-align: middle;
+    }
+    .ui-paginator-pages {
+      .ui-paginator-page {
+        padding: 10px;
+        min-width: 0;
+        color: @gray-darkest;
+        transition: background-color 0.3s;
+        border-radius: 0;
+      }
+    }
+  }
+}
 
+//IRS Template UI Overrides
 .ui-table-wrapper td i.fa {
   font-size: 21px;
   margin: 0 15px;
-}
-.well-results {
-  padding: 25px;
 }
 td i.fa {
   &.fa-upload {
@@ -320,4 +390,7 @@ span.notConfiguredTemplate {
     background: @blue;
     border-color: @blue;
   }
+}
+.modal-dialog .alert {
+  margin-bottom: 0;
 }

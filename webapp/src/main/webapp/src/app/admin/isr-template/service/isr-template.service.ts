@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class IsrTemplateService {
-  sandbox = false; // todo set from session info
+  sandbox = false; // TODO: set from session info
 
   constructor(private datePipe: TranslateDatePipe) {}
 

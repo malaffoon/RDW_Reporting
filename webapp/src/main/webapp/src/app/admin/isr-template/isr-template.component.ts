@@ -19,7 +19,7 @@ class Column {
     this.sortable = sortable;
   }
 }
-const URL = 'http://localhost:4200/fileupload/'; // todo uppdate with real info
+const URL = 'http://localhost:4200/fileupload/'; // TODO: update with real info
 
 @Component({
   selector: 'isr-template',
@@ -96,7 +96,7 @@ export class IsrTemplateComponent implements OnInit {
     });
 
     if (this.successfulDelete) {
-      // todo refresh template list
+      // TODO: refresh template list
     }
   }
 
