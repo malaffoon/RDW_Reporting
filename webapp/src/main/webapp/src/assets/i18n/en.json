@@ -1209,7 +1209,7 @@
         "description": "Upload links to instructional resources in the system."
       },
       "isr-template": {
-        "button": "ISR Template",
+        "button": "ISR Templates",
         "description": "Manage ISR Templates."
       },
       "organizational-export": {
@@ -2075,7 +2075,7 @@
     "reference-tooltip": "Download the Reference Template to create new report templates.",
     "remove-template-title": "Remove Current Template",
     "subject-tooltip": "The subject's tooltip",
-    "title": "Individual Student Report (ISR) Templates",
+    "title": "Manage Individual Student Report (ISR) Templates",
     "upload-template-title": "Upload New Template"
   }
 }
