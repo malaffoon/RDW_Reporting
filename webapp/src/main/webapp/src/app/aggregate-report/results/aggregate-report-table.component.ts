@@ -127,14 +127,6 @@ function createOrderingByColumnField(
     claimCode:
       reportType === 'Target'
         ? createOrganizationalClaimOrdering(subjectDefinition.subject, preview)
-        : reportType === 'AltScore'
-        ? ordering(
-            ranking(
-              subjectDefinition.alternateScore != null
-                ? subjectDefinition.alternateScore.codes
-                : []
-            )
-          ).on(row => row.altScoreCode)
         : ordering(
             ranking(
               subjectDefinition.claimScore != null
