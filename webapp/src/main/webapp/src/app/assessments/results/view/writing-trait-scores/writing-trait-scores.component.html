@@ -308,8 +308,14 @@
         </ng-template>
       </p-tabPanel>
     </p-tabView>
-    <h2 *ngIf="traitScoreSummary.size === 0">
-      {{ 'common.writing-trait.no-data' | translate }}
-    </h2>
+    <div
+      *ngIf="traitScoreSummary.size === 0"
+      class="well well-empty text-center"
+    >
+      <h2>
+        <i class="fa fa-table"></i><br />
+        {{ 'common.writing-trait.no-data' | translate }}
+      </h2>
+    </div>
   </div>
 </ng-template>
