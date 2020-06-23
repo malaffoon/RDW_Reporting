@@ -11,30 +11,32 @@ export class TestResultsAvailabilityService implements OnInit {
   private defaultTestResultFilters = new TestResultAvailabilityFilters();
   private mockTestResults = new MockTestResultsAvailability();
 
-  // todo condense to one
-  private allDefault: string = 'All';
+  // TODO: optimize maybe condense to one
+  private allDefault = 'All';
   statusDefault: string = this.allDefault;
   schoolYearsDefault: any = this.allDefault;
   successfulChange: boolean;
 
-  // todo update. Below determine what to display depending on session and user
-  //  change to see the different Test Results Configurations
+  //  TODO: update. Below determine what to display depending on session
+  //   and user change to see the different Test Results Configurations
   private districtAdmin = false; // set from User's permissions
   private devOps = true; // set from User's permissions
-  private sandbox: boolean = false; //set from session info
-  private adminDistrict: string = 'District 12'; // default district for districtAdmin
+  private sandbox = false; // set from session info
+  private adminDistrict = 'District 12'; // default district for districtAdmin
 
   ngOnInit(): void {
     this.setTestResultFilterDefaults();
     this.testResultFilters = this.getTestResultAvailabilityFilterDefaults();
   }
 
-  // receive filter's options
+  // receive test results and apply filter's options
   getTestResults(
     testResultFilters: TestResultAvailabilityFilters
   ): TestResultAvailability[] {
-    // todo replace with real data
-    let testResults = this.mockTestResults.getMockTestResults();
+    // TODO: replace with real data
+    let testResults = this.mockTestResults.getMockTestResults().sort((a, b) => {
+      return b.schoolYear - a.schoolYear;
+    });
 
     if (this.validateTestResultsFilterAreDefault(testResultFilters)) {
       return testResults;
@@ -45,7 +47,7 @@ export class TestResultsAvailabilityService implements OnInit {
     );
   }
 
-  // TODO  log changes and no need to persist
+  // TODO:  log changes and no need to persist
   changeTestResults(
     testResultFilters: TestResultAvailabilityFilters,
     newStatus: string
@@ -56,7 +58,7 @@ export class TestResultsAvailabilityService implements OnInit {
     this.successfulChange = true; // comment out to test error
   }
 
-  // TODO add save of data
+  // TODO: add save of data
   logTestResults(testResultFilters: TestResultAvailabilityFilters) {
     console.log('Change Request Log Info:' + JSON.stringify(testResultFilters));
     // covert to csv for test
@@ -64,9 +66,9 @@ export class TestResultsAvailabilityService implements OnInit {
 
   setTestResultFilterDefaults() {
     this.defaultTestResultFilters.schoolYear = this.schoolYearsDefault;
-    this.defaultTestResultFilters.district = this.allDefault; // TODO set from session if District Admin
+    this.defaultTestResultFilters.district = this.allDefault; // TODO: set from session if District Admin
     this.defaultTestResultFilters.subject = this.allDefault;
-    this.defaultTestResultFilters.state = 'California'; // TODO Get from session
+    this.defaultTestResultFilters.state = 'California'; // TODO: Get from session
     this.defaultTestResultFilters.reportType = this.allDefault;
     this.defaultTestResultFilters.status = this.statusDefault;
   }
@@ -167,25 +169,6 @@ export class TestResultsAvailabilityService implements OnInit {
     return this.adminDistrict;
   }
 
-  // below data for drop down filter options - TODO need to pull from real data
-  getTestResultsSchoolYearOptions(): number[] {
-    return [2020, 2019, 2018];
-  }
-
-  getTestResultsDistrictOptions(): string[] {
-    return [
-      'District 2',
-      'District 4',
-      'District 7',
-      'District 12',
-      'District 13'
-    ];
-  }
-
-  getTestResultsSubjectOptions(): string[] {
-    return ['ELA', 'ELPAC', 'Math', 'Science'];
-  }
-
   getTestResultsStatusOptions(): string[] {
     // Loading only available for DevOps permission
     if (this.isDevOps()) {
@@ -194,7 +177,21 @@ export class TestResultsAvailabilityService implements OnInit {
     return ['Reviewing', 'Released'];
   }
 
+  // Filter options are obtained from initial test results availability
+  getTestResultsSchoolYearOptions(): number[] {
+    // return [2020, 2019, 2018];
+    return this.mockTestResults.getTestResultsSchoolYearOptions();
+  }
+
+  getTestResultsDistrictOptions(): string[] {
+    return this.mockTestResults.getTestResultsDistrictOptions();
+  }
+
+  getTestResultsSubjectOptions(): string[] {
+    return this.mockTestResults.getTestResultsSubjectOptions();
+  }
+
   getTestResultsReportTypeOptions(): string[] {
-    return ['Individual', 'Aggregate'];
+    return this.mockTestResults.getTestResultsReportTypeOptions();
   }
 }
