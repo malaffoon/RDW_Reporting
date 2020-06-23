@@ -1,8 +1,8 @@
 import { TestResultAvailability } from './model/test-result-availability';
 
 export class MockTestResultsAvailability {
-  // TODO remove once real data is available
-  mockTestResults: TestResultAvailability[];
+  // TODO: replace once real data is available
+  mockTestResults: TestResultAvailability[] = this.getMockTestResults();
 
   getMockTestResults(): TestResultAvailability[] {
     return [
@@ -103,5 +103,34 @@ export class MockTestResultsAvailability {
         status: 'Released'
       }
     ];
+  }
+
+  // TODO: Make sure Filter options are obtained from REAL initial test results availability
+  getTestResultsSchoolYearOptions(): number[] {
+    return this.mockTestResults
+      .map(a => a.schoolYear)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
+  }
+
+  getTestResultsDistrictOptions(): string[] {
+    return this.mockTestResults
+      .map(a => a.district)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
+  }
+
+  getTestResultsSubjectOptions(): string[] {
+    return this.mockTestResults
+      .map(a => a.subject)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
+  }
+
+  getTestResultsReportTypeOptions(): string[] {
+    return this.mockTestResults
+      .map(a => a.reportType)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
   }
 }
