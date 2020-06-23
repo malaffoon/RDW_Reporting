@@ -267,6 +267,7 @@
       </div>
       <div class="modal-footer table-footer">
         <button
+          [disabled]="filteredTestResults.length == 0"
           (click)="openChangeResultsModal()"
           class="btn btn-primary"
           type="button"
