@@ -18,6 +18,7 @@ import { ExamSearchFilterService } from '../exam/service/exam-search-filter.serv
 import { ReportingEmbargoService } from '../shared/embargo/reporting-embargo.service';
 import { map } from 'rxjs/operators';
 import { createFilter } from '../shared/embargo/embargoes';
+import { AssessmentType } from '../shared/model/assessment-type';
 
 /**
  * Represents a specific type of score for an assessment (e.g. claim, alternate)
@@ -363,28 +364,36 @@ export class CsvExportService {
     filename: string
   ) {
     const compositeRows: any[] = [];
-    let maxPoints: number = 0;
+    let maxPoints = 0;
 
     exportRequest.assessmentItems.forEach((item, i) => {
-      exportRequest.summaries[i].rows
-        .filter(
-          row =>
-            exportRequest.assessment.type !== 'sum' ||
-            row.trait.type !== 'total'
-        )
-        .forEach(summary => {
-          compositeRows.push({
-            assessmentItem: item,
-            writingTraitAggregate: summary
-          });
+      exportRequest.summaries[i].forEach((summary, purpose) => {
+        summary.rows
+          .filter(
+            row =>
+              exportRequest.assessment.type !== 'sum' ||
+              row.trait.type !== 'total'
+          )
+          .forEach(row => {
+            compositeRows.push({
+              assessmentItem: item,
+              purpose: purpose,
+              writingTraitAggregate: row
+            });
 
-          if (summary.trait.maxPoints > maxPoints)
-            maxPoints = summary.trait.maxPoints;
-        });
+            if (row.trait.maxPoints > maxPoints) {
+              maxPoints = row.trait.maxPoints;
+            }
+          });
+      });
     });
 
     const getAssessment = () => exportRequest.assessment;
     const getAssessmentItem = item => item.assessmentItem;
+    const getPurpose = item =>
+      exportRequest.assessment.type === 'sum'
+        ? item.purpose
+        : item.assessmentItem.performanceTaskWritingType;
 
     this.embargoService.getEmbargo().subscribe(embargo => {
       // filter out embargoed results
@@ -408,7 +417,11 @@ export class CsvExportService {
         .withItemDifficulty(getAssessmentItem)
         .withStandards(getAssessmentItem)
         .withFullCredit(getAssessmentItem, exportRequest.showAsPercent)
-        .withPerformanceTaskWritingType(getAssessmentItem)
+        .withPerformanceTaskWritingType(
+          getPurpose,
+          exportRequest.assessment.subject,
+          exportRequest.assessment.type === 'sum'
+        )
         .withWritingTraitAggregate(
           item => item.writingTraitAggregate,
           maxPoints,

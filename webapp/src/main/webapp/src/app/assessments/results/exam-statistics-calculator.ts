@@ -8,6 +8,7 @@ import { Exam } from '../model/exam';
 import { DynamicItemField } from '../model/item-point-field.model';
 import { WritingTraitScoreSummary } from '../model/writing-trait-score-summary.model';
 import { ExamItemScore } from '../model/exam-item-score.model';
+import { WritingTrait } from '../model/writing-trait.model';
 
 @Injectable()
 export class ExamStatisticsCalculator {
@@ -109,17 +110,99 @@ export class ExamStatisticsCalculator {
     return pointFields;
   }
 
-  aggregateWritingTraitScores(
-    assessmentItems: AssessmentItem[]
-  ): WritingTraitScoreSummary[] {
-    let summaries: WritingTraitScoreSummary[] = [];
+  aggregateExamWritingTraitScores(
+    assessmentItems: AssessmentItem[],
+    writingTraits: WritingTrait[],
+    purposes: string[]
+  ) {
+    const summaryMaps = [];
+    const randomInt = max => Math.floor(Math.random() * Math.floor(max));
 
     assessmentItems.forEach(assessmentItem => {
-      let summary = new WritingTraitScoreSummary();
-      let itemsWithTraitScores = assessmentItem.scores.filter(
+      const summaryMap = new Map();
+      summaryMaps.push(summaryMap);
+
+      const totalTabs = randomInt(5);
+      if (totalTabs === 0) {
+        return;
+      }
+
+      const summaries = [];
+      for (let i = 0; i < totalTabs; i++) {
+        summaries.push(new WritingTraitScoreSummary(writingTraits));
+      }
+
+      const itemsWithTraitScores = assessmentItem.scores.filter(
         x => x.points >= 0 && x.writingTraitScores != null
       );
-      let totalAnswers = itemsWithTraitScores.length;
+      const totalAnswers = itemsWithTraitScores.length;
+
+      itemsWithTraitScores.forEach((score, index) => {
+        // TODO: this will eventually work with data keyed to subject-specific categories and purposes
+        // This is the retrieved data for a single purpose
+        summaries[0].aggregators.get('EVI').numbers[
+          score.writingTraitScores.evidence
+        ]++;
+        summaries[0].aggregators.get('ORG').numbers[
+          score.writingTraitScores.organization
+        ]++;
+        summaries[0].aggregators.get('CON').numbers[
+          score.writingTraitScores.conventions
+        ]++;
+
+        // Fake up more data.
+        for (let i = 1; i < totalTabs; i++) {
+          summaries[i].aggregators.get('EVI').numbers[
+            score.writingTraitScores.evidence
+          ] += randomInt(3);
+          summaries[i].aggregators.get('ORG').numbers[
+            score.writingTraitScores.organization
+          ] += randomInt(3);
+          summaries[i].aggregators.get('CON').numbers[
+            score.writingTraitScores.conventions
+          ] += randomInt(3);
+        }
+      });
+
+      // calculate the averages and the percents based on the raw numbers
+      summaries.forEach(summary =>
+        summary.rows.forEach((aggregate, points) => {
+          let total = 0;
+          let count = 0;
+
+          aggregate.numbers.forEach((num, index) => {
+            total += num * index;
+            count += num;
+
+            aggregate.percents[index] =
+              totalAnswers === 0 ? 0 : (num / totalAnswers) * 100;
+          });
+
+          aggregate.average = count === 0 ? 0 : total / count;
+        })
+      );
+
+      for (let i = 0; i < totalTabs; i++) {
+        summaryMap.set(purposes[i], summaries[i]);
+      }
+    });
+
+    return summaryMaps;
+  }
+
+  aggregateWritingTraitScores(assessmentItems: AssessmentItem[]) {
+    // Used for IAB and ICA assessments.
+    const summaryMaps = [];
+
+    assessmentItems.forEach(assessmentItem => {
+      const purpose = assessmentItem.performanceTaskWritingType;
+
+      const summary = WritingTraitScoreSummary.InterimScoreSummary();
+
+      const itemsWithTraitScores = assessmentItem.scores.filter(
+        x => x.points >= 0 && x.writingTraitScores != null
+      );
+      const totalAnswers = itemsWithTraitScores.length;
 
       itemsWithTraitScores.forEach((score, index) => {
         summary.evidence.numbers[score.writingTraitScores.evidence]++;
@@ -138,23 +221,24 @@ export class ExamStatisticsCalculator {
           count += num;
 
           aggregate.percents[index] =
-            totalAnswers == 0 ? 0 : (num / totalAnswers) * 100;
+            totalAnswers === 0 ? 0 : (num / totalAnswers) * 100;
         });
 
-        aggregate.average = count == 0 ? 0 : total / count;
+        aggregate.average = count === 0 ? 0 : total / count;
       });
 
-      summaries.push(summary);
+      const summaryMap = new Map([[purpose, summary]]);
+      summaryMaps.push(summaryMap);
     });
 
-    return summaries;
+    return summaryMaps;
   }
 
   aggregateItemsByResponse(assessmentItems: AssessmentItem[]) {
-    for (let item of assessmentItems) {
+    for (const item of assessmentItems) {
       this.assertNumberOfChoicesIsValid(item.numberOfChoices);
 
-      //Only include "scored" item scores
+      // Only include "scored" item scores
       const itemScores: ExamItemScore[] = item.scores.filter(
         score => score.points >= 0
       );

@@ -920,6 +920,7 @@
       "max-points": "Max Points",
       "student-points": "Student Points"
     },
+
     "subject-select-label": "Subject",
     "tenant-status": {
       "CREATE_STARTED": "Creating {{tenantType}}",
@@ -959,7 +960,8 @@
       "evidence": "Evidence / Elaboration",
       "organization": "Organization / Purpose",
       "total": "Transformed Points",
-      "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide."
+      "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide.",
+      "no-data": "There is no writing trait data to report."
     }
   },
   "common-ngx": {
