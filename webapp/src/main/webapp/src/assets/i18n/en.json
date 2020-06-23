@@ -2028,11 +2028,11 @@
     "filter-subject": "Subject",
     "history-link": "Audit History",
     "is-sandbox": "Test Results Availability Management is not available for Sandboxes. ",
-    "no-test-results": "Contact your administrator for access to test results.",
-    "report-type-tooltip": "Report Type Tooltip information here",
+    "no-test-results": "No results match your filter settings. Try adjusting your selections to see test results.",
+    "report-type-tooltip": "Filter your results by report type.",
     "selected-title": "Selected Test Results",
     "state-header": "State",
-    "status-tooltip": "Status Tooltip information here",
+    "status-tooltip": "Filter your results by current status.",
     "title": "Manage Test Results Availability"
   },
   "test-results-availability-change-status": {
