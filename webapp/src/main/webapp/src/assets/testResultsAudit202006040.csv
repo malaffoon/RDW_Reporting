@@ -1,10 +1,10 @@
-Date, User, State, SchoolYear, District, Subject, ReportType, NewStatus
-2020-06-03T06:03:08.215Z, userDevOps, California, 2020, District 12, Math, Aggregate, Reviewing
-2020-06-03T06:03:08.215Z, userDevOps, California, 2020, District 2, ELA, Individual, Reviewing
-2020-06-02T15:28:29.515Z, userStateAdmin, California, 2020, District 13, Science, Aggregate, Released
-2020-06-01T19:45:84.093Z, userDistrict4Admin, California, 2020, District 4, ELPAC, Aggregate, Released
-2020-05-31T06:05:19.122Z, userDevOps, California, 2020, District 4, ELPAC, Aggregate, Reviewing
-2020-05-31T01:34:03.122Z, userDevOps, California, 2020, District 4, ELPAC, Aggregate, Loading
-2020-05-30T20:21:32.411Z, userDistrict4Admin, California, 2020, District 4, ELPAC, Aggregate, Released
-2020-05-28T20:21:32.411Z, userStateAdmin, California, 2020, District 4, Science, Aggregate, Released
-2020-05-28T12:13:27.901Z, userDistrict4Admin, California, 2020, District 4, ELPAC, Aggregate, Released
+State, SchoolYear, District, Subject, ReportType, User,  Date, NewStatus
+California,  2020, District 12, Math, Aggregate, userDevOps, 2020-06-03T06:03:08.215Z, Reviewing
+California, 2020, District 2, ELA, Individual, userDevOps, 2020-06-03T06:03:08.215Z, Reviewing
+California, 2020, District 13, Science, Aggregate, userStateAdmin, 2020-06-02T15:28:29.515Z, Released
+California, 2020, District 4, ELPAC, Aggregate, userDistrict4Admin, 2020-06-01T19:45:84.093Z, Released
+California, 2020, District 4, ELPAC, Aggregate, userStateAdmin,2020-05-31T06:05:19.122Z,  Reviewing
+California, 2020, District 4, ELPAC, Aggregate, userDevOps,  2020-05-31T01:34:03.122Z, Loading
+California, 2020, District 4, ELPAC, Aggregate, userDistrict4Admin, 2020-03-30T20:21:32.411Z, Released
+California, 2020, District 4, Science, Aggregate, userDevOps,  2020-01-28T20:21:32.411Z, Released
+California, 2019, District 12, ELPAC, Aggregate, userDistrict12Admin, 2019-12-18T12:13:27.901Z, Released
