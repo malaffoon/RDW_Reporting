@@ -8,7 +8,7 @@ export class MockTestResultsAvailability {
     return [
       {
         schoolYear: 2020,
-        district: 'District 12',
+        district: 'QA Test District',
         subject: 'Math',
         reportType: 'Individual',
         resultCount: 0,
@@ -16,15 +16,15 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2020,
-        district: 'District 12',
+        district: 'QA Test District',
         subject: 'Science',
         reportType: 'Aggregate',
-        resultCount: 0,
+        resultCount: 50,
         status: 'Loading'
       },
       {
         schoolYear: 2020,
-        district: 'District 4',
+        district: 'Crom District',
         subject: 'Science',
         reportType: 'Aggregate',
         resultCount: 10560,
@@ -32,7 +32,7 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2019,
-        district: 'District 5',
+        district: 'Magnet District',
         subject: 'ELA',
         reportType: 'Aggregate',
         resultCount: 12834,
@@ -40,7 +40,7 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2019,
-        district: 'District 13',
+        district: 'Alpaca Nunbird District',
         subject: 'ELA',
         reportType: 'Aggregate',
         resultCount: 44893,
@@ -48,15 +48,15 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2019,
-        district: 'District 13',
+        district: 'Alpaca Nunbird District',
         subject: 'ELPAC',
         reportType: 'Aggregate',
         resultCount: 6720,
-        status: 'Released'
+        status: 'Reviewing'
       },
       {
         schoolYear: 2018,
-        district: 'District 13',
+        district: 'Alpaca Nunbird District',
         subject: 'ELPAC',
         reportType: 'Aggregate',
         resultCount: 9021,
@@ -64,7 +64,7 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2020,
-        district: 'District 5',
+        district: 'Magnet District',
         subject: 'ELPAC',
         reportType: 'Aggregate',
         resultCount: 23528,
@@ -72,15 +72,23 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2018,
-        district: 'District 5',
-        subject: 'ELA',
+        district: 'Igen District',
+        subject: 'Science',
         reportType: 'Individual',
         resultCount: 7032,
         status: 'Released'
       },
       {
+        schoolYear: 2019,
+        district: 'Magnet District',
+        subject: 'ELA',
+        reportType: 'Individual',
+        resultCount: 9205,
+        status: 'Released'
+      },
+      {
         schoolYear: 2018,
-        district: 'District 7',
+        district: 'Igen District',
         subject: 'Math',
         reportType: 'Aggregate',
         resultCount: 80214,
@@ -88,7 +96,7 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2019,
-        district: 'District 2',
+        district: 'QA Test District',
         subject: 'Math',
         reportType: 'Aggregate',
         resultCount: 80214,
@@ -96,7 +104,7 @@ export class MockTestResultsAvailability {
       },
       {
         schoolYear: 2020,
-        district: 'District 12',
+        district: 'QA Test District',
         subject: 'Math',
         reportType: 'Aggregate',
         resultCount: 80214,
