@@ -308,14 +308,27 @@
         </ng-template>
       </p-tabPanel>
     </p-tabView>
-    <div
-      *ngIf="traitScoreSummary.size === 0"
-      class="well well-empty text-center"
-    >
-      <h2>
-        <i class="fa fa-table"></i><br />
-        {{ 'common.writing-trait.no-data' | translate }}
-      </h2>
+
+    <div *ngIf="traitScoreSummary.size === 0">
+      <ul
+        class="nav nav-tabs"
+        ng-reflect-klass="nav"
+        ng-reflect-ng-class="[object Object]"
+      >
+        <li
+          class="nav-item active ng-star-inserted"
+          ng-reflect-ng-class="nav-item,"
+        >
+          <a class="nav-link active">
+            {{ 'common.results.assessment-item-columns.purpose' | translate }}
+          </a>
+        </li>
+      </ul>
+      <div class="well well-empty">
+        <p class="text-muted ng-star-inserted">
+          {{ 'common.writing-trait.no-data' | translate }}
+        </p>
+      </div>
     </div>
   </div>
 </ng-template>

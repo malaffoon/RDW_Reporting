@@ -286,12 +286,15 @@ body {
   }
 }
 /**Writing Trait Scores UI Updates **/
-body .ui-widget {
-  font-family: inherit;
+writing-trait-scores a.nav-link.active {
+  background-color: #f8f8f8;
 }
 .ui-table td.ng-star-inserted {
   min-width: 50px;
   max-width: 200px;
+}
+body .ui-widget {
+  font-family: inherit;
 }
 body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-active {
   color: @blue;
@@ -343,6 +346,9 @@ body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default {
 .table tr th.level-up,
 .table tr td.level-up {
   background-image: none;
+}
+.ui-table .ui-table-tbody > tr > td.level-down th.level-down.ng-star-inserted {
+  padding-left: 8px !important;
 }
 .table tr th.level-down:before {
   display: none;
