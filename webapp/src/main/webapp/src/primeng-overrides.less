@@ -289,6 +289,10 @@ body {
 body .ui-widget {
   font-family: inherit;
 }
+.ui-table td.ng-star-inserted {
+  min-width: 50px;
+  max-width: 200px;
+}
 body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-active {
   color: @blue;
   background-color: @white;
@@ -349,7 +353,7 @@ body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default {
 }
 
 //ISR Template UI Overrides
-.ui-table-wrapper td i.fa {
+isr-template .ui-table-wrapper td i.fa {
   font-size: 21px;
   margin: 0 15px;
 }
