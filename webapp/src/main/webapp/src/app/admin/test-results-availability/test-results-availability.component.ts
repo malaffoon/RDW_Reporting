@@ -7,10 +7,12 @@ import { TestResultAvailability } from './model/test-result-availability';
 import { TestResultsAvailabilityService } from './service/test-results-availability.service';
 import { TestResultAvailabilityFilters } from './model/test-result-availability-filters';
 import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
+import { Download } from '../../shared/data/download.model';
+import { saveAs } from 'file-saver';
 
 class Column {
   id: string; // en.json name
-  field: string; // TestResult field
+  field: string; // TestResult fielf
   sortable: boolean;
 
   constructor({ id, field = '', sortable = true }) {
@@ -35,8 +37,10 @@ export class TestResultsAvailabilityComponent implements OnInit {
   ];
   private _testResultsAvailability: TestResultAvailability[];
 
-  changeResultsTooltip: string =
-    'Change status of selected test results availability (all pages).';
+  changeResultsTooltip = `${this.translate.instant(
+    'test-results-availability.change-results-tooltip'
+  )}`;
+  // 'Change status of selected test results availability (all pages).';
   testResultAvailabilityFilters: TestResultAvailabilityFilters;
   filteredTestResults: TestResultAvailability[];
 
@@ -64,7 +68,8 @@ export class TestResultsAvailabilityComponent implements OnInit {
     private modalService: BsModalService,
     private translateService: TranslateService,
     private notificationService: NotificationService,
-    private testResultsService: TestResultsAvailabilityService
+    private testResultsService: TestResultsAvailabilityService,
+    private translate: TranslateService
   ) {}
 
   get testResultsAvailability(): TestResultAvailability[] {
@@ -160,7 +165,23 @@ export class TestResultsAvailabilityComponent implements OnInit {
       ? 'reviewingColor'
       : 'releasedColor';
   }
-  onDownloadAuditFile() {}
+
+  downloadAuditFile(): void {
+    // replace download file name with date info
+    const now = this.testResultsService.formatAsLocalDate(new Date());
+    const auditFilename =
+      `${this.translate.instant('test-results-availability.audit-filename')}_` +
+      now +
+      `.csv`;
+    this.testResultsService.getTemplateFile().subscribe(
+      (download: Download) => {
+        saveAs(download.content, auditFilename);
+      },
+      (error: Error) => {
+        console.error(error);
+      }
+    );
+  }
 
   closeSuccessAlert() {
     this.successfulChange = false;
