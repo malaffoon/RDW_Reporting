@@ -34,8 +34,16 @@ export class TestResultsAvailabilityService implements OnInit {
     testResultFilters: TestResultAvailabilityFilters
   ): TestResultAvailability[] {
     // TODO: replace with real data
+
+    // Default Sort order SchoolYear(D),District(A),Subject(A),ReportType(A),Status(A)
     let testResults = this.mockTestResults.getMockTestResults().sort((a, b) => {
-      return b.schoolYear - a.schoolYear;
+      return (
+        b.schoolYear - a.schoolYear ||
+        a.district.localeCompare(b.district) ||
+        a.subject.localeCompare(b.subject) ||
+        a.reportType.localeCompare(b.reportType) ||
+        a.status.localeCompare(b.status)
+      );
     });
 
     if (this.validateTestResultsFilterAreDefault(testResultFilters)) {
