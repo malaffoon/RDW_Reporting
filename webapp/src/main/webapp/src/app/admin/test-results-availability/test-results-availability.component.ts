@@ -12,7 +12,7 @@ import { saveAs } from 'file-saver';
 
 class Column {
   id: string; // en.json name
-  field: string; // TestResult fielf
+  field: string; // TestResult field
   sortable: boolean;
 
   constructor({ id, field = '', sortable = true }) {
