@@ -4,8 +4,8 @@
     <li>
       <a
         class="btn btn-secondary download-ref-temp"
-        href="/assets/template/reference-template.html"
-        download="/assets/template/reference-template.html"
+        (click)="downloadReferenceTemplate(null)"
+        href="javascript:void(0)"
         tooltip="{{ 'isr-template.reference-tooltip' | translate }}"
         ><i class="fa fa-cloud-download" aria-hidden="false"></i>
         {{ 'isr-template.reference-template' | translate }}</a
@@ -113,8 +113,8 @@
                   <ng-container>
                     <span *ngIf="showIcons(rowData)">
                       <a
-                        href="/assets/template/test-template.csv"
-                        download="/assets/template/test-template.csv"
+                        (click)="downloadReportTemplate(rowData)"
+                        href="javascript:void(0)"
                         ><i
                           class="fa fa-cloud-download"
                           title="{{
