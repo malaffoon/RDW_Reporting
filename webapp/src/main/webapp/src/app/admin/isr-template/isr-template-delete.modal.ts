@@ -44,16 +44,14 @@ export class IsrTemplateDeleteModal implements OnInit {
   }
 
   delete() {
-    console.log(this.isrTemplate.templateName + ' Sandbox?' + this.sandboxUser);
     if (this.sandboxUser) {
-      console.log('IS SANDBOX');
       // is a sandbox, do not allow and actual test results status changes
       // keep modal up to display message to user
       this.showSandboxAlert = true;
     } else {
       this.isrTemplateService.delete(this.isrTemplate);
       this.deleteSuccessful = true;
-      // set to true to test alert
+      // set to true to test error alert
       this.unableToDelete = false;
       this.triggerDeleteTemplate(this.deleteSuccessful, this.unableToDelete);
       this.modal.hide();
