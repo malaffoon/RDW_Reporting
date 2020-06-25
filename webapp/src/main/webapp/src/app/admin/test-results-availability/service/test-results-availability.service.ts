@@ -2,6 +2,12 @@ import { Injectable, OnInit } from '@angular/core';
 import { TestResultAvailability } from '../model/test-result-availability';
 import { TestResultAvailabilityFilters } from '../model/test-result-availability-filters';
 import { MockTestResultsAvailability } from '../mockTestResultsAvailability';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Download } from '../../../shared/data/download.model';
+import { Http } from '@angular/http';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +30,19 @@ export class TestResultsAvailabilityService implements OnInit {
   private sandbox = false; // set from session info
   private adminDistrict = 'District 12'; // default district for districtAdmin
 
+  constructor(
+    private datePipe: TranslateDatePipe,
+    private http: Http,
+    private translate: TranslateService
+  ) {}
+
   ngOnInit(): void {
     this.setTestResultFilterDefaults();
     this.testResultFilters = this.getTestResultAvailabilityFilterDefaults();
+  }
+
+  formatAsLocalDate(date: Date): string {
+    return this.datePipe.transform(date, 'yyyy-MM-dd');
   }
 
   // receive test results and apply filter's options
@@ -187,7 +203,6 @@ export class TestResultsAvailabilityService implements OnInit {
 
   // Filter options are obtained from initial test results availability
   getTestResultsSchoolYearOptions(): number[] {
-    // return [2020, 2019, 2018];
     return this.mockTestResults.getTestResultsSchoolYearOptions();
   }
 
@@ -201,5 +216,22 @@ export class TestResultsAvailabilityService implements OnInit {
 
   getTestResultsReportTypeOptions(): string[] {
     return this.mockTestResults.getTestResultsReportTypeOptions();
+  }
+
+  public getTemplateFile(): Observable<any> {
+    // TODO: Replace with call to real file location
+    return this.http
+      .get('/assets/testResultsAudit202006040.csv')
+      .pipe(
+        map(
+          response =>
+            new Download(
+              `${this.translate.instant(
+                'test-results-availability.audit-filename'
+              )}.csv`,
+              new Blob([response.text()], { type: 'text/csv; charset=utf-8' })
+            )
+        )
+      );
   }
 }

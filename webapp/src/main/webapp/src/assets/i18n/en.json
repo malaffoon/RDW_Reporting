@@ -2011,6 +2011,8 @@
   },
   "test-results-availability": {
     "all-text": "All",
+    "audit-filename": "test_results_availability_audit",
+    "change-results-tooltip": "Change status of selected test results availability (all pages).",
     "change-status": "Change Status",
     "columns": {
       "school-year": "School Year",
