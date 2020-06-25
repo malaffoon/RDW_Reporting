@@ -8,8 +8,6 @@ import { Http } from '@angular/http';
 
 @Injectable()
 export class IsrTemplateService {
-  sandbox = false; // TODO: set from session info
-
   constructor(private datePipe: TranslateDatePipe, private http: Http) {}
 
   formatAsLocalDate(date: Date): string {

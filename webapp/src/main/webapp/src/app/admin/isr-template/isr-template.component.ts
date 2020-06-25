@@ -9,6 +9,8 @@ import { IsrTemplateService } from './service/isr-template.service';
 import { IsrTemplateDeleteModal } from './isr-template-delete.modal';
 import { Download } from '../../shared/data/download.model';
 import { saveAs } from 'file-saver';
+import { UserService } from '../../shared/security/service/user.service';
+import { map } from 'rxjs/operators';
 
 class Column {
   id: string; // en.json name
@@ -51,22 +53,14 @@ export class IsrTemplateComponent implements OnInit {
     allowedFileType: ['image', 'pdf', 'html']
   });
 
-  public onFileSelected(event: EventEmitter<File[]>) {
-    if (this.isrTemplateService.sandbox) {
-      this.showSandboxAlert = true;
-    } else {
-      const file: File = event[0];
-      console.log(file);
-    }
-  }
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private modalService: BsModalService,
     private translateService: TranslateService,
     private notificationService: NotificationService,
-    private isrTemplateService: IsrTemplateService
+    private isrTemplateService: IsrTemplateService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -85,21 +79,40 @@ export class IsrTemplateComponent implements OnInit {
   }
 
   openDeleteTemplateModal(rowData: IsrTemplate) {
-    let modalReference: BsModalRef = this.modalService.show(
-      IsrTemplateDeleteModal,
-      {}
-    );
-    let modal: IsrTemplateDeleteModal = modalReference.content;
-    modal.isrTemplate = rowData;
+    this.userService
+      .getUser()
+      .pipe(map(user => user.sandboxUser))
+      .subscribe(sandboxUser => {
+        const modalReference: BsModalRef = this.modalService.show(
+          IsrTemplateDeleteModal,
+          {}
+        );
+        const modal: IsrTemplateDeleteModal = modalReference.content;
+        modal.isrTemplate = rowData;
+        modal.sandboxUser = sandboxUser;
+        modal.deleteTemplateEvent.subscribe(res => {
+          this.successfulDelete = res.data;
+          this.unableToDelete = res.error;
+        });
 
-    modal.deleteTemplateEvent.subscribe(res => {
-      this.successfulDelete = res.data;
-      this.unableToDelete = res.error;
-    });
+        if (this.successfulDelete) {
+          // TODO: refresh template list
+        }
+      });
+  }
 
-    if (this.successfulDelete) {
-      // TODO: refresh template list
-    }
+  onFileSelected(event: EventEmitter<File[]>) {
+    this.userService
+      .getUser()
+      .pipe(map(user => user.sandboxUser))
+      .subscribe(sandboxUser => {
+        if (sandboxUser) {
+          this.showSandboxAlert = true;
+        } else {
+          const file: File = event[0];
+          console.log(file);
+        }
+      });
   }
 
   closeErrorAlert() {

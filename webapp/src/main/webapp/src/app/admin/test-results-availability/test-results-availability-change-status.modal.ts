@@ -21,6 +21,7 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   unableToChange: boolean;
   successfulChange: boolean;
   showSandboxAlert: boolean; // if sandbox and user tries to change status
+  sandboxUser: boolean;
 
   constructor(
     private modal: BsModalRef,
@@ -48,7 +49,7 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   }
 
   changeTestResults(): void {
-    if (this.service.isSandbox()) {
+    if (this.sandboxUser) {
       // is a sandbox, do not allow and actual test results status changes
       // keep modal up to display message to user
       this.showSandboxAlert = true;
