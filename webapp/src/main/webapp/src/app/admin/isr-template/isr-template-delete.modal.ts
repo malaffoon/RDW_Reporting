@@ -19,6 +19,7 @@ export class IsrTemplateDeleteModal implements OnInit {
   deleteSuccessful: boolean;
   unableToDelete: boolean;
   showSandboxAlert: boolean; // if sandbox and user tries to change status
+  sandboxUser: boolean;
 
   constructor(
     private modal: BsModalRef,
@@ -43,12 +44,8 @@ export class IsrTemplateDeleteModal implements OnInit {
   }
 
   delete() {
-    console.log(
-      this.isrTemplate.templateName +
-        ' Sandbox?' +
-        this.isrTemplateService.sandbox
-    );
-    if (this.isrTemplateService.sandbox) {
+    console.log(this.isrTemplate.templateName + ' Sandbox?' + this.sandboxUser);
+    if (this.sandboxUser) {
       console.log('IS SANDBOX');
       // is a sandbox, do not allow and actual test results status changes
       // keep modal up to display message to user

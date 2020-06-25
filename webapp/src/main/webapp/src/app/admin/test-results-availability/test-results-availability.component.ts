@@ -9,6 +9,8 @@ import { TestResultAvailabilityFilters } from './model/test-result-availability-
 import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
 import { Download } from '../../shared/data/download.model';
 import { saveAs } from 'file-saver';
+import { UserService } from '../../shared/security/service/user.service';
+import { map } from 'rxjs/operators';
 
 class Column {
   id: string; // en.json name
@@ -69,7 +71,8 @@ export class TestResultsAvailabilityComponent implements OnInit {
     private translateService: TranslateService,
     private notificationService: NotificationService,
     private testResultsService: TestResultsAvailabilityService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private userService: UserService
   ) {}
 
   get testResultsAvailability(): TestResultAvailability[] {
@@ -82,18 +85,24 @@ export class TestResultsAvailabilityComponent implements OnInit {
   }
 
   openChangeResultsModal() {
-    let modalReference: BsModalRef = this.modalService.show(
-      TestResultsAvailabilityChangeStatusModal,
-      {}
-    );
-    let modal: TestResultsAvailabilityChangeStatusModal =
-      modalReference.content;
-    modal.selectedFilters = this.testResultAvailabilityFilters;
-    modal.statusOptions = this.statusOptions;
-    modal.changeStatusEvent.subscribe(res => {
-      this.successfulChange = res.data;
-      this.unableToChange = res.error;
-    });
+    this.userService
+      .getUser()
+      .pipe(map(user => user.sandboxUser))
+      .subscribe(sandboxUser => {
+        const modalReference: BsModalRef = this.modalService.show(
+          TestResultsAvailabilityChangeStatusModal,
+          {}
+        );
+        const modal: TestResultsAvailabilityChangeStatusModal =
+          modalReference.content;
+        modal.selectedFilters = this.testResultAvailabilityFilters;
+        modal.statusOptions = this.statusOptions;
+        modal.sandboxUser = sandboxUser;
+        modal.changeStatusEvent.subscribe(res => {
+          this.successfulChange = res.data;
+          this.unableToChange = res.error;
+        });
+      });
   }
 
   ngOnInit() {

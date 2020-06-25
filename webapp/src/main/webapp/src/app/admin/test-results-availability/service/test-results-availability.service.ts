@@ -27,7 +27,6 @@ export class TestResultsAvailabilityService implements OnInit {
   //   and user change to see the different Test Results Configurations
   private districtAdmin = false; // set from User's permissions
   private devOps = true; // set from User's permissions
-  private sandbox = false; // set from session info
   private adminDistrict = 'District 12'; // default district for districtAdmin
 
   constructor(
@@ -52,15 +51,17 @@ export class TestResultsAvailabilityService implements OnInit {
     // TODO: replace with real data
 
     // Default Sort order SchoolYear(D),District(A),Subject(A),ReportType(A),Status(A)
-    let testResults = this.mockTestResults.getMockTestResults().sort((a, b) => {
-      return (
-        b.schoolYear - a.schoolYear ||
-        a.district.localeCompare(b.district) ||
-        a.subject.localeCompare(b.subject) ||
-        a.reportType.localeCompare(b.reportType) ||
-        a.status.localeCompare(b.status)
-      );
-    });
+    const testResults = this.mockTestResults
+      .getMockTestResults()
+      .sort((a, b) => {
+        return (
+          b.schoolYear - a.schoolYear ||
+          a.district.localeCompare(b.district) ||
+          a.subject.localeCompare(b.subject) ||
+          a.reportType.localeCompare(b.reportType) ||
+          a.status.localeCompare(b.status)
+        );
+      });
 
     if (this.validateTestResultsFilterAreDefault(testResultFilters)) {
       return testResults;
@@ -164,10 +165,6 @@ export class TestResultsAvailabilityService implements OnInit {
 
   isDevOps(): boolean {
     return this.devOps;
-  }
-
-  isSandbox(): boolean {
-    return this.sandbox;
   }
 
   generateAuditHistory() {
