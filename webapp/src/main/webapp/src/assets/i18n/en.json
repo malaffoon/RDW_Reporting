@@ -1210,7 +1210,7 @@
       },
       "isr-template": {
         "button": "ISR Templates",
-        "description": "Manage ISR Templates."
+        "description": "Manage Individual Student Report (ISR) Templates."
       },
       "organizational-export": {
         "button": "District / School Exports",
