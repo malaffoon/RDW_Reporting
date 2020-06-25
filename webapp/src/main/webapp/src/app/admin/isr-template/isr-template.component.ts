@@ -7,6 +7,8 @@ import { FileUploader } from 'ng2-file-upload';
 import { IsrTemplate } from './model/isr-template';
 import { IsrTemplateService } from './service/isr-template.service';
 import { IsrTemplateDeleteModal } from './isr-template-delete.modal';
+import { Download } from '../../shared/data/download.model';
+import { saveAs } from 'file-saver';
 
 class Column {
   id: string; // en.json name
@@ -106,5 +108,26 @@ export class IsrTemplateComponent implements OnInit {
 
   closeSandboxAlert() {
     this.showSandboxAlert = false;
+  }
+
+  downloadReferenceTemplate(fileName: string) {
+    this.isrTemplateService.getTemplateFile().subscribe(
+      (download: Download) => {
+        saveAs(download.content, fileName === null ? download.name : fileName);
+      },
+      (error: Error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  downloadReportTemplate(rowData: IsrTemplate): void {
+    this.downloadReferenceTemplate(
+      this.getTemplateReportName(rowData.subject, rowData.assessmentType)
+    );
+  }
+
+  getTemplateReportName(subject: string, assessmentType: string): string {
+    return subject + '-' + assessmentType + '-report.html';
   }
 }

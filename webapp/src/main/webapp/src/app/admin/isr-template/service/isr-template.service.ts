@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 import { IsrTemplate } from '../model/isr-template';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Download } from '../../../shared/data/download.model';
+import { Http } from '@angular/http';
 
 @Injectable()
 export class IsrTemplateService {
   sandbox = false; // TODO: set from session info
 
-  constructor(private datePipe: TranslateDatePipe) {}
+  constructor(private datePipe: TranslateDatePipe, private http: Http) {}
 
   formatAsLocalDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd hh:mm');
@@ -86,5 +89,21 @@ export class IsrTemplateService {
         uploadedDate: new Date('June 4, 2020')
       }
     ];
+  }
+
+  public getTemplateFile(): Observable<any> {
+    // TODO: Replace with call to real file location
+    const referenceTemplate = '/assets/template/reference-template.html';
+    return this.http
+      .get(referenceTemplate)
+      .pipe(
+        map(
+          response =>
+            new Download(
+              'reference-template.html',
+              new Blob([response.text()], { type: 'text/html; charset=utf-8' })
+            )
+        )
+      );
   }
 }
