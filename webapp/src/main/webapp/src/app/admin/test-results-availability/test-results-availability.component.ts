@@ -114,7 +114,7 @@ export class TestResultsAvailabilityComponent implements OnInit {
     this.testResultsService.setTestResultFilterDefaults();
     this.testResultAvailabilityFilters = this.testResultsService.getTestResultAvailabilityFilterDefaults();
     if (!this.showDistrictFilter) {
-      this.userDistrict = this.testResultsService.getAdminUserDistrict(); //used when user is DistrictAdmin
+      this.userDistrict = this.testResultsService.getAdminUserDistrict(); // used when user is DistrictAdmin
       this.testResultAvailabilityFilters.district = this.userDistrict;
     }
     this.testResultsAvailability = this.testResultsService.getTestResults(

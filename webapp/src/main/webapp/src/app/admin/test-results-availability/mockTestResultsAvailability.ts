@@ -118,7 +118,7 @@ export class MockTestResultsAvailability {
     return this.mockTestResults
       .map(a => a.schoolYear)
       .filter((value, index, self) => self.indexOf(value) === index)
-      .sort();
+      .sort((a, b) => b - a);
   }
 
   getTestResultsDistrictOptions(): string[] {
