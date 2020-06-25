@@ -775,7 +775,8 @@ export class CsvBuilder {
       ),
       item =>
         this.translateService.instant(
-          'common.writing-trait.' + getWritingTraitAggregate(item).trait.type
+          'subject.ELA.trait.category.' +
+            getWritingTraitAggregate(item).trait.type
         )
     );
 

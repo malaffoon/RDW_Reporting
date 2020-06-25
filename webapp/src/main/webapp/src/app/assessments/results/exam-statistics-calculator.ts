@@ -116,7 +116,7 @@ export class ExamStatisticsCalculator {
     purposes: string[]
   ) {
     const summaryMaps = [];
-    const randomInt = max => Math.floor(Math.random() * Math.floor(max));
+    const randomInt = max => Math.floor(Math.random() * (max + 1));
 
     assessmentItems.forEach(assessmentItem => {
       const summaryMap = new Map();
@@ -154,13 +154,13 @@ export class ExamStatisticsCalculator {
         for (let i = 1; i < totalTabs; i++) {
           summaries[i].aggregators.get('EVI').numbers[
             score.writingTraitScores.evidence
-          ] += randomInt(3);
+          ] += randomInt(2);
           summaries[i].aggregators.get('ORG').numbers[
             score.writingTraitScores.organization
-          ] += randomInt(3);
+          ] += randomInt(2);
           summaries[i].aggregators.get('CON').numbers[
             score.writingTraitScores.conventions
-          ] += randomInt(3);
+          ] += randomInt(2);
         }
       });
 
