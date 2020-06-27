@@ -44,7 +44,7 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
     this.successfulChange = false;
   }
 
-  private cancel() {
+  cancel() {
     this.modal.hide();
   }
 
