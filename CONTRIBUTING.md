@@ -228,13 +228,15 @@ non-trivial configurations. This section is a stream-of-consciousness dump of st
 
 For SandboxCreation, a list of datasets is required. Locally they won't exist.
 so if you add the following to your application.yml to list 'available' datasets.
-# Only here for local Dev for Sandbox creation, not real dataSets
+#### Only here for local Dev for Sandbox creation, not real dataSets
+```yaml
 sandbox-properties:
   sandboxDatasets:
     - label: Demo Dataset
       id: demo-dataset
     - label: SBAC Dataset
       id: sbac-dataset
+```
 **NOTE: do NOT check in this change to the file!**
 
 
