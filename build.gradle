@@ -57,6 +57,7 @@ subprojects {
         rootProject.ext['jackson.version'] = '2.9.9'
         rootProject.ext['mockito.version'] = '2.28.2'
         rootProject.ext['mysql.version'] = '5.1.46'  // 5.1.47 causes problems
+        rootProject.ext['flyway.version'] = '5.2.4'
         rootProject.ext['thymeleaf.version'] = '3.0.6.RELEASE'
         rootProject.ext['thymeleaf-layout-dialect.version'] = '2.1.1'
 
@@ -74,6 +75,7 @@ subprojects {
 
             // commonly used libraries
             implementation "mysql:mysql-connector-java:${rootProject.ext['mysql.version']}"
+            implementation "org.flywaydb:flyway-core:${rootProject.ext['flyway.version']}"
             implementation 'com.google.guava:guava:27.0.1-jre'
             implementation 'commons-io:commons-io:2.6'
             implementation 'io.jsonwebtoken:jjwt:0.9.0'
@@ -83,7 +85,6 @@ subprojects {
             implementation 'org.apache.pdfbox:pdfbox:2.0.7'
             implementation 'org.slf4j:slf4j-api:1.7.26'
             implementation 'org.thymeleaf:thymeleaf:3.0.6.RELEASE'
-            implementation "org.flywaydb:flyway-core:5.2.4"
 
             // jackson
             implementation "com.fasterxml.jackson.core:jackson-annotations:${rootProject.ext['jackson.version']}"
