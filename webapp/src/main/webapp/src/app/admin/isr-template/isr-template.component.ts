@@ -136,11 +136,40 @@ export class IsrTemplateComponent implements OnInit {
 
   downloadReportTemplate(rowData: IsrTemplate): void {
     this.downloadReferenceTemplate(
-      this.getTemplateReportName(rowData.subject, rowData.assessmentType)
+      this.isrTemplateService.getTemplateReportName(
+        rowData.subject,
+        rowData.assessmentType
+      )
     );
   }
 
-  getTemplateReportName(subject: string, assessmentType: string): string {
-    return subject + '-' + assessmentType + '-report.html';
+  getDownloadLabel(rowData: IsrTemplate): string {
+    return (
+      `${this.translateService.instant('isr-template.label-aria-download')}` +
+      this.getTemplateMessage(rowData)
+    );
+  }
+
+  getUploadLabel(rowData: IsrTemplate): string {
+    return (
+      `${this.translateService.instant('isr-template.label-aria-upload')}` +
+      this.getTemplateMessage(rowData)
+    );
+  }
+
+  getDeletedLabel(rowData: IsrTemplate): string {
+    return (
+      `${this.translateService.instant('isr-template.label-aria-delete')}` +
+      this.getTemplateMessage(rowData)
+    );
+  }
+
+  getTemplateMessage(rowData: IsrTemplate): string {
+    return (
+      rowData.subject +
+      ' ' +
+      rowData.assessmentType +
+      `${this.translateService.instant('isr-template.label-aria-template')}`
+    );
   }
 }

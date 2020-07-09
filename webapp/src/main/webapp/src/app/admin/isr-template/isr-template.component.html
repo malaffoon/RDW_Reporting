@@ -7,6 +7,7 @@
         (click)="downloadReferenceTemplate(null)"
         href="javascript:void(0)"
         tooltip="{{ 'isr-template.reference-tooltip' | translate }}"
+        aria-label="Download the reference template"
         ><i class="fa fa-cloud-download" aria-hidden="false"></i>
         {{ 'isr-template.reference-template' | translate }}</a
       >
@@ -22,6 +23,7 @@
         class="close"
         title="{{ 'common.action.close' | translate }}"
         (click)="closeErrorAlert()"
+        aria-label="Close error alert"
       >
         <span aria-hidden="true">&times;</span>
       </button>
@@ -32,6 +34,7 @@
         type="button"
         class="close"
         title="{{ 'common.action.close' | translate }}"
+        aria-label="Close warning message that function is not available"
         (click)="closeSandboxAlert()"
       >
         <span aria-hidden="true">&times;</span>
@@ -96,31 +99,25 @@
                     (onFileSelected)="onFileSelected($event)"
                   />
                   <a
-                    (click)="fileInput.click()"
                     href="javascript:void(0)"
+                    (click)="fileInput.click()"
+                    [attr.aria-label]="getUploadLabel(rowData)"
                     title="{{
                       'isr-template.upload-template-title' | translate
                     }}"
-                    ><i
-                      class="fa fa-upload"
-                      aria-hidden="true"
-                      title="{{
-                        'isr-template.upload-template-title' | translate
-                      }}"
-                    ></i>
+                    ><i class="fa fa-upload"></i>
                   </a>
 
                   <ng-container>
                     <span *ngIf="showIcons(rowData)">
                       <a
-                        (click)="downloadReportTemplate(rowData)"
                         href="javascript:void(0)"
-                        ><i
-                          class="fa fa-cloud-download"
-                          title="{{
-                            'isr-template.download-template-title' | translate
-                          }}"
-                        ></i>
+                        (click)="downloadReportTemplate(rowData)"
+                        [attr.aria-label]="getDownloadLabel(rowData)"
+                        title="{{
+                          'isr-template.download-template-title' | translate
+                        }}"
+                        ><i class="fa fa-cloud-download"></i>
                       </a>
                     </span>
                   </ng-container>
@@ -129,15 +126,11 @@
                     <a
                       href="javascript:void(0);"
                       (click)="openDeleteTemplateModal(rowData)"
+                      [attr.aria-label]="getDeletedLabel(rowData)"
                       title="{{
                         'isr-template.remove-template-title' | translate
                       }}"
-                      ><i
-                        class="fa fa-ban"
-                        title="{{
-                          'isr-template.remove-template-title' | translate
-                        }}"
-                      ></i>
+                      ><i class="fa fa-ban"></i>
                     </a>
                   </span>
                 </span>
