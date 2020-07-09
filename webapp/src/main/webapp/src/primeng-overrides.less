@@ -332,12 +332,7 @@ body .ui-tabview .ui-tabview-panel {
 body .ui-tabview.ui-tabview-top .ui-tabview-nav li {
   border-bottom: none;
 }
-:focus {
-  outline: none !important;
-  outline-color: transparent;
-  outline-style: auto;
-  outline-width: 1px;
-}
+
 body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default a {
   padding: 10px 15px;
   color: @blue;
@@ -368,7 +363,10 @@ body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default {
 //ISR Template UI Overrides
 isr-template .ui-table-wrapper td i.fa {
   font-size: 21px;
-  margin: 0 15px;
+  padding: 4px;
+}
+td span a {
+  margin-right: 16px;
 }
 td i.fa {
   &.fa-upload {
@@ -394,6 +392,9 @@ span.notConfiguredTemplate {
     color: @white;
     background: @blue;
     border-color: @blue;
+  }
+  &:focus {
+    color: @blue;
   }
 }
 .modal-dialog .alert {
