@@ -228,6 +228,16 @@ body .ui-treetable {
   }
 }
 
+// Tab View p-tabView
+body
+  .ui-tabview.ui-tabview-top
+  .ui-tabview-nav
+  li:not(.ui-state-active):not(.ui-state-disabled):focus {
+  border-color: @gray-light;
+  border-bottom: none;
+  background-color: @gray-lighter;
+}
+
 // Dropdowns
 .school-and-grade-search-container {
   .ui-dropdown,
