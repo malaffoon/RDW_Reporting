@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  DoCheck,
+  ElementRef,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,7 +34,15 @@ class Column {
   selector: 'test-results',
   templateUrl: './test-results-availability.component.html'
 })
-export class TestResultsAvailabilityComponent implements OnInit {
+export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
+  @ViewChild('alertSuccess')
+  alertSuccess: ElementRef;
+
+  @ViewChild('alertFailure')
+  alertFailure: ElementRef;
+
+  private grabFocusToAlert = false;
+
   columns: Column[] = [
     new Column({ id: 'school-year', field: 'schoolYear' }),
     new Column({ id: 'district' }),
@@ -37,8 +51,8 @@ export class TestResultsAvailabilityComponent implements OnInit {
     new Column({ id: 'result-count', field: 'resultCount', sortable: false }),
     new Column({ id: 'status' })
   ];
-  private _testResultsAvailability: TestResultAvailability[];
 
+  private _testResultsAvailability: TestResultAvailability[];
   changeResultsTooltip = `${this.translate.instant(
     'test-results-availability.change-results-tooltip'
   )}`;
@@ -99,8 +113,8 @@ export class TestResultsAvailabilityComponent implements OnInit {
         modal.statusOptions = this.statusOptions;
         modal.sandboxUser = sandboxUser;
         modal.changeStatusEvent.subscribe(res => {
-          this.successfulChange = res.data;
-          this.unableToChange = res.error;
+          this.changeSuccessful(res.data);
+          this.changeFailed(res.error);
         });
       });
   }
@@ -198,5 +212,33 @@ export class TestResultsAvailabilityComponent implements OnInit {
 
   closeErrorAlert() {
     this.unableToChange = false;
+  }
+
+  private changeSuccessful(data: any) {
+    this.successfulChange = data;
+    if (this.successfulChange) {
+      this.alertFailure = null;
+      this.grabFocusToAlert = true;
+    }
+  }
+
+  private changeFailed(error: any) {
+    this.unableToChange = error;
+    if (this.unableToChange) {
+      this.alertSuccess = null;
+      this.grabFocusToAlert = true;
+    }
+  }
+
+  ngDoCheck(): void {
+    // Change focus to alert when it first appears.
+    // Seems like a kludge. Is there a more elegant way to fit it into the lifecycle?
+    if (this.alertSuccess && this.grabFocusToAlert) {
+      this.alertSuccess.nativeElement.focus();
+      this.grabFocusToAlert = false;
+    } else if (this.alertFailure && this.grabFocusToAlert) {
+      this.alertFailure.nativeElement.focus();
+      this.grabFocusToAlert = false;
+    }
   }
 }
