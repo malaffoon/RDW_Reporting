@@ -18,7 +18,12 @@
 
 <ng-container>
   <ng-container>
-    <div *ngIf="unableToChange" class="alert alert-danger">
+    <div
+      #alertFailure
+      *ngIf="unableToChange"
+      tabindex="0"
+      class="alert alert-danger"
+    >
       <button
         type="button"
         class="close"
@@ -32,7 +37,12 @@
           | translate
       }}
     </div>
-    <div *ngIf="successfulChange" class="alert alert-info">
+    <div
+      #alertSuccess
+      *ngIf="successfulChange"
+      tabindex="0"
+      class="alert alert-info"
+    >
       <button
         type="button"
         class="close"
