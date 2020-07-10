@@ -5,21 +5,38 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Download } from '../../../shared/data/download.model';
 import { Http } from '@angular/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class IsrTemplateService {
-  constructor(private datePipe: TranslateDatePipe, private http: Http) {}
+  constructor(
+    private datePipe: TranslateDatePipe,
+    private http: Http,
+    private translateService: TranslateService
+  ) {}
 
   formatAsLocalDate(date: Date): string {
     return this.datePipe.transform(date, 'yyyy-MM-dd hh:mm');
   }
 
   getNotConfigured(): string {
-    return '✕ Not Configured';
+    return `${this.translateService.instant('isr-template.not-configured')}`;
   }
 
   getConfigured(date: Date): string {
-    return '✓ Uploaded ' + this.formatAsLocalDate(date);
+    return (
+      `${this.translateService.instant('isr-template.configured')}` +
+      this.formatAsLocalDate(date)
+    );
+  }
+
+  getTemplateReportName(subject: string, assessmentType: string): string {
+    return (
+      subject +
+      '-' +
+      assessmentType +
+      `${this.translateService.instant('isr-template.template-name')}`
+    );
   }
 
   delete(isrTemplate: IsrTemplate): Observable<any> {
@@ -34,7 +51,7 @@ export class IsrTemplateService {
         subject: 'ELA',
         assessmentType: 'IAB',
         status: this.getConfigured(new Date('Jan 4, 2020 13:45')),
-        templateName: 'ISRTemplate-IAB-ELA',
+        templateName: this.getTemplateReportName('ELA', 'IAB'),
         location: './',
         uploadedDate: new Date('Jan 4, 2020')
       },
@@ -42,7 +59,7 @@ export class IsrTemplateService {
         subject: 'ELA',
         assessmentType: 'ICA',
         status: this.getConfigured(new Date('Feb 4, 2020 09:23')),
-        templateName: 'template-ICA-ELA',
+        templateName: this.getTemplateReportName('ELA', 'ICA'),
         location: './',
         uploadedDate: new Date('Feb 4, 2020')
       },
@@ -50,7 +67,7 @@ export class IsrTemplateService {
         subject: 'ELA',
         assessmentType: 'Summative',
         status: this.getConfigured(new Date('Mar 10, 2020 11:07')),
-        templateName: 'template-summative-ELA',
+        templateName: this.getTemplateReportName('ELA', 'Summative'),
         location: './',
         uploadedDate: new Date('Mar 10, 2020')
       },
@@ -66,7 +83,7 @@ export class IsrTemplateService {
         subject: 'Math',
         assessmentType: 'IAB',
         status: this.getConfigured(new Date('Jan 4, 2020 13:46')),
-        templateName: 'template-IAB-Math',
+        templateName: this.getTemplateReportName('ELA', 'IAB'),
         location: './templates/',
         uploadedDate: new Date('Jan 4, 2020')
       },
@@ -82,7 +99,7 @@ export class IsrTemplateService {
         subject: 'Math',
         assessmentType: 'Summative',
         status: this.getConfigured(new Date('June 4, 2020 18:19')),
-        templateName: 'template-summative-math',
+        templateName: this.getTemplateReportName('Math', 'Summative'),
         location: './',
         uploadedDate: new Date('June 4, 2020')
       }
