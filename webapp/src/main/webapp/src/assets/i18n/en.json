@@ -1210,7 +1210,7 @@
       },
       "isr-template": {
         "button": "ISR Templates",
-        "description": "Manage Individual Student Report (ISR) Templates."
+        "description": "Manage Individual Student Report (ISR) templates."
       },
       "organizational-export": {
         "button": "District / School Exports",
@@ -2067,22 +2067,22 @@
     "configured": "✓ Uploaded ",
     "delete-header": "Are you sure?",
     "delete-body": "You are about to delete this template. This cannot be undone.",
-    "download-template-title": "Download Current Template",
+    "download-template-title": "Download current template",
     "empty-message": "There are no templates results.",
     "error-deleting-template": "Failed to delete the template.",
-    "is-sandbox-delete": "Deleting ISR Templates is not available for Sandboxes.",
-    "is-sandbox-upload": "Uploading or changing ISR Templates is not available for Sandboxes.",
+    "is-sandbox-delete": "Deleting ISR templates is not available for Sandboxes.",
+    "is-sandbox-upload": "Uploading or changing ISR templates is not available for Sandboxes.",
     "label-aria-delete": "Delete current ",
     "label-aria-download": "Download current  ",
     "label-aria-template": " template",
     "label-aria-upload": "Upload new ",
     "not-configured": "✕ Not Configured",
     "reference-template": "Reference Template",
-    "reference-tooltip": "Download the Reference Template to create new report templates.",
-    "remove-template-title": "Remove Current Template",
+    "reference-tooltip": "Download the reference template to create new report templates.",
+    "remove-template-title": "Remove current template",
     "subject-tooltip": "The subject's tooltip",
     "template-name": "-report.html",
     "title": "Manage Individual Student Report (ISR) Templates",
-    "upload-template-title": "Upload New Template"
+    "upload-template-title": "Upload new template"
   }
 }
