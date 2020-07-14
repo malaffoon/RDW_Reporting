@@ -235,10 +235,14 @@ export class TestResultsAvailabilityComponent
   ngAfterViewInit() {
     // TODO: upgrade to newer version of PrimeNG and then remove this.
     // Hack to label the pagination controls, which the version of p-table we are using doesn't support.
-    eval("jQuery('a.ui-paginator-first').attr('aria-label', 'First Page')");
-    eval("jQuery('a.ui-paginator-prev').attr('aria-label', 'Previous Page')");
-    eval("jQuery('a.ui-paginator-next').attr('aria-label', 'Next Page')");
-    eval("jQuery('a.ui-paginator-last').attr('aria-label', 'Last Page')");
+    eval(
+      "jQuery('a.ui-paginator-first').attr('aria-label', 'Go to first page')"
+    );
+    eval(
+      "jQuery('a.ui-paginator-prev').attr('aria-label', 'Go to previous page')"
+    );
+    eval("jQuery('a.ui-paginator-next').attr('aria-label', 'Go to next page')");
+    eval("jQuery('a.ui-paginator-last').attr('aria-label', 'Go to last page')");
   }
 
   ngDoCheck(): void {
