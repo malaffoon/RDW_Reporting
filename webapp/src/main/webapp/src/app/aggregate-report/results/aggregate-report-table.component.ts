@@ -189,6 +189,22 @@ function createColumns(
       );
       break;
     case 'Claim':
+      dataColumns.push(
+        new Column({ id: 'studentsTested' }),
+        new Column({
+          id: 'achievementComparison',
+          sortable: false,
+          classes: 'wrapping'
+        }),
+        ...createPerformanceLevelColumns(
+          translate,
+          subjectDefinition,
+          reportType,
+          valueDisplayType,
+          performanceLevelDisplayType
+        )
+      );
+      break;
     case 'AltScore':
       dataColumns.push(
         new Column({ id: 'studentsTested' }),
@@ -197,6 +213,7 @@ function createColumns(
           sortable: false,
           classes: 'wrapping'
         }),
+        new Column({ id: 'avgScaleScore', valueColumn: true }),
         ...createPerformanceLevelColumns(
           translate,
           subjectDefinition,
