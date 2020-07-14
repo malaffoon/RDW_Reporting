@@ -1,4 +1,4 @@
-<div class="modal-header" *ngIf="!showSandboxAlert">
+<div class="modal-header">
   <h4 class="modal-title pull-left">
     {{ 'isr-template.delete-header' | translate }}
   </h4>
@@ -12,23 +12,20 @@
   </button>
 </div>
 <div class="modal-body">
-  <div *ngIf="!showSandboxAlert">
+  <div>
     {{ 'isr-template.delete-body' | translate }}
   </div>
   <div *ngIf="unableToDelete" class="alert alert-danger">
     {{ 'isr-template.error-deleting-template' | translate }}
   </div>
-  <div *ngIf="showSandboxAlert" class="alert alert-dismissable">
-    {{ 'isr-template.is-sandbox-delete' | translate }}
-  </div>
 </div>
 <div class="modal-footer">
   <span>
     <button type="button" class="btn btn-default" (click)="cancel()">
-      {{ (( unableToDelete || showSandboxAlert )? 'common.action.close' :
-      'common.action.cancel') | translate }}
+      {{ (( unableToDelete )? 'common.action.close' : 'common.action.cancel') |
+      translate }}
     </button>
-    <button *ngIf="!showSandboxAlert" class="btn btn-danger" (click)="delete()">
+    <button class="btn btn-danger" (click)="delete()">
       {{ 'common.action.delete' | translate }}
     </button>
   </span>
