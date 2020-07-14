@@ -71,7 +71,7 @@ export class AggregateReportOptionsMapper {
         optionMapper(
           (value: AltScore) =>
             translate(`subject.${value.subject}.alt.${value.code}.name`),
-          (value: AltScore) => `Alt Score Code: ${value.code}`
+          (value: AltScore) => `Alternate Score Code: ${value.code}`
         )
       ),
       completenesses: options.completenesses.map(
