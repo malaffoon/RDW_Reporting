@@ -56,7 +56,7 @@
     "subheading": "Select the attributes to include in the report. Then click \"Create Report.\"",
     "field": {
       "claim-codes-label": "Claims",
-      "alt-score-codes-label": "Alt Scores",
+      "alt-score-codes-label": "Alternate Scores",
       "assessment-grade-range-label": "Assessment Grades",
       "to-school-year-label": "Most Recent Academic Year",
       "to-school-year-info": "The year for the highest assessment grade selected",
@@ -90,7 +90,7 @@
     },
     "section": {
       "claim-heading": "Claim",
-      "alt-score-heading": "Alt Score",
+      "alt-score-heading": "Alternate Score",
       "organization": {
         "heading": "Schools and Districts",
         "subtext": "Select schools and districts to compare.",
@@ -134,7 +134,7 @@
       "avg-scale-score": "Average Scale Score",
       "avg-scale-score-suffix": "± Error Band",
       "claim": "Claim",
-      "alt-score": "Alt Score",
+      "alt-score": "Alternate Score",
       "dimension": "Subgroup",
       "grouped-performance-level-prefix": {
         "0": "Below",
@@ -287,9 +287,9 @@
         "label": "Claim Report"
       },
       "AltScore": {
-        "description": "Compare alt score performance on available assessments.",
+        "description": "Compare alternate score-level performance on available assessments.",
         "disabled": "Alternate Score Reports are only available for ICA and summative assessments.",
-        "label": "Alt Score Report"
+        "label": "Alternate Score Report"
       },
       "CustomAggregate": {
         "description": "Compare performance by selected school years.",
@@ -1705,7 +1705,7 @@
     "report-type": {
       "CustomAggregate": "Aggregate Report: Yearly",
       "Claim": "Aggregate Report: Claims",
-      "AltScore": "Aggregate Report: Alt Scores",
+      "AltScore": "Aggregate Report: Alternate Scores",
       "DistrictSchoolExport": "District / School Export",
       "Longitudinal": "Aggregate Report: Longitudinal",
       "Target": "Aggregate Report: Target",
@@ -1789,7 +1789,7 @@
     "caution-message": "Assessment target scores based on fewer than 50 students may be less reliable and will have fewer unique items contributing to the overall target summary.",
     "columns": {
       "claim": "Claim",
-      "alt-score": "Alt Score",
+      "alt-score": "Alternate Score",
       "target": "Target",
       "subgroup": "Subgroup",
       "studentsTested": "Students Tested",
