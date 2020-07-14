@@ -29,18 +29,6 @@
       </button>
       {{ 'test-results-change-status.error-changing-results' | translate }}
     </div>
-    <div *ngIf="showSandboxAlert" class="alert alert-warning">
-      <button
-        type="button"
-        class="close"
-        title="{{ 'common.action.close' | translate }}"
-        aria-label="Close warning message that function is not available"
-        (click)="closeSandboxAlert()"
-      >
-        <span aria-hidden="true">&times;</span>
-      </button>
-      {{ 'isr-template.is-sandbox-upload' | translate }}
-    </div>
 
     <div class="well well-results">
       <div class="table-list-container">
@@ -90,37 +78,48 @@
               </td>
               <td>
                 <span>
-                  <input
-                    type="file"
-                    #fileInput
-                    style="display:none;"
-                    ng2FileSelect
-                    [uploader]="fileUploader"
-                    (onFileSelected)="onFileSelected($event)"
-                  />
-                  <a
-                    href="javascript:void(0)"
-                    (click)="fileInput.click()"
-                    [attr.aria-label]="getUploadLabel(rowData)"
-                    title="{{
-                      'isr-template.upload-template-title' | translate
-                    }}"
-                    ><i class="fa fa-upload"></i>
-                  </a>
-
-                  <ng-container>
-                    <span *ngIf="showIcons(rowData)">
-                      <a
-                        href="javascript:void(0)"
-                        (click)="downloadReportTemplate(rowData)"
-                        [attr.aria-label]="getDownloadLabel(rowData)"
-                        title="{{
-                          'isr-template.download-template-title' | translate
-                        }}"
-                        ><i class="fa fa-cloud-download"></i>
-                      </a>
-                    </span>
+                  <ng-container *ngIf="!isSandbox">
+                    <input
+                      type="file"
+                      #fileInput
+                      style="display:none;"
+                      ng2FileSelect
+                      [uploader]="fileUploader"
+                      (onFileSelected)="onFileSelected($event)"
+                    />
+                    <a
+                      href="javascript:void(0)"
+                      (click)="fileInput.click()"
+                      [attr.aria-label]="getUploadLabel(rowData)"
+                      title="{{
+                        'isr-template.upload-template-title' | translate
+                      }}"
+                      ><i class="fa fa-upload"></i>
+                    </a>
                   </ng-container>
+                  <ng-container *ngIf="isSandbox">
+                    <a
+                      href="javascript:void(0)"
+                      (click)="openForSandboxModal('upload')"
+                      [attr.aria-label]="getUploadLabel(rowData)"
+                      title="{{
+                        'isr-template.upload-template-title' | translate
+                      }}"
+                      ><i class="fa fa-upload"></i>
+                    </a>
+                  </ng-container>
+
+                  <span *ngIf="showIcons(rowData)">
+                    <a
+                      href="javascript:void(0)"
+                      (click)="downloadReportTemplate(rowData)"
+                      [attr.aria-label]="getDownloadLabel(rowData)"
+                      title="{{
+                        'isr-template.download-template-title' | translate
+                      }}"
+                      ><i class="fa fa-cloud-download"></i>
+                    </a>
+                  </span>
 
                   <span *ngIf="showIcons(rowData)">
                     <a
