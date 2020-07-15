@@ -51,8 +51,9 @@ export class ItemWritingTraitScoresComponent {
     if (
       this.responsesAssessmentItem == null ||
       this.responsesAssessmentItem.writingTraitScores == null
-    )
+    ) {
       return null;
+    }
 
     return this.responsesAssessmentItem.writingTraitScores.organization;
   }
@@ -83,8 +84,9 @@ export class ItemWritingTraitScoresComponent {
     if (
       this.responsesAssessmentItem == null ||
       this.responsesAssessmentItem.writingTraitScores == null
-    )
+    ) {
       return null;
+    }
 
     return this.responsesAssessmentItem.writingTraitScores.conventions;
   }
