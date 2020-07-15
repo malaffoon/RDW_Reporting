@@ -22,6 +22,7 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   successfulChange: boolean;
   showSandboxAlert: boolean; // if sandbox and user tries to change status
   sandboxUser: boolean;
+  private successChangeMessage: string;
 
   constructor(
     private modal: BsModalRef,
@@ -60,18 +61,31 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
         this.unableToChange = true;
       } else {
         this.successfulChange = true;
+        this.successChangeMessage =
+          '(New Status: ' +
+          this.selectedStatus +
+          ', for School Year ' +
+          this.selectedFilters.schoolYear +
+          ' Subjects: ' +
+          this.selectedFilters.subject +
+          ' District: ' +
+          this.selectedFilters.district +
+          ' Report Type: ' +
+          this.selectedFilters.reportType +
+          ') ';
       }
-      this.triggerEventStatus(this.successfulChange, this.unableToChange);
+      this.triggerEventStatus(this.unableToChange, this.successChangeMessage);
       this.modal.hide();
     }
   }
 
   private triggerEventStatus(
-    successfulChange: boolean,
-    unableToChange: boolean
+    unableToChange: boolean,
+    successChangeMsgOptions: string
   ) {
     this.changeStatusEvent.emit({
-      data: successfulChange,
+      // return the selected filters and status of the successful change
+      data: successChangeMsgOptions,
       res: 200,
       error: unableToChange
     });

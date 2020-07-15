@@ -115,7 +115,7 @@ export class TestResultsAvailabilityComponent
         modal.statusOptions = this.statusOptions;
         modal.sandboxUser = sandboxUser;
         modal.changeStatusEvent.subscribe(res => {
-          this.changeSuccessful(res.data);
+          this.changeSuccessful(res.data, res.error);
           this.changeFailed(res.error);
         });
       });
@@ -152,6 +152,7 @@ export class TestResultsAvailabilityComponent
   statusDefault: any = this.testResultsService.statusDefault;
 
   // need to save each selected Option to filtered Group
+  successChangeMsgOptions: string;
   updateFilteredTestResults() {
     this.filteredTestResults = this.testResultsService.getTestResults(
       this.testResultAvailabilityFilters
@@ -216,9 +217,12 @@ export class TestResultsAvailabilityComponent
     this.unableToChange = false;
   }
 
-  private changeSuccessful(data: any) {
-    this.successfulChange = data;
-    if (this.successfulChange) {
+  private changeSuccessful(data: string, error: boolean) {
+    if (error) {
+      this.changeFailed(error);
+    } else {
+      this.successChangeMsgOptions = data;
+      this.successfulChange = true;
       this.alertFailure = null;
       this.grabFocusToAlert = true;
     }
