@@ -116,6 +116,7 @@ These can be quickly cleaned up with standard Docker hygiene:
 ```bash
 docker container prune -f
 docker image prune -f
+docker rmi $(docker images --filter dangling=true -q)
 ```
 
 ### Running
