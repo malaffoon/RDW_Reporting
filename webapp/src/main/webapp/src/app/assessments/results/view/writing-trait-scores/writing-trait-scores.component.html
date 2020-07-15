@@ -2,8 +2,19 @@
   *ngIf="!(initialized$ | async); else loaded"
   text="{{ 'common.messages.loading' | translate }}"
 ></spinner>
-
 <ng-template #loaded>
+  <div class="row" *ngIf="!loading">
+    <div class="col-md-12">
+      <span class="pull-right"
+        ><em>
+          {{
+            'assessment-results.writing-trait-scores-purpose-instructions'
+              | translate
+          }}</em
+        ></span
+      >
+    </div>
+  </div>
   <ng-template
     [ngTemplateOutlet]="view"
     [ngTemplateOutletContext]="{
@@ -267,7 +278,7 @@
     </ng-template>
   </p-table>
 
-  <div *ngFor="let traitScoreSummary of traitScoreSummaries" class="mt-sm">
+  <div *ngFor="let traitScoreSummary of traitScoreSummaries" class="">
     <!-- Interim type assessments have single table for writing traits-->
     <ng-container *ngIf="assessment.type !== 'sum'">
       <h4 *ngIf="hasWritingTraitItems" class="pt-md">
