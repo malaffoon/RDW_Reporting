@@ -80,8 +80,7 @@ export class TestResultsAvailabilityService implements OnInit {
     this.successfulChange = false;
     this.testResultFilters.status = newStatus;
     this.logTestResults(testResultFilters);
-    this.successfulChange = Math.random() < 0.5; // random return value for testing.
-    // this.successfulChange = true; // comment out to test error
+    this.successfulChange = Math.random() < 0.5; // TODO: change random return value for testing.
   }
 
   // TODO: add save of data

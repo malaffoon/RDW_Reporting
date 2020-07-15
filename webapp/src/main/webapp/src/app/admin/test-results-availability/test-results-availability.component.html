@@ -51,9 +51,19 @@
       >
         <span aria-hidden="true">&times;</span>
       </button>
-      {{
-        'test-results-availability-change-status.successful-change' | translate
-      }}
+      <ng-container class="alert alert-info">
+        {{
+          'test-results-availability-change-status.successful-change-1'
+            | translate
+        }}
+        <br />
+        {{ successChangeMsgOptions | translate }} <br />
+        {{
+          'test-results-availability-change-status.successful-change-2'
+            | translate
+        }}
+        <br />
+      </ng-container>
     </div>
 
     <div class="well well-results">
