@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   DoCheck,
   ElementRef,
@@ -34,7 +35,8 @@ class Column {
   selector: 'test-results',
   templateUrl: './test-results-availability.component.html'
 })
-export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
+export class TestResultsAvailabilityComponent
+  implements OnInit, AfterViewInit, DoCheck {
   @ViewChild('alertSuccess')
   alertSuccess: ElementRef;
 
@@ -228,6 +230,19 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
       this.alertSuccess = null;
       this.grabFocusToAlert = true;
     }
+  }
+
+  ngAfterViewInit() {
+    // TODO: upgrade to newer version of PrimeNG and then remove this.
+    // Hack to label the pagination controls, which the version of p-table we are using doesn't support.
+    eval(
+      "jQuery('a.ui-paginator-first').attr('aria-label', 'Go to first page')"
+    );
+    eval(
+      "jQuery('a.ui-paginator-prev').attr('aria-label', 'Go to previous page')"
+    );
+    eval("jQuery('a.ui-paginator-next').attr('aria-label', 'Go to next page')");
+    eval("jQuery('a.ui-paginator-last').attr('aria-label', 'Go to last page')");
   }
 
   ngDoCheck(): void {

@@ -56,7 +56,7 @@
     "subheading": "Select the attributes to include in the report. Then click \"Create Report.\"",
     "field": {
       "claim-codes-label": "Claims",
-      "alt-score-codes-label": "Alt Scores",
+      "alt-score-codes-label": "Alternate Scores",
       "assessment-grade-range-label": "Assessment Grades",
       "to-school-year-label": "Most Recent Academic Year",
       "to-school-year-info": "The year for the highest assessment grade selected",
@@ -90,7 +90,7 @@
     },
     "section": {
       "claim-heading": "Claim",
-      "alt-score-heading": "Alt Score",
+      "alt-score-heading": "Alternate Score",
       "organization": {
         "heading": "Schools and Districts",
         "subtext": "Select schools and districts to compare.",
@@ -134,7 +134,7 @@
       "avg-scale-score": "Average Scale Score",
       "avg-scale-score-suffix": "± Error Band",
       "claim": "Claim",
-      "alt-score": "Alt Score",
+      "alt-score": "Alternate Score",
       "dimension": "Subgroup",
       "grouped-performance-level-prefix": {
         "0": "Below",
@@ -287,9 +287,9 @@
         "label": "Claim Report"
       },
       "AltScore": {
-        "description": "Compare alt score performance on available assessments.",
+        "description": "Compare alternate score-level performance on available assessments.",
         "disabled": "Alternate Score Reports are only available for ICA and summative assessments.",
-        "label": "Alt Score Report"
+        "label": "Alternate Score Report"
       },
       "CustomAggregate": {
         "description": "Compare performance by selected school years.",
@@ -545,7 +545,7 @@
     },
     "info": {
       "claim": "Claims are a way of classifying test content. The claim is the major topic area. For example, in English language arts, reading is a claim and in Math, Concepts and Procedures is a claim.",
-      "alt-score": "(pending default text that should be inserted here)",
+      "alt-score": "Alternate Scores are scores that consist of performance measures not included in Overall or Claim scores.",
       "target": "Within each claim, there are targets that describe the particular knowledge and skills that the test measures. Each target may encompass one or more standards from the Common Core State Standards. Within the Reading claim, for example, one of the targets is concerned with finding the central idea in a text. For more information, see the Smarter Balanced Content Specifications."
     },
     "instructional-resource": {
@@ -961,7 +961,7 @@
       "organization": "Organization / Purpose",
       "total": "Transformed Points",
       "total-info": "The Transformed Points value is calculated by adding the Conventions score to the average of the Organization/Purpose and Evidence/Elaboration scores. These two values represent two dimensions that are used to compute the student’s overall scale score and Claim 2 – Writing score. For more information, see the Interpretive Guide.",
-      "no-data": "There is no writing trait data to report."
+      "no-data": "No writing trait results are available for the student group and advanced filters selected."
     }
   },
   "common-ngx": {
@@ -1210,7 +1210,7 @@
       },
       "isr-template": {
         "button": "ISR Templates",
-        "description": "Manage Individual Student Report (ISR) Templates."
+        "description": "Manage Individual Student Report (ISR) templates."
       },
       "organizational-export": {
         "button": "District / School Exports",
@@ -1705,7 +1705,7 @@
     "report-type": {
       "CustomAggregate": "Aggregate Report: Yearly",
       "Claim": "Aggregate Report: Claims",
-      "AltScore": "Aggregate Report: Alt Scores",
+      "AltScore": "Aggregate Report: Alternate Scores",
       "DistrictSchoolExport": "District / School Export",
       "Longitudinal": "Aggregate Report: Longitudinal",
       "Target": "Aggregate Report: Target",
@@ -1789,7 +1789,7 @@
     "caution-message": "Assessment target scores based on fewer than 50 students may be less reliable and will have fewer unique items contributing to the overall target summary.",
     "columns": {
       "claim": "Claim",
-      "alt-score": "Alt Score",
+      "alt-score": "Alternate Score",
       "target": "Target",
       "subgroup": "Subgroup",
       "studentsTested": "Students Tested",
@@ -2067,22 +2067,22 @@
     "configured": "✓ Uploaded ",
     "delete-header": "Are you sure?",
     "delete-body": "You are about to delete this template. This cannot be undone.",
-    "download-template-title": "Download Current Template",
+    "download-template-title": "Download current template",
     "empty-message": "There are no templates results.",
     "error-deleting-template": "Failed to delete the template.",
-    "is-sandbox-delete": "Deleting ISR Templates is not available for Sandboxes.",
-    "is-sandbox-upload": "Uploading or changing ISR Templates is not available for Sandboxes.",
+    "is-sandbox-delete": "Deleting ISR templates is not available for Sandboxes.",
+    "is-sandbox-upload": "Uploading or changing ISR templates is not available for Sandboxes.",
     "label-aria-delete": "Delete current ",
     "label-aria-download": "Download current  ",
     "label-aria-template": " template",
     "label-aria-upload": "Upload new ",
     "not-configured": "✕ Not Configured",
     "reference-template": "Reference Template",
-    "reference-tooltip": "Download the Reference Template to create new report templates.",
-    "remove-template-title": "Remove Current Template",
+    "reference-tooltip": "Download the reference template to create new report templates.",
+    "remove-template-title": "Remove current template",
     "subject-tooltip": "The subject's tooltip",
     "template-name": "-report.html",
     "title": "Manage Individual Student Report (ISR) Templates",
-    "upload-template-title": "Upload New Template"
+    "upload-template-title": "Upload new template"
   }
 }

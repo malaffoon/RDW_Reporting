@@ -11,6 +11,7 @@ import { Download } from '../../shared/data/download.model';
 import { saveAs } from 'file-saver';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
+import { IsrTemplateSandboxModal } from './isr-template-sandbox.modal';
 
 class Column {
   id: string; // en.json name
@@ -42,7 +43,7 @@ export class IsrTemplateComponent implements OnInit {
   unableToDelete: boolean;
   successfulDelete: boolean;
   unableToUpload: boolean;
-  showSandboxAlert: boolean; // if sandbox and user tries to upload a template
+  isSandbox: boolean;
 
   fileUploader: FileUploader = new FileUploader({
     url: URL,
@@ -66,6 +67,13 @@ export class IsrTemplateComponent implements OnInit {
   ngOnInit(): void {
     this.isrTemplates = this.isrTemplateService.getIsrTemplates();
     this.unableToUpload = false;
+    this.userService
+      .getUser()
+      .pipe(map(user => user.sandboxUser))
+
+      .subscribe(sandboxUser => {
+        this.isSandbox = sandboxUser;
+      });
   }
 
   getStatus(rowData: IsrTemplate) {
@@ -79,48 +87,43 @@ export class IsrTemplateComponent implements OnInit {
   }
 
   openDeleteTemplateModal(rowData: IsrTemplate) {
-    this.userService
-      .getUser()
-      .pipe(map(user => user.sandboxUser))
-      .subscribe(sandboxUser => {
-        const modalReference: BsModalRef = this.modalService.show(
-          IsrTemplateDeleteModal,
-          {}
-        );
-        const modal: IsrTemplateDeleteModal = modalReference.content;
-        modal.isrTemplate = rowData;
-        modal.sandboxUser = sandboxUser;
-        modal.deleteTemplateEvent.subscribe(res => {
-          this.successfulDelete = res.data;
-          this.unableToDelete = res.error;
-        });
-
-        if (this.successfulDelete) {
-          // TODO: refresh template list
-        }
+    if (this.isSandbox) {
+      this.openForSandboxModal('delete');
+    } else {
+      const modalReference: BsModalRef = this.modalService.show(
+        IsrTemplateDeleteModal,
+        {}
+      );
+      const modal: IsrTemplateDeleteModal = modalReference.content;
+      modal.isrTemplate = rowData;
+      modal.deleteTemplateEvent.subscribe(res => {
+        this.successfulDelete = res.data;
+        this.unableToDelete = res.error;
       });
+
+      if (this.successfulDelete) {
+        // TODO: refresh template list
+      }
+    }
+  }
+
+  openForSandboxModal(action: string) {
+    const modalReference: BsModalRef = this.modalService.show(
+      IsrTemplateSandboxModal,
+      {}
+    );
+    const modal: IsrTemplateSandboxModal = modalReference.content;
+    modal.sandboxUploadMessage = action != 'delete';
   }
 
   onFileSelected(event: EventEmitter<File[]>) {
-    this.userService
-      .getUser()
-      .pipe(map(user => user.sandboxUser))
-      .subscribe(sandboxUser => {
-        if (sandboxUser) {
-          this.showSandboxAlert = true;
-        } else {
-          const file: File = event[0];
-          console.log(file);
-        }
-      });
+    const file: File = event[0];
+    // TODO Save this file to it's proper location
+    console.log(file);
   }
 
   closeErrorAlert() {
     this.unableToDelete = false;
-  }
-
-  closeSandboxAlert() {
-    this.showSandboxAlert = false;
   }
 
   downloadReferenceTemplate(fileName: string) {

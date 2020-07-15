@@ -16,7 +16,7 @@ export class IsrTemplateService {
   ) {}
 
   formatAsLocalDate(date: Date): string {
-    return this.datePipe.transform(date, 'yyyy-MM-dd hh:mm');
+    return this.datePipe.transform(date, 'MMM d, y, hh:mm:ss a');
   }
 
   getNotConfigured(): string {
