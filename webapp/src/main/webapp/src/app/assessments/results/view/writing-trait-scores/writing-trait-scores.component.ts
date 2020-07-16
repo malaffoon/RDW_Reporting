@@ -22,6 +22,7 @@ import { sum } from '../../../../exam/model/score-statistics';
 import { ExportWritingTraitsRequest } from '../../../model/export-writing-trait-request.model';
 import { ExportResults } from '../export-results';
 import { StudentResponsesAssessmentItem } from '../../../model/student-responses-item.model';
+import { TranslateService } from '@ngx-translate/core';
 
 interface ItemView {
   item: AssessmentItem;
@@ -178,7 +179,10 @@ export class WritingTraitScoresComponent
   private _hasDataToExport: boolean;
   isDevMode = isDevMode();
 
-  constructor(private examCalculator: ExamStatisticsCalculator) {}
+  constructor(
+    private translate: TranslateService,
+    private examCalculator: ExamStatisticsCalculator
+  ) {}
 
   ngOnDestroy(): void {
     this.destroyed$.next();
@@ -352,5 +356,30 @@ export class WritingTraitScoresComponent
 
   purposes(traitScoreSummary: Map<string, any>) {
     return Array.from(traitScoreSummary.keys());
+  }
+
+  getNameForPurpose(subjectCode: string, purposeCode: string) {
+    // TODO: add ".name" to translation key when db changes have been made.
+    return this.translate.instant(
+      'subject.' + subjectCode + '.trait.purpose.' + purposeCode
+    );
+  }
+
+  getDescriptionForPurpose(subjectCode: string, purposeCode: string) {
+    const key =
+      'subject.' +
+      subjectCode +
+      '.trait.purpose.' +
+      purposeCode +
+      '.description';
+    let description = this.translate.instant(key);
+    if (description === key) {
+      const name = this.getNameForPurpose(subjectCode, purposeCode);
+      description = this.translate.instant(
+        'common.writing-trait.default-purpose-description',
+        { name: name }
+      );
+    }
+    return description;
   }
 }
