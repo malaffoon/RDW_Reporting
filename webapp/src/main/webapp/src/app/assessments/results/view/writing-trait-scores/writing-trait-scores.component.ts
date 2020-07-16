@@ -359,9 +359,8 @@ export class WritingTraitScoresComponent
   }
 
   getNameForPurpose(subjectCode: string, purposeCode: string) {
-    // TODO: add ".name" to translation key when db changes have been made.
     return this.translate.instant(
-      'subject.' + subjectCode + '.trait.purpose.' + purposeCode
+      'subject.' + subjectCode + '.trait.purpose.' + purposeCode + '.name'
     );
   }
 

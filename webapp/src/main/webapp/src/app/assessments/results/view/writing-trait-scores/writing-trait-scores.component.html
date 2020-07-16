@@ -82,8 +82,11 @@
         <td *ngFor="let column of columns" [ngSwitch]="column.id">
           <div *ngSwitchCase="'category'">
             <span *ngIf="type === 'sum'">{{
-              'subject.' + subject + '.trait.category.' + item.trait.type
-                | translate
+              'subject.' +
+                subject +
+                '.trait.category.' +
+                item.trait.type +
+                '.name' | translate
             }}</span>
             <span *ngIf="item.trait.type != totalType && type !== 'sum'">{{
               'common.writing-trait.' + item.trait.type | translate
