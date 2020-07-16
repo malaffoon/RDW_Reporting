@@ -5,6 +5,7 @@ import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { TestResultAvailabilityFilters } from './model/test-result-availability-filters';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'test-results-change-status-modal',
@@ -27,7 +28,8 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   constructor(
     private modal: BsModalRef,
     private service: TestResultsAvailabilityService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {
     this._subscription = router.events
       .pipe(filter(e => e instanceof NavigationStart))
@@ -59,24 +61,48 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
 
       if (!this.service.successfulChange) {
         this.unableToChange = true;
+        this.successfulChange = false;
       } else {
+        this.unableToChange = false;
         this.successfulChange = true;
-        this.successChangeMessage =
-          '(New Status: ' +
-          this.selectedStatus +
-          ', for School Year ' +
-          this.selectedFilters.schoolYear +
-          ' Subjects: ' +
-          this.selectedFilters.subject +
-          ' District: ' +
-          this.selectedFilters.district +
-          ' Report Type: ' +
-          this.selectedFilters.reportType +
-          ') ';
+        this.successChangeMessage = this.getSuccessfulChangeMessage();
       }
       this.triggerEventStatus(this.unableToChange, this.successChangeMessage);
       this.modal.hide();
     }
+  }
+
+  // build up message that expects to go between msgs test-results-availability-change-status.successful-change-1
+  // and test-results-availability-change-status.successful-change-3
+  getSuccessfulChangeMessage(): string {
+    return (
+      '"' +
+      this.selectedStatus +
+      '"' +
+      `${this.translate.instant(
+        'test-results-availability-change-status.successful-change-2'
+      )}` +
+      `${this.translate.instant(
+        'test-results-availability.filter-school-year'
+      )}: ` +
+      this.selectedFilters.schoolYear +
+      ', ' +
+      `${this.translate.instant(
+        'test-results-availability.filter-subject'
+      )}: ` +
+      this.selectedFilters.subject +
+      ', ' +
+      `${this.translate.instant(
+        'test-results-availability.filter-district'
+      )}: ` +
+      this.selectedFilters.district +
+      ', ' +
+      `${this.translate.instant(
+        'test-results-availability.filter-report-type'
+      )}: ` +
+      this.selectedFilters.reportType +
+      ').'
+    );
   }
 
   private triggerEventStatus(

@@ -2052,8 +2052,9 @@
     "school-year": "School Year:",
     "set-status-text": "Set status to:",
     "subjects": "Subjects:",
-    "successful-change-1": "Successfully submitted request to change the selected test results availability. ",
-    "successful-change-2": " It can take up to 24 hours to see these changes. ",
+    "successful-change-1": "Successfully submitted request to change the selected test results availability to ",
+    "successful-change-2": " status.  (",
+    "successful-change-3": " It can take up to 24 hours to see these changes.",
     "state": "State:"
   },
   "isr-template": {
