@@ -297,15 +297,17 @@
     </ng-container>
 
     <!-- Summative type assessments have a table for each writing purpose on a tabbed panel-->
-    <p-tabView *ngIf="assessment.type === 'sum' && traitScoreSummary.size > 0">
-      <p-tabPanel
-        *ngFor="let purpose of purposes(traitScoreSummary); let i = index"
-        [selected]="i === 0"
-        header="{{
-          'subject.' + assessment.subject + '.trait.purpose.' + purpose
-            | translate
-        }}"
-      >
+    <tabset *ngIf="assessment.type === 'sum' && traitScoreSummary.size > 0">
+      <tab *ngFor="let purpose of purposes(traitScoreSummary)">
+        <ng-template tabHeading>
+          <span
+            info-button
+            title="{{ getNameForPurpose(assessment.subject, purpose) }}"
+            content="{{
+              getDescriptionForPurpose(assessment.subject, purpose)
+            }}"
+          ></span>
+        </ng-template>
         <ng-template
           [ngTemplateOutlet]="traitScoreSummaryTable"
           [ngTemplateOutletContext]="{
@@ -317,8 +319,8 @@
           }"
         >
         </ng-template>
-      </p-tabPanel>
-    </p-tabView>
+      </tab>
+    </tabset>
 
     <div *ngIf="traitScoreSummary.size === 0">
       <ul
