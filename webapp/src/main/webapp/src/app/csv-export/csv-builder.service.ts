@@ -664,7 +664,7 @@ export class CsvBuilder {
         const purpose = getPurpose(item);
         return isSummative
           ? this.translateService.instant(
-              'subject.' + subject + '.trait.purpose.' + purpose
+              'subject.' + subject + '.trait.purpose.' + purpose + '.name'
             )
           : purpose;
       }
@@ -776,7 +776,8 @@ export class CsvBuilder {
       item =>
         this.translateService.instant(
           'subject.ELA.trait.category.' +
-            getWritingTraitAggregate(item).trait.type
+            getWritingTraitAggregate(item).trait.type +
+            '.name'
         )
     );
 
