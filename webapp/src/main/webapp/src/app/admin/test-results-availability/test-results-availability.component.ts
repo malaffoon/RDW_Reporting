@@ -220,6 +220,7 @@ export class TestResultsAvailabilityComponent
   private changeSuccessful(data: string, error: boolean) {
     if (error) {
       this.changeFailed(error);
+      this.successfulChange = false;
     } else {
       this.successChangeMsgOptions = data;
       this.successfulChange = true;
@@ -232,6 +233,7 @@ export class TestResultsAvailabilityComponent
     this.unableToChange = error;
     if (this.unableToChange) {
       this.alertSuccess = null;
+      this.successfulChange = false;
       this.grabFocusToAlert = true;
     }
   }
