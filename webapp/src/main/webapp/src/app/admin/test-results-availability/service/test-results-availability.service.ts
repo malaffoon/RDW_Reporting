@@ -218,7 +218,7 @@ export class TestResultsAvailabilityService implements OnInit {
   public getTemplateFile(): Observable<any> {
     // TODO: Replace with call to real file location
     return this.http
-      .get('/assets/testResultsAudit202006040.csv')
+      .get('/assets/testResultsAudit202006041.csv')
       .pipe(
         map(
           response =>
