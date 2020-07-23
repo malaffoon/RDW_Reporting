@@ -1,4 +1,4 @@
-import { Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AssessmentItem,
   fullCreditItemCount,
@@ -177,7 +177,6 @@ export class WritingTraitScoresComponent
   > = new BehaviorSubject(undefined);
   private destroyed$: Subject<void> = new Subject();
   private _hasDataToExport: boolean;
-  isDevMode = isDevMode();
 
   constructor(
     private translate: TranslateService,
@@ -190,7 +189,8 @@ export class WritingTraitScoresComponent
   }
 
   ngOnInit() {
-    // this.assessment$.subscribe(val => console.log(val));
+    this.assessment$.subscribe(val => console.log(val)); // TODO - remove
+
     this.writingTraits$ = this.assessment$.pipe(
       map(({ type }) =>
         type === 'sum'

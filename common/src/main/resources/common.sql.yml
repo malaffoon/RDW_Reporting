@@ -141,6 +141,11 @@ sql:
         JOIN asmt_type at ON at.id = scs.asmt_type_id
       ORDER BY scs.display_order
 
+    findAllTraits: >-
+      SELECT s.code AS subject_code, st.id, st.purpose, st.category, st.max_score
+      FROM subject_trait st
+        JOIN subject s ON st.subject_id = s.id
+
   snippet:
     basicPermission: >-
         (1=:statewide or sc.district_group_id in (:district_group_ids) or sc.district_id in (:district_ids) or sc.school_group_id in (:school_group_ids) or sc.id in (:school_ids))

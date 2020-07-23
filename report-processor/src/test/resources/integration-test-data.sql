@@ -159,6 +159,11 @@ insert into exam_item (id, exam_id, item_id, score, position, response) values
   (-102, -102, -1, 0, 1, 'A'),
   (-103, -103, -1, 1, 1, 'D');
 
+insert into exam_trait_score (id, exam_id, trait_id, score) values
+  (-100, -19, 1, 3),
+  (-101, -19, 2, 1),
+  (-102, -19, 3, 1);
+
 -- groups
 insert into student_group (id, name, school_id, school_year, subject_id, update_import_id, updated, migrate_id) values
   (-10, 'group1', -10, 1997, 1, -1, '1997-07-18 20:14:34.000000', -1),
