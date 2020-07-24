@@ -249,6 +249,15 @@ export class TestResultsAvailabilityComponent
     );
     eval("jQuery('a.ui-paginator-next').attr('aria-label', 'Go to next page')");
     eval("jQuery('a.ui-paginator-last').attr('aria-label', 'Go to last page')");
+    eval(
+      "jQuery('a.ui-paginator-page').each(function( index ) { console.log('Page ' + (index+1) );});"
+    );
+
+    // New T-Base recommendation to add "Page" to the page number for screen readers. Not sure if even the new PrimeNG
+    // will support this.
+    eval(
+      "jQuery('a.ui-paginator-page').each(function( index ) { $( this ).attr('aria-label', 'Page ' + (index+1) );});"
+    );
   }
 
   ngDoCheck(): void {
