@@ -179,6 +179,16 @@ INSERT INTO exam_target_score (id, target_id, exam_id, student_relative_residual
   (-22,  -21, -6, 1,      1      ),
   (-23,  -32, -6, 0.1,    0.1    );
 
+-- exam ids -7,-8 are asmt_id=-4 which is a summative with WER items
+INSERT INTO exam_trait_score (id, exam_id, trait_id, score) VALUES
+  (-100, -7, 1, 3),
+  (-101, -7, 2, 1),
+  (-102, -7, 3, 1),
+  (-103, -8, 4, 2),
+  (-104, -8, 5, 1),
+  (-105, -8, 6, 2);
+
+
 insert into math_practice (practice, description, code) values
   (-1, 'mp1', '-1');
 
