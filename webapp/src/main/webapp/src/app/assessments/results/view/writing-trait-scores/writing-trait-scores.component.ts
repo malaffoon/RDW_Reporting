@@ -209,8 +209,6 @@ export class WritingTraitScoresComponent
       flatMap(([assessment, provider]) =>
         provider.getAssessmentItems(assessment.id, ['WER'])
       ),
-      // TODO should this really not update things when none have scores?
-      filter(items => items.some(x => x.scores.length > 0)),
       share()
     );
 

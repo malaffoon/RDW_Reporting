@@ -132,37 +132,49 @@ export class ExamStatisticsCalculator {
         summaries.push(new WritingTraitScoreSummary(writingTraits));
       }
 
-      const itemsWithTraitScores = assessmentItem.scores.filter(
-        x => x.points >= 0 && x.writingTraitScores != null
-      );
-      const totalAnswers = itemsWithTraitScores.length;
+      // const itemsWithTraitScores = assessmentItem.scores.filter(
+      //   x => x.points >= 0 && x.writingTraitScores != null
+      // );
+      // const totalAnswers = itemsWithTraitScores.length;
 
-      itemsWithTraitScores.forEach((score, index) => {
-        // TODO: this will eventually work with data keyed to subject-specific categories and purposes
-        // This is the retrieved data for a single purpose
-        summaries[0].aggregators.get('EVI').numbers[
-          score.writingTraitScores.evidence
-        ]++;
-        summaries[0].aggregators.get('ORG').numbers[
-          score.writingTraitScores.organization
-        ]++;
-        summaries[0].aggregators.get('CON').numbers[
-          score.writingTraitScores.conventions
-        ]++;
-
-        // Fake up more data.
-        for (let i = 1; i < totalTabs; i++) {
-          summaries[i].aggregators.get('EVI').numbers[
-            score.writingTraitScores.evidence
-          ] += randomInt(2);
-          summaries[i].aggregators.get('ORG').numbers[
-            score.writingTraitScores.organization
-          ] += randomInt(2);
-          summaries[i].aggregators.get('CON').numbers[
-            score.writingTraitScores.conventions
-          ] += randomInt(2);
+      const totalAnswers = 4 + randomInt(5); // reasonable sample range from 4 to 9
+      for (let count = 0; count < totalAnswers; count++) {
+        for (let tab = 0; tab < totalTabs; tab++) {
+          writingTraits.forEach(
+            trait =>
+              summaries[tab].aggregators.get(trait.type).numbers[
+                randomInt(trait.maxPoints)
+              ]++
+          );
         }
-      });
+      }
+
+      // itemsWithTraitScores.forEach((score, index) => {
+      //   // TODO: this will eventually work with data keyed to subject-specific categories and purposes
+      //   // This is the retrieved data for a single purpose
+      //   summaries[0].aggregators.get('EVI').numbers[
+      //     score.writingTraitScores.evidence
+      //   ]++;
+      //   summaries[0].aggregators.get('ORG').numbers[
+      //     score.writingTraitScores.organization
+      //   ]++;
+      //   summaries[0].aggregators.get('CON').numbers[
+      //     score.writingTraitScores.conventions
+      //   ]++;
+      //
+      //   // Fake up more data.
+      //   for (let i = 1; i < totalTabs; i++) {
+      //     summaries[i].aggregators.get('EVI').numbers[
+      //       score.writingTraitScores.evidence
+      //     ] += randomInt(2);
+      //     summaries[i].aggregators.get('ORG').numbers[
+      //       score.writingTraitScores.organization
+      //     ] += randomInt(2);
+      //     summaries[i].aggregators.get('CON').numbers[
+      //       score.writingTraitScores.conventions
+      //     ] += randomInt(2);
+      //   }
+      // });
 
       // calculate the averages and the percents based on the raw numbers
       summaries.forEach(summary =>
