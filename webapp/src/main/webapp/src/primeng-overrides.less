@@ -232,10 +232,17 @@ body .ui-treetable {
 body
   .ui-tabview.ui-tabview-top
   .ui-tabview-nav
-  li:not(.ui-state-active):not(.ui-state-disabled):focus {
-  border-color: @gray-light;
+  li:not(.ui-state-active):not(.ui-state-disabled)
+  &:focus {
+  border-color: @blue;
   border-bottom: none;
   background-color: @gray-lighter;
+}
+body
+  .ui-tabview.ui-tabview-top
+  .ui-tabview-nav
+  li:not(.ui-state-active):not(.ui-state-disabled):-moz-focusring {
+  outline: 2px solid @blue;
 }
 
 // Dropdowns
@@ -351,6 +358,7 @@ body li.ui-state-active span.ui-tabview-title.ng-star-inserted {
 body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default {
   margin-right: 8px;
 }
+
 .table tr th.level-up,
 .table tr td.level-up {
   background-image: none;
@@ -358,6 +366,9 @@ body .ui-tabview.ui-tabview-top .ui-tabview-nav li.ui-state-default {
 .ui-table .ui-table-thead > tr > th.level-down,
 .ui-table .ui-table-tbody > tr > td.level-down {
   padding-left: 0;
+}
+.ui-sortable-column:-moz-focusring {
+  outline: 2px solid @blue;
 }
 .table tr th.level-down:before {
   display: none;
