@@ -100,3 +100,23 @@
       @line-height-small; @border-radius-small
   );
 }
+
+.ui-paginator-page,
+.ui-paginator-first,
+.ui-paginator-next,
+.ui-paginator-last,
+.ui-paginator-prev {
+  &:not(.ui-state-disabled) {
+    &:focus,
+    &:-moz-focusring {
+      z-index: 2;
+      color: @pagination-hover-color;
+      background-color: @pagination-hover-bg;
+      border-color: @pagination-hover-border;
+      outline-style: solid;
+      border-style: solid;
+      outline-width: 2px !important;
+      outline-color: @blue !important;
+    }
+  }
+}
