@@ -8,14 +8,12 @@ import { Exam } from '../../../model/exam';
 import { ExamStatisticsCalculator } from '../../exam-statistics-calculator';
 import { AssessmentProvider } from '../../../assessment-provider.interface';
 import { Assessment } from '../../../model/assessment';
-import { WritingTraitScoreSummary } from '../../../model/writing-trait-score-summary.model';
+import { TraitScoreSummary } from '../../../model/trait-score-summary.model';
 import { AssessmentExporter } from '../../../assessment-exporter.interface';
-import { WritingTrait } from '../../../model/writing-trait.model';
 import { RequestType } from '../../../../shared/enum/request-type.enum';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { flatMap, map, share, shareReplay, takeUntil } from 'rxjs/operators';
 import { combineLatest } from 'rxjs/internal/observable/combineLatest';
-import { filter } from 'rxjs/internal/operators/filter';
 import { first } from 'rxjs/internal/operators/first';
 import { tap } from 'rxjs/internal/operators/tap';
 import { sum } from '../../../../exam/model/score-statistics';
@@ -23,12 +21,20 @@ import { ExportWritingTraitsRequest } from '../../../model/export-writing-trait-
 import { ExportResults } from '../export-results';
 import { StudentResponsesAssessmentItem } from '../../../model/student-responses-item.model';
 import { TranslateService } from '@ngx-translate/core';
+import WritingTraitUtils from '../../../model/writing-trait-utils';
 
 interface ItemView {
   item: AssessmentItem;
   responsesAssessmentItem?: StudentResponsesAssessmentItem;
   fullCreditCount: number;
   fullCreditPercent: number;
+}
+
+// used to supplement the data for the WER item
+// (used only for interims that derive trait scores from item-level data)
+interface WritingTraitInfo {
+  purpose: string;
+  categories: string[];
 }
 
 class Column {
@@ -41,7 +47,6 @@ class Column {
 
   // Writing trait item column properties
   index?: number;
-  points?: number;
 
   constructor({
     id,
@@ -50,8 +55,7 @@ class Column {
     headerInfo = false,
     styleClass = '',
     sortable = true,
-    index = -1,
-    points = -1
+    index = -1
   }) {
     this.id = id;
     this.field = field ? field : id;
@@ -62,31 +66,22 @@ class Column {
     if (index >= 0) {
       this.index = index;
     }
-    if (points >= 0) {
-      this.points = points;
-    }
   }
 }
 
-function toTraitSummaryColumns(
-  summary: WritingTraitScoreSummary,
-  summative: boolean
-): Column[] {
-  return (
-    summary.total.numbers
-      // remove the last two points for summative
-      .filter((points, index) => !summative || index <= 4)
-      .map(
-        (points, index) =>
-          new Column({
-            id: 'item-point',
-            points: points,
-            index: index,
-            styleClass: index === 0 ? 'level-down' : '',
-            sortable: false
-          })
-      )
-  );
+function toTraitSummaryColumns(summary: TraitScoreSummary): Column[] {
+  const columns = [];
+  for (let i = 0; i < summary.maxNumbers; ++i) {
+    columns.push(
+      new Column({
+        id: 'item-point',
+        index: i,
+        styleClass: i === 0 ? 'level-down' : '',
+        sortable: false
+      })
+    );
+  }
+  return columns;
 }
 
 @Component({
@@ -95,7 +90,7 @@ function toTraitSummaryColumns(
 })
 export class WritingTraitScoresComponent
   implements OnInit, OnDestroy, ExportResults {
-  readonly totalType: string = WritingTrait.total().type;
+  readonly totalType: string = WritingTraitUtils.total().type;
 
   readonly writingTraitColumns: Column[] = [
     new Column({ id: 'number', field: 'position' }),
@@ -161,17 +156,15 @@ export class WritingTraitScoresComponent
   items$: Observable<AssessmentItem[]>;
   itemViews$: Observable<ItemView[]>;
   hasWritingTraitItems$: Observable<boolean>;
-  traitScoreSummaries$: Observable<Map<string, WritingTraitScoreSummary>[]>;
-  writingTraits$: Observable<string[]>;
-  writingTraitType$: Observable<string>;
+  traitScoreSummaries$: Observable<Map<string, TraitScoreSummary>[]>;
+  writingTraitInfo$: Observable<WritingTraitInfo>;
   summaryColumnsBySummary$: Observable<
-    Map<string, Map<WritingTraitScoreSummary, Column[]>>
+    Map<string, Map<TraitScoreSummary, Column[]>>
   >;
   exportRequest$: Observable<ExportWritingTraitsRequest>;
   initialized$: Observable<boolean>;
-
-  private assessment$: Subject<Assessment> = new BehaviorSubject(undefined);
-  private exams$: Subject<Exam[]> = new BehaviorSubject(undefined);
+  assessment$: Subject<Assessment> = new BehaviorSubject(undefined);
+  exams$: Subject<Exam[]> = new BehaviorSubject(undefined);
   private assessmentProvider$: Subject<
     AssessmentProvider
   > = new BehaviorSubject(undefined);
@@ -189,17 +182,7 @@ export class WritingTraitScoresComponent
   }
 
   ngOnInit() {
-    this.assessment$.subscribe(val => console.log(val)); // TODO - remove
-
-    this.writingTraits$ = this.assessment$.pipe(
-      map(({ type }) =>
-        type === 'sum'
-          ? []
-          : ['evidence', 'organization', 'conventions', 'total']
-      )
-    );
-
-    // this.writingTraits$.subscribe(val => console.log(val));
+    // this.assessment$.subscribe(val => console.log(val));
 
     this.items$ = combineLatest(
       this.assessment$,
@@ -212,18 +195,23 @@ export class WritingTraitScoresComponent
       share()
     );
 
-    // this.items$.subscribe(val => console.log(val));
-
     this.hasWritingTraitItems$ = this.items$.pipe(
       map(items => items.length > 0)
     );
 
-    // this.hasWritingTraitItems$.subscribe(val => console.log(val));
-
-    this.writingTraitType$ = this.items$.pipe(
-      map(items =>
-        items.length > 0 ? items[0].performanceTaskWritingType : undefined
-      )
+    // create supplementary writing trait info (for interims only)
+    this.writingTraitInfo$ = combineLatest(this.assessment$, this.items$).pipe(
+      takeUntil(this.destroyed$),
+      map(([assessment, items]) =>
+        assessment.type === 'sum' || items.length === 0
+          ? undefined
+          : {
+              // yes, these are just hard-coded
+              categories: ['evidence', 'organization', 'conventions', 'total'],
+              purpose: items[0].performanceTaskWritingType
+            }
+      ),
+      share()
     );
 
     this.itemViews$ = combineLatest(this.items$, this.exams$).pipe(
@@ -247,46 +235,34 @@ export class WritingTraitScoresComponent
       shareReplay(1)
     );
 
-    // this.itemViews$.subscribe(val => console.log(val));
-
+    // traitScoreSummaries is an array of maps of {purpose -> TraitScoreSummary}. It is
+    // an array, but the system might misbehave if there is more than one entry.
+    // For summatives, this is derived from exam-level trait scores, and there will
+    // always be exactly one summary in the array.
+    // For interims it comes from item-level data, and, since they can technically be
+    // more than one WER item in an assessment, the array could have more than one entry.
     this.traitScoreSummaries$ = combineLatest(
       this.assessment$,
-      this.itemViews$
+      this.itemViews$,
+      this.exams$
     ).pipe(
       takeUntil(this.destroyed$),
-      map(([assessment, items]) => {
-        if (assessment.type === 'sum') {
-          // TODO: replace hardcoded traits and purposes with calls to services
-          const traits = [
-            new WritingTrait('EVI', 4),
-            new WritingTrait('ORG', 4),
-            new WritingTrait('CON', 2)
-          ];
-          const purposes = ['ARGU', 'EXPL', 'INFO', 'NARR', 'OPIN'];
-
-          return this.examCalculator.aggregateExamWritingTraitScores(
-            items.map(({ item }) => item),
-            traits,
-            purposes
-          );
-        }
-        return this.examCalculator.aggregateWritingTraitScores(
-          items.map(({ item }) => item)
-        );
+      map(([assessment, items, exams]) => {
+        return assessment.type === 'sum'
+          ? this.examCalculator.aggregateExamTraitScores(exams)
+          : this.examCalculator.aggregateWritingTraitScores(
+              items.map(({ item }) => item)
+            );
       }),
       shareReplay(1)
     );
 
-    // console.log('Trait score summaries:');
-    // this.traitScoreSummaries$.subscribe(val => console.log(val));
-
     this.summaryColumnsBySummary$ = combineLatest(
-      this.assessment$,
       this.traitScoreSummaries$
     ).pipe(
       takeUntil(this.destroyed$),
       map(
-        ([assessment, summaries]) => <any>new Map(
+        ([summaries]) => <any>new Map(
             summaries.map(summary => {
               if (summary.size === 0) {
                 return [];
@@ -300,18 +276,13 @@ export class WritingTraitScoresComponent
                     sortable: false,
                     styleClass: 'level-up'
                   }),
-                  ...toTraitSummaryColumns(
-                    summary.values().next().value,
-                    assessment.type === 'sum'
-                  )
+                  ...toTraitSummaryColumns(summary.values().next().value)
                 ]
               ];
             })
           )
       )
     );
-
-    // this.summaryColumnsBySummary$.subscribe(val => console.log(val));
 
     this.exportRequest$ = combineLatest(
       this.assessment$,
@@ -329,8 +300,6 @@ export class WritingTraitScoresComponent
         };
       })
     );
-
-    // this.exportRequest$.subscribe(val => console.log(val));
 
     this.initialized$ = combineLatest(
       this.assessment$,
