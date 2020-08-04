@@ -51,7 +51,8 @@ export function toAssessment(serverAssessment: any): Assessment {
     cutPoints: serverAssessment.cutPoints || [],
     resourceUrl: serverAssessment.resourceUrl,
     hasWerItem: serverAssessment.werItem,
-    targetReportEnabled: serverAssessment.targetReportEnabled
+    targetReportEnabled: serverAssessment.targetReportEnabled,
+    traitReportEnabled: serverAssessment.traitReportEnabled
   };
 }
 
