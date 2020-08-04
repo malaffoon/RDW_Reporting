@@ -76,6 +76,34 @@ sql:
         JOIN district_embargo de ON d.id = de.district_id
       WHERE de.school_year = :school_year AND d.id = :district_id
 
+    findTestResultsAvailability: >-
+      SELECT
+        dist.id AS district_id,
+        dist.name AS district_name,
+        exam.school_year,
+        sub.id AS subject_id,
+        sub.code AS subject_code,
+        ert.name AS report_type,
+        IF(ert.name = 'Aggregate', coalesce(de.aggregate, 0), coalesce(de.individual, 0)) AS status,
+        coalesce(count(exam.id),0) AS count
+      FROM exam
+        JOIN school sch ON exam.school_id = sch.id
+        JOIN district dist ON sch.district_id = dist.id
+        JOIN asmt ON exam.asmt_id = asmt.id
+        JOIN subject sub ON asmt.subject_id = sub.id
+        JOIN embargo_report_type ert on 1=1
+        LEFT JOIN district_embargo de ON
+          asmt.school_year = de.school_year AND
+          sch.district_id = de.district_id AND
+          sub.id = de.subject_id
+        WHERE asmt.type_id = 3 AND exam.deleted = 0
+          AND IF(ert.name = 'Aggregate', coalesce(de.aggregate,0), coalesce(de.individual,0)) IN (:included_statuses)
+          AND (
+            IF(ert.name = 'Aggregate', coalesce(de.aggregate,0), coalesce(de.individual,0)) NOT IN (:filtered_statuses)
+              OR dist.id IN (:district_ids)
+           )
+      GROUP BY exam.school_year, dist.id, sub.id, ert.name
+
     createState: >-
       INSERT INTO state_embargo (school_year, individual, aggregate, updated_by)
       VALUES (:school_year, :individual, :aggregate, :updated_by)

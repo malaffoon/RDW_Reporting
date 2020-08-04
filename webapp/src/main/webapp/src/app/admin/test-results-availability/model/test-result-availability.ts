@@ -1,8 +1,10 @@
 export interface TestResultAvailability {
+  readonly districtId: number;
+  readonly districtName: string;
   readonly schoolYear: number;
-  readonly district: string;
-  readonly subject: string;
+  readonly subjectId: number;
+  readonly subjectCode: string;
   readonly reportType: string;
-  readonly resultCount?: number;
   readonly status: string;
+  readonly examCount?: number;
 }
