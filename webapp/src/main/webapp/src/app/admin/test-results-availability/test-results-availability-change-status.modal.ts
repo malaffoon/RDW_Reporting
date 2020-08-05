@@ -41,8 +41,9 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   ngOnInit(): void {
     this.selectedFilters = this.service.getTestResultAvailabilityFilterDefaults();
     this.statusOptions = this.service.getTestResultsStatusOptions();
-    this.selectedStatus =
-      this.service.isDistrictAdmin() == true ? 'Released' : 'Reviewing';
+    this.selectedStatus = this.service.isDistrictAdmin()
+      ? 'Released'
+      : 'Reviewing';
     this.showSandboxAlert = false;
     this.successfulChange = false;
   }

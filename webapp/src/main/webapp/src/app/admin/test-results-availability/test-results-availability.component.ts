@@ -18,6 +18,7 @@ import { Download } from '../../shared/data/download.model';
 import { saveAs } from 'file-saver';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 class Column {
   id: string; // en.json name
@@ -37,49 +38,6 @@ class Column {
 })
 export class TestResultsAvailabilityComponent
   implements OnInit, AfterViewInit, DoCheck {
-  @ViewChild('alertSuccess')
-  alertSuccess: ElementRef;
-
-  @ViewChild('alertFailure')
-  alertFailure: ElementRef;
-
-  private grabFocusToAlert = false;
-
-  columns: Column[] = [
-    new Column({ id: 'school-year', field: 'schoolYear' }),
-    new Column({ id: 'district' }),
-    new Column({ id: 'subject' }),
-    new Column({ id: 'report-type', field: 'reportType' }),
-    new Column({ id: 'result-count', field: 'resultCount', sortable: false }),
-    new Column({ id: 'status' })
-  ];
-
-  private _testResultsAvailability: TestResultAvailability[];
-  changeResultsTooltip = `${this.translate.instant(
-    'test-results-availability.change-results-tooltip'
-  )}`;
-  // 'Change status of selected test results availability (all pages).';
-  testResultAvailabilityFilters: TestResultAvailabilityFilters;
-  filteredTestResults: TestResultAvailability[];
-
-  // Used to determine what to display
-  userDistrict: string; // when it's a district admin
-  showDistrictFilter: boolean; // set false if districtAdmin
-  showAudit: boolean; // only DevOps has ability
-  state: string; // state of tenant or sandbox logged into
-  numOfRows: number = 20; // TODO: set to be configurable
-
-  // results of change request
-  successfulChange: boolean;
-  unableToChange: boolean;
-
-  // TODO Replace drop downs with real data
-  schoolYearOptions: number[];
-  districtOptions: string[];
-  subjectOptions: string[];
-  statusOptions: string[];
-  reportTypeOptions: string[];
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -99,6 +57,54 @@ export class TestResultsAvailabilityComponent
     this._testResultsAvailability = testResults;
     this.updateFilteredTestResults();
   }
+  @ViewChild('alertSuccess')
+  alertSuccess: ElementRef;
+
+  @ViewChild('alertFailure')
+  alertFailure: ElementRef;
+
+  private grabFocusToAlert = false;
+
+  columns: Column[] = [
+    new Column({ id: 'school-year', field: 'schoolYear' }),
+    new Column({ id: 'district', field: 'districtName' }),
+    new Column({ id: 'subject', field: 'subjectCode' }),
+    new Column({ id: 'report-type', field: 'reportType' }),
+    new Column({ id: 'result-count', field: 'examCount', sortable: false }),
+    new Column({ id: 'status' })
+  ];
+
+  private _testResultsAvailability: TestResultAvailability[];
+  changeResultsTooltip = `${this.translate.instant(
+    'test-results-availability.change-results-tooltip'
+  )}`;
+  // 'Change status of selected test results availability (all pages).';
+  testResultAvailabilityFilters: TestResultAvailabilityFilters;
+  filteredTestResults$: Observable<TestResultAvailability[]>;
+  filteredResultsEmpty$: Observable<boolean>;
+
+  // Used to determine what to display
+  userDistrict: string; // when it's a district admin
+  showDistrictFilter: boolean; // set false if districtAdmin
+  showAudit: boolean; // only DevOps has ability
+  state: string; // state of tenant or sandbox logged into
+  numOfRows: number = 20; // TODO: set to be configurable
+
+  // results of change request
+  successfulChange: boolean;
+  unableToChange: boolean;
+
+  schoolYearOptions$: Observable<number[]>;
+  districtOptions$: Observable<string[]>;
+  subjectOptions$: Observable<string[]>;
+  statusOptions$: Observable<string[]>;
+  reportTypeOptions$: Observable<string[]>;
+
+  // TODO: need to save each selected Option to filtered Group
+  statusDefault: any = this.testResultsService.statusDefault;
+
+  // need to save each selected Option to filtered Group
+  successChangeMsgOptions: string;
 
   openChangeResultsModal() {
     this.userService
@@ -112,7 +118,8 @@ export class TestResultsAvailabilityComponent
         const modal: TestResultsAvailabilityChangeStatusModal =
           modalReference.content;
         modal.selectedFilters = this.testResultAvailabilityFilters;
-        modal.statusOptions = this.statusOptions;
+        // TODO: unwrap Observable
+        modal.statusOptions = []; //this.statusOptions$;
         modal.sandboxUser = sandboxUser;
         modal.changeStatusEvent.subscribe(res => {
           this.changeSuccessful(res.data, res.error);
@@ -122,19 +129,16 @@ export class TestResultsAvailabilityComponent
   }
 
   ngOnInit() {
-    // TODO set from user session
-    this.state = 'California';
+    this.userService
+      .getUser()
+      .pipe(map(user => user.tenantName))
+      .subscribe(tenantName => {
+        this.state = tenantName;
+      });
     this.showDistrictFilter = !this.testResultsService.isDistrictAdmin();
     this.showAudit = this.testResultsService.isDevOps();
 
     // Data for Drop downs
-    this.schoolYearOptions = this.testResultsService.getTestResultsSchoolYearOptions();
-    this.districtOptions = this.testResultsService.getTestResultsDistrictOptions();
-    // TODO  user session determines if Loading is available (only for DevOps)
-    this.subjectOptions = this.testResultsService.getTestResultsSubjectOptions();
-    this.reportTypeOptions = this.testResultsService.getTestResultsReportTypeOptions();
-    this.statusOptions = this.testResultsService.getTestResultsStatusOptions();
-
     // set defaults - needed since this component is initialized first
     this.testResultsService.setTestResultFilterDefaults();
     this.testResultAvailabilityFilters = this.testResultsService.getTestResultAvailabilityFilterDefaults();
@@ -142,20 +146,50 @@ export class TestResultsAvailabilityComponent
       this.userDistrict = this.testResultsService.getAdminUserDistrict(); // used when user is DistrictAdmin
       this.testResultAvailabilityFilters.district = this.userDistrict;
     }
-    this.testResultsAvailability = this.testResultsService.getTestResults(
-      this.testResultAvailabilityFilters
-    );
-    this.filteredTestResults = this.testResultsAvailability;
+
+    this.updateFilteredTestResults();
+    this.updateFilters();
   }
 
-  // need to save each selected Option to filtered Group
-  statusDefault: any = this.testResultsService.statusDefault;
-
-  // need to save each selected Option to filtered Group
-  successChangeMsgOptions: string;
   updateFilteredTestResults() {
-    this.filteredTestResults = this.testResultsService.getTestResults(
+    this.filteredTestResults$ = this.testResultsService.getTestResults(
       this.testResultAvailabilityFilters
+    );
+
+    this.filteredResultsEmpty$ = this.filteredTestResults$.pipe(
+      map(results => results.length === 0)
+    );
+  }
+
+  private updateFilters() {
+    this.schoolYearOptions$ = this.filteredTestResults$.pipe(
+      map((results: TestResultAvailability[]) => {
+        return Array.from(new Set(results.map(r => r.schoolYear))).sort();
+      })
+    );
+
+    this.districtOptions$ = this.filteredTestResults$.pipe(
+      map((results: TestResultAvailability[]) => {
+        return Array.from(new Set(results.map(r => r.districtName))).sort();
+      })
+    );
+
+    this.subjectOptions$ = this.filteredTestResults$.pipe(
+      map((results: TestResultAvailability[]) => {
+        return Array.from(new Set(results.map(r => r.subjectCode))).sort();
+      })
+    );
+
+    this.statusOptions$ = this.filteredTestResults$.pipe(
+      map((results: TestResultAvailability[]) => {
+        return Array.from(new Set(results.map(r => r.status))).sort();
+      })
+    );
+
+    this.reportTypeOptions$ = this.filteredTestResults$.pipe(
+      map((results: TestResultAvailability[]) => {
+        return Array.from(new Set(results.map(r => r.reportType))).sort();
+      })
     );
   }
 
@@ -185,9 +219,9 @@ export class TestResultsAvailabilityComponent
   }
 
   testResultsRowStyleClass(rowData: TestResultAvailability) {
-    return rowData.status == 'Loading'
+    return rowData.status === 'Loading'
       ? 'loadingColor'
-      : rowData.status == 'Reviewing'
+      : rowData.status === 'Reviewing'
       ? 'reviewingColor'
       : 'releasedColor';
   }

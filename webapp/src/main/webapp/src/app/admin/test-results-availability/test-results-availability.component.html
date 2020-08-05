@@ -98,7 +98,7 @@
               {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option
-              *ngFor="let schoolYear of schoolYearOptions"
+              *ngFor="let schoolYear of (schoolYearOptions$ | async)"
               [ngValue]="schoolYear"
             >
               {{ schoolYear }}
@@ -121,7 +121,7 @@
               {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option
-              *ngFor="let district of districtOptions"
+              *ngFor="let district of (districtOptions$ | async)"
               [ngValue]="district"
             >
               {{ district }}
@@ -153,7 +153,10 @@
             <option>
               {{ 'test-results-availability.all-text' | translate }}
             </option>
-            <option *ngFor="let subject of subjectOptions" [ngValue]="subject">
+            <option
+              *ngFor="let subject of (subjectOptions$ | async)"
+              [ngValue]="subject"
+            >
               {{ subject | translate }}
             </option>
           </select>
@@ -182,7 +185,7 @@
               {{ 'test-results-availability.all-text' | translate }}
             </option>
             <option
-              *ngFor="let reportType of reportTypeOptions"
+              *ngFor="let reportType of (reportTypeOptions$ | async)"
               [ngValue]="reportType"
             >
               {{ reportType | translate }}
@@ -212,7 +215,10 @@
             <option>
               {{ 'test-results-availability.all-text' | translate }}
             </option>
-            <option *ngFor="let status of statusOptions" [ngValue]="status">
+            <option
+              *ngFor="let status of (statusOptions$ | async)"
+              [ngValue]="status"
+            >
               {{ status | translate }}
             </option>
           </select>
@@ -230,7 +236,7 @@
       <div class="table-list-container mt-sm">
         <p-table
           [columns]="columns"
-          [value]="filteredTestResults"
+          [value]="filteredTestResults$ | async"
           sortField="name"
           [autoLayout]="true"
           [paginator]="true"
@@ -286,7 +292,7 @@
       </div>
       <div class="modal-footer table-footer">
         <button
-          [disabled]="filteredTestResults.length == 0"
+          [disabled]="filteredResultsEmpty$ | async"
           (click)="openChangeResultsModal()"
           class="btn btn-primary"
           type="button"

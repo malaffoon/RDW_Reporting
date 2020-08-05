@@ -1,13 +1,16 @@
 import { Injectable, OnInit } from '@angular/core';
 import { TestResultAvailability } from '../model/test-result-availability';
 import { TestResultAvailabilityFilters } from '../model/test-result-availability-filters';
-import { MockTestResultsAvailability } from '../mockTestResultsAvailability';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Download } from '../../../shared/data/download.model';
 import { Http } from '@angular/http';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
+import { AdminServiceRoute } from '../../../shared/service-route';
+import { DataService } from '../../../shared/data/data.service';
+
+const ResourceContext = `${AdminServiceRoute}/testResults`;
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +18,6 @@ import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 export class TestResultsAvailabilityService implements OnInit {
   private testResultFilters: TestResultAvailabilityFilters = new TestResultAvailabilityFilters();
   private defaultTestResultFilters = new TestResultAvailabilityFilters();
-  private mockTestResults = new MockTestResultsAvailability();
 
   // TODO: optimize maybe condense to one
   private allDefault = 'All';
@@ -30,6 +32,7 @@ export class TestResultsAvailabilityService implements OnInit {
   private adminDistrict = 'District 12'; // default district for districtAdmin
 
   constructor(
+    private dataService: DataService,
     private datePipe: TranslateDatePipe,
     private http: Http,
     private translate: TranslateService
@@ -47,28 +50,15 @@ export class TestResultsAvailabilityService implements OnInit {
   // receive test results and apply filter's options
   getTestResults(
     testResultFilters: TestResultAvailabilityFilters
-  ): TestResultAvailability[] {
-    // TODO: replace with real data
-
-    // Default Sort order SchoolYear(D),District(A),Subject(A),ReportType(A),Status(A)
-    const testResults = this.mockTestResults
-      .getMockTestResults()
-      .sort((a, b) => {
-        return (
-          b.schoolYear - a.schoolYear ||
-          a.district.localeCompare(b.district) ||
-          a.subject.localeCompare(b.subject) ||
-          a.reportType.localeCompare(b.reportType) ||
-          a.status.localeCompare(b.status)
-        );
-      });
-
-    if (this.validateTestResultsFilterAreDefault(testResultFilters)) {
-      return testResults;
-    }
-
-    return testResults.filter(tr =>
-      this.applyTestResultsFilter(tr, testResultFilters)
+  ): Observable<TestResultAvailability[]> {
+    // Default Sort order from query:
+    // SchoolYear(D),District (by name) (A),Subject (by ID) (A), ReportType(A), Status(A)
+    return this.dataService.get(`${ResourceContext}`).pipe(
+      map((sourceTestResults: any[]) => {
+        return sourceTestResults
+          .map(r => r as TestResultAvailability)
+          .filter(r => this.applyTestResultsFilter(r, testResultFilters));
+      })
     );
   }
 
@@ -115,10 +105,12 @@ export class TestResultsAvailabilityService implements OnInit {
     ) {
       return false;
     }
-    if (this.filterSubject(testResultFilters.subject, testResult.subject)) {
+    if (this.filterSubject(testResultFilters.subject, testResult.subjectCode)) {
       return false;
     }
-    if (this.filterDistrict(testResultFilters.district, testResult.district)) {
+    if (
+      this.filterDistrict(testResultFilters.district, testResult.districtName)
+    ) {
       return false;
     }
     if (
@@ -130,7 +122,7 @@ export class TestResultsAvailabilityService implements OnInit {
   }
 
   private filterStatus(filteredStatus: string, status: string): boolean {
-    return filteredStatus != this.statusDefault && filteredStatus != status;
+    return filteredStatus !== this.statusDefault && filteredStatus !== status;
   }
 
   private filterReportType(
@@ -138,15 +130,18 @@ export class TestResultsAvailabilityService implements OnInit {
     reportType: string
   ): boolean {
     return (
-      filteredReportType != this.allDefault && filteredReportType != reportType
+      filteredReportType !== this.allDefault &&
+      filteredReportType !== reportType
     );
   }
   private filterSubject(filteredSubject: string, subject: string): boolean {
-    return filteredSubject != this.allDefault && filteredSubject != subject;
+    return filteredSubject !== this.allDefault && filteredSubject !== subject;
   }
 
   private filterDistrict(filteredDistrict: string, district: string): boolean {
-    return filteredDistrict != this.allDefault && filteredDistrict != district;
+    return (
+      filteredDistrict !== this.allDefault && filteredDistrict !== district
+    );
   }
 
   private filterSchoolYear(
@@ -154,8 +149,8 @@ export class TestResultsAvailabilityService implements OnInit {
     schoolYear: number
   ): boolean {
     return (
-      filteredSchoolYear != this.schoolYearsDefault &&
-      filteredSchoolYear != schoolYear
+      filteredSchoolYear !== this.schoolYearsDefault &&
+      filteredSchoolYear !== schoolYear
     );
   }
 
@@ -171,21 +166,6 @@ export class TestResultsAvailabilityService implements OnInit {
     // determine what can be returned
   }
 
-  validateTestResultsFilterAreDefault(
-    testResultFilters: TestResultAvailabilityFilters
-  ) {
-    if (
-      this.statusDefault == testResultFilters.status &&
-      this.allDefault == testResultFilters.reportType &&
-      this.allDefault == testResultFilters.subject &&
-      this.allDefault == testResultFilters.district &&
-      this.schoolYearsDefault == testResultFilters.schoolYear
-    ) {
-      return true;
-    }
-    return false;
-  }
-
   getAdminUserDistrict() {
     return this.adminDistrict;
   }
@@ -196,23 +176,6 @@ export class TestResultsAvailabilityService implements OnInit {
       return ['Loading', 'Reviewing', 'Released'];
     }
     return ['Reviewing', 'Released'];
-  }
-
-  // Filter options are obtained from initial test results availability
-  getTestResultsSchoolYearOptions(): number[] {
-    return this.mockTestResults.getTestResultsSchoolYearOptions();
-  }
-
-  getTestResultsDistrictOptions(): string[] {
-    return this.mockTestResults.getTestResultsDistrictOptions();
-  }
-
-  getTestResultsSubjectOptions(): string[] {
-    return this.mockTestResults.getTestResultsSubjectOptions();
-  }
-
-  getTestResultsReportTypeOptions(): string[] {
-    return this.mockTestResults.getTestResultsReportTypeOptions();
   }
 
   public getTemplateFile(): Observable<any> {

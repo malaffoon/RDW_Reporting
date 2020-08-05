@@ -8,11 +8,11 @@ insert into state_embargo (school_year, individual, aggregate) values
   (2019, true, true),
   (2020, false, false);
 
-insert into district_embargo (district_id, school_year, individual, aggregate) values
-  (-10, 2018, true, true),
-  (-20, 2018, false, null),
-  (-10, 2017, false, false),
-  (-10, 2020, true, true);
+insert into district_embargo (district_id, school_year, subject_id, individual, aggregate) values
+  (-10, 2018, 1, 1, 1),
+  (-20, 2018, 1, 2, null),
+  (-10, 2017, 1, 2, 2),
+  (-10, 2020, 1, 1, 1);
 
 
 -- get some summative exams in there to test counts
