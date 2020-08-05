@@ -94,20 +94,17 @@
             class="form-control"
             (ngModelChange)="onChangeSchoolYearFilter($event)"
           >
-            <option>
-              {{ 'test-results-availability.all-text' | translate }}
-            </option>
             <option
               *ngFor="let schoolYear of (schoolYearOptions$ | async)"
               [ngValue]="schoolYear"
             >
-              {{ schoolYear }}
+              {{ schoolYear.label | translate }}
             </option>
           </select>
         </div>
 
         <!-- District Select  -->
-        <div class="col-md-2 text-left" *ngIf="showDistrictFilter">
+        <div class="col-md-2 text-left" *ngIf="!(isDistrictAdmin$ | async)">
           <label for="select-district">{{
             'test-results-availability.filter-district' | translate
           }}</label>
@@ -117,24 +114,22 @@
             class="form-control"
             (ngModelChange)="onChangeDistrictFilter($event)"
           >
-            <option>
-              {{ 'test-results-availability.all-text' | translate }}
-            </option>
             <option
               *ngFor="let district of (districtOptions$ | async)"
               [ngValue]="district"
             >
-              {{ district }}
+              {{ district.label | translate }}
             </option>
           </select>
         </div>
-        <div class="col-md-2" *ngIf="!showDistrictFilter">
+
+        <div class="col-md-2" *ngIf="(isDistrictAdmin$ | async)">
           <label for="select-district-admin">{{
             'test-results-availability.district-admin' | translate
           }}</label>
           <select id="select-district-admin" class="form-control" disabled>
-            <option>
-              {{ testResultAvailabilityFilters.district }}
+            <option [ngValue]="district$ | async">
+              {{ (district$ | async).label | translate }}
             </option>
           </select>
         </div>
@@ -150,14 +145,11 @@
             class="form-control"
             (ngModelChange)="onChangeSubjectFilter($event)"
           >
-            <option>
-              {{ 'test-results-availability.all-text' | translate }}
-            </option>
             <option
               *ngFor="let subject of (subjectOptions$ | async)"
               [ngValue]="subject"
             >
-              {{ subject | translate }}
+              {{ subject.label | translate }}
             </option>
           </select>
         </div>
@@ -181,14 +173,11 @@
             class="form-control"
             (ngModelChange)="onChangeReportTypeFilter($event)"
           >
-            <option>
-              {{ 'test-results-availability.all-text' | translate }}
-            </option>
             <option
               *ngFor="let reportType of (reportTypeOptions$ | async)"
               [ngValue]="reportType"
             >
-              {{ reportType | translate }}
+              {{ reportType.label | translate }}
             </option>
           </select>
         </div>
@@ -212,14 +201,11 @@
             class="form-control"
             (ngModelChange)="onChangeStatusFilter($event)"
           >
-            <option>
-              {{ 'test-results-availability.all-text' | translate }}
-            </option>
             <option
               *ngFor="let status of (statusOptions$ | async)"
               [ngValue]="status"
             >
-              {{ status | translate }}
+              {{ status.label | translate }}
             </option>
           </select>
         </div>
@@ -236,7 +222,7 @@
       <div class="table-list-container mt-sm">
         <p-table
           [columns]="columns"
-          [value]="filteredTestResults$ | async"
+          [value]="filteredData$ | async"
           sortField="name"
           [autoLayout]="true"
           [paginator]="true"
@@ -273,8 +259,11 @@
             let-columns="columns"
           >
             <tr [ngClass]="testResultsRowStyleClass(rowData)">
-              <td *ngFor="let column of columns" [ngSwitch]="column.id">
-                <span *ngSwitchDefault>
+              <td *ngFor="let column of columns">
+                <span *ngIf="column.hasNameField">
+                  {{ group[column.field].name }}
+                </span>
+                <span *ngIf="!column.hasNameField">
                   {{ group[column.field] }}
                 </span>
               </td>

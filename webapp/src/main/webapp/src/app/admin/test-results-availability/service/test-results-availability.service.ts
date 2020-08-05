@@ -1,14 +1,15 @@
 import { Injectable, OnInit } from '@angular/core';
 import { TestResultAvailability } from '../model/test-result-availability';
 import { TestResultAvailabilityFilters } from '../model/test-result-availability-filters';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Download } from '../../../shared/data/download.model';
-import { Http } from '@angular/http';
+import { Http, ResponseContentType } from '@angular/http';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 import { AdminServiceRoute } from '../../../shared/service-route';
 import { DataService } from '../../../shared/data/data.service';
+import { UserOptions } from '../model/user-options';
 
 const ResourceContext = `${AdminServiceRoute}/testResults`;
 
@@ -16,27 +17,51 @@ const ResourceContext = `${AdminServiceRoute}/testResults`;
   providedIn: 'root'
 })
 export class TestResultsAvailabilityService implements OnInit {
-  private testResultFilters: TestResultAvailabilityFilters = new TestResultAvailabilityFilters();
-  private defaultTestResultFilters = new TestResultAvailabilityFilters();
-
-  // TODO: optimize maybe condense to one
-  private allDefault = 'All';
-  statusDefault: string = this.allDefault;
-  schoolYearsDefault: any = this.allDefault;
-  successfulChange: boolean;
-
-  //  TODO: update. Below determine what to display depending on session
-  //   and user change to see the different Test Results Configurations
-  private districtAdmin = false; // set from User's permissions
-  private devOps = true; // set from User's permissions
-  private adminDistrict = 'District 12'; // default district for districtAdmin
-
   constructor(
     private dataService: DataService,
     private datePipe: TranslateDatePipe,
     private http: Http,
     private translate: TranslateService
   ) {}
+
+  static readonly NoFiltersNumeric = -1;
+  static readonly NoFiltersText = 'All';
+
+  static readonly FilterIncludeAll = {
+    label: 'test-results-availability.all-text',
+    value: null
+  };
+
+  private testResultFilters: TestResultAvailabilityFilters = new TestResultAvailabilityFilters();
+  private defaultTestResultFilters = new TestResultAvailabilityFilters();
+
+  successfulChange: boolean;
+
+  private static toTestResultAvailability(source: any): TestResultAvailability {
+    return {
+      schoolYear: { label: '' + source.schoolYear, value: source.schoolYear },
+      district: { label: source.districtName, value: source.districtId },
+      subject: { label: source.subjectCode, value: source.subjectId },
+      reportType: { label: source.reportType, value: source.reportType },
+      status: { label: source.status, value: source.status },
+      examCount: source.examCount
+    };
+  }
+
+  private static toOptions(source: any): UserOptions {
+    const statuses = source.statuses.map(stat => {
+      return { label: stat, value: stat };
+    });
+
+    return {
+      statuses: statuses,
+      singleDistrictAdmin: source.singleDistrictAdmin,
+      district: {
+        label: source.districtName,
+        value: source.districtId
+      }
+    };
+  }
 
   ngOnInit(): void {
     this.setTestResultFilterDefaults();
@@ -56,8 +81,24 @@ export class TestResultsAvailabilityService implements OnInit {
     return this.dataService.get(`${ResourceContext}`).pipe(
       map((sourceTestResults: any[]) => {
         return sourceTestResults
-          .map(r => r as TestResultAvailability)
-          .filter(r => this.applyTestResultsFilter(r, testResultFilters));
+          .map(r => TestResultsAvailabilityService.toTestResultAvailability(r))
+          .filter(r => this.matchesFilters(r, testResultFilters));
+      })
+    );
+  }
+
+  getUserOptions(): Observable<UserOptions> {
+    // TODO: implement. This is stubbed out now.
+    const fromDataService = of({
+      statuses: ['Loading', 'Reviewing', 'Released'],
+      singleDistrictAdmin: false,
+      districtId: 2,
+      districtName: 'Crom District'
+    });
+
+    return fromDataService.pipe(
+      map((sourceUserSettings: any) => {
+        return TestResultsAvailabilityService.toOptions(sourceUserSettings);
       })
     );
   }
@@ -65,117 +106,77 @@ export class TestResultsAvailabilityService implements OnInit {
   // TODO:  log changes and no need to persist
   changeTestResults(
     testResultFilters: TestResultAvailabilityFilters,
-    newStatus: string
+    newStatus: any
   ) {
+    console.log('Change Request Log Info:', newStatus, testResultFilters);
     this.successfulChange = false;
     this.testResultFilters.status = newStatus;
-    this.logTestResults(testResultFilters);
+    this.logTestResults(testResultFilters, newStatus.value);
     this.successfulChange = true;
   }
 
   // TODO: add save of data
-  logTestResults(testResultFilters: TestResultAvailabilityFilters) {
-    console.log('Change Request Log Info:' + JSON.stringify(testResultFilters));
-    // covert to csv for test
+  logTestResults(
+    testResultFilters: TestResultAvailabilityFilters,
+    newStatus: string
+  ) {
+    this.dataService
+      .put(
+        `${ResourceContext}`,
+        {
+          schoolYear: testResultFilters.schoolYear.value,
+          district: testResultFilters.district.value,
+          subject: testResultFilters.subject.value,
+          reportType: testResultFilters.reportType.value,
+          status: testResultFilters.status.value,
+          newStatus: newStatus
+        },
+        { responseType: ResponseContentType.Text }
+      )
+      .pipe()
+      .subscribe(t => console.log("It's away"));
   }
 
   setTestResultFilterDefaults() {
-    this.defaultTestResultFilters.schoolYear = this.schoolYearsDefault;
-    this.defaultTestResultFilters.district = this.allDefault; // TODO: set from session if District Admin
-    this.defaultTestResultFilters.subject = this.allDefault;
-    this.defaultTestResultFilters.state = 'California'; // TODO: Get from session
-    this.defaultTestResultFilters.reportType = this.allDefault;
-    this.defaultTestResultFilters.status = this.statusDefault;
+    ['status', 'reportType', 'subject', 'district', 'schoolYear'].forEach(
+      field => {
+        this.defaultTestResultFilters[field] =
+          TestResultsAvailabilityService.FilterIncludeAll;
+      }
+    );
+    // TODO: set from session if District Admin
+    // this.defaultTestResultFilters.district = TestResultsAvailabilityService.FilterIncludeAll;
   }
 
   getTestResultAvailabilityFilterDefaults(): TestResultAvailabilityFilters {
     return this.defaultTestResultFilters;
   }
 
-  private applyTestResultsFilter(
+  private matchesFilters(
     testResult: TestResultAvailability,
     testResultFilters: TestResultAvailabilityFilters
   ) {
     // may need to adjust order
-    if (this.filterStatus(testResultFilters.status, testResult.status)) {
-      return false;
-    }
-    if (
-      this.filterReportType(testResultFilters.reportType, testResult.reportType)
-    ) {
-      return false;
-    }
-    if (this.filterSubject(testResultFilters.subject, testResult.subjectCode)) {
-      return false;
-    }
-    if (
-      this.filterDistrict(testResultFilters.district, testResult.districtName)
-    ) {
-      return false;
-    }
-    if (
-      this.filterSchoolYear(testResultFilters.schoolYear, testResult.schoolYear)
-    ) {
-      return false;
-    }
-    return true;
+    return ['status', 'reportType', 'subject', 'district', 'schoolYear'].every(
+      field => {
+        return this.isMatch(field, testResultFilters, testResult);
+      }
+    );
   }
 
-  private filterStatus(filteredStatus: string, status: string): boolean {
-    return filteredStatus !== this.statusDefault && filteredStatus !== status;
-  }
-
-  private filterReportType(
-    filteredReportType: string,
-    reportType: string
+  private isMatch(
+    field: string,
+    filters: TestResultAvailabilityFilters,
+    testResult: TestResultAvailability
   ): boolean {
     return (
-      filteredReportType !== this.allDefault &&
-      filteredReportType !== reportType
+      filters[field] === TestResultsAvailabilityService.FilterIncludeAll ||
+      filters[field].value === testResult[field].value
     );
-  }
-  private filterSubject(filteredSubject: string, subject: string): boolean {
-    return filteredSubject !== this.allDefault && filteredSubject !== subject;
-  }
-
-  private filterDistrict(filteredDistrict: string, district: string): boolean {
-    return (
-      filteredDistrict !== this.allDefault && filteredDistrict !== district
-    );
-  }
-
-  private filterSchoolYear(
-    filteredSchoolYear: number,
-    schoolYear: number
-  ): boolean {
-    return (
-      filteredSchoolYear !== this.schoolYearsDefault &&
-      filteredSchoolYear !== schoolYear
-    );
-  }
-
-  isDistrictAdmin(): boolean {
-    return this.districtAdmin;
-  }
-
-  isDevOps(): boolean {
-    return this.devOps;
   }
 
   generateAuditHistory() {
     // determine what can be returned
-  }
-
-  getAdminUserDistrict() {
-    return this.adminDistrict;
-  }
-
-  getTestResultsStatusOptions(): string[] {
-    // Loading only available for DevOps permission
-    if (this.isDevOps()) {
-      return ['Loading', 'Reviewing', 'Released'];
-    }
-    return ['Reviewing', 'Released'];
   }
 
   public getTemplateFile(): Observable<any> {

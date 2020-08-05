@@ -31,7 +31,7 @@
         (ngModelChange)="onChangeStatusFilter($event)"
       >
         <option *ngFor="let status of statusOptions" [ngValue]="status">
-          {{ status }}
+          {{ status.label | translate }}
         </option>
       </select>
     </div>
@@ -42,7 +42,7 @@
       {{ 'test-results-availability-change-status.school-year' | translate }}
     </label>
     <span class="col-xs-8 text-overflow-ellipsis">
-      {{ selectedFilters.schoolYear }}
+      {{ selectedFilters.schoolYear.label | translate }}
     </span>
   </div>
   <div class="form-group row">
@@ -58,7 +58,7 @@
       {{ 'test-results-availability-change-status.district' | translate }}
     </label>
     <span class="col-xs-8 text-overflow-ellipsis">
-      {{ selectedFilters.district }}
+      {{ selectedFilters.district.label | translate }}
     </span>
   </div>
   <div class="form-group row">
@@ -66,7 +66,7 @@
       {{ 'test-results-availability-change-status.subjects' | translate }}
     </label>
     <span class="col-xs-8 text-overflow-ellipsis">
-      {{ selectedFilters.subject }}
+      {{ selectedFilters.subject.label | translate }}
     </span>
   </div>
   <div class="form-group row">
@@ -74,7 +74,7 @@
       {{ 'test-results-availability-change-status.report-type' | translate }}
     </label>
     <span class="col-xs-8 text-overflow-ellipsis">
-      {{ selectedFilters.reportType }}
+      {{ selectedFilters.reportType.label | translate }}
     </span>
   </div>
 </div>

@@ -1,8 +1,8 @@
 export class TestResultAvailabilityFilters {
   state: string;
-  schoolYear: number;
-  district: string;
-  subject: string;
-  reportType: string;
-  status: string;
+  schoolYear: { label: string; value: number };
+  district: { label: string; value: number };
+  subject: { label: string; value: number };
+  reportType: { label: string; value: string };
+  status: { label: string; value: string };
 }
