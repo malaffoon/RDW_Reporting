@@ -1,5 +1,8 @@
 ## Change Log
 
+#### 2.3.4 - 2020-08-06
+* SRS-150 Access denied page from old url to new url structure fix
+
 #### 2.2.0 - 2019-10-15
 
 * RP-726 Show summary metrics about each tenant in UI (Part 2)
