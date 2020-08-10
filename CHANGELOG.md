@@ -4,6 +4,7 @@
 
 Work done as part of RDW Phase 6.
 
+* Display Writing Trait Scores for Summative Assessments (Phase 6, Req. 3)
 * Alternate Score Aggregate Report (Phase 6, Req. 4)
     * Add support for alt score aggregate queries
 * Add UI Colors to RDW Palette (Phase 6, Req. 2)

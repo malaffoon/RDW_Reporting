@@ -476,7 +476,7 @@ export class AggregateReportSummary {
         )
       ) {
         filterRows.push({
-          label: translate('common.student-field.IndividualEdcuationPlan'),
+          label: translate('common.student-field.IndividualEducationPlan'),
           values: inline(
             orAll(
               optionFilters.individualEducationPlans,
