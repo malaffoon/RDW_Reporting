@@ -11,12 +11,13 @@ import { TranslateService } from '@ngx-translate/core';
   selector: 'test-results-change-status-modal',
   templateUrl: 'test-results-availability-change-status.modal.html'
 })
+// tslint:disable-next-line:component-class-suffix
 export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   private _subscription: Subscription;
   public changeStatusEvent: EventEmitter<any> = new EventEmitter();
   selectedFilters: TestResultAvailabilityFilters;
-  statusOptions: string[];
-  selectedStatus: string;
+  statusOptions: { label: string; value: string }[];
+  selectedStatus: { label: string; value: string };
 
   // below determine which if any alert need to be displayed
   unableToChange: boolean;
@@ -40,10 +41,6 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
 
   ngOnInit(): void {
     this.selectedFilters = this.service.getTestResultAvailabilityFilterDefaults();
-    this.statusOptions = this.service.getTestResultsStatusOptions();
-    this.selectedStatus = this.service.isDistrictAdmin()
-      ? 'Released'
-      : 'Reviewing';
     this.showSandboxAlert = false;
     this.successfulChange = false;
   }
@@ -78,7 +75,7 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   getSuccessfulChangeMessage(): string {
     return (
       '"' +
-      this.selectedStatus +
+      `${this.translate.instant(this.selectedStatus.label)}` +
       '"' +
       `${this.translate.instant(
         'test-results-availability-change-status.successful-change-2'
@@ -86,22 +83,22 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
       `${this.translate.instant(
         'test-results-availability.filter-school-year'
       )}: ` +
-      this.selectedFilters.schoolYear +
+      `${this.translate.instant(this.selectedFilters.schoolYear.label)}` +
       ', ' +
       `${this.translate.instant(
         'test-results-availability.filter-subject'
       )}: ` +
-      this.selectedFilters.subject +
+      `${this.translate.instant(this.selectedFilters.subject.label)}` +
       ', ' +
       `${this.translate.instant(
         'test-results-availability.filter-district'
       )}: ` +
-      this.selectedFilters.district +
+      `${this.translate.instant(this.selectedFilters.district.label)}` +
       ', ' +
       `${this.translate.instant(
         'test-results-availability.filter-report-type'
       )}: ` +
-      this.selectedFilters.reportType +
+      `${this.translate.instant(this.selectedFilters.reportType.label)}` +
       ').'
     );
   }

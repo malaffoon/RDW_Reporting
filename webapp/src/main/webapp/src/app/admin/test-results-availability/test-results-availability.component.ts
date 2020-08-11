@@ -19,6 +19,7 @@ import { saveAs } from 'file-saver';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { UserOptions } from './model/user-options';
 
 class Column {
   id: string; // en.json name
@@ -49,14 +50,6 @@ export class TestResultsAvailabilityComponent
     private userService: UserService
   ) {}
 
-  get testResultsAvailability(): TestResultAvailability[] {
-    return this._testResultsAvailability;
-  }
-
-  set testResultsAvailability(testResults: TestResultAvailability[]) {
-    this._testResultsAvailability = testResults;
-    this.updateFilteredTestResults();
-  }
   @ViewChild('alertSuccess')
   alertSuccess: ElementRef;
 
@@ -67,24 +60,25 @@ export class TestResultsAvailabilityComponent
 
   columns: Column[] = [
     new Column({ id: 'school-year', field: 'schoolYear' }),
-    new Column({ id: 'district', field: 'districtName' }),
-    new Column({ id: 'subject', field: 'subjectCode' }),
+    new Column({ id: 'district', field: 'district' }),
+    new Column({ id: 'subject', field: 'subject' }),
     new Column({ id: 'report-type', field: 'reportType' }),
     new Column({ id: 'result-count', field: 'examCount', sortable: false }),
     new Column({ id: 'status' })
   ];
 
-  private _testResultsAvailability: TestResultAvailability[];
   changeResultsTooltip = `${this.translate.instant(
     'test-results-availability.change-results-tooltip'
   )}`;
   // 'Change status of selected test results availability (all pages).';
   testResultAvailabilityFilters: TestResultAvailabilityFilters;
   filteredTestResults$: Observable<TestResultAvailability[]>;
+  filteredData$: Observable<any[]>;
   filteredResultsEmpty$: Observable<boolean>;
+  userOptions$: Observable<UserOptions>;
 
   // Used to determine what to display
-  userDistrict: string; // when it's a district admin
+  userDistrict: { label: string; value: number }; // when it's a district admin
   showDistrictFilter: boolean; // set false if districtAdmin
   showAudit: boolean; // only DevOps has ability
   state: string; // state of tenant or sandbox logged into
@@ -94,17 +88,24 @@ export class TestResultsAvailabilityComponent
   successfulChange: boolean;
   unableToChange: boolean;
 
-  schoolYearOptions$: Observable<number[]>;
-  districtOptions$: Observable<string[]>;
-  subjectOptions$: Observable<string[]>;
-  statusOptions$: Observable<string[]>;
-  reportTypeOptions$: Observable<string[]>;
+  schoolYearOptions$: Observable<{ label: string; value: any }[]>;
+  districtOptions$: Observable<{ label: string; value: any }[]>;
+  subjectOptions$: Observable<{ label: string; value: any }[]>;
+  reportTypeOptions$: Observable<{ label: string; value: any }[]>;
+  statusOptions$: Observable<{ label: string; value: any }[]>;
 
-  // TODO: need to save each selected Option to filtered Group
-  statusDefault: any = this.testResultsService.statusDefault;
+  statusTransitionOptions$: Observable<{ label: string; value: any }[]>;
+
+  isDistrictAdmin$: Observable<boolean>;
+  district$: Observable<{ label: string; value: number }>;
 
   // need to save each selected Option to filtered Group
   successChangeMsgOptions: string;
+
+  private toSubjectKey = label => 'subject.' + label + '.name';
+  private toReportTypeKey = label =>
+    'test-results-availability.reportType.' + label;
+  private toStatusKey = label => 'test-results-availability.status.' + label;
 
   openChangeResultsModal() {
     this.userService
@@ -118,8 +119,21 @@ export class TestResultsAvailabilityComponent
         const modal: TestResultsAvailabilityChangeStatusModal =
           modalReference.content;
         modal.selectedFilters = this.testResultAvailabilityFilters;
-        // TODO: unwrap Observable
-        modal.statusOptions = []; //this.statusOptions$;
+
+        this.statusTransitionOptions$.subscribe(
+          options => (modal.statusOptions = options)
+        );
+
+        // For fully-privileged users (all three status options), default to Reviewing. For others, default
+        // to Released. Handle degenerative cases, although these should not occur.
+        if (modal.statusOptions.length === 0) {
+          console.warn('invalid state: no status options');
+          modal.selectedStatus = null;
+        } else {
+          modal.selectedStatus =
+            modal.statusOptions[modal.statusOptions.length === 1 ? 0 : 1];
+        }
+
         modal.sandboxUser = sandboxUser;
         modal.changeStatusEvent.subscribe(res => {
           this.changeSuccessful(res.data, res.error);
@@ -135,17 +149,29 @@ export class TestResultsAvailabilityComponent
       .subscribe(tenantName => {
         this.state = tenantName;
       });
-    this.showDistrictFilter = !this.testResultsService.isDistrictAdmin();
-    this.showAudit = this.testResultsService.isDevOps();
+
+    // TODO: get from user settings
+    this.showAudit = false;
 
     // Data for Drop downs
     // set defaults - needed since this component is initialized first
     this.testResultsService.setTestResultFilterDefaults();
     this.testResultAvailabilityFilters = this.testResultsService.getTestResultAvailabilityFilterDefaults();
-    if (!this.showDistrictFilter) {
-      this.userDistrict = this.testResultsService.getAdminUserDistrict(); // used when user is DistrictAdmin
-      this.testResultAvailabilityFilters.district = this.userDistrict;
-    }
+
+    this.userOptions$ = this.testResultsService.getUserOptions();
+    this.isDistrictAdmin$ = this.userOptions$.pipe(
+      map(user => user.singleDistrictAdmin)
+    );
+
+    this.district$ = this.userOptions$.pipe(
+      map(user => {
+        const district = user.singleDistrictAdmin ? user.district : null;
+        if (district != null) {
+          this.testResultAvailabilityFilters.district = district;
+        }
+        return district;
+      })
+    );
 
     this.updateFilteredTestResults();
     this.updateFilters();
@@ -159,36 +185,75 @@ export class TestResultsAvailabilityComponent
     this.filteredResultsEmpty$ = this.filteredTestResults$.pipe(
       map(results => results.length === 0)
     );
+
+    this.filteredData$ = this.filteredTestResults$.pipe(
+      map(results => {
+        return results.map(result => this.toDisplayValues(result));
+      })
+    );
+  }
+
+  private toDisplayValues(result: TestResultAvailability) {
+    return {
+      schoolYear: result.schoolYear.label,
+      district: result.district.label,
+      subject: this.translate.instant(this.toSubjectKey(result.subject.label)),
+      status: this.translate.instant(this.toStatusKey(result.status.label)),
+      reportType: this.translate.instant(
+        this.toReportTypeKey(result.reportType.label)
+      ),
+      examCount: result.examCount,
+      statusValue: result.status.value
+    };
+  }
+
+  private getOptionsByField(field: string, toTranslateKey = label => label) {
+    const sort = 'label';
+    return this.filteredTestResults$.pipe(
+      map((results: TestResultAvailability[]) => {
+        const ids = results.map(r => r[field].value);
+        const options = results
+          .map(r => {
+            return {
+              label: toTranslateKey(r[field].label),
+              value: r[field].value
+            };
+          })
+          .filter((item, idx) => ids.indexOf(item.value) === idx)
+          .sort((a, b) => a[sort].localeCompare(b[sort]));
+
+        options.unshift(TestResultsAvailabilityService.FilterIncludeAll);
+
+        return options;
+      })
+    );
   }
 
   private updateFilters() {
-    this.schoolYearOptions$ = this.filteredTestResults$.pipe(
-      map((results: TestResultAvailability[]) => {
-        return Array.from(new Set(results.map(r => r.schoolYear))).sort();
+    this.schoolYearOptions$ = this.getOptionsByField('schoolYear');
+    this.districtOptions$ = this.getOptionsByField('district');
+    this.subjectOptions$ = this.getOptionsByField('subject', this.toSubjectKey);
+    this.reportTypeOptions$ = this.getOptionsByField(
+      'reportType',
+      this.toReportTypeKey
+    );
+
+    // Status is done differently since it is possible for not all available statuses to exist in the data.
+    this.statusTransitionOptions$ = this.userOptions$.pipe(
+      map((user: UserOptions) => {
+        return user.statuses.map(stat => {
+          return { label: this.toStatusKey(stat.label), value: stat.value };
+        });
       })
     );
 
-    this.districtOptions$ = this.filteredTestResults$.pipe(
-      map((results: TestResultAvailability[]) => {
-        return Array.from(new Set(results.map(r => r.districtName))).sort();
-      })
-    );
+    this.statusOptions$ = this.statusTransitionOptions$.pipe(
+      map((options: any[]) => {
+        // Copy array of options and prepend the "All" option used in filter selector
+        const allOptions = [...options];
+        allOptions.unshift(TestResultsAvailabilityService.FilterIncludeAll);
 
-    this.subjectOptions$ = this.filteredTestResults$.pipe(
-      map((results: TestResultAvailability[]) => {
-        return Array.from(new Set(results.map(r => r.subjectCode))).sort();
-      })
-    );
-
-    this.statusOptions$ = this.filteredTestResults$.pipe(
-      map((results: TestResultAvailability[]) => {
-        return Array.from(new Set(results.map(r => r.status))).sort();
-      })
-    );
-
-    this.reportTypeOptions$ = this.filteredTestResults$.pipe(
-      map((results: TestResultAvailability[]) => {
-        return Array.from(new Set(results.map(r => r.reportType))).sort();
+        return allOptions;
       })
     );
   }
@@ -218,10 +283,10 @@ export class TestResultsAvailabilityComponent
     this.updateFilteredTestResults();
   }
 
-  testResultsRowStyleClass(rowData: TestResultAvailability) {
-    return rowData.status === 'Loading'
+  testResultsRowStyleClass(rowData: any) {
+    return rowData.statusValue === 'Loading'
       ? 'loadingColor'
-      : rowData.status === 'Reviewing'
+      : rowData.statusValue === 'Reviewing'
       ? 'reviewingColor'
       : 'releasedColor';
   }
@@ -272,6 +337,7 @@ export class TestResultsAvailabilityComponent
     }
   }
 
+  /* tslint:disable */
   ngAfterViewInit() {
     // TODO: upgrade to newer version of PrimeNG and then remove this.
     // Hack to label the pagination controls, which the version of p-table we are using doesn't support.
@@ -290,6 +356,7 @@ export class TestResultsAvailabilityComponent
       "jQuery('a.ui-paginator-page').each(function( index ) { $( this ).attr('aria-label', 'Page ' + (index+1) );});"
     );
   }
+  /* tslint:enable */
 
   ngDoCheck(): void {
     // Change focus to alert when it first appears.

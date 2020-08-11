@@ -2024,6 +2024,15 @@
       "result-count": "Result Count",
       "status": "Status"
     },
+    "reportType": {
+      "Individual": "Individual",
+      "Aggregate": "Aggregate"
+    },
+    "status": {
+      "Loading": "Loading",
+      "Reviewing": "Reviewing",
+      "Released": "Released"
+    },
     "district-admin": "District Admin",
     "empty-message": "There are no test results that match your search.  Please try again.",
     "filter-district": "District",
