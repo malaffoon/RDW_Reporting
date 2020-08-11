@@ -126,16 +126,12 @@ export class TestResultsAvailabilityComponent
 
         // For fully-privileged users (all three status options), default to Reviewing. For others, default
         // to Released. Handle degenerative cases, although these should not occur.
-        switch (modal.statusOptions.length) {
-          case 0:
-            modal.selectedStatus = null;
-            break;
-          case 1:
-            modal.selectedStatus = modal.statusOptions[0];
-            break;
-          default:
-            modal.selectedStatus = modal.statusOptions[1];
-            break;
+        if (modal.statusOptions.length === 0) {
+          console.warn('invalid state: no status options');
+          modal.selectedStatus = null;
+        } else {
+          modal.selectedStatus =
+            modal.statusOptions[modal.statusOptions.length === 1 ? 0 : 1];
         }
 
         modal.sandboxUser = sandboxUser;
@@ -167,8 +163,6 @@ export class TestResultsAvailabilityComponent
       map(user => user.singleDistrictAdmin)
     );
 
-    this.userOptions$.subscribe(u => console.log(u));
-
     this.district$ = this.userOptions$.pipe(
       map(user => {
         const district = user.singleDistrictAdmin ? user.district : null;
@@ -194,25 +188,23 @@ export class TestResultsAvailabilityComponent
 
     this.filteredData$ = this.filteredTestResults$.pipe(
       map(results => {
-        return results.map(result => {
-          return {
-            schoolYear: result.schoolYear.label,
-            district: result.district.label,
-            subject: this.translate.instant(
-              this.toSubjectKey(result.subject.label)
-            ),
-            status: this.translate.instant(
-              this.toStatusKey(result.status.label)
-            ),
-            reportType: this.translate.instant(
-              this.toReportTypeKey(result.reportType.label)
-            ),
-            examCount: result.examCount,
-            statusValue: result.status.value
-          };
-        });
+        return results.map(result => this.toDisplayValues(result));
       })
     );
+  }
+
+  private toDisplayValues(result: TestResultAvailability) {
+    return {
+      schoolYear: result.schoolYear.label,
+      district: result.district.label,
+      subject: this.translate.instant(this.toSubjectKey(result.subject.label)),
+      status: this.translate.instant(this.toStatusKey(result.status.label)),
+      reportType: this.translate.instant(
+        this.toReportTypeKey(result.reportType.label)
+      ),
+      examCount: result.examCount,
+      statusValue: result.status.value
+    };
   }
 
   private getOptionsByField(field: string, toTranslateKey = label => label) {
