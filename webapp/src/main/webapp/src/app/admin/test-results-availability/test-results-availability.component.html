@@ -2,7 +2,7 @@
   <h1 class="h2" heading>
     {{ 'test-results-availability.title' | translate }}
   </h1>
-  <ul class="list-unstyled list-inline" controls *ngIf="showAudit">
+  <ul class="list-unstyled list-inline" controls *ngIf="(viewAudit$ | async)">
     <li>
       <a
         class="btn btn-default"
@@ -104,32 +104,25 @@
         </div>
 
         <!-- District Select  -->
-        <div class="col-md-2 text-left" *ngIf="!(isDistrictAdmin$ | async)">
-          <label for="select-district">{{
-            'test-results-availability.filter-district' | translate
-          }}</label>
+        <div class="col-md-2 text-left">
+          <label for="select-district" *ngIf="(isDistrictAdmin$ | async)">
+            {{ 'test-results-availability.district-admin' | translate }}
+          </label>
+          <label for="select-district" *ngIf="!(isDistrictAdmin$ | async)">
+            {{ 'test-results-availability.filter-district' | translate }}
+          </label>
           <select
             id="select-district"
             [(ngModel)]="testResultAvailabilityFilters.district"
             class="form-control"
             (ngModelChange)="onChangeDistrictFilter($event)"
+            [disabled]="(districtOptions$ | async).length == 1"
           >
             <option
               *ngFor="let district of (districtOptions$ | async)"
               [ngValue]="district"
             >
               {{ district.label | translate }}
-            </option>
-          </select>
-        </div>
-
-        <div class="col-md-2" *ngIf="(isDistrictAdmin$ | async)">
-          <label for="select-district-admin">{{
-            'test-results-availability.district-admin' | translate
-          }}</label>
-          <select id="select-district-admin" class="form-control" disabled>
-            <option [ngValue]="district$ | async">
-              {{ (district$ | async).label | translate }}
             </option>
           </select>
         </div>
@@ -222,7 +215,7 @@
       <div class="table-list-container mt-sm">
         <p-table
           [columns]="columns"
-          [value]="filteredData$ | async"
+          [value]="displayData$ | async"
           sortField="name"
           [autoLayout]="true"
           [paginator]="true"

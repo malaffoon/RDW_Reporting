@@ -53,13 +53,15 @@ export class TestResultsAvailabilityService implements OnInit {
       return { label: stat, value: stat };
     });
 
+    const districts = source.districts.map(dist => {
+      return { label: dist.name, value: dist.id };
+    });
+
     return {
-      statuses: statuses,
-      singleDistrictAdmin: source.singleDistrictAdmin,
-      district: {
-        label: source.districtName,
-        value: source.districtId
-      }
+      viewAudit: source.viewAudit,
+      districtAdmin: source.districtAdmin,
+      districts: districts,
+      statuses: statuses
     };
   }
 
@@ -88,15 +90,7 @@ export class TestResultsAvailabilityService implements OnInit {
   }
 
   getUserOptions(): Observable<UserOptions> {
-    // TODO: implement. This is stubbed out now.
-    const fromDataService = of({
-      statuses: ['Loading', 'Reviewing', 'Released'],
-      singleDistrictAdmin: false,
-      districtId: 2,
-      districtName: 'Crom District'
-    });
-
-    return fromDataService.pipe(
+    return this.dataService.get(`${ResourceContext}/filters`).pipe(
       map((sourceUserSettings: any) => {
         return TestResultsAvailabilityService.toOptions(sourceUserSettings);
       })
@@ -134,7 +128,7 @@ export class TestResultsAvailabilityService implements OnInit {
         { responseType: ResponseContentType.Text }
       )
       .pipe()
-      .subscribe(t => console.log("It's away"));
+      .subscribe();
   }
 
   setTestResultFilterDefaults() {
@@ -144,8 +138,6 @@ export class TestResultsAvailabilityService implements OnInit {
           TestResultsAvailabilityService.FilterIncludeAll;
       }
     );
-    // TODO: set from session if District Admin
-    // this.defaultTestResultFilters.district = TestResultsAvailabilityService.FilterIncludeAll;
   }
 
   getTestResultAvailabilityFilterDefaults(): TestResultAvailabilityFilters {

@@ -73,16 +73,13 @@ export class TestResultsAvailabilityComponent
   // 'Change status of selected test results availability (all pages).';
   testResultAvailabilityFilters: TestResultAvailabilityFilters;
   filteredTestResults$: Observable<TestResultAvailability[]>;
-  filteredData$: Observable<any[]>;
+  displayData$: Observable<any[]>;
   filteredResultsEmpty$: Observable<boolean>;
   userOptions$: Observable<UserOptions>;
 
-  // Used to determine what to display
-  userDistrict: { label: string; value: number }; // when it's a district admin
-  showDistrictFilter: boolean; // set false if districtAdmin
-  showAudit: boolean; // only DevOps has ability
+  viewAudit$: Observable<boolean>; // only DevOps has ability
   state: string; // state of tenant or sandbox logged into
-  numOfRows: number = 20; // TODO: set to be configurable
+  numOfRows = 20; // TODO: set to be configurable
 
   // results of change request
   successfulChange: boolean;
@@ -120,19 +117,18 @@ export class TestResultsAvailabilityComponent
           modalReference.content;
         modal.selectedFilters = this.testResultAvailabilityFilters;
 
-        this.statusTransitionOptions$.subscribe(
-          options => (modal.statusOptions = options)
-        );
-
-        // For fully-privileged users (all three status options), default to Reviewing. For others, default
-        // to Released. Handle degenerative cases, although these should not occur.
-        if (modal.statusOptions.length === 0) {
-          console.warn('invalid state: no status options');
-          modal.selectedStatus = null;
-        } else {
-          modal.selectedStatus =
-            modal.statusOptions[modal.statusOptions.length === 1 ? 0 : 1];
-        }
+        this.statusTransitionOptions$.subscribe(options => {
+          modal.statusOptions = options;
+          // For fully-privileged users (all three status options), default to Reviewing. For others, default
+          // to Released. Handle degenerative cases, although these should not occur.
+          if (modal.statusOptions.length === 0) {
+            console.warn('invalid state: no status options');
+            modal.selectedStatus = null;
+          } else {
+            modal.selectedStatus =
+              modal.statusOptions[modal.statusOptions.length === 1 ? 0 : 1];
+          }
+        });
 
         modal.sandboxUser = sandboxUser;
         modal.changeStatusEvent.subscribe(res => {
@@ -150,9 +146,6 @@ export class TestResultsAvailabilityComponent
         this.state = tenantName;
       });
 
-    // TODO: get from user settings
-    this.showAudit = false;
-
     // Data for Drop downs
     // set defaults - needed since this component is initialized first
     this.testResultsService.setTestResultFilterDefaults();
@@ -160,18 +153,9 @@ export class TestResultsAvailabilityComponent
 
     this.userOptions$ = this.testResultsService.getUserOptions();
     this.isDistrictAdmin$ = this.userOptions$.pipe(
-      map(user => user.singleDistrictAdmin)
+      map(options => options.districtAdmin)
     );
-
-    this.district$ = this.userOptions$.pipe(
-      map(user => {
-        const district = user.singleDistrictAdmin ? user.district : null;
-        if (district != null) {
-          this.testResultAvailabilityFilters.district = district;
-        }
-        return district;
-      })
-    );
+    this.viewAudit$ = this.userOptions$.pipe(map(options => options.viewAudit));
 
     this.updateFilteredTestResults();
     this.updateFilters();
@@ -186,7 +170,7 @@ export class TestResultsAvailabilityComponent
       map(results => results.length === 0)
     );
 
-    this.filteredData$ = this.filteredTestResults$.pipe(
+    this.displayData$ = this.filteredTestResults$.pipe(
       map(results => {
         return results.map(result => this.toDisplayValues(result));
       })
@@ -231,11 +215,30 @@ export class TestResultsAvailabilityComponent
 
   private updateFilters() {
     this.schoolYearOptions$ = this.getOptionsByField('schoolYear');
-    this.districtOptions$ = this.getOptionsByField('district');
     this.subjectOptions$ = this.getOptionsByField('subject', this.toSubjectKey);
     this.reportTypeOptions$ = this.getOptionsByField(
       'reportType',
       this.toReportTypeKey
+    );
+
+    // Districts done differently. District admins will have lists of districts they can use.
+    this.districtOptions$ = this.userOptions$.pipe(
+      map((user: UserOptions) => {
+        // TODO: Sort by name or ID? Assuming name for now.
+        const districtOptions = user.districts.sort((a, b) =>
+          a.label.localeCompare(b.label)
+        );
+
+        // For single district, set the filters to match. Otherwise, add the "Include All" option.
+        if (districtOptions.length === 1) {
+          this.testResultAvailabilityFilters.district = districtOptions[0];
+        } else {
+          districtOptions.unshift(
+            TestResultsAvailabilityService.FilterIncludeAll
+          );
+        }
+        return districtOptions;
+      })
     );
 
     // Status is done differently since it is possible for not all available statuses to exist in the data.
