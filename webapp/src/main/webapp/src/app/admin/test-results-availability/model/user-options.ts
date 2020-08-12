@@ -1,5 +1,6 @@
 export interface UserOptions {
-  singleDistrictAdmin: boolean;
-  district: { label: string; value: number };
+  viewAudit: boolean;
+  districtAdmin: boolean;
+  districts: { label: string; value: number }[];
   statuses: { label: string; value: string }[];
 }
