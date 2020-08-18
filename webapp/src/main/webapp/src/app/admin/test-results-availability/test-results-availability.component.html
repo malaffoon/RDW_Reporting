@@ -116,7 +116,7 @@
             [(ngModel)]="testResultAvailabilityFilters.district"
             class="form-control"
             (ngModelChange)="onChangeDistrictFilter($event)"
-            [disabled]="(districtOptions$ | async).length == 1"
+            [disabled]="((districtOptions$ | async) || []).length == 1"
           >
             <option
               *ngFor="let district of (districtOptions$ | async)"
