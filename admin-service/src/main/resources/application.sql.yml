@@ -104,6 +104,23 @@ sql:
            )
       GROUP BY exam.school_year, dist.id, sub.id, ert.name
 
+    findEmbargoAuditRecords: >-
+      SELECT
+        ade.school_year AS school_year,
+        d.name AS district,
+        s.code AS subject,
+        individual,
+        previous_individual,
+        aggregate,
+        previous_aggregate,
+        updated_by AS user,
+        ade.updated AS updated
+      FROM audit_district_embargo ade
+      LEFT JOIN district d ON ade.district_id = d.id
+      LEFT JOIN subject s ON ade.subject_id = s.id
+      WHERE ade.updated > :start_date
+      ORDER BY ade.updated DESC;
+
     createState: >-
       INSERT INTO state_embargo (school_year, individual, aggregate, updated_by)
       VALUES (:school_year, :individual, :aggregate, :updated_by)

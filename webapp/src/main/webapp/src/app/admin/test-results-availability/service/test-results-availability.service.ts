@@ -1,17 +1,20 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Inject, Injectable, OnInit } from '@angular/core';
 import { TestResultAvailability } from '../model/test-result-availability';
 import { TestResultAvailabilityFilters } from '../model/test-result-availability-filters';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Download } from '../../../shared/data/download.model';
-import { Http, ResponseContentType } from '@angular/http';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 import { AdminServiceRoute } from '../../../shared/service-route';
-import { DataService } from '../../../shared/data/data.service';
+import {
+  DATA_CONTEXT_URL,
+  DataService
+} from '../../../shared/data/data.service';
 import { UserOptions } from '../model/user-options';
+import { ResponseContentType } from '@angular/http';
 
 const ResourceContext = `${AdminServiceRoute}/testResults`;
+const ServiceRoute = `${AdminServiceRoute}/embargoes`;
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +23,8 @@ export class TestResultsAvailabilityService implements OnInit {
   constructor(
     private dataService: DataService,
     private datePipe: TranslateDatePipe,
-    private http: Http,
-    private translate: TranslateService
+    private translate: TranslateService,
+    @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api'
   ) {}
 
   static readonly NoFiltersNumeric = -1;
@@ -53,7 +56,8 @@ export class TestResultsAvailabilityService implements OnInit {
       return { label: stat, value: stat };
     });
 
-    const districts = source.districts.map(dist => {
+    const sourceDistricts = source.districts || [];
+    const districts = sourceDistricts.map(dist => {
       return { label: dist.name, value: dist.id };
     });
 
@@ -63,6 +67,33 @@ export class TestResultsAvailabilityService implements OnInit {
       districts: districts,
       statuses: statuses
     };
+  }
+
+  private static matchesFilters(
+    testResult: TestResultAvailability,
+    testResultFilters: TestResultAvailabilityFilters
+  ) {
+    // may need to adjust order
+    return ['status', 'reportType', 'subject', 'district', 'schoolYear'].every(
+      field => {
+        return TestResultsAvailabilityService.isMatch(
+          field,
+          testResultFilters,
+          testResult
+        );
+      }
+    );
+  }
+
+  static isMatch(
+    field: string,
+    filters: TestResultAvailabilityFilters,
+    testResult: TestResultAvailability
+  ): boolean {
+    return (
+      filters[field] === TestResultsAvailabilityService.FilterIncludeAll ||
+      filters[field].value === testResult[field].value
+    );
   }
 
   ngOnInit(): void {
@@ -84,7 +115,9 @@ export class TestResultsAvailabilityService implements OnInit {
       map((sourceTestResults: any[]) => {
         return sourceTestResults
           .map(r => TestResultsAvailabilityService.toTestResultAvailability(r))
-          .filter(r => this.matchesFilters(r, testResultFilters));
+          .filter(r =>
+            TestResultsAvailabilityService.matchesFilters(r, testResultFilters)
+          );
       })
     );
   }
@@ -95,6 +128,13 @@ export class TestResultsAvailabilityService implements OnInit {
         return TestResultsAvailabilityService.toOptions(sourceUserSettings);
       })
     );
+  }
+
+  /**
+   * Download embargo audit report CSV file.
+   */
+  openReport(): void {
+    window.open(`${this.contextUrl}${ServiceRoute}/audit`, '_blank');
   }
 
   // TODO:  log changes and no need to persist
@@ -142,49 +182,5 @@ export class TestResultsAvailabilityService implements OnInit {
 
   getTestResultAvailabilityFilterDefaults(): TestResultAvailabilityFilters {
     return this.defaultTestResultFilters;
-  }
-
-  private matchesFilters(
-    testResult: TestResultAvailability,
-    testResultFilters: TestResultAvailabilityFilters
-  ) {
-    // may need to adjust order
-    return ['status', 'reportType', 'subject', 'district', 'schoolYear'].every(
-      field => {
-        return this.isMatch(field, testResultFilters, testResult);
-      }
-    );
-  }
-
-  private isMatch(
-    field: string,
-    filters: TestResultAvailabilityFilters,
-    testResult: TestResultAvailability
-  ): boolean {
-    return (
-      filters[field] === TestResultsAvailabilityService.FilterIncludeAll ||
-      filters[field].value === testResult[field].value
-    );
-  }
-
-  generateAuditHistory() {
-    // determine what can be returned
-  }
-
-  public getTemplateFile(): Observable<any> {
-    // TODO: Replace with call to real file location
-    return this.http
-      .get('/assets/testResultsAudit202006041.csv')
-      .pipe(
-        map(
-          response =>
-            new Download(
-              `${this.translate.instant(
-                'test-results-availability.audit-filename'
-              )}.csv`,
-              new Blob([response.text()], { type: 'text/csv; charset=utf-8' })
-            )
-        )
-      );
   }
 }

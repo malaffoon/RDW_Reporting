@@ -94,7 +94,6 @@ export class TestResultsAvailabilityComponent
   statusTransitionOptions$: Observable<{ label: string; value: any }[]>;
 
   isDistrictAdmin$: Observable<boolean>;
-  district$: Observable<{ label: string; value: number }>;
 
   // need to save each selected Option to filtered Group
   successChangeMsgOptions: string;
@@ -295,20 +294,7 @@ export class TestResultsAvailabilityComponent
   }
 
   downloadAuditFile(): void {
-    // replace download file name with date info
-    const now = this.testResultsService.formatAsLocalDate(new Date());
-    const auditFilename =
-      `${this.translate.instant('test-results-availability.audit-filename')}_` +
-      now +
-      `.csv`;
-    this.testResultsService.getTemplateFile().subscribe(
-      (download: Download) => {
-        saveAs(download.content, auditFilename);
-      },
-      (error: Error) => {
-        console.error(error);
-      }
-    );
+    this.testResultsService.openReport();
   }
 
   closeSuccessAlert() {
