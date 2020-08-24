@@ -14,16 +14,14 @@ import { TestResultAvailability } from './model/test-result-availability';
 import { TestResultsAvailabilityService } from './service/test-results-availability.service';
 import { TestResultAvailabilityFilters } from './model/test-result-availability-filters';
 import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
-import { Download } from '../../shared/data/download.model';
-import { saveAs } from 'file-saver';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { UserOptions } from './model/user-options';
 
 class Column {
   id: string; // en.json name
-  field: string; // TestResult field
+  field: string; // field name used for sorting and styles
   sortable: boolean;
 
   constructor({ id, field = '', sortable = true }) {
@@ -58,6 +56,15 @@ export class TestResultsAvailabilityComponent
 
   private grabFocusToAlert = false;
 
+  // Paging data
+  totalRowCount = 1000;
+  currentOffset = 0;
+  rowsPerPage = 20; // TODO: set to be configurable
+  loading = false;
+  sortField = 'default';
+  sortOrder = 1;
+  testResultAvailabilityFilters: TestResultAvailabilityFilters;
+
   columns: Column[] = [
     new Column({ id: 'school-year', field: 'schoolYear' }),
     new Column({ id: 'district', field: 'district' }),
@@ -71,7 +78,6 @@ export class TestResultsAvailabilityComponent
     'test-results-availability.change-results-tooltip'
   )}`;
   // 'Change status of selected test results availability (all pages).';
-  testResultAvailabilityFilters: TestResultAvailabilityFilters;
   filteredTestResults$: Observable<TestResultAvailability[]>;
   displayData$: Observable<any[]>;
   filteredResultsEmpty$: Observable<boolean>;
@@ -79,7 +85,6 @@ export class TestResultsAvailabilityComponent
 
   viewAudit$: Observable<boolean>; // only DevOps has ability
   state: string; // state of tenant or sandbox logged into
-  numOfRows = 20; // TODO: set to be configurable
 
   // results of change request
   successfulChange: boolean;
@@ -156,13 +161,19 @@ export class TestResultsAvailabilityComponent
     );
     this.viewAudit$ = this.userOptions$.pipe(map(options => options.viewAudit));
 
-    this.updateFilteredTestResults();
+    // this.updateFilteredTestResults();
     this.updateFilters();
   }
 
-  updateFilteredTestResults() {
+  updateTestResultsData() {
     this.filteredTestResults$ = this.testResultsService.getTestResults(
-      this.testResultAvailabilityFilters
+      this.testResultAvailabilityFilters,
+      {
+        rowOffset: this.currentOffset,
+        pageSize: this.rowsPerPage,
+        sortField: this.resolveSortField(this.sortField, this.sortOrder),
+        descending: this.sortOrder && this.sortOrder < 0
+      }
     );
 
     this.filteredResultsEmpty$ = this.filteredTestResults$.pipe(
@@ -174,6 +185,23 @@ export class TestResultsAvailabilityComponent
         return results.map(result => this.toDisplayValues(result));
       })
     );
+  }
+
+  private resolveSortField(sortField: string, sortOrder: number): string {
+    if (!sortOrder || !sortField || sortField === 'default') {
+      return null;
+    }
+
+    // Resolve ambiguities with district and subject sorting.
+    if (sortField === 'district') {
+      return 'district-name';
+    }
+
+    if (sortField === 'subject') {
+      return 'subject-code';
+    }
+
+    return sortField;
   }
 
   private toDisplayValues(result: TestResultAvailability) {
@@ -191,25 +219,27 @@ export class TestResultsAvailabilityComponent
   }
 
   private getOptionsByField(field: string, toTranslateKey = label => label) {
-    const sort = 'label';
-    return this.filteredTestResults$.pipe(
-      map((results: TestResultAvailability[]) => {
-        const ids = results.map(r => r[field].value);
-        const options = results
-          .map(r => {
-            return {
-              label: toTranslateKey(r[field].label),
-              value: r[field].value
-            };
-          })
-          .filter((item, idx) => ids.indexOf(item.value) === idx)
-          .sort((a, b) => a[sort].localeCompare(b[sort]));
-
-        options.unshift(TestResultsAvailabilityService.FilterIncludeAll);
-
-        return options;
-      })
-    );
+    // TODO: populate from options query. Results data is now paged and won't contain all the filters.
+    return of([TestResultsAvailabilityService.FilterIncludeAll]);
+    // const sort = 'label';
+    // return this.filteredTestResults$.pipe(
+    //   map((results: TestResultAvailability[]) => {
+    //     const ids = results.map(r => r[field].value);
+    //     const options = results
+    //       .map(r => {
+    //         return {
+    //           label: toTranslateKey(r[field].label),
+    //           value: r[field].value
+    //         };
+    //       })
+    //       .filter((item, idx) => ids.indexOf(item.value) === idx)
+    //       .sort((a, b) => a[sort].localeCompare(b[sort]));
+    //
+    //     options.unshift(TestResultsAvailabilityService.FilterIncludeAll);
+    //
+    //     return options;
+    //   })
+    // );
   }
 
   private updateFilters() {
@@ -260,29 +290,44 @@ export class TestResultsAvailabilityComponent
     );
   }
 
+  /**
+   * Event handler for a change to the results table that requires a data refresh.
+   * The handled events are navigation to a new page and change to sort.
+   *
+   * @param $event the table event object with page offset and sort information.
+   */
+  resultsTablePageChange($event) {
+    // console.log($event);
+    this.sortField = $event.sortField;
+    this.sortOrder = $event.sortOrder;
+    this.currentOffset = $event.first;
+
+    this.updateTestResultsData();
+  }
+
   onChangeSchoolYearFilter(schoolYear: any) {
     this.testResultAvailabilityFilters.schoolYear = schoolYear;
-    this.updateFilteredTestResults();
+    this.updateTestResultsData();
   }
 
   onChangeDistrictFilter(district: any) {
     this.testResultAvailabilityFilters.district = district;
-    this.updateFilteredTestResults();
+    this.updateTestResultsData();
   }
 
   onChangeSubjectFilter(subject: any) {
     this.testResultAvailabilityFilters.subject = subject;
-    this.updateFilteredTestResults();
+    this.updateTestResultsData();
   }
 
   onChangeReportTypeFilter(reportType: any) {
     this.testResultAvailabilityFilters.reportType = reportType;
-    this.updateFilteredTestResults();
+    this.updateTestResultsData();
   }
 
   onChangeStatusFilter(status: any) {
     this.testResultAvailabilityFilters.status = status;
-    this.updateFilteredTestResults();
+    this.updateTestResultsData();
   }
 
   testResultsRowStyleClass(rowData: any) {

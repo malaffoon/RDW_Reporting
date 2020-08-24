@@ -12,6 +12,7 @@ import {
 } from '../../../shared/data/data.service';
 import { UserOptions } from '../model/user-options';
 import { ResponseContentType } from '@angular/http';
+import { EmbargoQueryType } from '../model/embargo-query-type';
 
 const ResourceContext = `${AdminServiceRoute}/testResults`;
 const ServiceRoute = `${AdminServiceRoute}/embargoes`;
@@ -107,11 +108,13 @@ export class TestResultsAvailabilityService implements OnInit {
 
   // receive test results and apply filter's options
   getTestResults(
-    testResultFilters: TestResultAvailabilityFilters
+    testResultFilters: TestResultAvailabilityFilters,
+    query: EmbargoQueryType
   ): Observable<TestResultAvailability[]> {
     // Default Sort order from query:
     // SchoolYear(D),District (by name) (A),Subject (by ID) (A), ReportType(A), Status(A)
-    return this.dataService.get(`${ResourceContext}`).pipe(
+    console.log('Post to data service');
+    return this.dataService.post(`${ResourceContext}`, query).pipe(
       map((sourceTestResults: any[]) => {
         return sourceTestResults
           .map(r => TestResultsAvailabilityService.toTestResultAvailability(r))
