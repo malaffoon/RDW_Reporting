@@ -29,6 +29,16 @@ sql:
         ORDER BY a.school_year DESC
         LIMIT :limit
 
+  district:
+    count:
+      SELECT count(*) FROM district;
+
+    findAllWithLimit: >-
+      SELECT id, name, natural_id
+      FROM district d
+      ORDER BY d.name
+      LIMIT :limit;
+
   embargo:
     # query to find all embargo records given a school year and a list of (user's) districts
     # this includes counts of summative exams grouped by each org so it has performance implications
@@ -87,9 +97,9 @@ sql:
               coalesce(de.aggregate, 0)  AS aggregate,
               coalesce(ec.count, 0)      AS exam_count
       FROM school_year y
-            JOIN district d ON TRUE
-            JOIN subject s ON TRUE
-            JOIN embargo_report_type ert ON TRUE
+            JOIN district d
+            JOIN subject s
+            JOIN embargo_report_type ert
             LEFT JOIN district_embargo de ON
                   y.year = de.school_year and
                   d.id = de.district_id and
@@ -195,6 +205,11 @@ sql:
   status:
     readTest: >-
       SELECT ist.name FROM import_status ist
+
+  subject:
+    findAll: >-
+      SELECT id, code
+      FROM subject;
 
   import:
     createQuery: >-
