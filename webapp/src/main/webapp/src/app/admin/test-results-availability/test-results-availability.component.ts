@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   DoCheck,
   ElementRef,
@@ -16,7 +15,7 @@ import { TestResultAvailabilityFilters } from './model/test-result-availability-
 import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { UserOptions } from './model/user-options';
 
 class Column {
@@ -35,8 +34,7 @@ class Column {
   selector: 'test-results',
   templateUrl: './test-results-availability.component.html'
 })
-export class TestResultsAvailabilityComponent
-  implements OnInit, AfterViewInit, DoCheck {
+export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -56,13 +54,21 @@ export class TestResultsAvailabilityComponent
 
   private grabFocusToAlert = false;
 
-  // Paging data
-  totalRowCount = 1000;
-  currentOffset = 0;
-  rowsPerPage = 20; // TODO: set to be configurable
+  // Table page and sort data
+  pageSettings = {
+    offset: 0,
+    sortField: 'default',
+    descending: false,
+    pageSize: 20
+  };
+
+  // Page loading flag.
   loading = false;
-  sortField = 'default';
-  sortOrder = 1;
+
+  // Total row count based on filters
+  rowCount = 0;
+
+  // Current filter settings.
   testResultAvailabilityFilters: TestResultAvailabilityFilters;
 
   columns: Column[] = [
@@ -77,11 +83,9 @@ export class TestResultsAvailabilityComponent
   changeResultsTooltip = `${this.translate.instant(
     'test-results-availability.change-results-tooltip'
   )}`;
-  // 'Change status of selected test results availability (all pages).';
-  filteredTestResults$: Observable<TestResultAvailability[]>;
-  displayData$: Observable<any[]>;
-  filteredResultsEmpty$: Observable<boolean>;
-  userOptions$: Observable<UserOptions>;
+
+  filteredTestResults: TestResultAvailability[];
+  displayData: any[];
 
   viewAudit$: Observable<boolean>; // only DevOps has ability
   state: string; // state of tenant or sandbox logged into
@@ -99,6 +103,7 @@ export class TestResultsAvailabilityComponent
   statusTransitionOptions$: Observable<{ label: string; value: any }[]>;
 
   isDistrictAdmin$: Observable<boolean>;
+  userOptions: UserOptions;
 
   // need to save each selected Option to filtered Group
   successChangeMsgOptions: string;
@@ -150,41 +155,28 @@ export class TestResultsAvailabilityComponent
         this.state = tenantName;
       });
 
-    // Data for Drop downs
-    // set defaults - needed since this component is initialized first
-    this.testResultsService.setTestResultFilterDefaults();
-    this.testResultAvailabilityFilters = this.testResultsService.getTestResultAvailabilityFilterDefaults();
-
-    this.userOptions$ = this.testResultsService.getUserOptions();
-    this.isDistrictAdmin$ = this.userOptions$.pipe(
-      map(options => options.districtAdmin)
-    );
-    this.viewAudit$ = this.userOptions$.pipe(map(options => options.viewAudit));
-
-    // this.updateFilteredTestResults();
-    this.updateFilters();
+    this.testResultsService.getUserOptions().subscribe(userOptions => {
+      this.userOptions = userOptions;
+      this.testResultAvailabilityFilters = this.initializeFilterSettings(
+        userOptions
+      );
+      this.refreshRowCount();
+    });
   }
 
-  updateTestResultsData() {
-    this.filteredTestResults$ = this.testResultsService.getTestResults(
-      this.testResultAvailabilityFilters,
-      {
-        rowOffset: this.currentOffset,
-        pageSize: this.rowsPerPage,
-        sortField: this.resolveSortField(this.sortField, this.sortOrder),
-        descending: this.sortOrder && this.sortOrder < 0
-      }
-    );
+  private updateTestResultsData() {
+    this.loading = true;
 
-    this.filteredResultsEmpty$ = this.filteredTestResults$.pipe(
-      map(results => results.length === 0)
-    );
+    this.testResultsService
+      .getTestResults(this.pageSettings, this.testResultAvailabilityFilters)
+      .subscribe(results => {
+        this.filteredTestResults = results;
+        this.displayData = this.filteredTestResults.map(result =>
+          this.toDisplayValues(result)
+        );
 
-    this.displayData$ = this.filteredTestResults$.pipe(
-      map(results => {
-        return results.map(result => this.toDisplayValues(result));
-      })
-    );
+        this.loading = false;
+      });
   }
 
   private resolveSortField(sortField: string, sortOrder: number): string {
@@ -194,14 +186,14 @@ export class TestResultsAvailabilityComponent
 
     // Resolve ambiguities with district and subject sorting.
     if (sortField === 'district') {
-      return 'district-name';
+      return 'district_name';
     }
 
     if (sortField === 'subject') {
-      return 'subject-code';
+      return 'subject_code';
     }
 
-    return sortField;
+    return sortField.replace('-', '_');
   }
 
   private toDisplayValues(result: TestResultAvailability) {
@@ -218,76 +210,18 @@ export class TestResultsAvailabilityComponent
     };
   }
 
-  private getOptionsByField(field: string, toTranslateKey = label => label) {
-    // TODO: populate from options query. Results data is now paged and won't contain all the filters.
-    return of([TestResultsAvailabilityService.FilterIncludeAll]);
-    // const sort = 'label';
-    // return this.filteredTestResults$.pipe(
-    //   map((results: TestResultAvailability[]) => {
-    //     const ids = results.map(r => r[field].value);
-    //     const options = results
-    //       .map(r => {
-    //         return {
-    //           label: toTranslateKey(r[field].label),
-    //           value: r[field].value
-    //         };
-    //       })
-    //       .filter((item, idx) => ids.indexOf(item.value) === idx)
-    //       .sort((a, b) => a[sort].localeCompare(b[sort]));
-    //
-    //     options.unshift(TestResultsAvailabilityService.FilterIncludeAll);
-    //
-    //     return options;
-    //   })
-    // );
+  private refreshRowCount() {
+    this.testResultsService
+      .getRowCount(this.testResultAvailabilityFilters)
+      .subscribe(count => {
+        this.rowCount = count;
+      });
   }
 
   private updateFilters() {
-    this.schoolYearOptions$ = this.getOptionsByField('schoolYear');
-    this.subjectOptions$ = this.getOptionsByField('subject', this.toSubjectKey);
-    this.reportTypeOptions$ = this.getOptionsByField(
-      'reportType',
-      this.toReportTypeKey
-    );
-
-    // Districts done differently. District admins will have lists of districts they can use.
-    this.districtOptions$ = this.userOptions$.pipe(
-      map((user: UserOptions) => {
-        // TODO: Sort by name or ID? Assuming name for now.
-        const districtOptions = user.districts.sort((a, b) =>
-          a.label.localeCompare(b.label)
-        );
-
-        // For single district, set the filters to match. Otherwise, add the "Include All" option.
-        if (districtOptions.length === 1) {
-          this.testResultAvailabilityFilters.district = districtOptions[0];
-        } else {
-          districtOptions.unshift(
-            TestResultsAvailabilityService.FilterIncludeAll
-          );
-        }
-        return districtOptions;
-      })
-    );
-
-    // Status is done differently since it is possible for not all available statuses to exist in the data.
-    this.statusTransitionOptions$ = this.userOptions$.pipe(
-      map((user: UserOptions) => {
-        return user.statuses.map(stat => {
-          return { label: this.toStatusKey(stat.label), value: stat.value };
-        });
-      })
-    );
-
-    this.statusOptions$ = this.statusTransitionOptions$.pipe(
-      map((options: any[]) => {
-        // Copy array of options and prepend the "All" option used in filter selector
-        const allOptions = [...options];
-        allOptions.unshift(TestResultsAvailabilityService.FilterIncludeAll);
-
-        return allOptions;
-      })
-    );
+    this.refreshRowCount();
+    this.pageSettings.offset = 0;
+    this.updateTestResultsData();
   }
 
   /**
@@ -297,37 +231,42 @@ export class TestResultsAvailabilityComponent
    * @param $event the table event object with page offset and sort information.
    */
   resultsTablePageChange($event) {
-    // console.log($event);
-    this.sortField = $event.sortField;
-    this.sortOrder = $event.sortOrder;
-    this.currentOffset = $event.first;
+    this.pageSettings.sortField = this.resolveSortField(
+      $event.sortField,
+      $event.sortOrder
+    );
+    this.pageSettings.descending = !!($event.sortOrder && $event.sortOrder < 0);
+    this.pageSettings.offset = $event.first;
 
     this.updateTestResultsData();
   }
 
+  //
+  //  Filter change handlers.
+  //
   onChangeSchoolYearFilter(schoolYear: any) {
     this.testResultAvailabilityFilters.schoolYear = schoolYear;
-    this.updateTestResultsData();
+    this.updateFilters();
   }
 
   onChangeDistrictFilter(district: any) {
     this.testResultAvailabilityFilters.district = district;
-    this.updateTestResultsData();
+    this.updateFilters();
   }
 
   onChangeSubjectFilter(subject: any) {
     this.testResultAvailabilityFilters.subject = subject;
-    this.updateTestResultsData();
+    this.updateFilters();
   }
 
   onChangeReportTypeFilter(reportType: any) {
     this.testResultAvailabilityFilters.reportType = reportType;
-    this.updateTestResultsData();
+    this.updateFilters();
   }
 
   onChangeStatusFilter(status: any) {
     this.testResultAvailabilityFilters.status = status;
-    this.updateTestResultsData();
+    this.updateFilters();
   }
 
   testResultsRowStyleClass(rowData: any) {
@@ -338,6 +277,9 @@ export class TestResultsAvailabilityComponent
       : 'releasedColor';
   }
 
+  /**
+   * Downlaod the audit log CSV file.
+   */
   downloadAuditFile(): void {
     this.testResultsService.openReport();
   }
@@ -372,7 +314,7 @@ export class TestResultsAvailabilityComponent
   }
 
   /* tslint:disable */
-  ngAfterViewInit() {
+  ngDoCheck(): void {
     // TODO: upgrade to newer version of PrimeNG and then remove this.
     // Hack to label the pagination controls, which the version of p-table we are using doesn't support.
     eval(
@@ -389,10 +331,7 @@ export class TestResultsAvailabilityComponent
     eval(
       "jQuery('a.ui-paginator-page').each(function( index ) { $( this ).attr('aria-label', 'Page ' + (index+1) );});"
     );
-  }
-  /* tslint:enable */
 
-  ngDoCheck(): void {
     // Change focus to alert when it first appears.
     // Seems like a kludge. Is there a more elegant way to fit it into the lifecycle?
     if (this.alertSuccess && this.grabFocusToAlert) {
@@ -402,5 +341,30 @@ export class TestResultsAvailabilityComponent
       this.alertFailure.nativeElement.focus();
       this.grabFocusToAlert = false;
     }
+  }
+  /* tslint:enable */
+
+  // Set initial default values for filters.
+  private initializeFilterSettings(
+    userOptions: UserOptions
+  ): TestResultAvailabilityFilters {
+    const filters = new TestResultAvailabilityFilters();
+    filters.schoolYear = userOptions.schoolYears[1];
+
+    ['status', 'reportType', 'district', 'schoolYear', 'subject'].forEach(
+      field => {
+        filters[field] = TestResultsAvailabilityService.FilterIncludeAll;
+      }
+    );
+
+    // For school years and subjects, set default to first filter after "Select All" if there is one.
+    if (userOptions.schoolYears.length > 1) {
+      filters.schoolYear = userOptions.schoolYears[1];
+    }
+    if (userOptions.subjects.length > 1) {
+      filters.subject = userOptions.subjects[1];
+    }
+
+    return filters;
   }
 }

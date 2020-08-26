@@ -108,8 +108,8 @@ sql:
                   y.year = ec.school_year and
                   d.id = ec.district_id and
                   s.id = ec.subject_id
-      WHERE ((ert.name = 'Individual' AND coalesce(individual, 0) IN (:statuses)) OR
-              (ert.name = 'Aggregate' AND coalesce(aggregate, 0) IN (:statuses)))
+      WHERE ((ert.name = 'Individual' AND coalesce(de.individual, 0) IN (:statuses)) OR
+              (ert.name = 'Aggregate' AND coalesce(de.aggregate, 0) IN (:statuses)))
               AND (:filter_by_year = 0 OR y.year = :year)
               AND (:filter_by_district = 0 OR d.id IN (:district_ids))
               AND (:filter_by_subject = 0 OR s.id = :subject_id)
