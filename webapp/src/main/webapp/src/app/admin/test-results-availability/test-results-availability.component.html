@@ -216,10 +216,16 @@
         <p-table
           [columns]="columns"
           [value]="displayData$ | async"
+          [lazy]="true"
+          (onLazyLoad)="resultsTablePageChange($event)"
+          [paginator]="true"
+          [rows]="rowsPerPage"
           sortField="name"
           [autoLayout]="true"
-          [paginator]="true"
-          [rows]="numOfRows"
+          [totalRecords]="totalRowCount"
+          [loading]="loading"
+          [currentPageReportTemplate]="'{currentPage} of {totalPages}'"
+          [showCurrentPageReport]="true"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
