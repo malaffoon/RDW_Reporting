@@ -2,7 +2,11 @@
   <h1 class="h2" heading>
     {{ 'test-results-availability.title' | translate }}
   </h1>
-  <ul class="list-unstyled list-inline" controls *ngIf="(viewAudit$ | async)">
+  <ul
+    class="list-unstyled list-inline"
+    controls
+    *ngIf="userOptions && userOptions.viewAudit"
+  >
     <li>
       <a
         class="btn btn-default"
@@ -83,19 +87,21 @@
             </option>
           </select>
         </div>
+
         <!-- School Year Select -->
         <div class="col-md-2 test-left">
           <label for="select-schoolyear">{{
             'test-results-availability.filter-school-year' | translate
           }}</label>
           <select
+            *ngIf="userOptions"
             id="select-schoolyear"
             [(ngModel)]="testResultAvailabilityFilters.schoolYear"
             class="form-control"
             (ngModelChange)="onChangeSchoolYearFilter($event)"
           >
             <option
-              *ngFor="let schoolYear of (schoolYearOptions$ | async)"
+              *ngFor="let schoolYear of userOptions.schoolYears"
               [ngValue]="schoolYear"
             >
               {{ schoolYear.label | translate }}
@@ -105,21 +111,28 @@
 
         <!-- District Select  -->
         <div class="col-md-2 text-left">
-          <label for="select-district" *ngIf="(isDistrictAdmin$ | async)">
+          <label
+            for="select-district"
+            *ngIf="userOptions && userOptions.districtAdmin"
+          >
             {{ 'test-results-availability.district-admin' | translate }}
           </label>
-          <label for="select-district" *ngIf="!(isDistrictAdmin$ | async)">
+          <label
+            for="select-district"
+            *ngIf="!(userOptions && userOptions.districtAdmin)"
+          >
             {{ 'test-results-availability.filter-district' | translate }}
           </label>
           <select
+            *ngIf="userOptions"
             id="select-district"
             [(ngModel)]="testResultAvailabilityFilters.district"
             class="form-control"
             (ngModelChange)="onChangeDistrictFilter($event)"
-            [disabled]="((districtOptions$ | async) || []).length == 1"
+            [disabled]="userOptions.districts.length == 1"
           >
             <option
-              *ngFor="let district of (districtOptions$ | async)"
+              *ngFor="let district of userOptions.districts"
               [ngValue]="district"
             >
               {{ district.label | translate }}
@@ -128,18 +141,19 @@
         </div>
 
         <!-- Subject Select  -->
-        <div class="col-md-2">
+        <div *ngIf="userOptions" class="col-md-2">
           <label for="select-subject"
             >{{ 'test-results-availability.filter-subject' | translate }}
           </label>
           <select
+            *ngIf="userOptions"
             id="select-subject"
             [(ngModel)]="testResultAvailabilityFilters.subject"
             class="form-control"
             (ngModelChange)="onChangeSubjectFilter($event)"
           >
             <option
-              *ngFor="let subject of (subjectOptions$ | async)"
+              *ngFor="let subject of userOptions.subjects"
               [ngValue]="subject"
             >
               {{ subject.label | translate }}
@@ -161,13 +175,14 @@
             ></span>
           </label>
           <select
+            *ngIf="userOptions"
             id="select-report-type"
             [(ngModel)]="testResultAvailabilityFilters.reportType"
             class="form-control"
             (ngModelChange)="onChangeReportTypeFilter($event)"
           >
             <option
-              *ngFor="let reportType of (reportTypeOptions$ | async)"
+              *ngFor="let reportType of userOptions.reportTypes"
               [ngValue]="reportType"
             >
               {{ reportType.label | translate }}
@@ -189,13 +204,14 @@
             ></span
           ></label>
           <select
+            *ngIf="userOptions"
             id="select-status"
             [(ngModel)]="testResultAvailabilityFilters.status"
             class="form-control"
             (ngModelChange)="onChangeStatusFilter($event)"
           >
             <option
-              *ngFor="let status of (statusOptions$ | async)"
+              *ngFor="let status of userOptions.statuses"
               [ngValue]="status"
             >
               {{ status.label | translate }}
@@ -212,20 +228,22 @@
     <div class="well well-results">
       {{ 'test-results-availability.selected-title' | translate }}
 
-      <div class="table-list-container mt-sm">
+      <div
+        *ngIf="testResultAvailabilityFilters"
+        class="table-list-container mt-sm"
+      >
         <p-table
           [columns]="columns"
-          [value]="displayData$ | async"
+          [value]="displayData || []"
           [lazy]="true"
           (onLazyLoad)="resultsTablePageChange($event)"
           [paginator]="true"
-          [rows]="rowsPerPage"
-          sortField="name"
-          [autoLayout]="true"
-          [totalRecords]="totalRowCount"
+          [rows]="pageSettings.pageSize"
+          [totalRecords]="rowCount || 0"
           [loading]="loading"
-          [currentPageReportTemplate]="'{currentPage} of {totalPages}'"
-          [showCurrentPageReport]="true"
+          sortField="default"
+          [autoLayout]="true"
+          [showCurrentPageReport]="false"
         >
           <ng-template pTemplate="header" let-columns>
             <tr>
@@ -259,12 +277,7 @@
           >
             <tr [ngClass]="testResultsRowStyleClass(rowData)">
               <td *ngFor="let column of columns">
-                <span *ngIf="column.hasNameField">
-                  {{ group[column.field].name }}
-                </span>
-                <span *ngIf="!column.hasNameField">
-                  {{ group[column.field] }}
-                </span>
+                {{ group[column.field] }}
               </td>
             </tr>
           </ng-template>
@@ -280,7 +293,7 @@
       </div>
       <div class="modal-footer table-footer">
         <button
-          [disabled]="filteredResultsEmpty$ | async"
+          [disabled]="!rowCount || !testResultAvailabilityFilters.status.value"
           (click)="openChangeResultsModal()"
           class="btn btn-primary"
           type="button"

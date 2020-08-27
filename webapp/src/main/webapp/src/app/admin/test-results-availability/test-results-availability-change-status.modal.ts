@@ -40,7 +40,8 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   }
 
   ngOnInit(): void {
-    this.selectedFilters = this.service.getTestResultAvailabilityFilterDefaults();
+    // TODO: pass in filters from component
+    this.selectedFilters = null; // this.service.getTestResultAvailabilityFilterDefaults();
     this.showSandboxAlert = false;
     this.successfulChange = false;
   }
