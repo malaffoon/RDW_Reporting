@@ -484,7 +484,7 @@ export const AssessmentIconsByAssessmentName = {
   'SBAC-IAB-MATH-SP-6': 'Math_6-7_Statistics-and-Probability',
   'SBAC-IAB-MATH-SP-7-Calc': 'Math_6-7_Statistics-and-Probability',
   'SBAC-IAB-MATH-SP-11': 'Math_HS_Statistics-and-Probability',
-  'SBAC-IAB-MATH-SSE-11': 'Math_HS_Seeing-Struction-in-Expressions'
+  'SBAC-IAB-MATH-SSE-11': 'Math_HS_Seeing-Structure-in-Expressions'
 };
 
 @Component({
