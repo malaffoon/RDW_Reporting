@@ -15,7 +15,6 @@ import { TestResultAvailabilityFilters } from './model/test-result-availability-
 import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { UserOptions } from './model/user-options';
 
 class Column {
@@ -62,8 +61,8 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
     pageSize: 20
   };
 
-  // Page loading flag.
-  loading = false;
+  // Page loading flag. (Starts true to ovoid a timing issue that caused a misleading console error.)
+  loading = true;
 
   // Total row count based on filters
   rowCount = 0;
@@ -87,22 +86,13 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
   filteredTestResults: TestResultAvailability[];
   displayData: any[];
 
-  viewAudit$: Observable<boolean>; // only DevOps has ability
   state: string; // state of tenant or sandbox logged into
 
   // results of change request
   successfulChange: boolean;
   unableToChange: boolean;
 
-  schoolYearOptions$: Observable<{ label: string; value: any }[]>;
-  districtOptions$: Observable<{ label: string; value: any }[]>;
-  subjectOptions$: Observable<{ label: string; value: any }[]>;
-  reportTypeOptions$: Observable<{ label: string; value: any }[]>;
-  statusOptions$: Observable<{ label: string; value: any }[]>;
-
-  statusTransitionOptions$: Observable<{ label: string; value: any }[]>;
-
-  isDistrictAdmin$: Observable<boolean>;
+  // Filter options for the dropdowns based on user permissions.
   userOptions: UserOptions;
 
   // need to save each selected Option to filtered Group
@@ -114,33 +104,44 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
   private toStatusKey = label => 'test-results-availability.status.' + label;
 
   openChangeResultsModal() {
+    if (
+      this.testResultAvailabilityFilters.status ===
+      TestResultsAvailabilityService.FilterIncludeAll
+    ) {
+      // Illegal state that should have been prevented by UI.
+      console.warn('invalid state: must select a status before Change Status');
+      return;
+    }
+
+    // Get statuses available for selecting in the modal, i.e. not "All" and not the currently selected status.
+    const selectedStatusValue = this.testResultAvailabilityFilters.status.value;
+    const statusOptions = this.userOptions.statuses.filter(
+      stat => stat.value !== null && stat.value !== selectedStatusValue
+    );
+
+    if (statusOptions.length === 0) {
+      console.warn('invalid state: no status options to change to');
+      return;
+    }
+
     this.userService
       .getUser()
       .pipe(map(user => user.sandboxUser))
       .subscribe(sandboxUser => {
+        // Initial state for modal (modal class must contain matching fields)
+        const initialState = {
+          sandboxUser: sandboxUser,
+          selectedFilters: this.testResultAvailabilityFilters,
+          statusOptions: statusOptions,
+          selectedStatus: statusOptions[statusOptions.length === 1 ? 0 : 1]
+        };
+
         const modalReference: BsModalRef = this.modalService.show(
           TestResultsAvailabilityChangeStatusModal,
-          {}
+          { initialState }
         );
-        const modal: TestResultsAvailabilityChangeStatusModal =
-          modalReference.content;
-        modal.selectedFilters = this.testResultAvailabilityFilters;
 
-        this.statusTransitionOptions$.subscribe(options => {
-          modal.statusOptions = options;
-          // For fully-privileged users (all three status options), default to Reviewing. For others, default
-          // to Released. Handle degenerative cases, although these should not occur.
-          if (modal.statusOptions.length === 0) {
-            console.warn('invalid state: no status options');
-            modal.selectedStatus = null;
-          } else {
-            modal.selectedStatus =
-              modal.statusOptions[modal.statusOptions.length === 1 ? 0 : 1];
-          }
-        });
-
-        modal.sandboxUser = sandboxUser;
-        modal.changeStatusEvent.subscribe(res => {
+        modalReference.content.changeStatusEvent.subscribe(res => {
           this.changeSuccessful(res.data, res.error);
           this.changeFailed(res.error);
         });

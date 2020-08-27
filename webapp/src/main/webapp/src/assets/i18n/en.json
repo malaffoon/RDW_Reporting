@@ -2060,6 +2060,7 @@
     "review-text": "You are about to change the availability status for these test results:",
     "report-type": "Report Type:",
     "school-year": "School Year:",
+    "status": "Status",
     "set-status-text": "Set status to:",
     "subjects": "Subjects:",
     "successful-change-1": "Successfully submitted request to change the selected test results availability to ",

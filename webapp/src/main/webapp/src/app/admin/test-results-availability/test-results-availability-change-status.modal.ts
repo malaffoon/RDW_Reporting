@@ -15,6 +15,9 @@ import { TranslateService } from '@ngx-translate/core';
 export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   private _subscription: Subscription;
   public changeStatusEvent: EventEmitter<any> = new EventEmitter();
+
+  // Set by initial state on show modal
+  sandboxUser: boolean;
   selectedFilters: TestResultAvailabilityFilters;
   statusOptions: { label: string; value: string }[];
   selectedStatus: { label: string; value: string };
@@ -23,7 +26,6 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   unableToChange: boolean;
   successfulChange: boolean;
   showSandboxAlert: boolean; // if sandbox and user tries to change status
-  sandboxUser: boolean;
   private successChangeMessage: string;
 
   constructor(
@@ -40,10 +42,15 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO: pass in filters from component
-    this.selectedFilters = null; // this.service.getTestResultAvailabilityFilterDefaults();
+    console.log(this.statusOptions);
     this.showSandboxAlert = false;
     this.successfulChange = false;
+  }
+
+  get statusOpts() {
+    console.log('retrieving options: ', this.statusOptions);
+    return [{ label: 'hello', value: 'hello' }];
+    // return this.statusOptions;
   }
 
   cancel() {
