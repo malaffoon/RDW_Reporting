@@ -1,5 +1,9 @@
 ## Change Log
 
+#### 2.3.5 - 2020-08-27
+* SRS-171 ELAS Status Displays in UI even when Disabled in Tenant Admin
+* SRS-82 Exam Icon Update
+
 #### 2.3.4 - 2020-08-06
 * SRS-150 Access denied page from old url to new url structure fix
 
