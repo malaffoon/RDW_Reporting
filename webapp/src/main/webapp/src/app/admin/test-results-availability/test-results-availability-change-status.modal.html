@@ -26,7 +26,8 @@
     </label>
     <div class="col-xs-6 set-status">
       <select
-        [(ngModel)]="selectedStatus"
+        [ngModel]="selectedStatus"
+        [disabled]="statusOptions.length <= 1"
         class="form-control"
         (ngModelChange)="onChangeStatusFilter($event)"
       >
@@ -75,6 +76,14 @@
     </label>
     <span class="col-xs-8 text-overflow-ellipsis">
       {{ selectedFilters.reportType.label | translate }}
+    </span>
+  </div>
+  <div class="form-group row">
+    <label class="col-xs-4 control-label">
+      {{ 'test-results-availability-change-status.status' | translate }}
+    </label>
+    <span class="col-xs-8 text-overflow-ellipsis">
+      {{ selectedFilters.status.label | translate }}
     </span>
   </div>
 </div>
