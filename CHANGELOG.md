@@ -13,6 +13,10 @@ Work done as part of RDW Phase 6.
     * Upgrade gradle, including plugins
     * Upgrade SpringFramework and other libraries (most recent minor revs only, no major upgrades)
 
+#### 2.3.5 - 2020-08-27
+* SRS-171 ELAS Status Displays in UI even when Disabled in Tenant Admin
+* SRS-82 Exam Icon Update
+
 #### 2.3.4 - 2020-08-06
 
 * SRS-150 Access denied page from old url to new url structure fix
