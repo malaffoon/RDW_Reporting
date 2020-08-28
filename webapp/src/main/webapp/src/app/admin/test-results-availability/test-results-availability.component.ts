@@ -104,25 +104,35 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
   private toStatusKey = label => 'test-results-availability.status.' + label;
 
   openChangeResultsModal() {
-    if (
-      this.testResultAvailabilityFilters.status ===
-      TestResultsAvailabilityService.FilterIncludeAll
-    ) {
+    const selectedStatus = this.testResultAvailabilityFilters.status;
+    if (selectedStatus === TestResultsAvailabilityService.FilterIncludeAll) {
       // Illegal state that should have been prevented by UI.
       console.warn('invalid state: must select a status before Change Status');
       return;
     }
 
-    // Get statuses available for selecting in the modal, i.e. not "All" and not the currently selected status.
-    const selectedStatusValue = this.testResultAvailabilityFilters.status.value;
+    // Remove "All" from the allowable transition-to options
     const statusOptions = this.userOptions.statuses.filter(
-      stat => stat.value !== null && stat.value !== selectedStatusValue
+      stat => stat !== TestResultsAvailabilityService.FilterIncludeAll
     );
 
-    if (statusOptions.length === 0) {
+    const index = statusOptions.indexOf(selectedStatus);
+    if (index < 0) {
+      console.warn('invalid state: unknown status selected');
+    }
+    const isLast = index + 1 === statusOptions.length;
+    if (index === 0 && isLast) {
       console.warn('invalid state: no status options to change to');
       return;
     }
+
+    // Set default for next status to the one after the selected, or one before if selected is last.
+    const defaultNextStatus = isLast
+      ? statusOptions[index - 1]
+      : statusOptions[index + 1];
+
+    // Remove selected from the allowable transition-to options
+    statusOptions.splice(index, 1);
 
     this.userService
       .getUser()
@@ -133,7 +143,7 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
           sandboxUser: sandboxUser,
           selectedFilters: this.testResultAvailabilityFilters,
           statusOptions: statusOptions,
-          selectedStatus: statusOptions[statusOptions.length === 1 ? 0 : 1]
+          selectedStatus: defaultNextStatus
         };
 
         const modalReference: BsModalRef = this.modalService.show(

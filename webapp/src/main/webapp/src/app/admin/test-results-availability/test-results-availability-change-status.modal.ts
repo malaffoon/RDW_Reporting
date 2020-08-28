@@ -42,15 +42,8 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.statusOptions);
     this.showSandboxAlert = false;
     this.successfulChange = false;
-  }
-
-  get statusOpts() {
-    console.log('retrieving options: ', this.statusOptions);
-    return [{ label: 'hello', value: 'hello' }];
-    // return this.statusOptions;
   }
 
   cancel() {
