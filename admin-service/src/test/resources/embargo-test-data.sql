@@ -10,7 +10,7 @@ insert into state_embargo (school_year, individual, aggregate) values
 
 insert into district_embargo (district_id, school_year, subject_id, individual, aggregate) values
   (-10, 2018, 1, 1, 1),
-  (-20, 2018, 1, 2, null),
+  (-20, 2018, 1, 2, 0),
   (-10, 2017, 1, 2, 2),
   (-10, 2019, 1, 1, 1);
 

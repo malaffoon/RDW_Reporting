@@ -124,6 +124,32 @@ sql:
         subject_code ASC,
         report_type ASC
 
+    createEmbargo: >-
+      INSERT IGNORE INTO district_embargo (school_year, district_id, subject_id, individual, aggregate, updated_by)
+      SELECT  y.year, d.id, s.id, :individual, :aggregate, :updated_by
+      FROM school_year y
+          JOIN district d
+          JOIN subject s
+      WHERE (:school_year IS NULL OR y.year = :school_year)
+          AND (:subject_id IS NULL OR s.id = :subject_id)
+          AND (:filter_by_district = 0 OR d.id IN (:district_ids));
+
+    updateEmbargoIndividualStatus: >-
+      UPDATE district_embargo
+      SET individual = :new_status, updated_by = :updated_by
+      WHERE (:school_year IS NULL OR school_year = :school_year)
+          AND (:subject_id IS NULL OR subject_id = :subject_id)
+          AND (:filter_by_district = 0 OR district_id IN (:district_ids))
+          AND individual = :current_status;
+
+    updateEmbargoAggregateStatus: >-
+      UPDATE district_embargo
+      SET aggregate = :new_status, updated_by = :updated_by
+      WHERE (:school_year IS NULL OR school_year = :school_year)
+          AND (:subject_id IS NULL OR subject_id = :subject_id)
+          AND (:filter_by_district = 0 OR district_id IN (:district_ids))
+          AND aggregate = :current_status;
+
     findEmbargoAuditRecords: >-
       SELECT
         ade.school_year AS school_year,
