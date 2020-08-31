@@ -66,7 +66,11 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
         this.successfulChange = true;
         this.successChangeMessage = this.getSuccessfulChangeMessage();
       }
-      this.triggerEventStatus(this.unableToChange, this.successChangeMessage);
+      this.triggerEventStatus(
+        this.unableToChange,
+        this.successChangeMessage,
+        this.selectedStatus
+      );
       this.modal.hide();
     }
   }
@@ -106,11 +110,13 @@ export class TestResultsAvailabilityChangeStatusModal implements OnInit {
 
   private triggerEventStatus(
     unableToChange: boolean,
-    successChangeMsgOptions: string
+    successChangeMsgOptions: string,
+    selectedStatus: { label: string; value: string }
   ) {
     this.changeStatusEvent.emit({
       // return the selected filters and status of the successful change
       data: successChangeMsgOptions,
+      updatedStatus: selectedStatus,
       res: 200,
       error: unableToChange
     });

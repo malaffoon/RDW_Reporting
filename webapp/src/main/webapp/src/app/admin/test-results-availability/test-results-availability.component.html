@@ -239,6 +239,7 @@
           (onLazyLoad)="resultsTablePageChange($event)"
           [paginator]="true"
           [rows]="pageSettings.pageSize"
+          [first]="pageSettings.offset"
           [totalRecords]="rowCount || 0"
           [loading]="loading"
           sortField="default"

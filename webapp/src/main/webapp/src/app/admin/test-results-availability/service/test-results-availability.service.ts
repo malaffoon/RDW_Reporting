@@ -203,18 +203,19 @@ export class TestResultsAvailabilityService implements OnInit {
     this.successfulChange = true;
   }
 
-  // TODO: add save of data
   logTestResults(
     testResultFilters: TestResultAvailabilityFilters,
     newStatus: string
   ) {
+    const asArray = el => (el === null ? null : [el]);
+
     this.dataService
       .put(
         `${ResourceContext}`,
         {
           schoolYear: testResultFilters.schoolYear.value,
-          district: testResultFilters.district.value,
-          subject: testResultFilters.subject.value,
+          districtIds: asArray(testResultFilters.district.value),
+          subjectId: testResultFilters.subject.value,
           reportType: testResultFilters.reportType.value,
           status: testResultFilters.status.value,
           newStatus: newStatus

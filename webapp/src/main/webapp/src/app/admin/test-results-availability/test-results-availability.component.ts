@@ -14,7 +14,7 @@ import { TestResultsAvailabilityService } from './service/test-results-availabil
 import { TestResultAvailabilityFilters } from './model/test-result-availability-filters';
 import { TestResultsAvailabilityChangeStatusModal } from './test-results-availability-change-status.modal';
 import { UserService } from '../../shared/security/service/user.service';
-import { map } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { UserOptions } from './model/user-options';
 
 class Column {
@@ -152,7 +152,7 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
         );
 
         modalReference.content.changeStatusEvent.subscribe(res => {
-          this.changeSuccessful(res.data, res.error);
+          this.changeSuccessful(res.data, res.updatedStatus, res.error);
           this.changeFailed(res.error);
         });
       });
@@ -303,7 +303,11 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
     this.unableToChange = false;
   }
 
-  private changeSuccessful(data: string, error: boolean) {
+  private changeSuccessful(
+    data: string,
+    updatedStatus: { label: string; value: string },
+    error: boolean
+  ) {
     if (error) {
       this.changeFailed(error);
       this.successfulChange = false;
@@ -312,6 +316,12 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
       this.successfulChange = true;
       this.alertFailure = null;
       this.grabFocusToAlert = true;
+      this.testResultAvailabilityFilters.status = updatedStatus;
+
+      // This needs a slight delay to work properly
+      setTimeout(() => {
+        this.updateFilters();
+      }, 1000);
     }
   }
 
@@ -324,8 +334,8 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
     }
   }
 
-  /* tslint:disable */
   ngDoCheck(): void {
+    /* tslint:disable */
     // TODO: upgrade to newer version of PrimeNG and then remove this.
     // Hack to label the pagination controls, which the version of p-table we are using doesn't support.
     eval(
@@ -352,8 +362,8 @@ export class TestResultsAvailabilityComponent implements OnInit, DoCheck {
       this.alertFailure.nativeElement.focus();
       this.grabFocusToAlert = false;
     }
+    /* tslint:enable */
   }
-  /* tslint:enable */
 
   // Set initial default values for filters.
   private initializeFilterSettings(
