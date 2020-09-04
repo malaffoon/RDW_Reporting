@@ -10,13 +10,13 @@ import { NavigationStart, Router } from '@angular/router';
   selector: 'isr-template-delete-modal',
   templateUrl: './isr-template-delete.modal.html'
 })
+// tslint:disable-next-line:component-class-suffix
 export class IsrTemplateDeleteModal implements OnInit {
   private _subscription: Subscription;
   public deleteTemplateEvent: EventEmitter<any> = new EventEmitter();
   isrTemplate: IsrTemplate = new IsrTemplate();
 
   // below determine which if any alert need to be displayed
-  deleteSuccessful: boolean;
   unableToDelete: boolean;
 
   constructor(
@@ -32,7 +32,6 @@ export class IsrTemplateDeleteModal implements OnInit {
   }
 
   ngOnInit(): void {
-    this.deleteSuccessful = false;
     this.unableToDelete = false;
   }
 
@@ -41,22 +40,25 @@ export class IsrTemplateDeleteModal implements OnInit {
   }
 
   delete() {
-    this.isrTemplateService.delete(this.isrTemplate);
-    this.deleteSuccessful = true;
-    // set to true to test error alert
-    this.unableToDelete = false;
-    this.triggerDeleteTemplate(this.deleteSuccessful, this.unableToDelete);
-    this.modal.hide();
+    this.isrTemplateService
+      .delete(
+        this.isrTemplate.subject.value,
+        this.isrTemplate.assessmentType.value
+      )
+      .subscribe(() => this.deleteSuccessful(), err => this.deleteFailed(err));
   }
 
-  private triggerDeleteTemplate(
-    deleteSuccessful: boolean,
-    unableToChange: boolean
-  ) {
+  private deleteSuccessful() {
+    this.unableToDelete = false;
+    this.modal.hide();
     this.deleteTemplateEvent.emit({
-      data: deleteSuccessful,
-      res: 200,
-      error: unableToChange
+      data: true,
+      res: 204,
+      error: false
     });
+  }
+
+  private deleteFailed(err) {
+    this.unableToDelete = true;
   }
 }

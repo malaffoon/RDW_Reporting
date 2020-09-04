@@ -1,8 +1,7 @@
 export class IsrTemplate {
-  assessmentType: string;
-  subject: string;
+  assessmentType: { label: string; value: string };
+  subject: { label: string; value: string };
   status: string;
   templateName: string;
   uploadedDate: Date;
-  location: string;
 }
