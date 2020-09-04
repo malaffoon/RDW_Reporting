@@ -53,7 +53,7 @@ export class IsrTemplateDeleteModal implements OnInit {
     this.modal.hide();
     this.deleteTemplateEvent.emit({
       data: true,
-      res: 202,
+      res: 204,
       error: false
     });
   }
