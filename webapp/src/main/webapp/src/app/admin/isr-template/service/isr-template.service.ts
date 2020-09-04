@@ -1,18 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { TranslateDatePipe } from '../../../shared/i18n/translate-date.pipe';
 import { IsrTemplate } from '../model/isr-template';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Download } from '../../../shared/data/download.model';
-import { Http } from '@angular/http';
 import { TranslateService } from '@ngx-translate/core';
+import { AdminServiceRoute } from '../../../shared/service-route';
+import {
+  DATA_CONTEXT_URL,
+  DataService
+} from '../../../shared/data/data.service';
+import { RequestOptions, Headers } from '@angular/http';
+
+const ResourceContext = `${AdminServiceRoute}/templates`;
+const toSubjectKey = subject => 'subject.' + subject + '.name';
+const toAssmtTypeKey = (sub, assmt) =>
+  'subject.' + sub + '.asmt-type.' + assmt + '.name';
 
 @Injectable()
 export class IsrTemplateService {
   constructor(
+    private dataService: DataService,
     private datePipe: TranslateDatePipe,
-    private http: Http,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    @Inject(DATA_CONTEXT_URL) private contextUrl: string = '/api'
   ) {}
 
   formatAsLocalDate(date: Date): string {
@@ -39,87 +49,76 @@ export class IsrTemplateService {
     );
   }
 
-  delete(isrTemplate: IsrTemplate): Observable<any> {
-    console.log('Deleted template: ' + isrTemplate.templateName);
-    return new Observable<any>();
+  delete(subject: string, assessmentType: string): Observable<any> {
+    return this.dataService.delete(
+      `${ResourceContext}/${subject}/${assessmentType}`
+    );
   }
 
-  // todo update with real data
-  getIsrTemplates(): IsrTemplate[] {
-    return [
-      {
-        subject: 'ELA',
-        assessmentType: 'IAB',
-        status: this.getConfigured(new Date('Jan 4, 2020 13:45')),
-        templateName: this.getTemplateReportName('ELA', 'IAB'),
-        location: './',
-        uploadedDate: new Date('Jan 4, 2020')
-      },
-      {
-        subject: 'ELA',
-        assessmentType: 'ICA',
-        status: this.getConfigured(new Date('Feb 4, 2020 09:23')),
-        templateName: this.getTemplateReportName('ELA', 'ICA'),
-        location: './',
-        uploadedDate: new Date('Feb 4, 2020')
-      },
-      {
-        subject: 'ELA',
-        assessmentType: 'Summative',
-        status: this.getConfigured(new Date('Mar 10, 2020 11:07')),
-        templateName: this.getTemplateReportName('ELA', 'Summative'),
-        location: './',
-        uploadedDate: new Date('Mar 10, 2020')
-      },
-      {
-        subject: 'ELPAC',
-        assessmentType: 'Summative',
-        status: this.getNotConfigured(),
-        templateName: null,
-        location: null,
-        uploadedDate: null
-      },
-      {
-        subject: 'Math',
-        assessmentType: 'IAB',
-        status: this.getConfigured(new Date('Jan 4, 2020 13:46')),
-        templateName: this.getTemplateReportName('ELA', 'IAB'),
-        location: './templates/',
-        uploadedDate: new Date('Jan 4, 2020')
-      },
-      {
-        subject: 'Math',
-        assessmentType: 'ICA',
-        status: this.getNotConfigured(),
-        templateName: null,
-        location: null,
-        uploadedDate: null
-      },
-      {
-        subject: 'Math',
-        assessmentType: 'Summative',
-        status: this.getConfigured(new Date('June 4, 2020 18:19')),
-        templateName: this.getTemplateReportName('Math', 'Summative'),
-        location: './',
-        uploadedDate: new Date('June 4, 2020')
-      }
-    ];
+  getIsrTemplates(): Observable<IsrTemplate[]> {
+    return this.dataService.get(`${ResourceContext}`).pipe(
+      map((sourceTemplateInfoList: any[]) => {
+        return sourceTemplateInfoList.map(source => this.toIsrTemplate(source));
+      })
+    );
   }
 
-  public getTemplateFile(): Observable<any> {
-    // TODO: Replace with call to real file location
-    // TODO - hmm, need the real reference template in a common lib i guess
-    const referenceTemplate = '/assets/template/reference-template.html';
-    return this.http
-      .get(referenceTemplate)
-      .pipe(
-        map(
-          response =>
-            new Download(
-              'reference-template.html',
-              new Blob([response.text()], { type: 'text/html; charset=utf-8' })
-            )
-        )
-      );
+  public getTemplateFile() {
+    window.open(`${this.contextUrl}${ResourceContext}/reference`, '_blank');
+  }
+
+  /**
+   * Download the temaplate file.
+   *
+   * @param subjectCode subject code like Math, ELA, etc.
+   * @param assessmentType the assessment type: iab, ica, or sum.
+   */
+  public downloadTemplateFile(subjectCode, assessmentType) {
+    window.open(
+      `${this.contextUrl}${ResourceContext}/${subjectCode}/${assessmentType}`,
+      '_blank'
+    );
+  }
+
+  public uploadTemplateFile(
+    file: File,
+    fileName: string,
+    subjectCode: string,
+    assessmentType: string
+  ): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, fileName);
+
+    return this.dataService.post(
+      `${ResourceContext}/${subjectCode}/${assessmentType}`,
+      formData
+    );
+  }
+
+  /**
+   * Convert record from REST call to IsrTemplate.
+   *
+   * @param sourceTemplateInfo
+   */
+  private toIsrTemplate(sourceTemplateInfo: any): IsrTemplate {
+    const rawDateString = sourceTemplateInfo.lastModified;
+    const uploadedDate = rawDateString ? new Date(rawDateString) : null;
+    const formattedDate = uploadedDate
+      ? this.getConfigured(uploadedDate)
+      : null;
+
+    const subjectCode = sourceTemplateInfo.subjectCode;
+    const assessmentType = sourceTemplateInfo.assessmentType;
+
+    return {
+      assessmentType: {
+        label: toAssmtTypeKey(subjectCode, assessmentType),
+        value: assessmentType
+      },
+      subject: { label: toSubjectKey(subjectCode), value: subjectCode },
+      status: formattedDate,
+      templateName: this.getTemplateReportName(subjectCode, assessmentType),
+      uploadedDate: uploadedDate
+    };
   }
 }

@@ -17,17 +17,17 @@
 
 <ng-container>
   <ng-container>
-    <div *ngIf="unableToUpload" class="alert alert-danger">
+    <div *ngIf="unableToUpload" class="alert alert-danger greg">
       <button
         type="button"
         class="close"
         title="{{ 'common.action.close' | translate }}"
-        (click)="closeErrorAlert()"
+        (click)="clearErrors()"
         aria-label="Close error alert"
       >
         <span aria-hidden="true">&times;</span>
       </button>
-      {{ 'test-results-change-status.error-changing-results' | translate }}
+      {{ 'isr-template.upload-error' | translate }}
     </div>
 
     <div class="well well-results">
@@ -62,6 +62,7 @@
           </ng-template>
 
           <ng-template
+            *ngIf="visible"
             pTemplate="body"
             let-group
             let-rowData
@@ -70,7 +71,11 @@
             <tr>
               <td *ngFor="let column of columns" [ngSwitch]="column.id">
                 <span *ngSwitchDefault>
-                  {{ group[column.field] }}
+                  {{
+                    group[column.field].hasOwnProperty('label')
+                      ? (group[column.field].label | translate)
+                      : group[column.field]
+                  }}
                 </span>
                 <span *ngSwitchCase="'status'" [ngClass]="getStatus(rowData)">
                   {{ group[column.field] }}
@@ -85,7 +90,7 @@
                       style="display:none;"
                       ng2FileSelect
                       [uploader]="fileUploader"
-                      (onFileSelected)="onFileSelected($event)"
+                      (onFileSelected)="onFileSelected($event, rowData)"
                     />
                     <a
                       href="javascript:void(0)"

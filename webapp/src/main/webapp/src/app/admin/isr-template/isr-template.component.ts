@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../shared/notification/notification.service';
-import { FileUploader } from 'ng2-file-upload';
+import { FileItem, FileUploader, ParsedResponseHeaders } from 'ng2-file-upload';
 import { IsrTemplate } from './model/isr-template';
 import { IsrTemplateService } from './service/isr-template.service';
 import { IsrTemplateDeleteModal } from './isr-template-delete.modal';
@@ -12,6 +12,10 @@ import { saveAs } from 'file-saver';
 import { UserService } from '../../shared/security/service/user.service';
 import { map } from 'rxjs/operators';
 import { IsrTemplateSandboxModal } from './isr-template-sandbox.modal';
+import { AdminServiceRoute } from '../../shared/service-route';
+import { Utils } from '../../shared/support/support';
+
+const URL = '/api' + AdminServiceRoute + '/templates';
 
 class Column {
   id: string; // en.json name
@@ -24,8 +28,6 @@ class Column {
     this.sortable = sortable;
   }
 }
-const URL = 'http://localhost:4200/fileupload/'; // TODO: update with real info
-
 @Component({
   selector: 'isr-template',
   templateUrl: './isr-template.component.html'
@@ -38,9 +40,9 @@ export class IsrTemplateComponent implements OnInit {
   ];
 
   isrTemplates: IsrTemplate[];
+  visible = true;
 
   // below determine which if any alert need to be displayed
-  unableToDelete: boolean;
   successfulDelete: boolean;
   unableToUpload: boolean;
   isSandbox: boolean;
@@ -50,8 +52,8 @@ export class IsrTemplateComponent implements OnInit {
     disableMultipart: false,
     autoUpload: true,
     method: 'post',
-    itemAlias: 'temp[ate',
-    allowedFileType: ['image', 'pdf', 'html']
+    itemAlias: 'template',
+    allowedFileType: ['html']
   });
 
   constructor(
@@ -65,15 +67,17 @@ export class IsrTemplateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.isrTemplates = this.isrTemplateService.getIsrTemplates();
     this.unableToUpload = false;
     this.userService
       .getUser()
       .pipe(map(user => user.sandboxUser))
-
       .subscribe(sandboxUser => {
         this.isSandbox = sandboxUser;
       });
+
+    this.isrTemplateService.getIsrTemplates().subscribe(isrTemplates => {
+      this.isrTemplates = isrTemplates;
+    });
   }
 
   getStatus(rowData: IsrTemplate) {
@@ -83,7 +87,11 @@ export class IsrTemplateComponent implements OnInit {
   }
 
   showIcons(rowData) {
-    return rowData.templateName != null;
+    return rowData.uploadedDate !== null;
+  }
+
+  clearErrors() {
+    this.unableToUpload = false;
   }
 
   openDeleteTemplateModal(rowData: IsrTemplate) {
@@ -98,12 +106,10 @@ export class IsrTemplateComponent implements OnInit {
       modal.isrTemplate = rowData;
       modal.deleteTemplateEvent.subscribe(res => {
         this.successfulDelete = res.data;
-        this.unableToDelete = res.error;
+        if (this.successfulDelete) {
+          this.reloadData();
+        }
       });
-
-      if (this.successfulDelete) {
-        // TODO: refresh template list
-      }
     }
   }
 
@@ -113,36 +119,57 @@ export class IsrTemplateComponent implements OnInit {
       {}
     );
     const modal: IsrTemplateSandboxModal = modalReference.content;
-    modal.sandboxUploadMessage = action != 'delete';
+    modal.sandboxUploadMessage = action !== 'delete';
   }
 
-  onFileSelected(event: EventEmitter<File[]>) {
+  /**
+   * Upload selected file to be the new report template for the selected row's subject and assessment type.
+   * @param event the event containing the file selection
+   * @param rowData data about the selelcted row.
+   */
+  onFileSelected(event: EventEmitter<File[]>, rowData: IsrTemplate) {
     const file: File = event[0];
-    // TODO Save this file to it's proper location
-    console.log(file);
-  }
-
-  closeErrorAlert() {
-    this.unableToDelete = false;
-  }
-
-  downloadReferenceTemplate(fileName: string) {
-    this.isrTemplateService.getTemplateFile().subscribe(
-      (download: Download) => {
-        saveAs(download.content, fileName === null ? download.name : fileName);
-      },
-      (error: Error) => {
-        console.error(error);
-      }
-    );
-  }
-
-  downloadReportTemplate(rowData: IsrTemplate): void {
-    this.downloadReferenceTemplate(
-      this.isrTemplateService.getTemplateReportName(
-        rowData.subject,
-        rowData.assessmentType
+    this.isrTemplateService
+      .uploadTemplateFile(
+        file,
+        rowData.templateName,
+        rowData.subject.value,
+        rowData.assessmentType.value
       )
+      .subscribe(
+        () => {
+          this.unableToUpload = false;
+          this.reloadData();
+        },
+        err => {
+          this.unableToUpload = true;
+        }
+      );
+  }
+
+  private reloadData() {
+    this.visible = false;
+    this.isrTemplateService.getIsrTemplates().subscribe(isrTemplates => {
+      this.isrTemplates = isrTemplates;
+      setTimeout(() => (this.visible = true), 1000);
+    });
+  }
+
+  /**
+   * Downloads the reference template.
+   */
+  downloadReferenceTemplate() {
+    this.isrTemplateService.getTemplateFile();
+  }
+
+  /**
+   * Downloads report templeate for the selected row's subject and assessment type.
+   * @param rowData data from the selected row.
+   */
+  downloadReportTemplate(rowData: IsrTemplate): void {
+    this.isrTemplateService.downloadTemplateFile(
+      rowData.subject.value,
+      rowData.assessmentType.value
     );
   }
 

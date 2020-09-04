@@ -2095,8 +2095,9 @@
     "reference-tooltip": "Download the reference template to create new report templates.",
     "remove-template-title": "Remove current template",
     "subject-tooltip": "The subject's tooltip",
-    "template-name": "-report.html",
+    "template-name": ".html",
     "title": "Manage Individual Student Report (ISR) Templates",
-    "upload-template-title": "Upload new template"
+    "upload-template-title": "Upload new template",
+    "upload-error": "Template could not be uploaded."
   }
 }
